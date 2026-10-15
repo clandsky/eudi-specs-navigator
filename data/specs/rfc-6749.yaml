@@ -1,0 +1,10 @@
+id: rfc-6749
+title: "RFC 6749: The OAuth 2.0 Authorization Framework"
+short: RFC 6749
+layer: base
+version: RFC 6749
+source:
+  local: "eIDAS + all references/standards/rfc/RFC6749.txt"
+  text: sources/rfc6749.txt
+  url: https://www.rfc-editor.org/rfc/rfc6749
+anchor_template: https://www.rfc-editor.org/rfc/rfc6749#section-{section}

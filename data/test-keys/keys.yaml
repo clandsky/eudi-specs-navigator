@@ -1,0 +1,18 @@
+# TEST ONLY. Keys and certificates for the example objects. Never use them outside this repository.
+# A key with `cert` gets an X.509 certificate; `issuer` names the signing key (absent = self-signed trust anchor,
+# which is excluded from every x5c chain).
+keys:
+  - id: wp-root
+    cert: { cn: "TEST Wallet Provider Root CA", ca: true }
+  - id: wp-signer
+    cert: { cn: "TEST Wallet Provider Attestation Signer", issuer: wp-root }
+  - id: access-root
+    cert: { cn: "TEST Access Certificate Root CA", ca: true }
+  - id: issuer-access
+    cert: { cn: "TEST EAA Provider Access Certificate", issuer: access-root }
+  - id: issuer-signer
+    cert: { cn: "TEST EAA Provider Credential Signer", issuer: access-root }
+  - id: wallet-instance   # cnf key of the WIA, signs the client attestation PoP
+  - id: wallet-key-1      # attested in the key attestation, signs the jwt proof
+  - id: wallet-key-2
+  - id: wallet-dpop       # DPoP proof key

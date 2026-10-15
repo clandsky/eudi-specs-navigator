@@ -1,0 +1,10 @@
+id: etsi-ts-119-472-3
+title: "ETSI TS 119 472-3: Profiles for issuance of EAA or PID"
+short: ETSI 472-3
+layer: etsi
+version: V1.1.1 (2026-03)
+binding_via: cir-2026-1731 Annex XI
+source:
+  local: "eIDAS + all references/standards/ETSI/ETSI-TS-119472-3.pdf"
+  text: sources/etsi-ts-119-472-3-v1.1.1.txt
+  url: https://www.etsi.org/deliver/etsi_ts/119400_119499/11947203/01.01.01_60/ts_11947203v010101p.pdf

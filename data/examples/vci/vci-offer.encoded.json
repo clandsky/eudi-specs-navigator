@@ -1,0 +1,20 @@
+{
+  "id": "vci-offer",
+  "http": {
+    "url": "eu-eaa-offer://?credential_offer=%7B%22credential_issuer%22%3A%22https%3A%2F%2Feaa.example.eu%22%2C%22credential_configuration_ids%22%3A%5B%22gym_membership_sd_jwt%22%5D%2C%22grants%22%3A%7B%22authorization_code%22%3A%7B%22issuer_state%22%3A%22eyJhbGciOiJSU0Et...FYUaBy%22%7D%7D%7D",
+    "headers": {}
+  },
+  "json": {
+    "credential_issuer": "https://eaa.example.eu",
+    "credential_configuration_ids": [
+      "gym_membership_sd_jwt"
+    ],
+    "grants": {
+      "authorization_code": {
+        "issuer_state": "eyJhbGciOiJSU0Et...FYUaBy"
+      }
+    }
+  },
+  "jwts": {},
+  "inputHash": "c83af66da0ae7130"
+}

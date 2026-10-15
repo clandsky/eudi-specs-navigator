@@ -1,0 +1,11 @@
+id: attestation-client-auth-07
+title: OAuth 2.0 Attestation-Based Client Authentication
+short: ABCA-07
+layer: base
+version: draft-ietf-oauth-attestation-based-client-auth-07
+note: The version pinned by ETSI TS 119 472-3 (AUTH-REQ-4.4.2-01, TOKEN-REQ-4.5.1-01). The developer guide validates against -08.
+source:
+  local: "eIDAS + all references/standards/rfc/draft-ietf-oauth-attestation-based-client-auth-07.txt"
+  text: sources/draft-ietf-oauth-attestation-based-client-auth-07.txt
+  url: https://datatracker.ietf.org/doc/html/draft-ietf-oauth-attestation-based-client-auth-07
+anchor_template: https://datatracker.ietf.org/doc/html/draft-ietf-oauth-attestation-based-client-auth-07#section-{section}

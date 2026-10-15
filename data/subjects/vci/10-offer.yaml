@@ -1,0 +1,9 @@
+- { id: vci.offer, kind: message, parent: vci, title: Credential Offer, location: uri }
+- { id: vci.offer.scheme, kind: value, parent: vci.offer, title: URL scheme that invokes the Wallet, location: uri }
+- { id: vci.offer.credential_offer_uri, kind: field, parent: vci.offer, title: credential_offer_uri, location: query }
+- { id: vci.offer.credential_offer, kind: field, parent: vci.offer, title: credential_offer (by value), location: query }
+- { id: vci.offer.credential_issuer, kind: field, parent: vci.offer, title: credential_issuer, location: json }
+- { id: vci.offer.credential_configuration_ids, kind: field, parent: vci.offer, title: credential_configuration_ids, location: json }
+- { id: vci.offer.grants, kind: field, parent: vci.offer, title: grants, location: json }
+- { id: vci.offer.grants.authorization_code, kind: value, parent: vci.offer.grants, title: "grants.authorization_code", location: json }
+- { id: vci.offer.issuer_state, kind: field, parent: vci.offer.grants.authorization_code, title: issuer_state, location: json }

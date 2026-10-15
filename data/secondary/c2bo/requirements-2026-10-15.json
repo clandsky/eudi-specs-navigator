@@ -1,0 +1,2577 @@
+{
+  "retrieved": "2026-10-15",
+  "url": "https://conformance.c2bo.net/api/requirements",
+  "groups": [
+    {
+      "id": "metadata",
+      "name": "Issuer and authorization server metadata",
+      "requirements": [
+        {
+          "id": "metadata-retrieval",
+          "group": "metadata",
+          "title": "Credential Issuer Metadata is served at the well-known path",
+          "note": "GET with the well-known path inserted between host and path; 200, a Content-Type, and the unsigned form on Accept: application/json. A Content-Type that does not match the Accept header is a WARN.",
+          "sources": [
+            {
+              "chain": "HAIP 1.0 4.1 > OpenID4VCI 1.0 12.2.2",
+              "eu": false,
+              "level": "shall",
+              "quote": "The Credential Issuer MUST respond with HTTP Status Code 200 and return the Credential Issuer Metadata containing the parameters defined in Section 12.2.4 as either an unsigned JSON document using the media type application/json, or a signed JSON Web Token (JWT) containing the Credential Issuer Metadata in its payload using the media type application/jwt. The Credential Issuer MUST support returning metadata in an unsigned form 'application/json' and MAY support returning it in a signed form 'application/jwt'. In all cases the Credential Issuer MUST indicate the media type of the returned Metadata using the HTTP Content-Type header."
+            },
+            {
+              "chain": "OpenID4VCI 1.0 12.2.2",
+              "eu": false,
+              "level": "should",
+              "quote": "It is RECOMMENDED for Credential Issuers to respond with a Content-Type matching to the Wallet's requested Accept header when the requested content type is supported."
+            },
+            {
+              "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+              "eu": true,
+              "level": "shall",
+              "quote": "When PID Providers and the EAA Providers are issuing PIDs and EAAs into the EUDI Wallet, they shall implement the protocol defined in OpenID4VCI [2], specified by the requirements defined for the Issuer in OpenID4VC-HAIP [1], clause 4 and its subclauses, unless specified otherwise in the present document."
+            }
+          ]
+        },
+        {
+          "id": "metadata-identity",
+          "group": "metadata",
+          "title": "credential_issuer equals the Credential Issuer Identifier",
+          "note": "Byte-for-byte comparison, no normalisation.",
+          "sources": [
+            {
+              "chain": "HAIP 1.0 4.1 > OpenID4VCI 1.0 12.2.4 credential_issuer",
+              "eu": false,
+              "level": "shall",
+              "quote": "The value MUST be identical to the Credential Issuer's identifier value into which the well-known URI string was inserted to create the URL used to retrieve the metadata. If these values are not identical (when compared using a simple string comparison with no normalization), the data contained in the response MUST NOT be used."
+            },
+            {
+              "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+              "eu": true,
+              "level": "shall",
+              "quote": "When PID Providers and the EAA Providers are issuing PIDs and EAAs into the EUDI Wallet, they shall implement the protocol defined in OpenID4VCI [2], specified by the requirements defined for the Issuer in OpenID4VC-HAIP [1], clause 4 and its subclauses, unless specified otherwise in the present document."
+            }
+          ]
+        },
+        {
+          "id": "metadata-signed",
+          "group": "metadata",
+          "title": "Signed Credential Issuer Metadata",
+          "note": "Requested with Accept: application/jwt. HAIP: whether the signed form is offered is reported (INFO), since HAIP's MUST is conditional on ecosystem policy. EU: the signed form is required (FAIL when absent). HAIP's '11.2.3' is a typo for OpenID4VCI 12.2.3.",
+          "sources": [
+            {
+              "chain": "OpenID4VCI 1.0 12.2.2",
+              "eu": false,
+              "level": "may",
+              "quote": "The Credential Issuer MUST support returning metadata in an unsigned form 'application/json' and MAY support returning it in a signed form 'application/jwt'."
+            },
+            {
+              "chain": "HAIP 1.0 4.1",
+              "eu": false,
+              "level": "shall",
+              "quote": "When Ecosystem policies require Issuer Authentication to a higher level than possible with TLS alone, signed Credential Issuer Metadata as specified in Section 11.2.3 in [OIDF.OID4VCI] MUST be supported by both the Wallet and the Issuer."
+            },
+            {
+              "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 ISS-MDATA-4.2.1-01",
+              "eu": true,
+              "level": "shall",
+              "quote": "The Issuer Metadata shall be a signed metadata according to clause 12.2.3 of OpenID4VCI [2] with a JSON Web Signature (JWS hereinafter) specified in IETF RFC 7515 [8]."
+            }
+          ]
+        },
+        {
+          "id": "metadata-signed-form",
+          "group": "metadata",
+          "title": "Signed metadata is a typed JWS with sub and iat",
+          "note": "typ, alg, sub, iat, an exp that has not passed, the parameters at the top level of the payload, and an x5c header.",
+          "sources": [
+            {
+              "chain": "HAIP 1.0 4.1 > OpenID4VCI 1.0 12.2.3",
+              "eu": false,
+              "level": "shall",
+              "quote": "The signed metadata MUST be secured using a JSON Web Signature (JWS) [RFC7515] and contain the following elements: in the JOSE header, alg: REQUIRED. A digital signature algorithm identifier such as per IANA 'JSON Web Signature and Encryption Algorithms' registry [IANA.JOSE]. It MUST NOT be none or an identifier for a symmetric algorithm (MAC). typ: REQUIRED. MUST be openidvci-issuer-metadata+jwt ... in the JWS payload, iss: OPTIONAL ... sub: REQUIRED. String matching the Credential Issuer Identifier. iat: REQUIRED. Integer for the time at which the Credential Issuer Metadata was issued ... exp: OPTIONAL ... All metadata parameters used by the Credential Issuer MUST be added as top-level claims in the JWS payload."
+            },
+            {
+              "chain": "HAIP 1.0 4.1",
+              "eu": false,
+              "level": "shall",
+              "quote": "Key resolution to validate the signed Issuer Metadata MUST be supported using the x5c JOSE header parameter as defined in [RFC7515]."
+            },
+            {
+              "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+              "eu": true,
+              "level": "shall",
+              "quote": "When PID Providers and the EAA Providers are issuing PIDs and EAAs into the EUDI Wallet, they shall implement the protocol defined in OpenID4VCI [2], specified by the requirements defined for the Issuer in OpenID4VC-HAIP [1], clause 4 and its subclauses, unless specified otherwise in the present document."
+            }
+          ]
+        },
+        {
+          "id": "metadata-signing-chain",
+          "group": "metadata",
+          "title": "The metadata signing chain: access certificate, anchor excluded, not self-signed",
+          "note": "The leaf is not self-signed, the anchor is not in x5c, and the chain validates to an access_certificate_anchors root (the EUDI sandbox CAs by default). The TS 119 411-8 access certificate profile itself is not checked.",
+          "sources": [
+            {
+              "chain": "HAIP 1.0 4.1",
+              "eu": false,
+              "level": "shall",
+              "quote": "In this case, the X.509 certificate of the trust anchor MUST NOT be included in the x5c JOSE header of the signed request. The X.509 certificate signing the request MUST NOT be self-signed."
+            },
+            {
+              "chain": "CIR (EU) 2024/2977 Art 4(2)",
+              "eu": true,
+              "level": "shall",
+              "quote": "Providers of electronic attestations of attributes shall identify themselves to wallet units using their wallet-relying party access certificate."
+            },
+            {
+              "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 ISS-MDATA-4.2.1-02",
+              "eu": true,
+              "level": "shall",
+              "quote": "The signing certificate of the signature on the Issuer Metadata shall be the access certificate of the PID/EAA Provider."
+            },
+            {
+              "chain": "ETSI TS 119 472-3 V1.1.1 ISS-MDATA-ACC_CERT-4.2.2-01 / -02",
+              "eu": true,
+              "level": "shall",
+              "quote": "The JWS signing the Issuer Metadata shall contain, in its Protected Header, the x5c header parameter as specified in IETF RFC 7515 [8]. The x5c header parameter shall contain the base64 (IETF RFC 4648 [7]) encoding of the DER-encoded access certificate of the PID/EAA Provider, which shall also be the signing certificate."
+            },
+            {
+              "chain": "ETSI TS 119 472-3 V1.1.1 ISS-MDATA-ACC_CERT-4.2.2-03",
+              "eu": true,
+              "level": "should",
+              "quote": "The x5c header parameter should contain the base64 (IETF RFC 4648 [7]) encoding of the DER-encoded certificates in the signing certificate's path until the trust anchor, but excluding it."
+            },
+            {
+              "chain": "CIR (EU) 2025/848 Art 7 + Annex IV pt 3 (CIR 2026/1730 Annex II) > ETSI TS 119 411-8 V1.1.1",
+              "eu": true,
+              "level": "note",
+              "quote": "The certificate policy and certificate practice statement applicable to the provision of wallet-relying party access certificates ... shall, as applicable, comply with standard ETSI TS 119 411-8 V1.1.1 (2025-10)"
+            }
+          ]
+        },
+        {
+          "id": "endpoints-https",
+          "group": "metadata",
+          "title": "Every endpoint URL uses https",
+          "note": "The Credential Issuer's endpoints and the authorization server's authorization, token and PAR endpoints. Loopback http is tolerated only when the run allows insecure targets.",
+          "sources": [
+            {
+              "chain": "HAIP 1.0 4.1 > OpenID4VCI 1.0 12.2.4 (credential_endpoint, nonce_endpoint, deferred_credential_endpoint, notification_endpoint)",
+              "eu": false,
+              "level": "shall",
+              "quote": "This URL MUST use the https scheme and MAY contain port, path, and query parameter components."
+            },
+            {
+              "chain": "HAIP 1.0 4.1 > RFC 8414 2 > RFC 6749 3.1 / 3.2 (authorization and token endpoints)",
+              "eu": false,
+              "level": "shall",
+              "quote": "Since requests to the authorization endpoint result in user authentication and the transmission of clear-text credentials (in the HTTP response), the authorization server MUST require the use of TLS as described in Section 1.6 when sending requests to the authorization endpoint. ... Since requests to the token endpoint result in the transmission of clear-text credentials (in the HTTP request and response), the authorization server MUST require the use of TLS as described in Section 1.6 when sending requests to the token endpoint."
+            },
+            {
+              "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+              "eu": true,
+              "level": "shall",
+              "quote": "When PID Providers and the EAA Providers are issuing PIDs and EAAs into the EUDI Wallet, they shall implement the protocol defined in OpenID4VCI [2], specified by the requirements defined for the Issuer in OpenID4VC-HAIP [1], clause 4 and its subclauses, unless specified otherwise in the present document."
+            }
+          ]
+        },
+        {
+          "id": "metadata-scope",
+          "group": "metadata",
+          "title": "A scope for every Credential Configuration",
+          "note": "",
+          "sources": [
+            {
+              "chain": "HAIP 1.0 4.1",
+              "eu": false,
+              "level": "shall",
+              "quote": "The Credential Issuer metadata MUST include a scope for every Credential Configuration it supports."
+            },
+            {
+              "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+              "eu": true,
+              "level": "shall",
+              "quote": "When PID Providers and the EAA Providers are issuing PIDs and EAAs into the EUDI Wallet, they shall implement the protocol defined in OpenID4VCI [2], specified by the requirements defined for the Issuer in OpenID4VC-HAIP [1], clause 4 and its subclauses, unless specified otherwise in the present document."
+            }
+          ]
+        },
+        {
+          "id": "metadata-nonce-endpoint",
+          "group": "metadata",
+          "title": "A nonce endpoint when key binding is required",
+          "note": "",
+          "sources": [
+            {
+              "chain": "HAIP 1.0 4.1",
+              "eu": false,
+              "level": "shall",
+              "quote": "If the Issuer supports Credential Configurations that require key binding, as indicated by the presence of cryptographic_binding_methods_supported, the nonce_endpoint MUST be present in the Credential Issuer Metadata."
+            },
+            {
+              "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+              "eu": true,
+              "level": "shall",
+              "quote": "When PID Providers and the EAA Providers are issuing PIDs and EAAs into the EUDI Wallet, they shall implement the protocol defined in OpenID4VCI [2], specified by the requirements defined for the Issuer in OpenID4VC-HAIP [1], clause 4 and its subclauses, unless specified otherwise in the present document."
+            }
+          ]
+        },
+        {
+          "id": "metadata-structure",
+          "group": "metadata",
+          "title": "Structural constraints of the metadata parameters",
+          "note": "Checked with the openid4vci crate's metadata validator: batch_size, the encryption objects, the format parameters (vct, doctype), and binding versus proof metadata.",
+          "sources": [
+            {
+              "chain": "HAIP 1.0 4.1 > OpenID4VCI 1.0 12.2.4 batch_credential_issuance.batch_size",
+              "eu": false,
+              "level": "shall",
+              "quote": "Integer value specifying the maximum array size for the proofs parameter in a Credential Request. It MUST be 2 or greater."
+            },
+            {
+              "chain": "OpenID4VCI 1.0 12.2.4 credential_request_encryption / credential_response_encryption",
+              "eu": false,
+              "level": "shall",
+              "quote": "jwks: REQUIRED. A JSON Web Key Set ... Each JWK in the set MUST have a kid (Key ID) parameter that uniquely identifies the key. enc_values_supported: REQUIRED. A non-empty array containing a list of the JWE [RFC7516] encryption algorithms (enc values) ... encryption_required: REQUIRED."
+            },
+            {
+              "chain": "OpenID4VCI 1.0 12.2.4 proof_types_supported",
+              "eu": false,
+              "level": "shall",
+              "quote": "It MUST be present if cryptographic_binding_methods_supported is present, and omitted otherwise."
+            },
+            {
+              "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+              "eu": true,
+              "level": "shall",
+              "quote": "When PID Providers and the EAA Providers are issuing PIDs and EAAs into the EUDI Wallet, they shall implement the protocol defined in OpenID4VCI [2], specified by the requirements defined for the Issuer in OpenID4VC-HAIP [1], clause 4 and its subclauses, unless specified otherwise in the present document."
+            }
+          ]
+        },
+        {
+          "id": "as-metadata",
+          "group": "metadata",
+          "title": "Authorization server metadata at the RFC 8414 location with a matching issuer",
+          "note": "The authorization server is the Credential Issuer unless authorization_servers names one. The document is fetched, its issuer compared, and the token endpoint required.",
+          "sources": [
+            {
+              "chain": "HAIP 1.0 4.1",
+              "eu": false,
+              "level": "shall",
+              "quote": "The Authorization Server MUST support metadata according to [RFC8414]."
+            },
+            {
+              "chain": "HAIP 1.0 4.1 > RFC 8414 3.3",
+              "eu": false,
+              "level": "shall",
+              "quote": "The 'issuer' value returned MUST be identical to the authorization server's issuer identifier value into which the well-known URI string was inserted to create the URL used to retrieve the metadata. If these values are not identical, the data contained in the response MUST NOT be used."
+            },
+            {
+              "chain": "HAIP 1.0 4.1 > RFC 8414 2 token_endpoint",
+              "eu": false,
+              "level": "shall",
+              "quote": "URL of the authorization server's token endpoint [RFC6749]. This is REQUIRED unless only the implicit grant type is supported."
+            },
+            {
+              "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+              "eu": true,
+              "level": "shall",
+              "quote": "When PID Providers and the EAA Providers are issuing PIDs and EAAs into the EUDI Wallet, they shall implement the protocol defined in OpenID4VCI [2], specified by the requirements defined for the Issuer in OpenID4VC-HAIP [1], clause 4 and its subclauses, unless specified otherwise in the present document."
+            }
+          ]
+        },
+        {
+          "id": "as-response-types",
+          "group": "metadata",
+          "title": "response_types_supported, or pre-authorized code only",
+          "note": "",
+          "sources": [
+            {
+              "chain": "HAIP 1.0 4.1 > RFC 8414 2",
+              "eu": false,
+              "level": "shall",
+              "quote": "response_types_supported: REQUIRED. JSON array containing a list of the OAuth 2.0 'response_type' values that this authorization server supports."
+            },
+            {
+              "chain": "OpenID4VCI 1.0 12.2.4",
+              "eu": false,
+              "level": "may",
+              "quote": "An Authorization Server that only supports the Pre-Authorized Code grant type MAY omit the response_types_supported parameter in its metadata despite [RFC8414] mandating it."
+            },
+            {
+              "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+              "eu": true,
+              "level": "shall",
+              "quote": "When PID Providers and the EAA Providers are issuing PIDs and EAAs into the EUDI Wallet, they shall implement the protocol defined in OpenID4VCI [2], specified by the requirements defined for the Issuer in OpenID4VC-HAIP [1], clause 4 and its subclauses, unless specified otherwise in the present document."
+            }
+          ]
+        },
+        {
+          "id": "as-grant-types",
+          "group": "metadata",
+          "title": "Grant types and anonymous pre-authorized access advertised",
+          "note": "Reported (INFO); the authorization code requirements (PKCE, PAR, iss) are checked only when the authorization code grant is supported.",
+          "sources": [
+            {
+              "chain": "HAIP 1.0 4.1 > RFC 8414 2 grant_types_supported",
+              "eu": false,
+              "level": "note",
+              "quote": "OPTIONAL. JSON array containing a list of the OAuth 2.0 grant type values that this authorization server supports. ... If omitted, the default value is '[\"authorization_code\", \"implicit\"]'."
+            },
+            {
+              "chain": "OpenID4VCI 1.0 12.3 pre-authorized_grant_anonymous_access_supported",
+              "eu": false,
+              "level": "note",
+              "quote": "OPTIONAL. A boolean indicating whether the Credential Issuer accepts a Token Request with a Pre-Authorized Code but without a client_id. The default is false."
+            },
+            {
+              "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+              "eu": true,
+              "level": "shall",
+              "quote": "When PID Providers and the EAA Providers are issuing PIDs and EAAs into the EUDI Wallet, they shall implement the protocol defined in OpenID4VCI [2], specified by the requirements defined for the Issuer in OpenID4VC-HAIP [1], clause 4 and its subclauses, unless specified otherwise in the present document."
+            }
+          ]
+        },
+        {
+          "id": "as-pkce",
+          "group": "metadata",
+          "title": "PKCE with S256",
+          "note": "Observed in the metadata: code_challenge_methods_supported includes S256. The authorization code flow itself is not run.",
+          "sources": [
+            {
+              "chain": "HAIP 1.0 clause 4 > FAPI 2.0 Security Profile",
+              "eu": false,
+              "level": "shall",
+              "quote": "MUST comply with the provisions of [FAPI2_Security_Profile] that are applicable to this specification. This includes, but is not limited to using PKCE [RFC7636] with S256 as the code challenge method, Pushed Authorization Requests (PAR) [RFC9126] (where applicable) and the iss value in the Authorization response [RFC9207]."
+            },
+            {
+              "chain": "HAIP 1.0 clause 4 > FAPI 2.0 Security Profile 5.3.2.2 (authorization endpoint flows, authorization server)",
+              "eu": false,
+              "level": "shall",
+              "quote": "shall require PKCE [RFC7636] with S256 as the code challenge method"
+            },
+            {
+              "chain": "RFC 8414 2 code_challenge_methods_supported",
+              "eu": false,
+              "level": "note",
+              "quote": "If omitted, the authorization server does not support PKCE."
+            },
+            {
+              "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+              "eu": true,
+              "level": "shall",
+              "quote": "When PID Providers and the EAA Providers are issuing PIDs and EAAs into the EUDI Wallet, they shall implement the protocol defined in OpenID4VCI [2], specified by the requirements defined for the Issuer in OpenID4VC-HAIP [1], clause 4 and its subclauses, unless specified otherwise in the present document."
+            }
+          ]
+        },
+        {
+          "id": "as-par",
+          "group": "metadata",
+          "title": "Pushed authorization requests",
+          "note": "Observed in the metadata: pushed_authorization_request_endpoint present. An authorization server that only supports the pre-authorized code grant is not bound.",
+          "sources": [
+            {
+              "chain": "HAIP 1.0 clause 4 > FAPI 2.0 Security Profile",
+              "eu": false,
+              "level": "shall",
+              "quote": "MUST comply with the provisions of [FAPI2_Security_Profile] that are applicable to this specification. This includes, but is not limited to using PKCE [RFC7636] with S256 as the code challenge method, Pushed Authorization Requests (PAR) [RFC9126] (where applicable) and the iss value in the Authorization response [RFC9207]."
+            },
+            {
+              "chain": "HAIP 1.0 clause 4 > FAPI 2.0 Security Profile 5.3.2.2",
+              "eu": false,
+              "level": "shall",
+              "quote": "shall support client-authenticated pushed authorization requests according to [RFC9126]; shall reject authorization requests sent without [RFC9126]"
+            },
+            {
+              "chain": "HAIP 1.0 clause 4",
+              "eu": false,
+              "level": "note",
+              "quote": "Pushed Authorization Requests (PAR): Only required when using the Authorization Endpoint as defined in Section 5 of [OIDF.OID4VCI]."
+            },
+            {
+              "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+              "eu": true,
+              "level": "shall",
+              "quote": "When PID Providers and the EAA Providers are issuing PIDs and EAAs into the EUDI Wallet, they shall implement the protocol defined in OpenID4VCI [2], specified by the requirements defined for the Issuer in OpenID4VC-HAIP [1], clause 4 and its subclauses, unless specified otherwise in the present document."
+            }
+          ]
+        },
+        {
+          "id": "as-par-required-flag",
+          "group": "metadata",
+          "title": "require_pushed_authorization_requests advertised",
+          "note": "FAPI 2.0 demands that the server accepts PAR only; advertising it is not mandated, so a missing or false flag is a WARN.",
+          "sources": [
+            {
+              "chain": "HAIP 1.0 clause 4 > FAPI 2.0 Security Profile 5.3.2.2 > RFC 9126 5",
+              "eu": false,
+              "level": "note",
+              "quote": "require_pushed_authorization_requests: Boolean parameter indicating whether the authorization server accepts authorization request data only via PAR. If omitted, the default value is 'false'."
+            },
+            {
+              "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+              "eu": true,
+              "level": "shall",
+              "quote": "When PID Providers and the EAA Providers are issuing PIDs and EAAs into the EUDI Wallet, they shall implement the protocol defined in OpenID4VCI [2], specified by the requirements defined for the Issuer in OpenID4VC-HAIP [1], clause 4 and its subclauses, unless specified otherwise in the present document."
+            }
+          ]
+        },
+        {
+          "id": "as-dpop",
+          "group": "metadata",
+          "title": "DPoP support advertised",
+          "note": "Observed in the metadata: dpop_signing_alg_values_supported present and non-empty.",
+          "sources": [
+            {
+              "chain": "HAIP 1.0 clause 4",
+              "eu": false,
+              "level": "shall",
+              "quote": "Sender-constrained access token: MUST support DPoP as defined in [RFC9449]. Note that this requires Wallets to be prepared to handle the DPoP-Nonce HTTP response header from the Credential Issuer's Nonce Endpoint, as well as from other applicable endpoints of the Credential Issuer and Authorization Server."
+            },
+            {
+              "chain": "RFC 9449 5.1",
+              "eu": false,
+              "level": "note",
+              "quote": "dpop_signing_alg_values_supported: A JSON array containing a list of the JWS alg values (from the [IANA.JOSE.ALGS] registry) supported by the authorization server for DPoP proof JWTs."
+            },
+            {
+              "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+              "eu": true,
+              "level": "shall",
+              "quote": "When PID Providers and the EAA Providers are issuing PIDs and EAAs into the EUDI Wallet, they shall implement the protocol defined in OpenID4VCI [2], specified by the requirements defined for the Issuer in OpenID4VC-HAIP [1], clause 4 and its subclauses, unless specified otherwise in the present document."
+            }
+          ]
+        },
+        {
+          "id": "as-client-auth",
+          "group": "metadata",
+          "title": "Client authentication with wallet attestations advertised",
+          "note": "Observed in the metadata: token_endpoint_auth_methods_supported includes attest_jwt_client_auth. The method name is the draft's; HAIP only names Appendix E.",
+          "sources": [
+            {
+              "chain": "HAIP 1.0 4.4.1",
+              "eu": false,
+              "level": "shall",
+              "quote": "Wallets MUST use, and Issuers MUST require, an OAuth2 Client authentication mechanism at OAuth2 Endpoints that support client authentication (such as the PAR and Token Endpoints)."
+            },
+            {
+              "chain": "HAIP 1.0 4.4.1",
+              "eu": false,
+              "level": "should",
+              "quote": "Ecosystems that desire wallet-issuer interoperability on the level of Wallet Attestations SHOULD require Wallets to support the authentication mechanism and Wallet Attestation format specified in Appendix E of [OIDF.OID4VCI]."
+            },
+            {
+              "chain": "OpenID4VCI 1.0 Appendix E > draft-ietf-oauth-attestation-based-client-auth-07 10.1",
+              "eu": false,
+              "level": "should",
+              "quote": "The Authorization Server SHOULD communicate support and requirement for authentication with Attestation-Based Client Authentication by using the value attest_jwt_client_auth in the token_endpoint_auth_methods_supported within its published metadata."
+            },
+            {
+              "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 TOKEN-REQ-4.5.1-01",
+              "eu": true,
+              "level": "shall",
+              "quote": "The Token Request shall include the Wallet Instance Attestation (WIA) as an OAuth-Client-Attestation parameter, as specified in Appendix E of OpenID4VCI [2], and IETF draft-ietf-oauth-attestation-based-client-auth-07 [5]."
+            }
+          ]
+        },
+        {
+          "id": "as-iss",
+          "group": "metadata",
+          "title": "The iss parameter in the authorization response advertised",
+          "note": "Advertising the parameter is not mandated (WARN when absent); the parameter itself belongs to the authorization code flow, which is not run.",
+          "sources": [
+            {
+              "chain": "HAIP 1.0 clause 4 > FAPI 2.0 Security Profile",
+              "eu": false,
+              "level": "shall",
+              "quote": "MUST comply with the provisions of [FAPI2_Security_Profile] that are applicable to this specification. This includes, but is not limited to using PKCE [RFC7636] with S256 as the code challenge method, Pushed Authorization Requests (PAR) [RFC9126] (where applicable) and the iss value in the Authorization response [RFC9207]."
+            },
+            {
+              "chain": "HAIP 1.0 clause 4 > FAPI 2.0 Security Profile 5.3.2.2",
+              "eu": false,
+              "level": "shall",
+              "quote": "shall return an iss parameter in the authorization response according to [RFC9207]"
+            },
+            {
+              "chain": "RFC 9207 3",
+              "eu": false,
+              "level": "note",
+              "quote": "authorization_response_iss_parameter_supported: Boolean parameter indicating whether the authorization server provides the iss parameter in the authorization response as defined in Section 2. If omitted, the default value is false."
+            },
+            {
+              "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+              "eu": true,
+              "level": "shall",
+              "quote": "When PID Providers and the EAA Providers are issuing PIDs and EAAs into the EUDI Wallet, they shall implement the protocol defined in OpenID4VCI [2], specified by the requirements defined for the Issuer in OpenID4VC-HAIP [1], clause 4 and its subclauses, unless specified otherwise in the present document."
+            }
+          ]
+        },
+        {
+          "id": "as-servers",
+          "group": "metadata",
+          "title": "authorization_servers and the offer's authorization_server hint",
+          "note": "",
+          "sources": [
+            {
+              "chain": "HAIP 1.0 4.1 > OpenID4VCI 1.0 12.2.4 authorization_servers",
+              "eu": false,
+              "level": "shall",
+              "quote": "OPTIONAL. A non-empty array of strings, where each string is an identifier of the OAuth 2.0 Authorization Server (as defined in [RFC8414]) the Credential Issuer relies on for authorization. If this parameter is omitted, the entity providing the Credential Issuer is also acting as the Authorization Server"
+            },
+            {
+              "chain": "OpenID4VCI 1.0 4.1.1 authorization_server",
+              "eu": false,
+              "level": "shall",
+              "quote": "OPTIONAL string that the Wallet can use to identify the Authorization Server to use with this grant type when authorization_servers parameter in the Credential Issuer metadata has multiple entries. It MUST NOT be used otherwise. The value of this parameter MUST match with one of the values in the authorization_servers array obtained from the Credential Issuer metadata."
+            },
+            {
+              "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+              "eu": true,
+              "level": "shall",
+              "quote": "When PID Providers and the EAA Providers are issuing PIDs and EAAs into the EUDI Wallet, they shall implement the protocol defined in OpenID4VCI [2], specified by the requirements defined for the Issuer in OpenID4VC-HAIP [1], clause 4 and its subclauses, unless specified otherwise in the present document."
+            }
+          ]
+        },
+        {
+          "id": "issuer-info",
+          "group": "metadata",
+          "title": "issuer_info with the registration certificate",
+          "note": "The registrar_dataset element (TS 4.2.3-07 to -13) is void under the CIR and only reported.",
+          "sources": [
+            {
+              "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 ISS-MDATA-REG_CERT-4.2.3-01 / -02",
+              "eu": true,
+              "level": "shall",
+              "quote": "The Issuer Metadata shall contain the issuer_info metadata parameter. The issuer_info parameter shall be placed at the top level of the Signed JWT payload used for retrieving the Issuer Metadata."
+            },
+            {
+              "chain": "CIR 2026/1731 Annex XI (adapting ISS-MDATA-REG_CERT-4.2.3-04, 'may' in the TS)",
+              "eu": true,
+              "level": "shall",
+              "quote": "One of the elements in the issuer_info array parameter shall contain the PID/EAA Provider's registration certificate."
+            },
+            {
+              "chain": "ETSI TS 119 472-3 V1.1.1 ISS-MDATA-REG_CERT-4.2.3-05 / -06",
+              "eu": true,
+              "level": "shall",
+              "quote": "The value of the format member of the element in the issuer_info array parameter that contains the PID/EAA Provider's registration certificate shall be 'registration_cert'. The value of the data member of the element in the issuer_info array parameter that contains the PID/EAA Provider's registration certificate shall be the registration certificate of the PID/EAA Provider."
+            },
+            {
+              "chain": "CIR 2026/1731 Annex XI",
+              "eu": true,
+              "level": "note",
+              "quote": "ISS-MDATA-REG_CERT-4.2.3-07: void ... ISS-MDATA-REG_CERT-4.2.3-13: void"
+            }
+          ]
+        },
+        {
+          "id": "registration-certificate-signature",
+          "group": "metadata",
+          "title": "The registration certificate is signed by a registrar on the trusted list",
+          "note": "Signature under the x5c leaf, chain validated as given to a registrar_anchors root (the EUDI sandbox registrars by default). Issued by the Registrar, not by the provider under test: WARN.",
+          "sources": [
+            {
+              "chain": "CIR (EU) 2025/848 Art 8 + Annex V pt 3 (CIR 2026/1730 Annex III) > ETSI TS 119 475 V1.2.1 GEN-5.2.1-03",
+              "eu": true,
+              "level": "shall",
+              "quote": "The WRPRC shall be signed with the digital signature of provider of the wallet-relying party registration certificates. NOTE: Electronic seal certificate or electronic signature certificate of the provider of the wallet-relying party registration certificates is published on the relevant trusted list."
+            },
+            {
+              "chain": "ETSI TS 119 475 V1.2.1 GEN-5.2.2-01, Table 5 (x5c)",
+              "eu": true,
+              "level": "shall",
+              "quote": "Contains the whole certificate chain to verify the JWT or CWT as defined in clause 5.1.8 of ETSI TS 119 182-1 [18]."
+            },
+            {
+              "chain": "CIR (EU) 2024/2980 Annex II section 5 (CIR 2026/1731 Annex X)",
+              "eu": true,
+              "level": "note",
+              "quote": "one or more certificates ... that can be used to verify the signature or seal created by the provider of wallet-relying party registration certificates on the registration certificates it provides to wallet-relying parties"
+            }
+          ]
+        },
+        {
+          "id": "registration-certificate-header",
+          "group": "metadata",
+          "title": "Registration certificate header: typ, alg, x5c",
+          "note": "Issued by the Registrar: WARN.",
+          "sources": [
+            {
+              "chain": "CIR (EU) 2025/848 Annex V pt 3 (CIR 2026/1730 Annex III) > ETSI TS 119 475 V1.2.1 GEN-5.2.2-01, Table 5",
+              "eu": true,
+              "level": "shall",
+              "quote": "The JWT formatted header of the WRPRC shall include the fields defined in Table 5. typ: Specifies the type of the Web Token. The value is set to rc-wrp+jwt for JWT. alg: Indicates the algorithm used to sign the JWT ... x5c: Contains the whole certificate chain to verify the JWT"
+            }
+          ]
+        },
+        {
+          "id": "registration-certificate-payload",
+          "group": "metadata",
+          "title": "Registration certificate payload: every Table 7 field",
+          "note": "Issued by the Registrar: WARN.",
+          "sources": [
+            {
+              "chain": "CIR (EU) 2025/848 Annex V pt 3 (CIR 2026/1730 Annex III) > ETSI TS 119 475 V1.2.1 GEN-5.2.4-01, Table 7",
+              "eu": true,
+              "level": "shall",
+              "quote": "The payload of the WRPRC shall include all fields provided by registry specified in Table 7. [name, sub_ln (legal person) or sub_gn and sub_fn (natural person), sub, country, registry_uri, srv_description, entitlements, privacy_policy, info_uri, support_uri, supervisory_authority, policy_id, certificate_policy, iat, status]"
+            }
+          ]
+        },
+        {
+          "id": "registration-certificate-entitlements",
+          "group": "metadata",
+          "title": "Registration certificate entitlements from Annex A.2",
+          "note": "Issued by the Registrar: WARN.",
+          "sources": [
+            {
+              "chain": "CIR (EU) 2025/848 Annex V pt 3 (CIR 2026/1730 Annex III) > ETSI TS 119 475 V1.2.1 GEN-5.2.4-03",
+              "eu": true,
+              "level": "shall",
+              "quote": "The entitlements field specified in GEN-5.2.4-01 shall include at least one entitlement specified in clause A.2."
+            }
+          ]
+        },
+        {
+          "id": "registration-certificate-provider",
+          "group": "metadata",
+          "title": "The embedded registration certificate is an attestation provider's",
+          "note": "Which certificate is embedded is the provider's own choice, so a certificate without a provider entitlement is a FAIL. The entitlement also tells the tester the provider's role (PID / QEAA / PuB-EAA / non-qualified EAA), which conditions the EU status value rule.",
+          "sources": [
+            {
+              "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 ISS-MDATA-REG_CERT-4.2.3-06",
+              "eu": true,
+              "level": "shall",
+              "quote": "The value of the data member of the element in the issuer_info array parameter that contains the PID/EAA Provider's registration certificate shall be the registration certificate of the PID/EAA Provider."
+            },
+            {
+              "chain": "ETSI TS 119 475 V1.2.1 A.2.2 to A.2.5",
+              "eu": true,
+              "level": "note",
+              "quote": "QEAA_Provider: Qualified trust service provider issuing qualified electronic attestations of attributes. Non_Q_EAA_Provider: Trust service provider issuing non-qualified electronic attestations of attributes. PUB_EAA_Provider: Public sector body or its agent issuing electronic attestations of attributes from authentic sources. PID_Provider: Provider of person identification data. (URIs https://uri.etsi.org/19475/Entitlement/<name>)"
+            }
+          ]
+        },
+        {
+          "id": "registration-certificate-provides-attestations",
+          "group": "metadata",
+          "title": "provides_attestations for an attestation provider",
+          "note": "Issued by the Registrar: WARN.",
+          "sources": [
+            {
+              "chain": "CIR (EU) 2025/848 Annex V pt 3 (CIR 2026/1730 Annex III) > ETSI TS 119 475 V1.2.1 GEN-5.2.4-05, Table 8",
+              "eu": true,
+              "level": "should",
+              "quote": "If the WRPRC is issued to PID_Provider, QEAA_Provider, Non_Q_EAA_Provider, or PUB_EAA_Provider for the purpose of attestation provision as specified in clause 4.2, the payload of the WRPRC should include fields provided by the registry specified in Table 8."
+            }
+          ]
+        },
+        {
+          "id": "registration-certificate-subject",
+          "group": "metadata",
+          "title": "sub is an EN 319 412-1 semantic identifier",
+          "note": "Prefix, two-letter country code, hyphen, identifier. Issued by the Registrar: WARN.",
+          "sources": [
+            {
+              "chain": "CIR (EU) 2025/848 Annex V pt 3 (CIR 2026/1730 Annex III) > ETSI TS 119 475 V1.2.1 GEN-5.1.3-01 / -02 / -03",
+              "eu": true,
+              "level": "shall",
+              "quote": "The organizationIdentifier shall follow the semantics defined in ETSI EN 319 412-1 [1], clause 5.1.4. The three initial characters as defined in ETSI EN 319 412-1 [1] LEG-5.1.4.03 shall follow the mapping in Table 2. The identifier included in the sub attribute of WRPRC shall follow the semantics defined in GEN-5.1.3-01."
+            },
+            {
+              "chain": "ETSI TS 119 475 V1.2.1 Table 2",
+              "eu": true,
+              "level": "note",
+              "quote": "EORI-No: EOR; LEI: LEI; EUID: NTR; VATIN and TIN: VAT; Excise: EXC"
+            }
+          ]
+        },
+        {
+          "id": "registration-certificate-binding",
+          "group": "metadata",
+          "title": "The registration certificate belongs to the access certificate's subject",
+          "note": "The access certificate's organizationIdentifier equals the registration certificate's sub. Both certificates are the provider's choice: FAIL. An access certificate without organizationIdentifier is its CA's doing: WARN.",
+          "sources": [
+            {
+              "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 ISS-MDATA-4.2.1-02 and ISS-MDATA-REG_CERT-4.2.3-06",
+              "eu": true,
+              "level": "shall",
+              "quote": "The signing certificate of the signature on the Issuer Metadata shall be the access certificate of the PID/EAA Provider. ... The value of the data member ... shall be the registration certificate of the PID/EAA Provider."
+            },
+            {
+              "chain": "ETSI TS 119 475 V1.2.1 4.5 and Table 1",
+              "eu": true,
+              "level": "note",
+              "quote": "WRPACs and WRPRCs are technically and logically linked through the identity of the WRP. The key data enabling this link is the WRP identifier, which serves as the primary element for associating both certificates. [Table 1: identifier -> organizationIdentifier in the WRPAC, sub in the WRPRC]"
+            }
+          ]
+        },
+        {
+          "id": "registration-certificate-validity",
+          "group": "metadata",
+          "title": "Registration certificate valid at most 12 months",
+          "note": "Issued by the Registrar: WARN.",
+          "sources": [
+            {
+              "chain": "CIR (EU) 2025/848 Annex V pt 3 (CIR 2026/1730 Annex III) > ETSI TS 119 475 V1.2.1 GEN-5.2.4-08",
+              "eu": true,
+              "level": "shall",
+              "quote": "The exp field in the WRPRC payload shall indicate a time not later than 12 months after the issuance time specified in the iat field specified in GEN-5.2.4-01."
+            }
+          ]
+        },
+        {
+          "id": "proof-types-key-attestations",
+          "group": "metadata",
+          "title": "Device-bound configurations list the jwt and attestation proof types with key_attestations_required",
+          "note": "",
+          "sources": [
+            {
+              "chain": "CIR (EU) 2024/2979 Art 6(2) + Annex Ib (CIR 2026/1731 Annex III) > TR_KA-4",
+              "eu": true,
+              "level": "shall",
+              "quote": "Where a credential issuer issues device-bound credentials, it shall indicate in the 'proof_types_supported' parameter in its Issuer Credential Metadata, as specified in Section 12.2.4 OID4VCI, that it supports both the 'jwt' and the 'attestation' proof type for key attestations that shall include the 'key_attestations_required' object."
+            },
+            {
+              "chain": "CIR (EU) 2024/2979 Annex Ib (CIR 2026/1731 Annex III) > TR_KA-4.1",
+              "eu": true,
+              "level": "shall",
+              "quote": "Where a credential issuer issues non-device-bound credentials, it shall omit the 'proof_types_supported' and the 'cryptographic_binding_methods_supported' parameters in the Credential Issuer Metadata."
+            }
+          ]
+        },
+        {
+          "id": "reuse-policy",
+          "group": "metadata",
+          "title": "credential_reuse_policy structure",
+          "note": "Checked when present (the policy itself is a 'may', 4.2.4.1-01).",
+          "sources": [
+            {
+              "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 ISS-MDATA-EAA-REUSE-POL-4.2.4.1-03 to -08",
+              "eu": true,
+              "level": "shall",
+              "quote": "The credential_reuse_policy parameter shall be a JSON Object. The credential_reuse_policy parameter shall have the id member, identifying the PID/EAA reuse policy. The id member shall be a JSON string. ... The options member shall be a JSON Array of objects, whose contents shall depend on the specific reuse policy. If the id member has the value 'arf_annex_ii' then the PID/EAA reuse policy shall be as specified in clause 4.2.4.2 of the present document."
+            },
+            {
+              "chain": "ETSI TS 119 472-3 V1.1.1 ISS-MDATA-EAA-REUSE-POL-4.2.4.2-01 to -13",
+              "eu": true,
+              "level": "shall",
+              "quote": "If the id member has the value 'arf_annex_ii' the options array member shall be present. ... the element within the options member shall contain the member of label 'details' mapped to an array of strings. ... the array mapped to the label 'details' shall contain either 'once_only' or 'limited_time'. ... [once_only, rotating-batch or per-relying-party:] shall also contain a JSON number mapped to the label 'batch_size'. The JSON number mapped to the label 'batch_size' shall specify the maximum array size for the proofs parameter in a Credential Request and shall be 2 or greater. ... The JSON number mapped to the label 'reissue_trigger_unused' shall be lower than the value of the JSON Number mapped to the label 'batch_size'. ... [limited-time, rotating-batch or per-relying-party:] shall also contain a JSON number mapped to the label 'reissue_trigger_lifetime_left'."
+            },
+            {
+              "chain": "CIR 2026/1731 Annex XI (adapting ISS-MDATA-EAA-REUSE-POL-4.2.4.2-09)",
+              "eu": true,
+              "level": "shall",
+              "quote": "Where the id member has the value 'arf_annex_ii' and the array mapped to the label 'details' contains the value 'once_only' or the value 'per-relying-party', then the JSON Object that contains this array mapped to the label 'details' shall also contain a JSON number mapped to the label 'reissue_trigger_unused'."
+            }
+          ]
+        },
+        {
+          "id": "reuse-policy-batch-ignored",
+          "group": "metadata",
+          "title": "batch_credential_issuance is ignored next to a reuse policy",
+          "note": "Reported (INFO); the run uses the policy's batch_size.",
+          "sources": [
+            {
+              "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 ISS-MDATA-EAA-REUSE-POL-4.2.4.2-14",
+              "eu": true,
+              "level": "shall",
+              "quote": "If both the batch_credential_issuance (specified in OpenID4VCI [2]) and the credential_reuse_policy are present, then the batch_credential_issuance shall be ignored."
+            }
+          ]
+        },
+        {
+          "id": "status-period-placement",
+          "group": "metadata",
+          "title": "Preferred status maintenance periods are placed where the CIR says",
+          "note": "The fields are optional; a field at the wrong level is a FAIL.",
+          "sources": [
+            {
+              "chain": "CIR (EU) 2024/2979 Art 6(2) + Annex Ib (CIR 2026/1731 Annex III) > LC_WIA-1 / LC_WIA-1.1",
+              "eu": true,
+              "level": "shall",
+              "quote": "An authorisation server may communicate its preferences for the remaining status maintenance period in wallet instance attestations by including the 'preferred_client_status_period' metadata parameter in their Credential Issuer metadata endpoint as specified in Section 12.2.2 of OID4VCI. This field shall be placed at the top level of the Credential Issuer metadata."
+            },
+            {
+              "chain": "CIR (EU) 2024/2979 Annex Ib (CIR 2026/1731 Annex III) > LC_KA-1 / LC_KA-1.1",
+              "eu": true,
+              "level": "shall",
+              "quote": "Where a key attestation is needed, a credential issuer may communicate its preferences for the remaining status maintenance period in key attestations by including the 'preferred_key_storage_status_period' metadata parameter ... This field shall be placed within the 'key_attestations_required' object as specified in Section 12.2.4 of OID4VCI."
+            }
+          ]
+        },
+        {
+          "id": "formats",
+          "group": "metadata",
+          "title": "Credential formats from OpenID4VCI Annex A",
+          "note": "dc+sd-jwt, mso_mdoc, jwt_vc_json, ldp_vc, jwt_vc_json-ld; vc+jwt and vc+sd-jwt may stand next to them.",
+          "sources": [
+            {
+              "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 ISS-MDATA-4.2.1-03",
+              "eu": true,
+              "level": "shall",
+              "quote": "The set of possible values for the format parameter of credential_configurations_supported parameter of the Issuer Metadata shall include one or more of the values defined for the Credential Format Identifier in Annex A of OpenID4VCI [2]."
+            },
+            {
+              "chain": "ETSI TS 119 472-3 V1.1.1 Annex B ISS-MDATA-B.2-01 / -02 (Annex A is disapplied by CIR 2026/1731 Annex XI)",
+              "eu": true,
+              "level": "shall",
+              "quote": "If the PID/EAA Provider is able to issue JSON-LD W3C VC JOSE EAAs ... the set of possible values for the format parameter ... shall include the value 'vc+jwt'. If the PID/EAA Provider is able to issue JSON-LD W3C VC SD-JWT EAAs ... shall include the value 'vc+sd-jwt'."
+            }
+          ]
+        },
+        {
+          "id": "embedded-disclosure-policy",
+          "group": "metadata",
+          "title": "Embedded disclosure policies are identified by a unique URI",
+          "note": "Checked when a configuration carries one.",
+          "sources": [
+            {
+              "chain": "CIR (EU) 2024/2979 Art 10(1) + Annex III (CIR 2026/1731 Annex V) > ETSI TS 119 472-3 V1.1.1 ISS-MDATA-EBD-4.2.5.2-01 / -03",
+              "eu": true,
+              "level": "shall",
+              "quote": "The Embedded Disclosure Policy shall be identified by a unique URI. ... The Embedded Disclosure Policy associated with EAA shall be identified by including its unique URI. The EAA provider shall either include the Embedded Disclosure Policy identifier with the data set for the Embedded Disclosure Policy or just provide the identifier if the policy data set has already been pre-loaded into the Wallet Unit."
+            },
+            {
+              "chain": "ETSI TS 119 472-3 V1.1.1 ISS-MDATA-EBD-4.2.5.2-13",
+              "eu": true,
+              "level": "should",
+              "quote": "The Embedded Disclosure Policy should contain a link to a website of the Attestation Provider explaining the disclosure policy in layman's terms for display by the Wallet Unit to the User and to allow the User to navigate to the website."
+            }
+          ]
+        },
+        {
+          "id": "signature-suites-advertised",
+          "group": "metadata",
+          "title": "ES256, ES384 and ES512 advertised for attestations, proofs of possession and key proofs",
+          "note": "Observed through client_attestation_signing_alg_values_supported, client_attestation_pop_signing_alg_values_supported and proof_signing_alg_values_supported. EU: FAIL when one is missing; HAIP: INFO (HAIP mandates ES256 only).",
+          "sources": [
+            {
+              "chain": "CIR (EU) 2024/2979 Art 6(2) + Annex Ib (CIR 2026/1731 Annex III) > SA-1",
+              "eu": true,
+              "level": "shall",
+              "quote": "For signing wallet instance attestations, key attestations, related proof-of-possessions and token status lists, one of the following algorithms shall be used: ES256 (ECDSA with SHA-256 and P-256); ES384 (ECDSA with SHA-384 and P-384); ES512 (ECDSA with SHA-512 and P-521)"
+            },
+            {
+              "chain": "CIR (EU) 2024/2979 Art 6(2) + Annex Ib (CIR 2026/1731 Annex III) > SA-3",
+              "eu": true,
+              "level": "shall",
+              "quote": "An authorization server or a credential issuer (as specified in OID4VCI) shall support all of the algorithms mentioned in SA-1."
+            },
+            {
+              "chain": "HAIP 1.0 clause 7",
+              "eu": false,
+              "level": "shall",
+              "quote": "Issuers, Verifiers, and Wallets MUST, at a minimum, support ECDSA with P-256 and SHA-256 (JOSE algorithm identifier ES256; COSE algorithm identifier -7 or -9, as applicable) for the purpose of validating the following: Issuers: Wallet Attestations (including PoP) when Appendix E of [OIDF.OID4VCI] is used. Key Attestations when Appendix D of [OIDF.OID4VCI] is used. jwt proof type as specified in Appendix E of [OIDF.OID4VCI]."
+            }
+          ]
+        },
+        {
+          "id": "encryption-gcm",
+          "group": "metadata",
+          "title": "A128GCM and A256GCM supported",
+          "note": "Observed through enc_values_supported of the encryption the issuer offers; requests use A256GCM.",
+          "sources": [
+            {
+              "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 CRYPTO-5-01",
+              "eu": true,
+              "level": "shall",
+              "quote": "In addition to the crypto suites specified in OpenID4VC-HAIP [1], the EUDI Wallet and the PID/EAA Providers shall support the A128GCM algorithm and the A256GCM algorithm specified in NIST SP 800.38D [10]."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "offer",
+      "name": "Credential offer",
+      "requirements": [
+        {
+          "id": "offer-delivery",
+          "group": "offer",
+          "title": "The Credential Offer, by value or by reference",
+          "note": "Exactly one of credential_offer and credential_offer_uri; a referenced offer is fetched with GET and must be JSON.",
+          "sources": [
+            {
+              "chain": "HAIP 1.0 clause 4",
+              "eu": false,
+              "level": "shall",
+              "quote": "If Issuer-initiated flows are supported, they MUST use the Credential Offer as defined in Section 4.1 of [OIDF.OID4VCI]."
+            },
+            {
+              "chain": "OpenID4VCI 1.0 4.1 / 4.1.3",
+              "eu": false,
+              "level": "shall",
+              "quote": "The Credential Offer object, which is a JSON-encoded object with the Credential Offer parameters, can be sent by value or by reference. ... Upon receipt of the credential_offer_uri, the Wallet MUST send an HTTP GET request to the URI to retrieve the referenced Credential Offer Object"
+            },
+            {
+              "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+              "eu": true,
+              "level": "shall",
+              "quote": "When PID Providers and the EAA Providers are issuing PIDs and EAAs into the EUDI Wallet, they shall implement the protocol defined in OpenID4VCI [2], specified by the requirements defined for the Issuer in OpenID4VC-HAIP [1], clause 4 and its subclauses, unless specified otherwise in the present document."
+            }
+          ]
+        },
+        {
+          "id": "offer-scheme",
+          "group": "offer",
+          "title": "The URL scheme that invokes the wallet",
+          "note": "HAIP: the scheme is reported. EU: anything but eu-eaa-offer:// is a FAIL.",
+          "sources": [
+            {
+              "chain": "HAIP 1.0 4.2",
+              "eu": false,
+              "level": "may",
+              "quote": "As a way to invoke the Wallet the custom URL scheme haip-vci:// MAY be supported. Implementations MAY support other ways to invoke Wallets as agreed upon by trust frameworks/Ecosystems/jurisdictions, including but not limited to using other custom URL schemes or claimed 'https' scheme URIs."
+            },
+            {
+              "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-06",
+              "eu": true,
+              "level": "shall",
+              "quote": "The custom URL scheme 'eu-eaa-offer://' shall be used to invoke the EUDI Wallet."
+            }
+          ]
+        },
+        {
+          "id": "offer-configuration-ids",
+          "group": "offer",
+          "title": "Offered configuration ids exist in the metadata",
+          "note": "",
+          "sources": [
+            {
+              "chain": "HAIP 1.0 4.2 > OpenID4VCI 1.0 4.1.1 credential_configuration_ids",
+              "eu": false,
+              "level": "shall",
+              "quote": "REQUIRED. A non-empty array of unique strings that each identify one of the keys in the name/value pairs stored in the credential_configurations_supported Credential Issuer metadata."
+            },
+            {
+              "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+              "eu": true,
+              "level": "shall",
+              "quote": "When PID Providers and the EAA Providers are issuing PIDs and EAAs into the EUDI Wallet, they shall implement the protocol defined in OpenID4VCI [2], specified by the requirements defined for the Issuer in OpenID4VC-HAIP [1], clause 4 and its subclauses, unless specified otherwise in the present document."
+            }
+          ]
+        },
+        {
+          "id": "offer-grants",
+          "group": "offer",
+          "title": "Grant types the offer carries",
+          "note": "An offer with only the pre-authorized grant: HAIP WARN (authorization_code must be supported, this offer does not show it), EU PASS (at least one of the two).",
+          "sources": [
+            {
+              "chain": "HAIP 1.0 4.2",
+              "eu": false,
+              "level": "shall",
+              "quote": "The Grant Type authorization_code MUST be supported as defined in Section 4.1.1 in [OIDF.OID4VCI]"
+            },
+            {
+              "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-04 and ISS-CRED-OFFER-4.3-01",
+              "eu": true,
+              "level": "shall",
+              "quote": "PID/EAA Providers implementing the protocol defined in clause 4 and its subclauses of the present document, shall implement at least one of the following flows: the Authorisation Code Flow as specified in clause 3.4 of OpenID4VCI [2], or the Pre-Authorised Code Flow as specified in clause 3.5 of OpenID4VCI [2]. ... PID/EAA Providers shall support at least one of the following Grant Types: 'authorisation_code' or 'urn:ietf:params:oauth:grant-type:pre-authorised_code', as defined in clause 4.1.1 of OpenID4VCI [2]."
+            }
+          ]
+        },
+        {
+          "id": "offer-tx-code",
+          "group": "offer",
+          "title": "The tx_code object",
+          "note": "",
+          "sources": [
+            {
+              "chain": "HAIP 1.0 4.2 > OpenID4VCI 1.0 4.1.1 tx_code",
+              "eu": false,
+              "level": "shall",
+              "quote": "input_mode: OPTIONAL. String specifying the input character set. Possible values are numeric (only digits) and text (any characters). The default is numeric. length: OPTIONAL. Integer specifying the length of the Transaction Code. ... description: OPTIONAL. String containing guidance for the Holder of the Wallet on how to obtain the Transaction Code ... The length of the string MUST NOT exceed 300 characters."
+            },
+            {
+              "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+              "eu": true,
+              "level": "shall",
+              "quote": "When PID Providers and the EAA Providers are issuing PIDs and EAAs into the EUDI Wallet, they shall implement the protocol defined in OpenID4VCI [2], specified by the requirements defined for the Issuer in OpenID4VC-HAIP [1], clause 4 and its subclauses, unless specified otherwise in the present document."
+            }
+          ]
+        },
+        {
+          "id": "offer-authorization-server",
+          "group": "offer",
+          "title": "The authorization_server hint only when the metadata lists several",
+          "note": "",
+          "sources": [
+            {
+              "chain": "HAIP 1.0 4.2 > OpenID4VCI 1.0 4.1.1 authorization_server",
+              "eu": false,
+              "level": "shall",
+              "quote": "OPTIONAL string that the Wallet can use to identify the Authorization Server to use with this grant type when authorization_servers parameter in the Credential Issuer metadata has multiple entries. It MUST NOT be used otherwise. The value of this parameter MUST match with one of the values in the authorization_servers array obtained from the Credential Issuer metadata."
+            },
+            {
+              "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+              "eu": true,
+              "level": "shall",
+              "quote": "When PID Providers and the EAA Providers are issuing PIDs and EAAs into the EUDI Wallet, they shall implement the protocol defined in OpenID4VCI [2], specified by the requirements defined for the Issuer in OpenID4VC-HAIP [1], clause 4 and its subclauses, unless specified otherwise in the present document."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "authorization",
+      "name": "Pushed authorization request and authorization",
+      "requirements": [
+        {
+          "id": "par-request",
+          "group": "authorization",
+          "title": "Pushed authorization request",
+          "note": "The authorization code flow needs an interactive session and is not run yet (SKIP).",
+          "sources": [
+            {
+              "chain": "HAIP 1.0 4.3",
+              "eu": false,
+              "level": "shall",
+              "quote": "Wallets MUST authenticate themselves at the PAR endpoint using the same rules as defined in Section 4.4 for client authentication at the token endpoint. MUST use the scope parameter to communicate Credential Type(s) to be issued."
+            },
+            {
+              "chain": "HAIP 1.0 clause 4 > FAPI 2.0 Security Profile 5.3.2.2 > RFC 9126 2.2",
+              "eu": false,
+              "level": "shall",
+              "quote": "If the verification is successful, the server MUST generate a request URI and provide it in the response with a '201' HTTP status code."
+            },
+            {
+              "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 AUTH-REQ-4.4.2-01 / -02, AUTH-REQ-PROC-4.4.3-01 to -03",
+              "eu": true,
+              "level": "shall",
+              "quote": "The Pushed Authorisation Request shall include the Wallet Instance Attestation (WIA) as an OAuth-Client-Attestation parameter ... When a PID/EAA Provider receives a WIA, then it shall check that the signature of the JWT verifies under the Wallet Provider's public key as found on the Trusted List of Wallet Providers. ... it shall check that it has not expired. ... it shall check that the signature of the Proof-of-Possession verifies under the public key present in the cnf claim of the WIA."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "token",
+      "name": "Token endpoint",
+      "requirements": [
+        {
+          "id": "token-pre-authorized-request",
+          "group": "token",
+          "title": "The pre-authorized code token request",
+          "note": "The baseline exchange of the run.",
+          "sources": [
+            {
+              "chain": "HAIP 1.0 4.4 > OpenID4VCI 1.0 6.1",
+              "eu": false,
+              "level": "shall",
+              "quote": "pre-authorized_code: The code representing the authorization to obtain Credentials of a certain type. This parameter MUST be present if the grant_type is urn:ietf:params:oauth:grant-type:pre-authorized_code. tx_code: OPTIONAL. String value containing a Transaction Code value itself. This value MUST be present if a tx_code object was present in the Credential Offer (including if the object was empty)."
+            },
+            {
+              "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+              "eu": true,
+              "level": "shall",
+              "quote": "When PID Providers and the EAA Providers are issuing PIDs and EAAs into the EUDI Wallet, they shall implement the protocol defined in OpenID4VCI [2], specified by the requirements defined for the Issuer in OpenID4VC-HAIP [1], clause 4 and its subclauses, unless specified otherwise in the present document."
+            }
+          ]
+        },
+        {
+          "id": "token-response",
+          "group": "token",
+          "title": "The token response: DPoP-bound, uncacheable",
+          "note": "A request carrying a DPoP proof yields token_type DPoP; a Bearer token issued to a client that presents DPoP everywhere is the observable violation, also when the proof is omitted (T-02).",
+          "sources": [
+            {
+              "chain": "HAIP 1.0 4.4 > OpenID4VCI 1.0 6.2 > RFC 6749 5.1",
+              "eu": false,
+              "level": "shall",
+              "quote": "access_token: REQUIRED. ... token_type: REQUIRED. ... expires_in: RECOMMENDED. The lifetime in seconds of the access token. ... The authorization server MUST include the HTTP 'Cache-Control' response header field [RFC2616] with a value of 'no-store' in any response containing tokens, credentials, or other sensitive information"
+            },
+            {
+              "chain": "HAIP 1.0 clause 4 > RFC 9449 5",
+              "eu": false,
+              "level": "shall",
+              "quote": "A token_type of DPoP MUST be included in the access token response to signal to the client that the access token was bound to its DPoP key and can be used as described in Section 7.1."
+            },
+            {
+              "chain": "HAIP 1.0 clause 4 > FAPI 2.0 Security Profile 5.3.2.1",
+              "eu": false,
+              "level": "shall",
+              "quote": "shall only issue sender-constrained access tokens; shall use one of the following methods for sender-constrained access tokens: MTLS as described in [RFC8705], DPoP as described in [RFC9449]"
+            },
+            {
+              "chain": "HAIP 1.0 clause 4",
+              "eu": false,
+              "level": "shall",
+              "quote": "Sender-constrained access token: MUST support DPoP as defined in [RFC9449]."
+            },
+            {
+              "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+              "eu": true,
+              "level": "shall",
+              "quote": "When PID Providers and the EAA Providers are issuing PIDs and EAAs into the EUDI Wallet, they shall implement the protocol defined in OpenID4VCI [2], specified by the requirements defined for the Issuer in OpenID4VC-HAIP [1], clause 4 and its subclauses, unless specified otherwise in the present document."
+            }
+          ]
+        },
+        {
+          "id": "token-code-single-use",
+          "group": "token",
+          "title": "A pre-authorized code is single use",
+          "note": "The spent code is presented again; a second token is a FAIL.",
+          "sources": [
+            {
+              "chain": "HAIP 1.0 4.2 > OpenID4VCI 1.0 4.1.1 pre-authorized_code",
+              "eu": false,
+              "level": "shall",
+              "quote": "This code MUST be short lived and single use."
+            },
+            {
+              "chain": "OpenID4VCI 1.0 6.3",
+              "eu": false,
+              "level": "note",
+              "quote": "invalid_grant: ... The End-User provides the wrong Pre-Authorized Code or the Pre-Authorized Code has expired."
+            },
+            {
+              "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+              "eu": true,
+              "level": "shall",
+              "quote": "When PID Providers and the EAA Providers are issuing PIDs and EAAs into the EUDI Wallet, they shall implement the protocol defined in OpenID4VCI [2], specified by the requirements defined for the Issuer in OpenID4VC-HAIP [1], clause 4 and its subclauses, unless specified otherwise in the present document."
+            }
+          ]
+        },
+        {
+          "id": "token-client-authentication",
+          "group": "token",
+          "title": "Client authentication is required at the token endpoint",
+          "note": "A token request without the attestation headers is sent with the spent code; invalid_client is the attributable refusal, a token is a FAIL.",
+          "sources": [
+            {
+              "chain": "HAIP 1.0 4.4.1",
+              "eu": false,
+              "level": "shall",
+              "quote": "Wallets MUST use, and Issuers MUST require, an OAuth2 Client authentication mechanism at OAuth2 Endpoints that support client authentication (such as the PAR and Token Endpoints)."
+            },
+            {
+              "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 TOKEN-REQ-4.5.1-01 / -02",
+              "eu": true,
+              "level": "shall",
+              "quote": "The Token Request shall include the Wallet Instance Attestation (WIA) as an OAuth-Client-Attestation parameter, as specified in Appendix E of OpenID4VCI [2], and IETF draft-ietf-oauth-attestation-based-client-auth-07 [5]. The Token Request shall include a Proof-of-Possession of the public key included within the cnf claim, as specified in Appendix E of OpenID4VCI [2], and IETF draft-ietf-oauth-attestation-based-client-auth-07 [5]."
+            }
+          ]
+        },
+        {
+          "id": "token-wallet-attestation-verification",
+          "group": "token",
+          "title": "The wallet instance attestation and its proof of possession are verified",
+          "note": "Each deviation is sent alone with the spent code: bad signature, expired, chain under an untrusted CA, no x5c, sub not the client_id, PoP by another key, PoP for another audience, no PoP. invalid_client is the attributable refusal; a token is a FAIL; any other refusal is INFO. The tester's wallet provider CA stands in for the trusted list.",
+          "sources": [
+            {
+              "chain": "HAIP 1.0 4.4.1 > OpenID4VCI 1.0 Appendix E > draft-ietf-oauth-attestation-based-client-auth-07 9",
+              "eu": false,
+              "level": "shall",
+              "quote": "Upon receiving a Client Attestation, the receiving server MUST ensure the following conditions and rules: ... 5. The signature of the Client Attestation JWT verifies with the public key of a known and trusted Attester. ... 7. The signature of the Client Attestation PoP JWT verifies with the public key contained in the cnf claim of the Client Attestation JWT. ... 10. The audience claim in the Client Attestation PoP JWT is the issuer identifier URL of the authorization server as described in [RFC8414]. 11. The Client Attestation JWT is fresh enough for the policies of the authorization server by checking the iat or exp claims."
+            },
+            {
+              "chain": "draft-ietf-oauth-attestation-based-client-auth-07 6.3 (token endpoint)",
+              "eu": false,
+              "level": "shall",
+              "quote": "If the token request contains a client_id parameter as per [RFC6749] the Authorization Server MUST verify that the value of this parameter is the same as the client_id value in the sub claim of the Client Attestation and iss claim of the Client Attestation PoP."
+            },
+            {
+              "chain": "HAIP 1.0 4.4.1",
+              "eu": false,
+              "level": "shall",
+              "quote": "the public key certificate, and optionally a trust certificate chain excluding the trust anchor, used to validate the signature on the Wallet Attestation MUST be included in the x5c JOSE header of the Client Attestation JWT"
+            },
+            {
+              "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 TOKEN-REQ-PROC-4.5.2-01 to -03",
+              "eu": true,
+              "level": "shall",
+              "quote": "When a PID/EAA Provider receives a WIA, then it shall check that the signature of the JWT verifies under the Wallet Provider's public key as found on the Trusted List of Wallet Providers. When a PID/EAA Provider receives a WIA, then it shall check that it has not expired. When a PID/EAA Provider receives a WIA with a Proof-of-Possession, then it shall check that the signature of the Proof-of-Possession verifies under the public key present in the cnf claim of the WIA."
+            },
+            {
+              "chain": "CIR (EU) 2024/2979 Art 6(2) + Annex Ib (CIR 2026/1731 Annex III) > TR-WIA-4 to TR-WIA-4.3",
+              "eu": true,
+              "level": "shall",
+              "quote": "Where an authorisation server receives a wallet instance attestation, it shall verify the signature of the wallet instance attestation using the public key in the signing certificate included in the 'x5c' parameter in the JOSE header of the wallet instance attestation. The authorisation server shall also verify that this signing certificate can be verified with a trust anchor on the list of wallet providers referred to in Article 5 of Implementing Regulation (EU) 2024/2980, potentially using intermediate certificates included in the x5c parameter. The authorisation server shall verify that the wallet instance attestation has not expired. The authorisation server shall verify the signature of the PoP under the public key present in the 'cnf' claim."
+            },
+            {
+              "chain": "CIR (EU) 2024/2980 Art 5 + Annex II section 2 point 1(h) (CIR 2026/1731 Annex X)",
+              "eu": true,
+              "level": "note",
+              "quote": "one or more certificates compliant with standard ETSI EN 319 412-2 V2.4.1 (2025-06) or standard ETSI EN 319 412-3 V1.3.1 (2023-09) that can be used to authenticate and validate wallet unit attestations the wallet provider has issued"
+            }
+          ]
+        },
+        {
+          "id": "token-anonymous-access",
+          "group": "token",
+          "title": "A token request without a client id",
+          "note": "Observed with the spent code; a token means anonymous access is supported (INFO under HAIP; the EU profile requires client authentication, see token-client-authentication).",
+          "sources": [
+            {
+              "chain": "HAIP 1.0 4.4 > OpenID4VCI 1.0 6.3",
+              "eu": false,
+              "level": "note",
+              "quote": "invalid_client: The Client tried to send a Token Request with a Pre-Authorized Code without a Client ID but the Authorization Server does not support anonymous access."
+            },
+            {
+              "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+              "eu": true,
+              "level": "shall",
+              "quote": "When PID Providers and the EAA Providers are issuing PIDs and EAAs into the EUDI Wallet, they shall implement the protocol defined in OpenID4VCI [2], specified by the requirements defined for the Issuer in OpenID4VC-HAIP [1], clause 4 and its subclauses, unless specified otherwise in the present document."
+            }
+          ]
+        },
+        {
+          "id": "token-tx-code",
+          "group": "token",
+          "title": "Transaction Code handling",
+          "note": "Wrong, missing and unexpected codes with the spent code; a token is a FAIL.",
+          "sources": [
+            {
+              "chain": "HAIP 1.0 4.4 > OpenID4VCI 1.0 6.3",
+              "eu": false,
+              "level": "shall",
+              "quote": "invalid_request: The Authorization Server does not expect a Transaction Code in the Pre-Authorized Code Flow but the Client provides a Transaction Code. The Authorization Server expects a Transaction Code in the Pre-Authorized Code Flow but the Client does not provide a Transaction Code. invalid_grant: The Authorization Server expects a Transaction Code in the Pre-Authorized Code Flow but the Client provides the wrong Transaction Code."
+            },
+            {
+              "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+              "eu": true,
+              "level": "shall",
+              "quote": "When PID Providers and the EAA Providers are issuing PIDs and EAAs into the EUDI Wallet, they shall implement the protocol defined in OpenID4VCI [2], specified by the requirements defined for the Issuer in OpenID4VC-HAIP [1], clause 4 and its subclauses, unless specified otherwise in the present document."
+            }
+          ]
+        },
+        {
+          "id": "dpop-nonce-challenge",
+          "group": "token",
+          "title": "A use_dpop_nonce challenge is answered",
+          "note": "The request is repeated with the DPoP-Nonce value; a second challenge is a FAIL.",
+          "sources": [
+            {
+              "chain": "HAIP 1.0 clause 4 > RFC 9449 8",
+              "eu": false,
+              "level": "may",
+              "quote": "An authorization server MAY supply a nonce value to be included by the client in DPoP proofs sent. In this case, the authorization server responds to requests that do not include a nonce with an HTTP 400 (Bad Request) error response per Section 5.2 of [RFC6749] using use_dpop_nonce as the error code value. The authorization server includes a DPoP-Nonce HTTP header in the response supplying a nonce value to be used when sending the subsequent request."
+            },
+            {
+              "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+              "eu": true,
+              "level": "shall",
+              "quote": "When PID Providers and the EAA Providers are issuing PIDs and EAAs into the EUDI Wallet, they shall implement the protocol defined in OpenID4VCI [2], specified by the requirements defined for the Issuer in OpenID4VC-HAIP [1], clause 4 and its subclauses, unless specified otherwise in the present document."
+            }
+          ]
+        },
+        {
+          "id": "refresh-tokens",
+          "group": "token",
+          "title": "Refresh tokens",
+          "note": "Whether the token response carries one is reported (INFO); refresh is not exercised.",
+          "sources": [
+            {
+              "chain": "HAIP 1.0 4.4",
+              "eu": false,
+              "level": "should",
+              "quote": "Refresh tokens are RECOMMENDED to be supported for Credential refresh. For details, see Section 13.5 in [OIDF.OID4VCI]."
+            },
+            {
+              "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 TOKEN-REQ-PROC-4.5.2-04",
+              "eu": true,
+              "level": "may",
+              "quote": "Refresh tokens for credential refresh may be supported."
+            }
+          ]
+        },
+        {
+          "id": "wallet-attestation-revocation",
+          "group": "token",
+          "title": "A revoked wallet instance attestation is refused",
+          "note": "The attestation's client_status points at the index the tester's hosted list marks INVALID (needs simulator.status_list_base_url, else SKIP). EU: a token is a FAIL. HAIP mandates no status check: a token is INFO. The identifier-list mechanism of EAA-6.2.10.1-16 has no JSON form for a JWT attestation and is not exercised.",
+          "sources": [
+            {
+              "chain": "CIR (EU) 2024/2979 Art 8 + Annex II (CIR 2026/1731 Annex IV) > EAA-6.2.10.1-16",
+              "eu": true,
+              "level": "shall",
+              "quote": "The provider of person identification data and the provider of electronic attestations of attributes shall support both the attestation status list mechanism and the attestation revocation list mechanism specified in EAA-6.2.10.1-02 for verifying the revocation status of a wallet instance attestation (WIA) and of a key attestation (KA)."
+            },
+            {
+              "chain": "CIR (EU) 2025/1569 Art 3(1) + Annex I (CIR 2026/1735 Annex I) > ETSI TS 119 471 V1.1.1 REQ-EAASP-4.2.2.3-03 (QEAA and PuB-EAA providers)",
+              "eu": true,
+              "level": "shall",
+              "quote": "The EAASP shall validate the EUDIW instance, whether the EUDIW instance is revoked or suspended."
+            },
+            {
+              "chain": "CIR (EU) 2025/1569 Art 3(1) + Annex I (CIR 2026/1735 Annex I) > ETSI TS 119 471 V1.1.1 REQ-EAASP-4.2.2.3-07 (QEAA and PuB-EAA providers)",
+              "eu": true,
+              "level": "shall",
+              "quote": "The EAASP shall: verify the authenticity of the Wallet Unit by validating the signature over the Wallet Unit Attestation (WUA); accept only the trust anchors in the Wallet Provider Trusted List(s) for the Wallet Solutions they support; verify that the EUDIW Provider is present in a Wallet Provider Trusted List; authenticate and validate the WUA using the trust anchor(s) registered for the Wallet Provider in the Wallet Provider Trusted List; and verify that the Wallet Unit's WUA is not revoked."
+            },
+            {
+              "chain": "HAIP 1.0 4.4.1 > OpenID4VCI 1.0 Appendix E",
+              "eu": false,
+              "level": "may",
+              "quote": "status: OPTIONAL. Status mechanism for the Wallet Attestation as defined in [I-D.ietf-oauth-status-list]"
+            }
+          ]
+        },
+        {
+          "id": "wallet-attestation-suites-and-chains",
+          "group": "token",
+          "title": "Every signature suite and certificate chain of a wallet instance attestation is accepted",
+          "note": "Probed with the spent code for each suite (ES256, ES384; ES512 is not producible yet) and each wallet provider PKI (NIST root, brainpool intermediates under it): client authentication is checked before the grant, so invalid_grant means the attestation was accepted and invalid_client that it was refused. A refused advertised suite is a FAIL; a refused brainpool chain is a WARN, since no text names the chain's curves.",
+          "sources": [
+            {
+              "chain": "CIR (EU) 2024/2979 Art 6(2) + Annex Ib (CIR 2026/1731 Annex III) > SA-1",
+              "eu": true,
+              "level": "shall",
+              "quote": "For signing wallet instance attestations, key attestations, related proof-of-possessions and token status lists, one of the following algorithms shall be used: ES256 (ECDSA with SHA-256 and P-256); ES384 (ECDSA with SHA-384 and P-384); ES512 (ECDSA with SHA-512 and P-521)"
+            },
+            {
+              "chain": "CIR (EU) 2024/2979 Art 6(2) + Annex Ib (CIR 2026/1731 Annex III) > SA-3",
+              "eu": true,
+              "level": "shall",
+              "quote": "An authorization server or a credential issuer (as specified in OID4VCI) shall support all of the algorithms mentioned in SA-1."
+            },
+            {
+              "chain": "CIR (EU) 2024/2979 Annex Ib (CIR 2026/1731 Annex III) > TR-WIA-4.1",
+              "eu": true,
+              "level": "shall",
+              "quote": "The authorisation server shall also verify that this signing certificate can be verified with a trust anchor on the list of wallet providers referred to in Article 5 of Implementing Regulation (EU) 2024/2980, potentially using intermediate certificates included in the x5c parameter."
+            },
+            {
+              "chain": "HAIP 1.0 clause 7",
+              "eu": false,
+              "level": "shall",
+              "quote": "Issuers, Verifiers, and Wallets MUST, at a minimum, support ECDSA with P-256 and SHA-256 (JOSE algorithm identifier ES256; COSE algorithm identifier -7 or -9, as applicable) for the purpose of validating the following: Issuers: Wallet Attestations (including PoP) when Appendix E of [OIDF.OID4VCI] is used. Key Attestations when Appendix D of [OIDF.OID4VCI] is used. jwt proof type as specified in Appendix E of [OIDF.OID4VCI]."
+            }
+          ]
+        },
+        {
+          "id": "dpop-signature-suites",
+          "group": "token",
+          "title": "Every advertised DPoP algorithm is accepted",
+          "note": "A DPoP proof per advertised algorithm with the spent code: a DPoP refusal (invalid_dpop_proof / invalid_request) is attributable because the issuer answers invalid_grant to the same request with an accepted proof.",
+          "sources": [
+            {
+              "chain": "HAIP 1.0 clause 4 > RFC 9449 5.1",
+              "eu": false,
+              "level": "note",
+              "quote": "dpop_signing_alg_values_supported: A JSON array containing a list of the JWS alg values (from the [IANA.JOSE.ALGS] registry) supported by the authorization server for DPoP proof JWTs."
+            },
+            {
+              "chain": "HAIP 1.0 clause 7",
+              "eu": false,
+              "level": "shall",
+              "quote": "Issuers, Verifiers, and Wallets MUST, at a minimum, support ECDSA with P-256 and SHA-256 (JOSE algorithm identifier ES256; COSE algorithm identifier -7 or -9, as applicable) for the purpose of validating the following: Issuers: Wallet Attestations (including PoP) when Appendix E of [OIDF.OID4VCI] is used. Key Attestations when Appendix D of [OIDF.OID4VCI] is used. jwt proof type as specified in Appendix E of [OIDF.OID4VCI]."
+            },
+            {
+              "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+              "eu": true,
+              "level": "shall",
+              "quote": "When PID Providers and the EAA Providers are issuing PIDs and EAAs into the EUDI Wallet, they shall implement the protocol defined in OpenID4VCI [2], specified by the requirements defined for the Issuer in OpenID4VC-HAIP [1], clause 4 and its subclauses, unless specified otherwise in the present document."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "nonce",
+      "name": "Nonce endpoint",
+      "requirements": [
+        {
+          "id": "nonce-response",
+          "group": "nonce",
+          "title": "The nonce response",
+          "note": "",
+          "sources": [
+            {
+              "chain": "HAIP 1.0 4.1 > OpenID4VCI 1.0 7 / 7.2",
+              "eu": false,
+              "level": "shall",
+              "quote": "A Credential Issuer that requires c_nonce values to be incorporated into proofs in the Credential Request (see Section 8.2) MUST offer a Nonce Endpoint. ... The Credential Issuer provides a nonce value in an HTTP response with a 2xx status code and the following parameters included as top-level members in the message body of the HTTP response using the application/json media type: c_nonce: REQUIRED. String containing a challenge to be used when creating a proof of possession of the key"
+            },
+            {
+              "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+              "eu": true,
+              "level": "shall",
+              "quote": "When PID Providers and the EAA Providers are issuing PIDs and EAAs into the EUDI Wallet, they shall implement the protocol defined in OpenID4VCI [2], specified by the requirements defined for the Issuer in OpenID4VC-HAIP [1], clause 4 and its subclauses, unless specified otherwise in the present document."
+            }
+          ]
+        },
+        {
+          "id": "nonce-no-store",
+          "group": "nonce",
+          "title": "The nonce response is uncacheable",
+          "note": "",
+          "sources": [
+            {
+              "chain": "HAIP 1.0 4.1 > OpenID4VCI 1.0 7.2",
+              "eu": false,
+              "level": "shall",
+              "quote": "Due to the temporal nature of the c_nonce value, the Credential Issuer MUST make the response uncacheable by adding a Cache-Control header field including the value no-store."
+            },
+            {
+              "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+              "eu": true,
+              "level": "shall",
+              "quote": "When PID Providers and the EAA Providers are issuing PIDs and EAAs into the EUDI Wallet, they shall implement the protocol defined in OpenID4VCI [2], specified by the requirements defined for the Issuer in OpenID4VC-HAIP [1], clause 4 and its subclauses, unless specified otherwise in the present document."
+            }
+          ]
+        },
+        {
+          "id": "nonce-unpredictable",
+          "group": "nonce",
+          "title": "Nonces are unpredictable",
+          "note": "A repeated value is allowed, so distinct consecutive values and a plausible length are heuristics (WARN).",
+          "sources": [
+            {
+              "chain": "HAIP 1.0 4.1 > OpenID4VCI 1.0 7.2",
+              "eu": false,
+              "level": "shall",
+              "quote": "It is at the discretion of the Credential Issuer when to return a new challenge value as opposed to the one returned in the previous request. New challenge values MUST be unpredictable."
+            },
+            {
+              "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+              "eu": true,
+              "level": "shall",
+              "quote": "When PID Providers and the EAA Providers are issuing PIDs and EAAs into the EUDI Wallet, they shall implement the protocol defined in OpenID4VCI [2], specified by the requirements defined for the Issuer in OpenID4VC-HAIP [1], clause 4 and its subclauses, unless specified otherwise in the present document."
+            }
+          ]
+        },
+        {
+          "id": "nonce-post",
+          "group": "nonce",
+          "title": "The nonce request is a POST",
+          "note": "A GET that also yields a nonce is reported (INFO).",
+          "sources": [
+            {
+              "chain": "HAIP 1.0 4.1 > OpenID4VCI 1.0 7.1",
+              "eu": false,
+              "level": "note",
+              "quote": "A request for a nonce is made by sending an HTTP POST request to the URL provided in the nonce_endpoint Credential Issuer Metadata parameter."
+            },
+            {
+              "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+              "eu": true,
+              "level": "shall",
+              "quote": "When PID Providers and the EAA Providers are issuing PIDs and EAAs into the EUDI Wallet, they shall implement the protocol defined in OpenID4VCI [2], specified by the requirements defined for the Issuer in OpenID4VC-HAIP [1], clause 4 and its subclauses, unless specified otherwise in the present document."
+            }
+          ]
+        },
+        {
+          "id": "nonce-dpop-nonce",
+          "group": "nonce",
+          "title": "A DPoP nonce from the nonce endpoint",
+          "note": "Reported (INFO).",
+          "sources": [
+            {
+              "chain": "HAIP 1.0 4.1 > OpenID4VCI 1.0 7.2",
+              "eu": false,
+              "level": "may",
+              "quote": "The Credential Issuer MAY provide a DPoP nonce in an HTTP header as defined in Section 8.2 of [RFC9449]. In this case, the Wallet uses the new nonce value in the DPoP proof when presenting an access token at the Credential Endpoint."
+            },
+            {
+              "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+              "eu": true,
+              "level": "shall",
+              "quote": "When PID Providers and the EAA Providers are issuing PIDs and EAAs into the EUDI Wallet, they shall implement the protocol defined in OpenID4VCI [2], specified by the requirements defined for the Issuer in OpenID4VC-HAIP [1], clause 4 and its subclauses, unless specified otherwise in the present document."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "credential",
+      "name": "Credential endpoint",
+      "requirements": [
+        {
+          "id": "credential-response",
+          "group": "credential",
+          "title": "A valid Credential Request is answered with the credential",
+          "note": "One request per offered configuration. Deferred issuance (202) is reported and not followed.",
+          "sources": [
+            {
+              "chain": "HAIP 1.0 4.5 > OpenID4VCI 1.0 8.3",
+              "eu": false,
+              "level": "shall",
+              "quote": "If the Credential Issuer is able to immediately issue the requested Credentials, it MUST respond with the HTTP status code 200 ... If the Credential Issuer is not able to immediately issue the requested credentials ... the Credential Issuer MUST return a response with a transaction_id parameter. In this case, the Credential Issuer MUST also use the HTTP status code 202 for the response. ... If the Credential Response is not encrypted, the media type of the response MUST be set to application/json. ... credentials: OPTIONAL. Contains an array of one or more issued Credentials."
+            },
+            {
+              "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+              "eu": true,
+              "level": "shall",
+              "quote": "When PID Providers and the EAA Providers are issuing PIDs and EAAs into the EUDI Wallet, they shall implement the protocol defined in OpenID4VCI [2], specified by the requirements defined for the Issuer in OpenID4VC-HAIP [1], clause 4 and its subclauses, unless specified otherwise in the present document."
+            }
+          ]
+        },
+        {
+          "id": "credential-authorization",
+          "group": "credential",
+          "title": "A request without a usable access token is refused",
+          "note": "No token, and the DPoP-bound token sent under the Bearer scheme: a 401 with WWW-Authenticate is expected; a credential is a FAIL.",
+          "sources": [
+            {
+              "chain": "HAIP 1.0 4.5 > OpenID4VCI 1.0 8.3.1.1 > RFC 6750 3",
+              "eu": false,
+              "level": "shall",
+              "quote": "If the protected resource request does not include authentication credentials or does not contain an access token that enables access to the protected resource, the resource server MUST include the HTTP 'WWW-Authenticate' response header field"
+            },
+            {
+              "chain": "HAIP 1.0 clause 4 > RFC 9449 7.1 / 7.2",
+              "eu": false,
+              "level": "shall",
+              "quote": "The resource server MUST NOT grant access to the resource unless all checks are successful. ... such a protected resource MUST reject a DPoP-bound access token received as a bearer token per [RFC6750]."
+            },
+            {
+              "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+              "eu": true,
+              "level": "shall",
+              "quote": "When PID Providers and the EAA Providers are issuing PIDs and EAAs into the EUDI Wallet, they shall implement the protocol defined in OpenID4VCI [2], specified by the requirements defined for the Issuer in OpenID4VC-HAIP [1], clause 4 and its subclauses, unless specified otherwise in the present document."
+            }
+          ]
+        },
+        {
+          "id": "credential-dpop-proof",
+          "group": "credential",
+          "title": "The DPoP proof is checked against the request and the token",
+          "note": "Wrong htu, wrong ath, and a proof by another key: a credential is a FAIL.",
+          "sources": [
+            {
+              "chain": "HAIP 1.0 clause 4 > RFC 9449 4.3",
+              "eu": false,
+              "level": "shall",
+              "quote": "To validate a DPoP proof, the receiving server MUST ensure the following: ... 8. The htm claim matches the HTTP method of the current request. 9. The htu claim matches the HTTP URI value for the HTTP request in which the JWT was received, ignoring any query and fragment parts. ... 12. If presented to a protected resource in conjunction with an access token, ensure that the value of the ath claim equals the hash of that access token, and confirm that the public key to which the access token is bound matches the public key from the DPoP proof."
+            },
+            {
+              "chain": "RFC 9449 7.1",
+              "eu": false,
+              "level": "shall",
+              "quote": "For such an access token, a resource server MUST check that a DPoP proof was also received in the DPoP header field of the HTTP request, check the DPoP proof according to the rules in Section 4.3, and check that the public key of the DPoP proof matches the public key to which the access token is bound per Section 6. The resource server MUST NOT grant access to the resource unless all checks are successful."
+            },
+            {
+              "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+              "eu": true,
+              "level": "shall",
+              "quote": "When PID Providers and the EAA Providers are issuing PIDs and EAAs into the EUDI Wallet, they shall implement the protocol defined in OpenID4VCI [2], specified by the requirements defined for the Issuer in OpenID4VC-HAIP [1], clause 4 and its subclauses, unless specified otherwise in the present document."
+            }
+          ]
+        },
+        {
+          "id": "proof-required",
+          "group": "credential",
+          "title": "A key proof is required for a bound credential",
+          "note": "A request without proofs: invalid_proof expected; a credential is a FAIL.",
+          "sources": [
+            {
+              "chain": "HAIP 1.0 4.5 > OpenID4VCI 1.0 8.2",
+              "eu": false,
+              "level": "shall",
+              "quote": "The proofs parameter MUST be present if the proof_types_supported parameter is present in the credential_configurations_supported parameter of the Issuer metadata for the requested Credential."
+            },
+            {
+              "chain": "OpenID4VCI 1.0 8.3.1.2",
+              "eu": false,
+              "level": "shall",
+              "quote": "invalid_proof: The proofs parameter in the Credential Request is invalid: (1) if the field is missing, or (2) one of the provided key proofs is invalid, or (3) if at least one of the key proofs does not contain a c_nonce value (refer to Section 7.2)."
+            },
+            {
+              "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 CRED-REQ-4.6.1.1-01",
+              "eu": true,
+              "level": "shall",
+              "quote": "If the PID/EAA is cryptographically bound to the device, the Credential Request shall include the proofs parameter."
+            }
+          ]
+        },
+        {
+          "id": "proof-nonce",
+          "group": "credential",
+          "title": "The key proof carries the issuer's c_nonce",
+          "note": "A wrong nonce (invalid_nonce) and a missing nonce (invalid_proof or invalid_nonce); a credential is a FAIL.",
+          "sources": [
+            {
+              "chain": "HAIP 1.0 4.5 > OpenID4VCI 1.0 F.4",
+              "eu": false,
+              "level": "shall",
+              "quote": "To validate a key proof, the Credential Issuer MUST ensure that: ... if the server has a Nonce Endpoint, the nonce in the key proof matches the server-provided c_nonce value"
+            },
+            {
+              "chain": "OpenID4VCI 1.0 8.3.1.2",
+              "eu": false,
+              "level": "note",
+              "quote": "invalid_nonce: The proofs parameter in the Credential Request uses an invalid nonce: at least one of the key proofs contains an invalid c_nonce value. ... invalid_proof: ... (3) if at least one of the key proofs does not contain a c_nonce value"
+            },
+            {
+              "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 CRED-REQ-PROC-4.6.2.1-03",
+              "eu": true,
+              "level": "shall",
+              "quote": "The PID/EAA Provider shall verify that the element of the jwt array member includes the nonce claim in its JWT Body with a valid nonce value from its Nonce endpoint."
+            },
+            {
+              "chain": "CIR (EU) 2024/2979 Art 6(2) + Annex Ib (CIR 2026/1731 Annex III) > TR_KA-6.1 / TR_KA-7",
+              "eu": true,
+              "level": "shall",
+              "quote": "The credential issuer shall verify that the 'nonce' field of the 'jwt' element includes a valid c_nonce from their nonce_endpoint, as specified in OID4VCI. ... Where a credential issuer receives a key attestation in an 'attestation' proof type, it shall verify that the 'key_attestation' object includes a valid c_nonce from their nonce_endpoint."
+            }
+          ]
+        },
+        {
+          "id": "proof-signature",
+          "group": "credential",
+          "title": "The key proof is signed by the key it names",
+          "note": "A proof signed by another key than its jwk: invalid_proof expected; a credential is a FAIL.",
+          "sources": [
+            {
+              "chain": "HAIP 1.0 4.5 > OpenID4VCI 1.0 F.1",
+              "eu": false,
+              "level": "shall",
+              "quote": "The Credential Issuer MUST validate that the JWT used as a proof is actually signed by a key identified in the JOSE Header through either kid, jwk or x5c element."
+            },
+            {
+              "chain": "OpenID4VCI 1.0 F.4",
+              "eu": false,
+              "level": "shall",
+              "quote": "the signature on the key proof verifies with the public key contained in the header parameter"
+            },
+            {
+              "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+              "eu": true,
+              "level": "shall",
+              "quote": "When PID Providers and the EAA Providers are issuing PIDs and EAAs into the EUDI Wallet, they shall implement the protocol defined in OpenID4VCI [2], specified by the requirements defined for the Issuer in OpenID4VC-HAIP [1], clause 4 and its subclauses, unless specified otherwise in the present document."
+            }
+          ]
+        },
+        {
+          "id": "proof-form",
+          "group": "credential",
+          "title": "The key proof is well formed: typ, alg, aud, iat, no private key",
+          "note": "Wrong aud, wrong typ, alg none, iat in the future, a private key in jwk: invalid_proof expected; a credential is a FAIL.",
+          "sources": [
+            {
+              "chain": "HAIP 1.0 4.5 > OpenID4VCI 1.0 F.1",
+              "eu": false,
+              "level": "shall",
+              "quote": "alg: REQUIRED. ... It MUST NOT be none or an identifier for a symmetric algorithm (MAC). typ: REQUIRED. MUST be openid4vci-proof+jwt ... aud: REQUIRED (string). The value of this claim MUST be the Credential Issuer Identifier."
+            },
+            {
+              "chain": "OpenID4VCI 1.0 F.4",
+              "eu": false,
+              "level": "shall",
+              "quote": "the key proof is explicitly typed using header parameters as defined for that proof type, the header parameter indicates a registered asymmetric digital signature algorithm, alg parameter value is not none ... the header parameter does not contain a private key ... the creation time of the JWT, as determined by either the issuance time, or a server managed timestamp via the nonce claim, is within an acceptable window"
+            },
+            {
+              "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+              "eu": true,
+              "level": "shall",
+              "quote": "When PID Providers and the EAA Providers are issuing PIDs and EAAs into the EUDI Wallet, they shall implement the protocol defined in OpenID4VCI [2], specified by the requirements defined for the Issuer in OpenID4VC-HAIP [1], clause 4 and its subclauses, unless specified otherwise in the present document."
+            }
+          ]
+        },
+        {
+          "id": "proofs-shape",
+          "group": "credential",
+          "title": "proofs carries exactly one proof type",
+          "note": "jwt and attestation together: invalid_credential_request expected; a credential is a FAIL, another error code a WARN.",
+          "sources": [
+            {
+              "chain": "HAIP 1.0 4.5 > OpenID4VCI 1.0 8.2 proofs",
+              "eu": false,
+              "level": "shall",
+              "quote": "The proofs parameter contains exactly one parameter named as the proof type in Appendix F, the value set for this parameter is a non-empty array containing parameters as defined by the corresponding proof type."
+            },
+            {
+              "chain": "OpenID4VCI 1.0 8.3.1.2",
+              "eu": false,
+              "level": "should",
+              "quote": "The error parameter SHOULD be a single ASCII [USASCII] error code from the following: invalid_credential_request: The Credential Request is missing a required parameter, includes an unsupported parameter or parameter value, repeats the same parameter, or is otherwise malformed."
+            },
+            {
+              "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+              "eu": true,
+              "level": "shall",
+              "quote": "When PID Providers and the EAA Providers are issuing PIDs and EAAs into the EUDI Wallet, they shall implement the protocol defined in OpenID4VCI [2], specified by the requirements defined for the Issuer in OpenID4VC-HAIP [1], clause 4 and its subclauses, unless specified otherwise in the present document."
+            }
+          ]
+        },
+        {
+          "id": "credential-identifiers",
+          "group": "credential",
+          "title": "credential_identifier and credential_configuration_id",
+          "note": "Both at once, an unknown configuration, an unknown identifier, and a configuration id where identifiers were issued: a credential is a FAIL.",
+          "sources": [
+            {
+              "chain": "HAIP 1.0 4.5 > OpenID4VCI 1.0 8.2",
+              "eu": false,
+              "level": "shall",
+              "quote": "credential_identifier: REQUIRED when an Authorization Details of type openid_credential was returned from the Token Response. It MUST NOT be used otherwise. ... When this parameter is used, the credential_configuration_id MUST NOT be present. credential_configuration_id: REQUIRED if a credential_identifiers parameter was not returned from the Token Response as part of the authorization_details parameter. It MUST NOT be used otherwise. ... When this parameter is used, the credential_identifier MUST NOT be present."
+            },
+            {
+              "chain": "OpenID4VCI 1.0 8.3.1.2",
+              "eu": false,
+              "level": "note",
+              "quote": "unknown_credential_configuration: Requested Credential Configuration is unknown. unknown_credential_identifier: Requested Credential identifier is unknown."
+            },
+            {
+              "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+              "eu": true,
+              "level": "shall",
+              "quote": "When PID Providers and the EAA Providers are issuing PIDs and EAAs into the EUDI Wallet, they shall implement the protocol defined in OpenID4VCI [2], specified by the requirements defined for the Issuer in OpenID4VC-HAIP [1], clause 4 and its subclauses, unless specified otherwise in the present document."
+            }
+          ]
+        },
+        {
+          "id": "batch-issuance",
+          "group": "credential",
+          "title": "A batch shares the dataset and differs in its keys, within batch_size",
+          "note": "More proofs than batch_size and the same key twice are refused; an issued batch has one dataset (FAIL otherwise) and distinct binding keys (WARN otherwise).",
+          "sources": [
+            {
+              "chain": "HAIP 1.0 clause 4 > OpenID4VCI 1.0 3.3.2",
+              "eu": false,
+              "level": "shall",
+              "quote": "In the context of a single request, the batch of issued Credentials sent in response MUST share the same Credential Format and Credential Dataset, but SHOULD contain different Cryptographic Data. For example to achieve unlinkability between the Credentials, each credential should be bound to different cryptographic keys."
+            },
+            {
+              "chain": "OpenID4VCI 1.0 12.2.4 batch_size / 8.3 / 14.6",
+              "eu": false,
+              "level": "note",
+              "quote": "Integer value specifying the maximum array size for the proofs parameter in a Credential Request. ... The number of elements in the credentials array matches the number of keys that the Wallet has provided via the proofs parameter of the Credential Request, unless the Issuer decides to issue fewer Credentials. ... The Credential Issuer determines the number of the Credentials issued in the Credential Response, regardless of number of proofs/keys contained in the proofs parameter"
+            },
+            {
+              "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+              "eu": true,
+              "level": "shall",
+              "quote": "When PID Providers and the EAA Providers are issuing PIDs and EAAs into the EUDI Wallet, they shall implement the protocol defined in OpenID4VCI [2], specified by the requirements defined for the Issuer in OpenID4VC-HAIP [1], clause 4 and its subclauses, unless specified otherwise in the present document."
+            }
+          ]
+        },
+        {
+          "id": "key-attestation-trust",
+          "group": "credential",
+          "title": "The key attestation chains to a trusted wallet provider",
+          "note": "Key attestations under an untrusted CA, with a bad signature, expired, or without x5c, on both proof types: invalid_proof expected; a credential is a FAIL.",
+          "sources": [
+            {
+              "chain": "HAIP 1.0 4.5.1",
+              "eu": false,
+              "level": "shall",
+              "quote": "The public key used to validate the signature on the key attestation MUST be included in the x5c JOSE header of the key attestation. The X.509 certificate of the trust anchor MUST NOT be included in the x5c JOSE header of the key attestation. The X.509 certificate signing the key attestation MUST NOT be self-signed."
+            },
+            {
+              "chain": "HAIP 1.0 4.5.1 > OpenID4VCI 1.0 Appendix D.1",
+              "eu": false,
+              "level": "shall",
+              "quote": "If used with the jwt proof type, the Credential Issuer MUST validate that the JWT used as a proof is signed by a key contained in the attestation in the JOSE Header."
+            },
+            {
+              "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 CRED-REQ-PROC-4.6.2.1-01 / 4.6.2.2-01",
+              "eu": true,
+              "level": "shall",
+              "quote": "The PID/EAA Provider shall verify that the signature of the key_attestation parameter in the element of the jwt array member (the WUA), verifies under the Wallet Provider's public key as found on the Trusted List for Wallet Providers. ... The PID/EAA Provider shall verify that the signature of the element of the attestation array member (the WUA) verifies under the Wallet Provider's public key as found on the Trusted List for Wallet Providers."
+            },
+            {
+              "chain": "CIR (EU) 2024/2979 Art 6(2) + Annex Ib (CIR 2026/1731 Annex III) > TR_KA-5",
+              "eu": true,
+              "level": "shall",
+              "quote": "Where a credential issuer receives a key attestation in a 'jwt' or an 'attestation' proof type, it shall verify the signature of the key attestation under the public key in the signing certificate included in the 'x5c' parameter in the JOSE header of the key attestation and that this signing certificate with a trust anchor on the list for wallet providers referred to in Article 5 of Implementing Regulation (EU) 2024/2980, potentially using intermediate certificates included in the 'x5c' parameter."
+            },
+            {
+              "chain": "CIR (EU) 2024/2980 Art 5 + Annex II section 2 point 1(h) (CIR 2026/1731 Annex X)",
+              "eu": true,
+              "level": "note",
+              "quote": "one or more certificates compliant with standard ETSI EN 319 412-2 V2.4.1 (2025-06) or standard ETSI EN 319 412-3 V1.3.1 (2023-09) that can be used to authenticate and validate wallet unit attestations the wallet provider has issued"
+            }
+          ]
+        },
+        {
+          "id": "key-attestation-revocation",
+          "group": "credential",
+          "title": "A revoked key attestation is refused",
+          "note": "The key attestation's key_storage_status points at the index the tester's hosted list marks INVALID (needs simulator.status_list_base_url, else SKIP). EU: a credential is a FAIL. HAIP mandates no status check: a credential is INFO.",
+          "sources": [
+            {
+              "chain": "CIR (EU) 2024/2979 Art 8 + Annex II (CIR 2026/1731 Annex IV) > EAA-6.2.10.1-16",
+              "eu": true,
+              "level": "shall",
+              "quote": "The provider of person identification data and the provider of electronic attestations of attributes shall support both the attestation status list mechanism and the attestation revocation list mechanism specified in EAA-6.2.10.1-02 for verifying the revocation status of a wallet instance attestation (WIA) and of a key attestation (KA)."
+            },
+            {
+              "chain": "CIR (EU) 2025/1569 Art 3(1) + Annex I (CIR 2026/1735 Annex I) > ETSI TS 119 471 V1.1.1 REQ-EAASP-4.2.2.3-07 (QEAA and PuB-EAA providers)",
+              "eu": true,
+              "level": "shall",
+              "quote": "The EAASP shall: verify the authenticity of the Wallet Unit by validating the signature over the Wallet Unit Attestation (WUA); accept only the trust anchors in the Wallet Provider Trusted List(s) for the Wallet Solutions they support; verify that the EUDIW Provider is present in a Wallet Provider Trusted List; authenticate and validate the WUA using the trust anchor(s) registered for the Wallet Provider in the Wallet Provider Trusted List; and verify that the Wallet Unit's WUA is not revoked."
+            },
+            {
+              "chain": "HAIP 1.0 4.5.1 > OpenID4VCI 1.0 Appendix D.1",
+              "eu": false,
+              "level": "may",
+              "quote": "status: OPTIONAL. JSON Object representing the supported revocation check mechanisms, such as the one defined in [I-D.ietf-oauth-status-list]"
+            }
+          ]
+        },
+        {
+          "id": "key-attestation-storage-level",
+          "group": "credential",
+          "title": "A key attestation below the accepted key_storage level is refused",
+          "note": "A key attestation claiming the weakest Appendix D.2 value the issuer does not list: invalid_proof expected; a credential is a FAIL.",
+          "sources": [
+            {
+              "chain": "HAIP 1.0 4.5.1 > OpenID4VCI 1.0 12.2.4 key_attestations_required",
+              "eu": false,
+              "level": "shall",
+              "quote": "key_storage: OPTIONAL. A non-empty array defining values specified in Appendix D.2 accepted by the Credential Issuer."
+            },
+            {
+              "chain": "OpenID4VCI 1.0 Appendix D.2",
+              "eu": false,
+              "level": "note",
+              "quote": "iso_18045_high: It MUST be used when key storage or user authentication is resistant to attack with attack potential 'High', equivalent to VAN.5 according to [ISO.18045]. iso_18045_moderate ... 'Moderate', equivalent to VAN.4 ... iso_18045_enhanced-basic ... 'Enhanced-Basic', equivalent to VAN.3 ... iso_18045_basic ... 'Basic', equivalent to VAN.2"
+            },
+            {
+              "chain": "CIR (EU) 2025/1569 Art 3(1) + Annex I (CIR 2026/1735 Annex I) > ETSI TS 119 471 V1.1.1 REQ-EAASP-4.2.1.2-03 (QEAA and PuB-EAA providers)",
+              "eu": true,
+              "level": "shall",
+              "quote": "The EAASP shall validate that the Wallet Secure Cryptographic Device (WSCD) of the Wallet Unit complies with the required security level before issuing an EAA."
+            },
+            {
+              "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+              "eu": true,
+              "level": "shall",
+              "quote": "When PID Providers and the EAA Providers are issuing PIDs and EAAs into the EUDI Wallet, they shall implement the protocol defined in OpenID4VCI [2], specified by the requirements defined for the Issuer in OpenID4VC-HAIP [1], clause 4 and its subclauses, unless specified otherwise in the present document."
+            }
+          ]
+        },
+        {
+          "id": "eu-one-credential-per-attested-key",
+          "group": "credential",
+          "title": "One credential per attested key, no key twice",
+          "note": "",
+          "sources": [
+            {
+              "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 CRED-REQ-PROC-4.6.2.1-04 to -06",
+              "eu": true,
+              "level": "shall",
+              "quote": "The PID/EAA Provider shall generate as many PIDs/EAAs as elements present in the attested_keys array within the key_attestation parameter. Each PID/EAA shall be bound to one of the public keys present in the attested_keys array within the key_attestation parameter. There shall not be two PIDs/EAAs bound to the same public key."
+            },
+            {
+              "chain": "ETSI TS 119 472-3 V1.1.1 CRED-REQ-PROC-4.6.2.2-02 to -04",
+              "eu": true,
+              "level": "shall",
+              "quote": "The PID/EAA Provider shall generate as many PIDs/EAAs as elements present in the attested_keys array within the element of the attestation array member. Each PID/EAA shall be bound to one of the public keys present in the attested_keys array within the element of the attestation array member. There shall not be two PIDs/EAAs bound to the same public key."
+            }
+          ]
+        },
+        {
+          "id": "eu-proof-under-first-attested-key",
+          "group": "credential",
+          "title": "The jwt proof verifies under attested_keys[0]",
+          "note": "A proof signed by attested_keys[1]: invalid_proof expected; a credential is a FAIL.",
+          "sources": [
+            {
+              "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 CRED-REQ-PROC-4.6.2.1-02",
+              "eu": true,
+              "level": "shall",
+              "quote": "The PID/EAA Provider shall verify that the signature of the element of the jwt array member verifies under the public key contained in the first position of the attested_keys array within the key_attestation parameter."
+            },
+            {
+              "chain": "CIR (EU) 2024/2979 Art 6(2) + Annex Ib (CIR 2026/1731 Annex III) > TR_KA-6",
+              "eu": true,
+              "level": "shall",
+              "quote": "Where a credential issuer receives a key attestation in a 'jwt' proof type, it shall verify the signature of the 'jwt' element under the key at index 0 of the 'attested_keys' array within the 'key_attestation' object included in the 'jwt' element."
+            }
+          ]
+        },
+        {
+          "id": "eu-attestation-proof-type",
+          "group": "credential",
+          "title": "The attestation proof type: one key attestation with the nonce",
+          "note": "The baseline issuance with the attestation proof type, and a wrong nonce in it.",
+          "sources": [
+            {
+              "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 CRED-REQ-4.6.1.3-01 to -03",
+              "eu": true,
+              "level": "shall",
+              "quote": "The attestation array member shall contain only one element. The element in the attestation array member shall contain the nonce claim in its JWT Body, obtained from the Nonce Endpoint of the PID/EAA Provider. The element in the attestation array member shall be the WUA."
+            },
+            {
+              "chain": "ETSI TS 119 472-3 V1.1.1 CRED-REQ-PROC-4.6.2.2-01 to -04",
+              "eu": true,
+              "level": "shall",
+              "quote": "The PID/EAA Provider shall verify that the signature of the element of the attestation array member (the WUA) verifies under the Wallet Provider's public key as found on the Trusted List for Wallet Providers. The PID/EAA Provider shall generate as many PIDs/EAAs as elements present in the attested_keys array ... Each PID/EAA shall be bound to one of the public keys ... There shall not be two PIDs/EAAs bound to the same public key."
+            },
+            {
+              "chain": "CIR (EU) 2024/2979 Art 6(2) + Annex Ib (CIR 2026/1731 Annex III) > TR_KA-7",
+              "eu": true,
+              "level": "shall",
+              "quote": "Where a credential issuer receives a key attestation in an 'attestation' proof type, it shall verify that the 'key_attestation' object includes a valid c_nonce from their nonce_endpoint."
+            }
+          ]
+        },
+        {
+          "id": "key-attestation-suites-and-chains",
+          "group": "credential",
+          "title": "Every signature suite and certificate chain of a key attestation and proof is accepted",
+          "note": "One issuance per advertised, producible proof suite (ES256, ES384; ES512 is not producible yet) and per wallet provider PKI (NIST root, brainpool intermediates). A refused advertised suite is a FAIL; a refused brainpool chain is a WARN.",
+          "sources": [
+            {
+              "chain": "CIR (EU) 2024/2979 Art 6(2) + Annex Ib (CIR 2026/1731 Annex III) > SA-1",
+              "eu": true,
+              "level": "shall",
+              "quote": "For signing wallet instance attestations, key attestations, related proof-of-possessions and token status lists, one of the following algorithms shall be used: ES256 (ECDSA with SHA-256 and P-256); ES384 (ECDSA with SHA-384 and P-384); ES512 (ECDSA with SHA-512 and P-521)"
+            },
+            {
+              "chain": "CIR (EU) 2024/2979 Art 6(2) + Annex Ib (CIR 2026/1731 Annex III) > SA-3",
+              "eu": true,
+              "level": "shall",
+              "quote": "An authorization server or a credential issuer (as specified in OID4VCI) shall support all of the algorithms mentioned in SA-1."
+            },
+            {
+              "chain": "CIR (EU) 2024/2979 Annex Ib (CIR 2026/1731 Annex III) > TR_KA-5",
+              "eu": true,
+              "level": "shall",
+              "quote": "... and that this signing certificate with a trust anchor on the list for wallet providers referred to in Article 5 of Implementing Regulation (EU) 2024/2980, potentially using intermediate certificates included in the 'x5c' parameter."
+            },
+            {
+              "chain": "HAIP 1.0 clause 7",
+              "eu": false,
+              "level": "shall",
+              "quote": "Issuers, Verifiers, and Wallets MUST, at a minimum, support ECDSA with P-256 and SHA-256 (JOSE algorithm identifier ES256; COSE algorithm identifier -7 or -9, as applicable) for the purpose of validating the following: Issuers: Wallet Attestations (including PoP) when Appendix E of [OIDF.OID4VCI] is used. Key Attestations when Appendix D of [OIDF.OID4VCI] is used. jwt proof type as specified in Appendix E of [OIDF.OID4VCI]."
+            }
+          ]
+        },
+        {
+          "id": "credential-response-encrypted",
+          "group": "credential",
+          "title": "A response is encrypted when the request asks for it, and such a request is encrypted",
+          "note": "Used whenever the issuer offers encryption: the baseline response is a JWE, the baseline request a JWE when request encryption is offered.",
+          "sources": [
+            {
+              "chain": "HAIP 1.0 4.5 > OpenID4VCI 1.0 8.2",
+              "eu": false,
+              "level": "shall",
+              "quote": "Credential Request encryption MUST be used if the credential_response_encryption parameter is included, to prevent it being substituted by an attacker."
+            },
+            {
+              "chain": "OpenID4VCI 1.0 8.3 / 10",
+              "eu": false,
+              "level": "shall",
+              "quote": "If the Client requested an encrypted response by including the credential_response_encryption object in the request, the Credential Issuer MUST encode the information in the Credential Response as specified by Section 10, using the parameters from the credential_response_encryption object. ... The contents of the message MUST be encoded as a JWT as described in [RFC7519]. The media type MUST be set to application/jwt."
+            },
+            {
+              "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+              "eu": true,
+              "level": "shall",
+              "quote": "When PID Providers and the EAA Providers are issuing PIDs and EAAs into the EUDI Wallet, they shall implement the protocol defined in OpenID4VCI [2], specified by the requirements defined for the Issuer in OpenID4VC-HAIP [1], clause 4 and its subclauses, unless specified otherwise in the present document."
+            }
+          ]
+        },
+        {
+          "id": "encrypted-request",
+          "group": "credential",
+          "title": "An encrypted request is a JWE to an advertised key and enc",
+          "note": "A JWE to a key the issuer does not hold, or a body that is not a JWE: a credential is a FAIL (it cannot have been read). An unlisted enc or a wrong kid: acceptance is INFO.",
+          "sources": [
+            {
+              "chain": "HAIP 1.0 4.5 > OpenID4VCI 1.0 10",
+              "eu": false,
+              "level": "shall",
+              "quote": "The contents of the message MUST be encoded as a JWT as described in [RFC7519]. The media type MUST be set to application/jwt. ... The alg parameter MUST be present. The JWE alg algorithm used MUST be equal to the alg value of the chosen JWK. If the selected public key contains a kid parameter, the JWE MUST include the same value in the kid JWE Header Parameter (as defined in Section 4.1.6) of the encrypted message."
+            },
+            {
+              "chain": "OpenID4VCI 1.0 12.2.4 credential_request_encryption / 8.3.1.2",
+              "eu": false,
+              "level": "note",
+              "quote": "enc_values_supported: REQUIRED. A non-empty array containing a list of the JWE [RFC7516] encryption algorithms (enc values) [RFC7518] supported by the Credential Endpoint to decode the Credential Request from a JWT [RFC7519]. ... invalid_encryption_parameters: This error occurs when the encryption parameters in the Credential Request are either invalid or missing."
+            },
+            {
+              "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+              "eu": true,
+              "level": "shall",
+              "quote": "When PID Providers and the EAA Providers are issuing PIDs and EAAs into the EUDI Wallet, they shall implement the protocol defined in OpenID4VCI [2], specified by the requirements defined for the Issuer in OpenID4VC-HAIP [1], clause 4 and its subclauses, unless specified otherwise in the present document."
+            }
+          ]
+        },
+        {
+          "id": "encryption-required-plaintext",
+          "group": "credential",
+          "title": "A plaintext request where encryption is required",
+          "note": "Acceptance is a WARN (SHOULD).",
+          "sources": [
+            {
+              "chain": "HAIP 1.0 4.5 > OpenID4VCI 1.0 10",
+              "eu": false,
+              "level": "should",
+              "quote": "When encryption of a message was required but the received message is unencrypted, it SHOULD be rejected."
+            },
+            {
+              "chain": "OpenID4VCI 1.0 12.2.4 credential_request_encryption.encryption_required / 8.2",
+              "eu": false,
+              "level": "shall",
+              "quote": "If the value is true, the Credential Issuer requires encryption for every Credential Request. ... Credential Request encryption MUST be used if the credential_response_encryption parameter is included"
+            },
+            {
+              "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+              "eu": true,
+              "level": "shall",
+              "quote": "When PID Providers and the EAA Providers are issuing PIDs and EAAs into the EUDI Wallet, they shall implement the protocol defined in OpenID4VCI [2], specified by the requirements defined for the Issuer in OpenID4VC-HAIP [1], clause 4 and its subclauses, unless specified otherwise in the present document."
+            }
+          ]
+        },
+        {
+          "id": "response-encryption-parameters",
+          "group": "credential",
+          "title": "Response encryption parameters: jwk with alg, an advertised enc",
+          "note": "An unlisted enc, a jwk without alg, or no enc: invalid_encryption_parameters expected; a plaintext credential is a FAIL, an encrypted one INFO.",
+          "sources": [
+            {
+              "chain": "HAIP 1.0 4.5 > OpenID4VCI 1.0 8.2 credential_response_encryption",
+              "eu": false,
+              "level": "shall",
+              "quote": "jwk: REQUIRED. Object containing a single public key as a JWK used for encrypting the Credential Response. enc: REQUIRED. JWE [RFC7516] enc algorithm [RFC7518] for encrypting Credential Responses."
+            },
+            {
+              "chain": "OpenID4VCI 1.0 10 / 8.3",
+              "eu": false,
+              "level": "shall",
+              "quote": "The alg parameter MUST be present. ... the Credential Issuer MUST encode the information in the Credential Response as specified by Section 10, using the parameters from the credential_response_encryption object. Note that this is done regardless of the content."
+            },
+            {
+              "chain": "OpenID4VCI 1.0 8.3.1.2",
+              "eu": false,
+              "level": "note",
+              "quote": "invalid_encryption_parameters: This error occurs when the encryption parameters in the Credential Request are either invalid or missing."
+            },
+            {
+              "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+              "eu": true,
+              "level": "shall",
+              "quote": "When PID Providers and the EAA Providers are issuing PIDs and EAAs into the EUDI Wallet, they shall implement the protocol defined in OpenID4VCI [2], specified by the requirements defined for the Issuer in OpenID4VC-HAIP [1], clause 4 and its subclauses, unless specified otherwise in the present document."
+            }
+          ]
+        },
+        {
+          "id": "response-encryption-required",
+          "group": "credential",
+          "title": "A request without encryption parameters where the response must be encrypted",
+          "note": "A plaintext credential in reply is a WARN: the MUST binds the wallet, the issuer's refusal is the named error code.",
+          "sources": [
+            {
+              "chain": "HAIP 1.0 4.5 > OpenID4VCI 1.0 12.2.4 credential_response_encryption.encryption_required",
+              "eu": false,
+              "level": "shall",
+              "quote": "If the value is true, the Credential Issuer requires encryption for every Credential Response and therefore the Wallet MUST provide encryption keys in the Credential Request."
+            },
+            {
+              "chain": "OpenID4VCI 1.0 8.3.1.2",
+              "eu": false,
+              "level": "note",
+              "quote": "invalid_encryption_parameters: ... In the latter case, it indicates that the Credential Issuer requires the Credential Response to be sent encrypted, but the Credential Request does not contain the necessary encryption parameters."
+            },
+            {
+              "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+              "eu": true,
+              "level": "shall",
+              "quote": "When PID Providers and the EAA Providers are issuing PIDs and EAAs into the EUDI Wallet, they shall implement the protocol defined in OpenID4VCI [2], specified by the requirements defined for the Issuer in OpenID4VC-HAIP [1], clause 4 and its subclauses, unless specified otherwise in the present document."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "deferred",
+      "name": "Deferred credential endpoint",
+      "requirements": []
+    },
+    {
+      "id": "notification",
+      "name": "Notification endpoint",
+      "requirements": [
+        {
+          "id": "notification-response",
+          "group": "notification",
+          "title": "Notifications are acknowledged, unknown ids refused",
+          "note": "One credential_accepted per notification id, then an unknown id. A 200 instead of 204 is a WARN.",
+          "sources": [
+            {
+              "chain": "HAIP 1.0 clause 4 > OpenID4VCI 1.0 11.2",
+              "eu": false,
+              "level": "shall",
+              "quote": "When the Credential Issuer has successfully received the Notification Request from the Wallet, it MUST respond with an HTTP status code in the 2xx range. Use of the HTTP status code 204 (No Content) is RECOMMENDED."
+            },
+            {
+              "chain": "OpenID4VCI 1.0 11.3",
+              "eu": false,
+              "level": "shall",
+              "quote": "When the notification_id value is invalid, the HTTP response MUST use the HTTP status code 400 (Bad Request) and set the content type to application/json with the following parameters in the JSON-encoded response body: error: REQUIRED. ... invalid_notification_id: The notification_id in the Notification Request was invalid."
+            },
+            {
+              "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 NOT-REQ-4.7-01 (the wallet's side)",
+              "eu": true,
+              "level": "shall",
+              "quote": "If the EUDI Wallet supports notifications, then it shall send one or more Notification Requests per notification_id value received from the PID/EAA Provider."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "content",
+      "name": "Issued credential content",
+      "requirements": [
+        {
+          "id": "sdjwt-signature-and-chain",
+          "group": "content",
+          "title": "The SD-JWT VC is signed under an x5c chain, anchor excluded",
+          "note": "Signature under the x5c leaf, typ dc+sd-jwt, vct and validity window, leaf not self-signed, anchor not in x5c, chain validated to a credential_issuer_anchors root.",
+          "sources": [
+            {
+              "chain": "HAIP 1.0 6.1.1",
+              "eu": false,
+              "level": "shall",
+              "quote": "The SD-JWT VC MUST contain the credential issuer's signing certificate along with a trust chain in the x5c JOSE header parameter as described in section 3.5 of [I-D.ietf-oauth-sd-jwt-vc]. The X.509 certificate of the trust anchor MUST NOT be included in the x5c JOSE header of the SD-JWT VC. The X.509 certificate signing the request MUST NOT be self-signed."
+            },
+            {
+              "chain": "HAIP 1.0 6.1 > SD-JWT VC draft-13 3.2.1 (draft-19: 2.2.1)",
+              "eu": false,
+              "level": "shall",
+              "quote": "typ: REQUIRED. As defined in [RFC7515]. The typ value MUST use dc+sd-jwt."
+            },
+            {
+              "chain": "CIR (EU) 2024/2977 Art 4(1); CIR 2024/2979 Art 8 + Annex II (CIR 2026/1731 Annex IV) > ETSI TS 119 472-1 V1.2.1 EAA-5.1-01",
+              "eu": true,
+              "level": "shall",
+              "quote": "SD-JWT VC EAA shall be implemented as a Selective Disclosure JSON Web Token based Verifiable Credential (SD-JWT VC) as specified in IETF SD-JWT VC [3]."
+            },
+            {
+              "chain": "ETSI TS 119 472-1 V1.2.1 EAA-4.6.1-05 / -06",
+              "eu": true,
+              "level": "may",
+              "quote": "The EAA signature may include the signing certificate. The EAA signature may include certificates in the certification path, except the trust anchor."
+            }
+          ]
+        },
+        {
+          "id": "sdjwt-issuer-identifier",
+          "group": "content",
+          "title": "The iss claim and the Credential Issuer Identifier",
+          "note": "Reported (INFO): whether iss is present and equals the Credential Issuer Identifier. Nothing requires iss in an SD-JWT VC; the issuer is the x5c end-entity certificate's subject.",
+          "sources": [
+            {
+              "chain": "HAIP 1.0 6.1 > SD-JWT VC draft-13 3.2.2 (draft-19: 2.2.2.3)",
+              "eu": false,
+              "level": "may",
+              "quote": "iss: OPTIONAL. As defined in Section 4.1.1 of [RFC7519] this claim explicitly indicates the Issuer of the Verifiable Credential when it is not conveyed by other means (e.g., the subject of the end-entity certificate of an x5c header)."
+            },
+            {
+              "chain": "OpenID4VCI 1.0 14.4",
+              "eu": false,
+              "level": "note",
+              "quote": "The Credential Issuer Identifier is always a URL using the https scheme, as defined in Section 12.2.1. Depending on the Credential Format, the Issuer Identifier in the issued Credential may not be a URL using the https scheme."
+            },
+            {
+              "chain": "ETSI TS 119 472-1 V1.2.1 5.2.4 (EAA-5.2.4.1-01, QEAA-5.2.4.2-01, PuB-EAA-5.2.4.3-01)",
+              "eu": true,
+              "level": "note",
+              "quote": "A SD-JWT VC EAA may include the issuing_authority claim ... A SD-JWT VC QEAA shall include the name of its Issuer either within the issuing_authority claim, or within the qualified certificate supporting its signature."
+            }
+          ]
+        },
+        {
+          "id": "sdjwt-binding",
+          "group": "content",
+          "title": "The SD-JWT VC is bound to the proof key and has the configuration's vct",
+          "note": "cnf.jwk's thumbprint equals the key of the proof the credential was requested with; vct equals the configuration's vct.",
+          "sources": [
+            {
+              "chain": "HAIP 1.0 6.1",
+              "eu": false,
+              "level": "shall",
+              "quote": "The cnf claim [RFC7800] MUST conform to the definition given in [I-D.ietf-oauth-sd-jwt-vc]. Implementations conforming to this specification MUST include the JSON Web Key [RFC7517] in the jwk member if the corresponding Credential Configuration requires cryptographic holder binding."
+            },
+            {
+              "chain": "HAIP 1.0 4.5 > OpenID4VCI 1.0 8.1 / A.3.2",
+              "eu": false,
+              "level": "should",
+              "quote": "The issued Credential SHOULD be cryptographically bound to the identifier of the End-User who possesses the Credential. ... vct: REQUIRED. String designating the type of the Credential, as defined in [I-D.ietf-oauth-sd-jwt-vc]."
+            },
+            {
+              "chain": "ETSI TS 119 472-1 V1.2.1 EAA-5.5-01 / EAA-5.5-06",
+              "eu": true,
+              "level": "should",
+              "quote": "A SD-JWT VC EAA should incorporate the cnf claim as specified in IETF SD-JWT [5] ... The cnf claim should contain a representation of the EAA subject public key."
+            }
+          ]
+        },
+        {
+          "id": "sdjwt-status-reference",
+          "group": "content",
+          "title": "The status claim references a status list",
+          "note": "status.status_list with an https uri and an integer idx; the list itself is resolved under group S. A credential without a status claim is reported (INFO); whether one is required is judged under sdjwt-eu-claims.",
+          "sources": [
+            {
+              "chain": "HAIP 1.0 6.1",
+              "eu": false,
+              "level": "shall",
+              "quote": "It is RECOMMENDED that Issuers limit the validity period when issuing SD-JWT VC. When doing so, the Issuer MUST use an exp claim, a status claim, or both. ... The status claim, if present, MUST contain status_list as defined in [I-D.ietf-oauth-status-list]"
+            },
+            {
+              "chain": "HAIP 1.0 6.1 > Token Status List draft-20 6.1 / 6.2 (draft-21 identical)",
+              "eu": false,
+              "level": "shall",
+              "quote": "status_list: REQUIRED. ... idx: REQUIRED. The idx (index) claim MUST specify an Integer that represents the index to check for status information in the Status List for the current Referenced Token. ... uri: REQUIRED. The uri (URI) claim MUST specify a String value that identifies the Status List Token containing the status information for the Referenced Token. The value of uri MUST be a URI conforming to [RFC3986]."
+            },
+            {
+              "chain": "CIR (EU) 2024/2979 Art 8 + Annex II (CIR 2026/1731 Annex IV) > EAA-5.2.10.1-06 (adapting ETSI TS 119 472-1; -04, -05, -07 to -12 void)",
+              "eu": true,
+              "level": "may",
+              "quote": "The status member may contain the status_list member as specified in clause 6.2 of IETF draft-ietf-oauth-status-list-20 [25]."
+            }
+          ]
+        },
+        {
+          "id": "status-index-unique",
+          "group": "content",
+          "title": "Each credential has its own status list index",
+          "note": "Distinct (uri, idx) pairs across a batch.",
+          "sources": [
+            {
+              "chain": "HAIP 1.0 6.1",
+              "eu": false,
+              "level": "shall",
+              "quote": "Each Credential MUST have its own unique, unpredictable status list index, even when multiple Credentials reference the same status list URI (see section 13.2 of [I-D.ietf-oauth-status-list])."
+            },
+            {
+              "chain": "CIR (EU) 2024/2979 Art 8 + Annex II (CIR 2026/1731 Annex IV) > EAA-6.2.10.1-13.2 (mdoc)",
+              "eu": true,
+              "level": "shall",
+              "quote": "To prevent the status index from being a correlation across presentations, the combination of status index and URI shall be unique per MSO."
+            }
+          ]
+        },
+        {
+          "id": "sdjwt-disclosures",
+          "group": "content",
+          "title": "Disclosures match the claims metadata and use SHA-256",
+          "note": "Disclosed claims the configuration does not describe are a WARN; an _sd_alg other than sha-256 is a WARN (not forbidden).",
+          "sources": [
+            {
+              "chain": "HAIP 1.0 4.1 > OpenID4VCI 1.0 12.2.4 credential_metadata.claims",
+              "eu": false,
+              "level": "note",
+              "quote": "claims: OPTIONAL. A non-empty array of claims description objects as defined in Appendix B.2."
+            },
+            {
+              "chain": "HAIP 1.0 clause 8",
+              "eu": false,
+              "level": "shall",
+              "quote": "The hash algorithm SHA-256 MUST be supported by all the entities to generate and validate the digests in the IETF SD-JWT VC and ISO mdoc. Ecosystem-specific profiles of this specification MAY mandate additional hashing algorithms."
+            },
+            {
+              "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+              "eu": true,
+              "level": "shall",
+              "quote": "When PID Providers and the EAA Providers are issuing PIDs and EAAs into the EUDI Wallet, they shall implement the protocol defined in OpenID4VCI [2], specified by the requirements defined for the Issuer in OpenID4VC-HAIP [1], clause 4 and its subclauses, unless specified otherwise in the present document."
+            }
+          ]
+        },
+        {
+          "id": "sdjwt-eu-claims",
+          "group": "content",
+          "title": "The EU claim battery of an SD-JWT VC EAA",
+          "note": "vct and vct#integrity present; nbf before exp; jti a string when present; category one of the two URNs when present, and the one the provider's registration certificate entitlement implies (QEAA_Provider, PUB_EAA_Provider) when that is unambiguous; status and shortLived not both; shortLived null; for a QEAA or PuB-EAA valid for more than 24 hours one of status / shortLived; issuing_authority, issuing_country (ISO 3166-1 alpha-2) and iss_reg_id strings when present. iss is not required (SD-JWT VC: OPTIONAL; TS 119 472-1 5.2.4 carries the issuer identity in those three claims or the certificate). Not checked: the 'shall not ... if it incorporates the qualified certificate' rules and the QEAA / PuB-EAA 'either in the claim or in the certificate' rules, which need the signing certificate; type metadata is not fetched and vct#integrity not verified.",
+          "sources": [
+            {
+              "chain": "CIR (EU) 2024/2977 Art 4(1); CIR 2024/2979 Art 8 + Annex II (CIR 2026/1731 Annex IV) > ETSI TS 119 472-1 V1.2.1 EAA-5.2.1.2-01 / -03",
+              "eu": true,
+              "level": "shall",
+              "quote": "A SD-JWT VC EAA shall include the vct claim as specified in IETF SD-JWT VC [3] ... A SD-JWT VC EAA shall incorporate the claim vct#integrity as specified in IETF SD-JWT VC [3], clause 6."
+            },
+            {
+              "chain": "ETSI TS 119 472-1 V1.2.1 EAA-5.2.7.1-01 / -03",
+              "eu": true,
+              "level": "shall",
+              "quote": "A SD-JWT VC EAA shall include the nbf claim specified in IETF RFC 7519 [4], clause 4.1.5 ... A SD-JWT VC EAA shall include the exp claim specified in IETF RFC 7519 [4], clause 4.1.5"
+            },
+            {
+              "chain": "ETSI TS 119 472-1 V1.2.1 EAA-5.2.4.1-01 / -02 / -04 / -06 / -08 / -09 (with EAA-4.2.4.1-05)",
+              "eu": true,
+              "level": "shall",
+              "quote": "A SD-JWT VC EAA may include the issuing_authority claim ... The issuing_authority claim shall be a JSON String. ... A SD-JWT VC EAA may incorporate the issuing_country, identifying the EU Member where the SD-JWT VC EAA issuer is established. The value of the optional issuing_country claim shall be as specified in requirement EAA-4.2.4.1-05 of the present document [the Alpha 2-character country code as specified in ISO 3166-1]. The issuing_country claim shall be a JSON String. ... Where a registration identifier is applicable, a SD-JWT VC EAA may include the iss_reg_id claim. The iss_reg_id claim shall be a JSON String."
+            },
+            {
+              "chain": "ETSI TS 119 472-1 V1.2.1 EAA-5.2.3-02, EAA-5.2.5.1-02",
+              "eu": true,
+              "level": "may",
+              "quote": "A SD-JWT VC EAA may incorporate the jti component. ... A SD-JWT VC EAA may include the sub claim, or the also_known_as claim, or none of them."
+            },
+            {
+              "chain": "ETSI TS 119 472-1 V1.2.1 EAA-5.2.2.1-01, QEAA-5.2.2.2-01 / -02, PuB-EAA-5.2.2.3-01 / -02",
+              "eu": true,
+              "level": "shall",
+              "quote": "SD-JWT VC EAAs issued by EAAs issuers registered in the European Union, which are neither SD-JWT VC QEAAs nor SD-JWT VC PuB-EAAs, shall not include the category claim. An SD-JWT VC QEAA shall include the category claim ... The value of the category claim in a SD-JWT VC QEAA shall be the URN ... (urn:etsi:esi:eaa:eu:qualified). An SD-JWT VC PuB-EAA shall include the category claim ... (urn:etsi:esi:eaa:eu:pub)."
+            },
+            {
+              "chain": "ETSI TS 119 472-1 V1.2.1 EAA-4.2.11.1-03, EAA-5.2.12-02",
+              "eu": true,
+              "level": "shall",
+              "quote": "An EAA that incorporates the EAA short-lived component (clause 4.2.13 of the present document), shall not incorporate the EAA status service. ... The shortLived claim shall have the null JSON primitive type."
+            },
+            {
+              "chain": "ETSI TS 119 472-1 V1.2.1 QEAA-5.2.10.2-01, PuB-EAA-5.2.10.3-01",
+              "eu": true,
+              "level": "shall",
+              "quote": "If a SD-JWT VC QEAA does not contain the shortLived claim, it shall include the EAA status claim. ... If a SD-JWT VC PuB-EAA does not contain the shortLived claim, it shall include the EAA status claim."
+            },
+            {
+              "chain": "CIR (EU) 2024/2979 Annex II (CIR 2026/1731 Annex IV) > EAA-4.2.13-03",
+              "eu": true,
+              "level": "shall",
+              "quote": "Where short-lived electronic attestations of attributes with a validity period of 24 hours or less are issued, revocation shall not be required."
+            }
+          ]
+        },
+        {
+          "id": "mdoc-structure",
+          "group": "content",
+          "title": "The mdoc: IssuerSigned, MSO, digests and IssuerAuth signature",
+          "note": "IssuerSigned parses, the MSO's docType matches the configuration, validity holds, every element digests into the MSO, the IssuerAuth signature verifies under the x5chain leaf. HAIP 1.0 has no mdoc issuance profile beyond clause 4 (its section 6 profiles SD-JWT VC only).",
+          "sources": [
+            {
+              "chain": "HAIP 1.0 clause 4 > OpenID4VCI 1.0 A.2.4",
+              "eu": false,
+              "level": "shall",
+              "quote": "The value of the credential claim in the Credential Response MUST be a string that is the base64url-encoded representation of the CBOR-encoded IssuerSigned structure, as defined in [ISO.18013-5]."
+            },
+            {
+              "chain": "HAIP 1.0 clause 4 > ISO/IEC 18013-5 9.1.2.4 (second edition draft; the 2021 edition is paywalled)",
+              "eu": false,
+              "level": "shall",
+              "quote": "The certificate containing the public key belonging to the private key used to sign the MSO shall be included as an x5chain element as described in RFC 9360. It shall be included as an unprotected header element. The x5chain element shall include at least one certificate and may contain more."
+            },
+            {
+              "chain": "CIR (EU) 2024/2977 Art 4(1); CIR 2024/2979 Art 8 + Annex II (CIR 2026/1731 Annex IV) > ETSI TS 119 472-1 V1.2.1 EAA-6.1-07, EAA-6.4.1.4-02",
+              "eu": true,
+              "level": "shall",
+              "quote": "ISO/IEC-mdoc EAA shall be an instance of IssuerSigned type defined in ISO/IEC-mdoc [12], clause 8.3.2.1.2.2, extended as specified in the present document. ... If an ISO/IEC-mdoc includes selectively disclosable attested attributes, it shall include the valueDigests component within its MobileSecurityObject, as specified in clause 9.1.2.4 of ISO/IEC 18013-5 [12] for supporting the semantics specified in clause 4.4.2.3 of the present document."
+            },
+            {
+              "chain": "ETSI TS 119 472-1 V1.2.1 EAA-6.5-01 / -02, EAA-6.6.1-01",
+              "eu": true,
+              "level": "shall",
+              "quote": "An ISO/IEC-mdoc EAA shall incorporate the deviceKey member within the deviceKeyInfo member of the instance of MobileSecurityObject type, to implement the semantics specified in clause 4.5 of the present document. The deviceKey member within the deviceKeyInfo member of the instance of MobileSecurityObject type, shall contain a public key whose private key is in possession of the EAA subject. ... An ISO/IEC-mdoc EAA shall be signed by a CB-AdES digital signature."
+            }
+          ]
+        },
+        {
+          "id": "mdoc-chain",
+          "group": "content",
+          "title": "The mdoc x5chain: signer not self-signed, anchor excluded, validates to the issuer anchors",
+          "note": "One rule for every chain this tester sees: not self-signed, anchor excluded, path validation to credential_issuer_anchors. For the mdoc that is an extension of HAIP's x5c rule, taken here as a deliberate choice.",
+          "sources": [
+            {
+              "chain": "ISO/IEC 18013-5 9.1.2.4 (second edition draft)",
+              "eu": false,
+              "level": "shall",
+              "quote": "The x5chain element shall include at least one certificate and may contain more."
+            },
+            {
+              "chain": "CIR (EU) 2024/2979 Art 8 + Annex II (CIR 2026/1731 Annex IV) > ETSI TS 119 472-1 V1.2.1 EAA-4.6.1-06",
+              "eu": true,
+              "level": "may",
+              "quote": "The EAA signature may include certificates in the certification path, except the trust anchor."
+            },
+            {
+              "chain": "HAIP 1.0 4.1, 4.4.1, 4.5.1, 6.1.1 (the x5c rule HAIP states for every other chain)",
+              "eu": false,
+              "level": "note",
+              "quote": "The X.509 certificate of the trust anchor MUST NOT be included in the x5c JOSE header ... The X.509 certificate signing the request MUST NOT be self-signed."
+            }
+          ]
+        },
+        {
+          "id": "mdoc-binding",
+          "group": "content",
+          "title": "The mdoc's deviceKey is the proof key and its namespaces are the configuration's",
+          "note": "The MSO's deviceKey equals the key of the proof; the namespaces are the ones the configuration describes.",
+          "sources": [
+            {
+              "chain": "HAIP 1.0 4.5 > OpenID4VCI 1.0 8.1",
+              "eu": false,
+              "level": "should",
+              "quote": "The issued Credential SHOULD be cryptographically bound to the identifier of the End-User who possesses the Credential. Cryptographic Key Binding allows the Verifier to verify during the presentation of a Credential that the End-User presenting a Credential is the same End-User to whom that Credential was issued."
+            },
+            {
+              "chain": "OpenID4VCI 1.0 A.2.2 / 12.2.4",
+              "eu": false,
+              "level": "note",
+              "quote": "doctype: REQUIRED. String identifying the Credential type as defined in [ISO.18013-5]. ... claims: OPTIONAL. A non-empty array of claims description objects"
+            },
+            {
+              "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+              "eu": true,
+              "level": "shall",
+              "quote": "When PID Providers and the EAA Providers are issuing PIDs and EAAs into the EUDI Wallet, they shall implement the protocol defined in OpenID4VCI [2], specified by the requirements defined for the Issuer in OpenID4VC-HAIP [1], clause 4 and its subclauses, unless specified otherwise in the present document."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "status",
+      "name": "Status lists of the issued credentials",
+      "requirements": [
+        {
+          "id": "status-list-resolves",
+          "group": "status",
+          "title": "The status list resolves, as CWT for an mdoc",
+          "note": "Every distinct status list URI of the issued credentials is fetched once with Accept: application/statuslist+jwt and application/statuslist+cwt; an mdoc's list has to be served as CWT.",
+          "sources": [
+            {
+              "chain": "HAIP 1.0 6.1 > Token Status List draft-20 8.1 (draft-21 identical)",
+              "eu": false,
+              "level": "shall",
+              "quote": "The Status Provider MUST return the Status List Token in response to an HTTP GET request to the URI provided in the Referenced Token, unless the Relying Party and the Status Provider have alternative methods of distribution for the Status List Token."
+            },
+            {
+              "chain": "CIR (EU) 2024/2979 Art 8 + Annex II (CIR 2026/1731 Annex IV) > EAA-6.2.10.1-07",
+              "eu": true,
+              "level": "shall",
+              "quote": "An MSO revocation list shall be implemented in accordance with the token status list specification as a status list token in CWT format."
+            },
+            {
+              "chain": "ISO/IEC 18013-5 12.3.6.1 / 12.3.6.3 (second edition draft; CIR 2026/1731 Annex IV repeats it as a NOTE)",
+              "eu": false,
+              "level": "note",
+              "quote": "The MSO revocation list is a COSE_Sign1 structure that indicates whether a particular MSO is revoked or not. ... An MSO revocation list shall be implemented according to the Token Status List specification as a Status List Token in CWT format, since the IssuerAuth structure is a CWT."
+            }
+          ]
+        },
+        {
+          "id": "status-list-jwt-for-sdjwt",
+          "group": "status",
+          "title": "An SD-JWT VC's status list is a JWT",
+          "note": "The CWT form, if served instead, is checked and the JWT's absence is a FAIL.",
+          "sources": [
+            {
+              "chain": "HAIP 1.0 6.1 > SD-JWT VC draft-13 3.2.2 (draft-19: 2.2.2.3)",
+              "eu": false,
+              "level": "shall",
+              "quote": "When the status claim is present and using the status_list mechanism, the associated Status List Token MUST be in JWT format."
+            },
+            {
+              "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+              "eu": true,
+              "level": "shall",
+              "quote": "When PID Providers and the EAA Providers are issuing PIDs and EAAs into the EUDI Wallet, they shall implement the protocol defined in OpenID4VCI [2], specified by the requirements defined for the Issuer in OpenID4VC-HAIP [1], clause 4 and its subclauses, unless specified otherwise in the present document."
+            }
+          ]
+        },
+        {
+          "id": "status-list-token",
+          "group": "status",
+          "title": "The Status List Token is well formed, current and signed",
+          "note": "The status list tab's battery on the served form, each warning and failure on its own line; trust from status_list_anchors, a role of its own, under the chain rules this tester applies to every chain (an INFO when none is configured).",
+          "sources": [
+            {
+              "chain": "HAIP 1.0 6.1 > Token Status List draft-20 5.1 / 5.2 (draft-21 identical)",
+              "eu": false,
+              "level": "shall",
+              "quote": "sub: REQUIRED. ... The sub (subject) claim MUST specify the URI of the Status List Token. The value MUST be equal to that of the uri claim contained in the status_list claim of the Referenced Token. iat: REQUIRED. ... exp: RECOMMENDED. ... ttl: RECOMMENDED. ... status_list: REQUIRED. ... The JWT MUST be secured using a cryptographic signature or MAC algorithm. Relying Parties MUST reject JWTs with an invalid signature."
+            },
+            {
+              "chain": "Token Status List draft-20 8.3",
+              "eu": false,
+              "level": "shall",
+              "quote": "All existing claims in the Status List Token MUST be checked according to the rules in Section 5.1 and Section 5.2: a. The subject claim (sub or 2) of the Status List Token MUST be equal to the uri claim in the status_list object of the Referenced Token ... c. If the expiration time is defined (exp or 4), it MUST be checked if the Status List Token is expired"
+            },
+            {
+              "chain": "Token Status List draft-20 11.3",
+              "eu": false,
+              "level": "note",
+              "quote": "This specification does not mandate specific methods for key resolution and trust management, however the following recommendations are made for specifications, profiles, or ecosystems that are planning to make use of the Status List mechanism: If the Issuer of the Referenced Token is the same entity as the Status Issuer, then the same key that is embedded into the Referenced Token may be used for the Status List Token."
+            },
+            {
+              "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+              "eu": true,
+              "level": "shall",
+              "quote": "When PID Providers and the EAA Providers are issuing PIDs and EAAs into the EUDI Wallet, they shall implement the protocol defined in OpenID4VCI [2], specified by the requirements defined for the Issuer in OpenID4VC-HAIP [1], clause 4 and its subclauses, unless specified otherwise in the present document."
+            }
+          ]
+        },
+        {
+          "id": "status-list-x5c",
+          "group": "status",
+          "title": "The Status List Token carries its signing chain",
+          "note": "A token without x5c (JWT) or x5chain (CWT) is a FAIL.",
+          "sources": [
+            {
+              "chain": "HAIP 1.0 6.1",
+              "eu": false,
+              "level": "shall",
+              "quote": "The public key used to validate the signature on the Status List Token defined in [I-D.ietf-oauth-status-list] MUST be included in the x5c JOSE header of the Token. The X.509 certificate of the trust anchor MUST NOT be included in the x5c JOSE header of the Status List Token. The X.509 certificate signing the request MUST NOT be self-signed."
+            },
+            {
+              "chain": "CIR (EU) 2024/2979 Art 8 + Annex II (CIR 2026/1731 Annex IV) > EAA-6.2.10.1-08 (mdoc)",
+              "eu": true,
+              "level": "shall",
+              "quote": "the CWT shall contain the x5chain in the protected header that contains the certificate or chain of certificates to verify the signature of the MSO revocation list."
+            }
+          ]
+        },
+        {
+          "id": "status-list-cwt-exp",
+          "group": "status",
+          "title": "An mdoc's status list carries exp",
+          "note": "",
+          "sources": [
+            {
+              "chain": "CIR (EU) 2024/2979 Art 8 + Annex II (CIR 2026/1731 Annex IV) > EAA-6.2.10.1-08",
+              "eu": true,
+              "level": "shall",
+              "quote": "For the MSO revocation list for the identifier list and status list mechanism, the following requirements apply: the exp claim shall be present. the ttl claim may be present."
+            }
+          ]
+        },
+        {
+          "id": "status-valid-after-issuance",
+          "group": "status",
+          "title": "A credential is VALID right after issuance",
+          "note": "Anything but VALID right after issuance is a WARN, since a provider may publish the list later than it issues.",
+          "sources": [
+            {
+              "chain": "HAIP 1.0 6.1 > Token Status List draft-20 7.1 (draft-21 identical)",
+              "eu": false,
+              "level": "note",
+              "quote": "0x00 - 'VALID' - The status of the Referenced Token is valid, correct or legal. 0x01 - 'INVALID' - The status of the Referenced Token is revoked, annulled, taken back, recalled or cancelled. 0x02 - 'SUSPENDED' - The status of the Referenced Token is temporarily invalid, hanging, debarred from privilege."
+            },
+            {
+              "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+              "eu": true,
+              "level": "shall",
+              "quote": "When PID Providers and the EAA Providers are issuing PIDs and EAAs into the EUDI Wallet, they shall implement the protocol defined in OpenID4VCI [2], specified by the requirements defined for the Issuer in OpenID4VC-HAIP [1], clause 4 and its subclauses, unless specified otherwise in the present document."
+            }
+          ]
+        },
+        {
+          "id": "status-values-revoked-only",
+          "group": "status",
+          "title": "Only valid and invalid for PID, QEAA and PuB-EAA",
+          "note": "Both texts are conditioned on the credential type, and the tester fails closed. A value other than valid / invalid is a FAIL when the credential is a PID by its type (vct in urn:eudi:pid:, docType eu.europa.ec.eudi.pid.1), its category says qualified or pub, every provider entitlement is PID_Provider, QEAA_Provider or PUB_EAA_Provider, or the provider's role is not established. It is INFO only when a registration certificate that chains to a registrar anchor and is bound to the access certificate names the provider a Non_Q_EAA_Provider alone, and the credential is neither a PID by type nor categorised.",
+          "sources": [
+            {
+              "chain": "CIR (EU) 2024/2979 Art 8 + Annex II (CIR 2026/1731 Annex IV) > EAA-4.2.11.1-06 / -06.1 (inserted by the CIR)",
+              "eu": true,
+              "level": "shall",
+              "quote": "When a status element is used for person identification data, qualified electronic attestations of attributes, or electronic attestations of attributes provided by or on behalf of a public sector body responsible for an authentic source, it shall only indicate whether the attestation is revoked or not revoked and shall not support any other status values, such as suspension. Where an attestation is revoked, it shall be permanently revoked."
+            },
+            {
+              "chain": "CIR (EU) 2024/2979 Annex II (CIR 2026/1731 Annex IV) > EAA-6.2.10.1-03 / -03.1 (mdoc)",
+              "eu": true,
+              "level": "shall",
+              "quote": "When a status element is used for person identification data, qualified electronic attestations of attributes or electronic attestations of attributes provided by or on behalf of a public sector body responsible for an authentic source, the status 'revoked' shall be exclusively used. For a status list this implies that only values 'valid' and 'invalid', as specified in the token status list specification shall be used."
+            },
+            {
+              "chain": "CIR (EU) 2024/2977 Annex (CIR 2026/1731 Annex I), 4.1 and the SD-JWT VC encoding (what makes a credential a PID by its type)",
+              "eu": true,
+              "level": "shall",
+              "quote": "The attestation type for person identification data in ISO/IEC mdoc format shall be 'eu.europa.ec.eudi.pid.1'. ... The base type of person identification data shall be 'urn:eudi:pid:1', included in the vct claim. All person identification data shall use types in the namespace 'urn:eudi:pid:'."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

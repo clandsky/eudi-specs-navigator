@@ -1,0 +1,54 @@
+# CIR (EU) 2026/1731 Annex XII = new Annex II to 2024/2982: ETSI TS 119 472-2 V1.2.1 clauses 4.1, 4.2, 5, 6 apply
+# with adaptations.
+- id: cir/annex-xii/scope-haip-redirect
+  subject: vp.authorization-response.encryption
+  spec: cir-2026-1731
+  locator: { at: "Annex XII, adaptation (1) of clause 1 Scope, point (b)" }
+  relation: profiles
+  level: info
+  applies_to: { transport: [ redirect ] }
+  quote: "Sections 5, 5.1, 5.3, 7, and 8 of [11] for transmission via Redirects or non-API mediated transmission mechanism"
+  note: "[11] is OpenID4VC-HAIP. HAIP §5 and §5.1 (response encryption) stay in scope for the redirect mechanism."
+  verified: source-checked
+- id: cir/annex-xii/scope-haip-api
+  subject: vp.authorization-response.encryption
+  spec: cir-2026-1731
+  locator: { at: "Annex XII, adaptation (1) of clause 1 Scope, point (b)" }
+  relation: profiles
+  level: info
+  applies_to: { transport: [ dc-api ] }
+  quote: "Sections 5, 5.2, 5.3, 7, and 8 of [11] for API-mediated transmission mechanism."
+  verified: source-checked
+- id: cir/annex-xii/OIDFVP-HAIP-COMMON-RESP-01
+  subject: vp.authorization-response.encryption
+  spec: cir-2026-1731
+  locator: { req: OIDFVP-HAIP-COMMON-RESP-01, at: "Annex XII, adaptation (17), clause 6.3.3" }
+  relation: voids
+  target: etsi-472-2/OIDFVP-HAIP-COMMON-RESP-01
+  quote: "OIDFVP-HAIP-COMMON-RESP-01: void."
+  verified: needs-review
+  review:
+    reason: >-
+      Void without effect: the CIR removes the ETSI duplicate, but HAIP §5 ("Response encryption MUST be performed") and
+      §5.1/§5.2 stay in scope through the adapted Scope clause 1(b). Encryption remains required. Whether the legislator
+      intended to relax encryption is not stated.
+- id: cir/annex-xii/OIDFVP-HAIP-COMMON-REQ-RO-02
+  subject: vp.request-object.verifier_info.registrar_dataset
+  spec: cir-2026-1731
+  locator: { req: OIDFVP-HAIP-COMMON-REQ-RO-02, at: "Annex XII, adaptation (16), clause 6.3.2.2" }
+  relation: voids
+  target: etsi-472-2/OIDFVP-HAIP-COMMON-REQ-RO-02
+  quote: "OIDFVP-HAIP-COMMON-REQ-RO-02: void"
+  verified: source-checked
+- id: cir/annex-xii/OIDFVP-HAIP-COMMON-REQ-RO-13
+  subject: vp.request-object.verifier_info.registration_cert
+  spec: cir-2026-1731
+  locator: { req: OIDFVP-HAIP-COMMON-REQ-RO-13, at: "Annex XII, adaptation (16), clause 6.3.2.2" }
+  relation: adapts
+  level: shall
+  applies_to: { role: [ verifier ] }
+  target: etsi-472-2/OIDFVP-HAIP-COMMON-REQ-RO-13
+  quote: "OIDFVP-HAIP-COMMON-REQ-RO-13: One of the elements of the verifier_info parameter shall include the registration
+    certificate."
+  note: Drops the ETSI condition "If the RP has a registration certificate".
+  verified: source-checked

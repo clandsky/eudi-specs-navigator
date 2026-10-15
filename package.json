@@ -1,0 +1,43 @@
+{
+  "name": "specs-navigator",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "pnpm run validate && tsc --noEmit -p . && vite build && tsx scripts/openapi-build.ts",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit -p .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "validate": "tsx scripts/validate.ts",
+    "sources:build": "tsx scripts/sources-build.ts",
+    "quote-check": "tsx scripts/quote-check.ts",
+    "c2bo:import": "tsx scripts/c2bo-import.ts",
+    "examples:build": "tsx scripts/examples-build.ts",
+    "schema:export": "tsx scripts/schema-export.ts",
+    "ci": "pnpm validate && pnpm quote-check --ci && pnpm test && pnpm build"
+  },
+  "dependencies": {
+    "@radix-ui/react-popover": "^1.3.1",
+    "@radix-ui/react-tooltip": "^1.4.1",
+    "jose": "^6.2.12",
+    "minisearch": "^7.2.0",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "yaml": "^2.9.1",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.3.3",
+    "@types/node": "^26.6.5",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.2",
+    "tailwindcss": "^4.3.3",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.4",
+    "vitest": "^5.0.4"
+  }
+}

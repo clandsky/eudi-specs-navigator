@@ -1,0 +1,63 @@
+id: vci-issuer-metadata
+title: Signed Credential Issuer metadata (application/jwt)
+subject: vci.metadata
+kind: http-response
+http:
+  status: 200
+  headers: { Content-Type: application/jwt }
+  body: { type: jwt, value: "{{jwt:metadata}}" }
+jwts:
+  metadata:
+    key: issuer-access
+    header: { typ: openidvci-issuer-metadata+jwt, alg: ES256, x5c: "{{x5c:issuer-access}}" }
+    payload:
+      sub: https://eaa.example.eu
+      iat: 1792065600
+      exp: 1792152000
+      credential_issuer: https://eaa.example.eu
+      credential_endpoint: https://eaa.example.eu/credential
+      nonce_endpoint: https://eaa.example.eu/nonce
+      notification_endpoint: https://eaa.example.eu/notification
+      batch_credential_issuance: { batch_size: 10 }
+      preferred_client_status_period: 2592000
+      issuer_info:
+        - { format: registration_cert, data: "eyJ0eXAiOiJyYy13cnArand0Ii...TEST-REGISTRATION-CERTIFICATE" }
+      credential_configurations_supported:
+        gym_membership_sd_jwt:
+          format: dc+sd-jwt
+          vct: urn:eudi:example:gym-membership:1
+          scope: gym_membership
+          cryptographic_binding_methods_supported: [jwk]
+          credential_signing_alg_values_supported: [ES256]
+          proof_types_supported:
+            jwt:
+              proof_signing_alg_values_supported: [ES256]
+              key_attestations_required: { key_storage: [iso_18045_high], user_authentication: [iso_18045_high] }
+            attestation:
+              proof_signing_alg_values_supported: [ES256]
+              key_attestations_required: { key_storage: [iso_18045_high], user_authentication: [iso_18045_high] }
+          credential_metadata:
+            credential_reuse_policy:
+              id: arf_annex_ii
+              options:
+                - { details: [once_only], batch_size: 10, reissue_trigger_unused: 3 }
+annotations:
+  /jwt/metadata/header/typ: vci.metadata.typ
+  /jwt/metadata/header/x5c: vci.metadata.x5c
+  /jwt/metadata/payload/sub: vci.metadata.sub
+  /jwt/metadata/payload/iat: vci.metadata.iat
+  /jwt/metadata/payload/credential_issuer: vci.metadata.credential_issuer
+  /jwt/metadata/payload/credential_endpoint: vci.metadata.credential_endpoint
+  /jwt/metadata/payload/nonce_endpoint: vci.metadata.nonce_endpoint
+  /jwt/metadata/payload/notification_endpoint: vci.metadata.notification_endpoint
+  /jwt/metadata/payload/batch_credential_issuance: vci.metadata.batch_credential_issuance
+  /jwt/metadata/payload/preferred_client_status_period: vci.metadata.preferred_client_status_period
+  /jwt/metadata/payload/issuer_info: vci.metadata.issuer_info
+  /jwt/metadata/payload/issuer_info/0: vci.metadata.issuer_info.registration_cert
+  /jwt/metadata/payload/credential_configurations_supported: vci.metadata.credential_configurations_supported
+  /jwt/metadata/payload/credential_configurations_supported/gym_membership_sd_jwt/format: vci.metadata.ccs.format
+  /jwt/metadata/payload/credential_configurations_supported/gym_membership_sd_jwt/scope: vci.metadata.ccs.scope
+  /jwt/metadata/payload/credential_configurations_supported/gym_membership_sd_jwt/cryptographic_binding_methods_supported: vci.metadata.ccs.cryptographic_binding_methods_supported
+  /jwt/metadata/payload/credential_configurations_supported/gym_membership_sd_jwt/proof_types_supported: vci.metadata.ccs.proof_types_supported
+  /jwt/metadata/payload/credential_configurations_supported/gym_membership_sd_jwt/proof_types_supported/jwt/key_attestations_required: vci.metadata.ccs.key_attestations_required
+  /jwt/metadata/payload/credential_configurations_supported/gym_membership_sd_jwt/credential_metadata/credential_reuse_policy: vci.metadata.ccs.credential_reuse_policy

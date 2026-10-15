@@ -1,0 +1,12 @@
+{
+  "id": "vci-authorization-response",
+  "http": {
+    "url": "https://wallet.example.eu/cb?code=SplxlOBeZQQYbYS6WxSbIA&state=af0ifjsldkj&iss=https%3A%2F%2Feaa.example.eu",
+    "status": 302,
+    "headers": {
+      "Location": "https://wallet.example.eu/cb?code=SplxlOBeZQQYbYS6WxSbIA&state=af0ifjsldkj&iss=https%3A%2F%2Feaa.example.eu"
+    }
+  },
+  "jwts": {},
+  "inputHash": "d870a1e3953ab486"
+}

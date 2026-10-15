@@ -1,0 +1,68 @@
+# Precedence table. Lower rank = higher precedence. Default order set by the project owner (2026-10-15):
+# temporal go-live compromises > CIR implementing acts > ETSI > standards.
+layers:
+  - id: golive
+    rank: 0
+    label: Go-live compromise
+    short: Go-live
+    normative: true
+    lens: true
+    description: >-
+      Temporal go-live compromises. Always time-bounded; while the window is open they overrule binding law,
+      afterwards the underlying rule applies again. Authored in the tool, not taken from the corpus.
+  - id: cir
+    rank: 1
+    label: Commission Implementing Regulation
+    short: CIR
+    normative: true
+    lens: true
+    description: CIR (EU) 2026/1731 and the implementing acts it amends (2024/2977, 2979, 2980, 2982).
+  - id: etsi
+    rank: 2
+    label: ETSI profile
+    short: ETSI
+    normative: true
+    lens: true
+    description: ETSI TS 119 472-3 (issuance) and TS 119 472-2 (presentation), binding via CIR Annexes XI and XII.
+  - id: haip
+    rank: 3
+    label: HAIP
+    short: HAIP
+    normative: true
+    lens: true
+    description: OpenID4VC High Assurance Interoperability Profile 1.0; restricts the option space of the base protocols.
+  - id: base
+    rank: 4
+    label: Base protocol
+    short: Base
+    normative: true
+    lens: false
+    description: OpenID4VCI, OpenID4VP, OAuth RFCs, IETF drafts, ISO/IEC 18013. Define the mechanics.
+  - id: primitive
+    rank: 5
+    label: Primitive
+    short: Prim
+    normative: true
+    lens: false
+    description: JOSE, COSE, SD-JWT, X.509. Define encodings and crypto.
+  - id: arf
+    rank: 6
+    label: ARF
+    short: ARF
+    normative: true
+    lens: false
+    description: Architecture and Reference Framework and its technical specifications; governs only where higher layers are silent.
+  - id: impl-de
+    rank: 7
+    label: German implementation
+    short: DE
+    normative: false
+    lens: true
+    description: German Wallet Development Documentation and Architekturkonzept. Shown as implementation; deviations are flagged.
+  - id: secondary
+    rank: null
+    label: Secondary source
+    short: 2nd
+    normative: false
+    lens: false
+    description: Conformance tests and guides (c2bo, EUDI Developer Guide). Cross-references only; never decide.

@@ -1,0 +1,70 @@
+# CIR (EU) 2026/1731 Annex XI = new Annex I to 2024/2982: ETSI TS 119 472-3 V1.1.1 applies with adaptations.
+- id: cir/annex-xi/binding
+  subject: vci
+  spec: cir-2026-1731
+  locator: { at: "Annex XI (Annex I to 2024/2982), introductory sentence" }
+  relation: profiles
+  level: shall
+  quote: "The technical specification ETSI TS 119 472-3 V1.1.1 (2026-03) shall apply with the following adaptations:"
+  verified: source-checked
+- id: cir/annex-xi/GEN-REQ-4.1-05
+  subject: vci.preauth.physical-presence
+  spec: cir-2026-1731
+  locator: { req: GEN-REQ-4.1-05, at: "Annex XI, point 1" }
+  relation: voids
+  target: etsi-472-3/GEN-REQ-4.1-05
+  quote: "GEN-REQ-4.1-05: Void"
+  verified: source-checked
+- id: cir/annex-xi/ISS-MDATA-REG_CERT-4.2.3-04
+  subject: vci.metadata.issuer_info.registration_cert
+  spec: cir-2026-1731
+  locator: { req: ISS-MDATA-REG_CERT-4.2.3-04, at: "Annex XI, point 2" }
+  relation: adapts
+  level: shall
+  applies_to: { role: [ issuer ] }
+  target: etsi-472-3/ISS-MDATA-REG_CERT-4.2.3-04
+  quote: "One of the elements in the issuer_info array parameter shall contain the PID/EAA Provider's registration
+    certificate."
+  note: ETSI says "may contain"; the CIR makes the registration certificate in issuer_info mandatory.
+  xref: [ { source: c2bo, id: issuer-info } ]
+  verified: source-checked
+- id: cir/annex-xi/ISS-MDATA-REG_CERT-4.2.3-07
+  subject: vci.metadata.issuer_info.registrar_dataset
+  spec: cir-2026-1731
+  locator: { req: ISS-MDATA-REG_CERT-4.2.3-07, at: "Annex XI, point 2" }
+  relation: voids
+  target: etsi-472-3/ISS-MDATA-REG_CERT-4.2.3-07
+  quote: "ISS-MDATA-REG_CERT-4.2.3-07: void"
+  verified: source-checked
+- id: cir/annex-xi/ISS-MDATA-REG_CERT-4.2.3-08
+  subject: vci.metadata.issuer_info.registrar_dataset
+  spec: cir-2026-1731
+  locator: { req: ISS-MDATA-REG_CERT-4.2.3-08, at: "Annex XI, point 2" }
+  relation: voids
+  target: etsi-472-3/ISS-MDATA-REG_CERT-4.2.3-08
+  quote: "ISS-MDATA-REG_CERT-4.2.3-08: void"
+  verified: source-checked
+- id: cir/annex-xi/ISS-MDATA-EAA-REUSE-POL-4.2.4.2-09
+  subject: vci.metadata.ccs.credential_reuse_policy
+  spec: cir-2026-1731
+  locator: { req: ISS-MDATA-EAA-REUSE-POL-4.2.4.2-09, at: "Annex XI, point 3" }
+  relation: adapts
+  level: shall
+  applies_to: { role: [ issuer ] }
+  target: etsi-472-3/ISS-MDATA-EAA-REUSE-POL-4.2.4.2-09
+  condition: id = arf_annex_ii and details contains once_only or per-relying-party.
+  quote: "Where the id member has the value 'arf_annex_ii' and the array mapped to the label 'details' contains the value
+    'once_only' or the value 'per-relying-party', then the JSON Object that contains this array mapped to the label
+    'details' shall also contain a JSON number mapped to the label 'reissue_trigger_unused'."
+  note: Widens the ETSI condition from once_only to once_only or per-relying-party.
+  xref: [ { source: c2bo, id: reuse-policy } ]
+  verified: source-checked
+- id: cir/annex-xi/annex-a
+  subject: vci.metadata.ccs.format
+  spec: cir-2026-1731
+  locator: { at: "Annex XI, point 4" }
+  relation: voids
+  target: etsi-472-3/ISS-MDATA-A.2-01
+  quote: "4. Annex A shall not apply."
+  note: Removes the X509-AC EAA issuance requirements (format x509_attr).
+  verified: source-checked

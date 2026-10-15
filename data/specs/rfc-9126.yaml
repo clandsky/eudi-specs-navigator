@@ -1,0 +1,11 @@
+id: rfc-9126
+title: "RFC 9126: OAuth 2.0 Pushed Authorization Requests"
+short: RFC 9126
+layer: base
+version: RFC 9126
+note: Not in the local corpus (pruned by reachability); sources:build downloads the RFC text.
+source:
+  text: sources/rfc9126.txt
+  fetch: https://www.rfc-editor.org/rfc/rfc9126.txt
+  url: https://www.rfc-editor.org/rfc/rfc9126
+anchor_template: https://www.rfc-editor.org/rfc/rfc9126#section-{section}

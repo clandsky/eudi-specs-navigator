@@ -1,0 +1,39 @@
+id: vci-auth-code-par
+title: Issuance — authorization code flow with PAR
+role: issuer
+subject: vci.flow.auth-code-par
+variant: { grant: authorization_code, device: same }
+summary: >-
+  Issuer-initiated issuance on one device. The Wallet authenticates with its Wallet Instance Attestation at the PAR and
+  token endpoints, binds the access token with DPoP, fetches a nonce, and proves key possession with a jwt proof that
+  carries the key attestation.
+participants:
+  - { id: wp, label: Wallet Provider, role: wallet-provider }
+  - { id: wallet, label: Wallet Unit, role: wallet }
+  - { id: as, label: Authorization Server, role: as }
+  - { id: issuer, label: Credential Issuer, role: issuer }
+steps:
+  - id: provision
+    from: wp
+    to: wallet
+    kind: internal
+    label: WIA + key attestation
+    subject: vci.provisioning
+    example: vci-wia
+    tags: [WIA, KA]
+    note: Before issuance. TR-WIA-2.2 and TR_KA-2.5 make the Wallet Provider responsible.
+  - { id: offer, from: issuer, to: wallet, kind: redirect, label: Credential Offer, subject: vci.offer, example: vci-offer, tags: ["eu-eaa-offer://"] }
+  - { id: metadata, from: wallet, to: issuer, kind: request, label: GET /.well-known/openid-credential-issuer, subject: vci.metadata, example: vci-issuer-metadata, tags: [signed] }
+  - { id: as-metadata, from: wallet, to: as, kind: request, label: GET /.well-known/oauth-authorization-server, subject: vci.as-metadata, example: vci-as-metadata }
+  - { id: par, from: wallet, to: as, kind: request, label: POST /par, subject: vci.par-request, example: vci-par-request, tags: [WIA + PoP, PKCE] }
+  - { id: par-response, from: as, to: wallet, kind: response, label: "201 request_uri", subject: vci.par-response, example: vci-par-response }
+  - { id: authorize, from: wallet, to: as, kind: redirect, label: GET /authorize?request_uri, subject: vci.authorization-request, example: vci-authorization-request, note: The user authenticates and consents at the authorization server. }
+  - { id: authz-response, from: as, to: wallet, kind: redirect, label: "302 code, iss", subject: vci.authorization-response, example: vci-authorization-response }
+  - { id: token, from: wallet, to: as, kind: request, label: POST /token, subject: vci.token-request, example: vci-token-request, tags: [WIA + PoP, DPoP] }
+  - { id: token-response, from: as, to: wallet, kind: response, label: DPoP access token, subject: vci.token-response, example: vci-token-response }
+  - { id: nonce, from: wallet, to: issuer, kind: request, label: POST /nonce, subject: vci.nonce-request, example: vci-nonce-request }
+  - { id: nonce-response, from: issuer, to: wallet, kind: response, label: c_nonce, subject: vci.nonce-response, example: vci-nonce-response }
+  - { id: credential, from: wallet, to: issuer, kind: request, label: POST /credential, subject: vci.credential-request, example: vci-credential-request, tags: [DPoP, proofs.jwt + KA] }
+  - { id: credential-response, from: issuer, to: wallet, kind: response, label: credentials, subject: vci.credential-response, example: vci-credential-response }
+  - { id: notification, from: wallet, to: issuer, kind: request, label: POST /notification, subject: vci.notification-request, example: vci-notification-request }
+  - { id: notification-response, from: issuer, to: wallet, kind: response, label: "204", subject: vci.notification-response }

@@ -1,0 +1,8 @@
+- { id: vp, kind: flow, title: Presentation (OpenID4VP) }
+- { id: vp.authorization-response, kind: message, parent: vp, title: Authorization Response (vp_token) }
+- { id: vp.authorization-response.encryption, kind: behaviour, parent: vp.authorization-response, title: Response encryption (direct_post.jwt / dc_api.jwt) }
+- { id: vp.request-object, kind: object, parent: vp, title: Request Object (JAR) }
+- { id: vp.request-object.verifier_info, kind: field, parent: vp.request-object, title: verifier_info, location: jwt-payload }
+- { id: vp.request-object.verifier_info.registration_cert, kind: value, parent: vp.request-object.verifier_info, title: verifier_info element carrying the registration certificate, location: jwt-payload }
+- { id: vp.request-object.verifier_info.registrar_dataset, kind: value, parent: vp.request-object.verifier_info, title: verifier_info element carrying RP Registrar-provided data, location: jwt-payload }
+- { id: vp.wallet.validate-registration-cert, kind: behaviour, parent: vp, title: Wallet authenticates and validates the RP registration certificate }

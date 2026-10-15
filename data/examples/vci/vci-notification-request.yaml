@@ -1,0 +1,13 @@
+id: vci-notification-request
+title: Notification Request
+subject: vci.notification-request
+kind: http-request
+http:
+  method: POST
+  url: https://eaa.example.eu/notification
+  headers:
+    Content-Type: application/json
+    Authorization: DPoP Kz~8mXK1EalYznwH-LC-1fBAo.4Ljp~zsPE_NeO.gxU
+  body: { type: json, value: { notification_id: 3fwe98js, event: credential_accepted } }
+annotations:
+  /http/body/event: vci.notification-request.event

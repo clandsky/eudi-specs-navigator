@@ -1,0 +1,4803 @@
+{
+  "generated": "2026-10-15",
+  "snapshot": "2026-10-15",
+  "candidates": [
+    {
+      "requirement": "metadata-retrieval",
+      "title": "Credential Issuer Metadata is served at the well-known path",
+      "level": "shall",
+      "eu": false,
+      "chain": "HAIP 1.0 4.1 > OpenID4VCI 1.0 12.2.2",
+      "specs": [
+        "haip-1.0",
+        "openid4vci-1.0"
+      ],
+      "quotedSpec": "openid4vci-1.0",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": [
+        "etsi-472-3/GEN-REQ-4.1-02",
+        "oid4vci/12.2.2/unsigned"
+      ]
+    },
+    {
+      "requirement": "metadata-retrieval",
+      "title": "Credential Issuer Metadata is served at the well-known path",
+      "level": "should",
+      "eu": false,
+      "chain": "OpenID4VCI 1.0 12.2.2",
+      "specs": [
+        "openid4vci-1.0"
+      ],
+      "quotedSpec": "openid4vci-1.0",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": [
+        "etsi-472-3/GEN-REQ-4.1-02",
+        "oid4vci/12.2.2/unsigned"
+      ]
+    },
+    {
+      "requirement": "metadata-retrieval",
+      "title": "Credential Issuer Metadata is served at the well-known path",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+      "specs": [
+        "cir-2026-1731",
+        "etsi-ts-119-472-3",
+        "haip-1.0"
+      ],
+      "quotedSpec": "etsi-ts-119-472-3",
+      "quoteFound": true,
+      "reqIds": [
+        "GEN-REQ-4.1-02"
+      ],
+      "coveredBy": [
+        "etsi-472-3/GEN-REQ-4.1-02",
+        "oid4vci/12.2.2/unsigned"
+      ]
+    },
+    {
+      "requirement": "metadata-identity",
+      "title": "credential_issuer equals the Credential Issuer Identifier",
+      "level": "shall",
+      "eu": false,
+      "chain": "HAIP 1.0 4.1 > OpenID4VCI 1.0 12.2.4 credential_issuer",
+      "specs": [
+        "haip-1.0",
+        "openid4vci-1.0"
+      ],
+      "quotedSpec": "openid4vci-1.0",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": [
+        "oid4vci/12.2.4/credential_issuer"
+      ]
+    },
+    {
+      "requirement": "metadata-identity",
+      "title": "credential_issuer equals the Credential Issuer Identifier",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+      "specs": [
+        "cir-2026-1731",
+        "etsi-ts-119-472-3",
+        "haip-1.0"
+      ],
+      "quotedSpec": "etsi-ts-119-472-3",
+      "quoteFound": true,
+      "reqIds": [
+        "GEN-REQ-4.1-02"
+      ],
+      "coveredBy": [
+        "oid4vci/12.2.4/credential_issuer"
+      ]
+    },
+    {
+      "requirement": "metadata-signed",
+      "title": "Signed Credential Issuer Metadata",
+      "level": "may",
+      "eu": false,
+      "chain": "OpenID4VCI 1.0 12.2.2",
+      "specs": [
+        "openid4vci-1.0"
+      ],
+      "quotedSpec": "openid4vci-1.0",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": [
+        "etsi-472-3/ISS-MDATA-4.2.1-01",
+        "haip/4.1/signed-metadata"
+      ]
+    },
+    {
+      "requirement": "metadata-signed",
+      "title": "Signed Credential Issuer Metadata",
+      "level": "shall",
+      "eu": false,
+      "chain": "HAIP 1.0 4.1",
+      "specs": [
+        "haip-1.0"
+      ],
+      "quotedSpec": "haip-1.0",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": [
+        "etsi-472-3/ISS-MDATA-4.2.1-01",
+        "haip/4.1/signed-metadata"
+      ]
+    },
+    {
+      "requirement": "metadata-signed",
+      "title": "Signed Credential Issuer Metadata",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 ISS-MDATA-4.2.1-01",
+      "specs": [
+        "cir-2026-1731",
+        "etsi-ts-119-472-3"
+      ],
+      "quotedSpec": "etsi-ts-119-472-3",
+      "quoteFound": true,
+      "reqIds": [
+        "ISS-MDATA-4.2.1-01"
+      ],
+      "coveredBy": [
+        "etsi-472-3/ISS-MDATA-4.2.1-01",
+        "haip/4.1/signed-metadata"
+      ]
+    },
+    {
+      "requirement": "metadata-signed-form",
+      "title": "Signed metadata is a typed JWS with sub and iat",
+      "level": "shall",
+      "eu": false,
+      "chain": "HAIP 1.0 4.1 > OpenID4VCI 1.0 12.2.3",
+      "specs": [
+        "haip-1.0",
+        "openid4vci-1.0"
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [],
+      "coveredBy": [
+        "oid4vci/12.2.3/typ"
+      ]
+    },
+    {
+      "requirement": "metadata-signed-form",
+      "title": "Signed metadata is a typed JWS with sub and iat",
+      "level": "shall",
+      "eu": false,
+      "chain": "HAIP 1.0 4.1",
+      "specs": [
+        "haip-1.0"
+      ],
+      "quotedSpec": "haip-1.0",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": [
+        "oid4vci/12.2.3/typ"
+      ]
+    },
+    {
+      "requirement": "metadata-signed-form",
+      "title": "Signed metadata is a typed JWS with sub and iat",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+      "specs": [
+        "cir-2026-1731",
+        "etsi-ts-119-472-3",
+        "haip-1.0"
+      ],
+      "quotedSpec": "etsi-ts-119-472-3",
+      "quoteFound": true,
+      "reqIds": [
+        "GEN-REQ-4.1-02"
+      ],
+      "coveredBy": [
+        "oid4vci/12.2.3/typ"
+      ]
+    },
+    {
+      "requirement": "metadata-signing-chain",
+      "title": "The metadata signing chain: access certificate, anchor excluded, not self-signed",
+      "level": "shall",
+      "eu": false,
+      "chain": "HAIP 1.0 4.1",
+      "specs": [
+        "haip-1.0"
+      ],
+      "quotedSpec": "haip-1.0",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": [
+        "etsi-472-3/ISS-MDATA-4.2.1-02",
+        "haip/4.1/x5c"
+      ]
+    },
+    {
+      "requirement": "metadata-signing-chain",
+      "title": "The metadata signing chain: access certificate, anchor excluded, not self-signed",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2977 Art 4(2)",
+      "specs": [
+        null
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [],
+      "coveredBy": [
+        "etsi-472-3/ISS-MDATA-4.2.1-02",
+        "haip/4.1/x5c"
+      ]
+    },
+    {
+      "requirement": "metadata-signing-chain",
+      "title": "The metadata signing chain: access certificate, anchor excluded, not self-signed",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 ISS-MDATA-4.2.1-02",
+      "specs": [
+        "cir-2026-1731",
+        "etsi-ts-119-472-3"
+      ],
+      "quotedSpec": "etsi-ts-119-472-3",
+      "quoteFound": true,
+      "reqIds": [
+        "ISS-MDATA-4.2.1-02"
+      ],
+      "coveredBy": [
+        "etsi-472-3/ISS-MDATA-4.2.1-02",
+        "haip/4.1/x5c"
+      ]
+    },
+    {
+      "requirement": "metadata-signing-chain",
+      "title": "The metadata signing chain: access certificate, anchor excluded, not self-signed",
+      "level": "shall",
+      "eu": true,
+      "chain": "ETSI TS 119 472-3 V1.1.1 ISS-MDATA-ACC_CERT-4.2.2-01 / -02",
+      "specs": [
+        "etsi-ts-119-472-3"
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [
+        "ISS-MDATA-ACC_CERT-4.2.2-01"
+      ],
+      "coveredBy": [
+        "etsi-472-3/ISS-MDATA-4.2.1-02",
+        "haip/4.1/x5c"
+      ]
+    },
+    {
+      "requirement": "metadata-signing-chain",
+      "title": "The metadata signing chain: access certificate, anchor excluded, not self-signed",
+      "level": "should",
+      "eu": true,
+      "chain": "ETSI TS 119 472-3 V1.1.1 ISS-MDATA-ACC_CERT-4.2.2-03",
+      "specs": [
+        "etsi-ts-119-472-3"
+      ],
+      "quotedSpec": "etsi-ts-119-472-3",
+      "quoteFound": true,
+      "reqIds": [
+        "ISS-MDATA-ACC_CERT-4.2.2-03"
+      ],
+      "coveredBy": [
+        "etsi-472-3/ISS-MDATA-4.2.1-02",
+        "haip/4.1/x5c"
+      ]
+    },
+    {
+      "requirement": "metadata-signing-chain",
+      "title": "The metadata signing chain: access certificate, anchor excluded, not self-signed",
+      "level": "note",
+      "eu": true,
+      "chain": "CIR (EU) 2025/848 Art 7 + Annex IV pt 3 (CIR 2026/1730 Annex II) > ETSI TS 119 411-8 V1.1.1",
+      "specs": [
+        null,
+        null
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [],
+      "coveredBy": [
+        "etsi-472-3/ISS-MDATA-4.2.1-02",
+        "haip/4.1/x5c"
+      ]
+    },
+    {
+      "requirement": "endpoints-https",
+      "title": "Every endpoint URL uses https",
+      "level": "shall",
+      "eu": false,
+      "chain": "HAIP 1.0 4.1 > OpenID4VCI 1.0 12.2.4 (credential_endpoint, nonce_endpoint, deferred_credential_endpoint, notification_endpoint)",
+      "specs": [
+        "haip-1.0",
+        "openid4vci-1.0"
+      ],
+      "quotedSpec": "openid4vci-1.0",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": [
+        "oid4vci/12.2.4/credential_endpoint"
+      ]
+    },
+    {
+      "requirement": "endpoints-https",
+      "title": "Every endpoint URL uses https",
+      "level": "shall",
+      "eu": false,
+      "chain": "HAIP 1.0 4.1 > RFC 8414 2 > RFC 6749 3.1 / 3.2 (authorization and token endpoints)",
+      "specs": [
+        "haip-1.0",
+        "rfc-8414",
+        "rfc-6749"
+      ],
+      "quotedSpec": "rfc-6749",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": [
+        "oid4vci/12.2.4/credential_endpoint"
+      ]
+    },
+    {
+      "requirement": "endpoints-https",
+      "title": "Every endpoint URL uses https",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+      "specs": [
+        "cir-2026-1731",
+        "etsi-ts-119-472-3",
+        "haip-1.0"
+      ],
+      "quotedSpec": "etsi-ts-119-472-3",
+      "quoteFound": true,
+      "reqIds": [
+        "GEN-REQ-4.1-02"
+      ],
+      "coveredBy": [
+        "oid4vci/12.2.4/credential_endpoint"
+      ]
+    },
+    {
+      "requirement": "metadata-scope",
+      "title": "A scope for every Credential Configuration",
+      "level": "shall",
+      "eu": false,
+      "chain": "HAIP 1.0 4.1",
+      "specs": [
+        "haip-1.0"
+      ],
+      "quotedSpec": "haip-1.0",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": [
+        "haip/4.1/scope"
+      ]
+    },
+    {
+      "requirement": "metadata-scope",
+      "title": "A scope for every Credential Configuration",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+      "specs": [
+        "cir-2026-1731",
+        "etsi-ts-119-472-3",
+        "haip-1.0"
+      ],
+      "quotedSpec": "etsi-ts-119-472-3",
+      "quoteFound": true,
+      "reqIds": [
+        "GEN-REQ-4.1-02"
+      ],
+      "coveredBy": [
+        "haip/4.1/scope"
+      ]
+    },
+    {
+      "requirement": "metadata-nonce-endpoint",
+      "title": "A nonce endpoint when key binding is required",
+      "level": "shall",
+      "eu": false,
+      "chain": "HAIP 1.0 4.1",
+      "specs": [
+        "haip-1.0"
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [],
+      "coveredBy": [
+        "haip/4.1/nonce-endpoint"
+      ]
+    },
+    {
+      "requirement": "metadata-nonce-endpoint",
+      "title": "A nonce endpoint when key binding is required",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+      "specs": [
+        "cir-2026-1731",
+        "etsi-ts-119-472-3",
+        "haip-1.0"
+      ],
+      "quotedSpec": "etsi-ts-119-472-3",
+      "quoteFound": true,
+      "reqIds": [
+        "GEN-REQ-4.1-02"
+      ],
+      "coveredBy": [
+        "haip/4.1/nonce-endpoint"
+      ]
+    },
+    {
+      "requirement": "metadata-structure",
+      "title": "Structural constraints of the metadata parameters",
+      "level": "shall",
+      "eu": false,
+      "chain": "HAIP 1.0 4.1 > OpenID4VCI 1.0 12.2.4 batch_credential_issuance.batch_size",
+      "specs": [
+        "haip-1.0",
+        "openid4vci-1.0"
+      ],
+      "quotedSpec": "openid4vci-1.0",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": [
+        "oid4vci/12.2.4/proof_types_supported"
+      ]
+    },
+    {
+      "requirement": "metadata-structure",
+      "title": "Structural constraints of the metadata parameters",
+      "level": "shall",
+      "eu": false,
+      "chain": "OpenID4VCI 1.0 12.2.4 credential_request_encryption / credential_response_encryption",
+      "specs": [
+        "openid4vci-1.0"
+      ],
+      "quotedSpec": "openid4vci-1.0",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": [
+        "oid4vci/12.2.4/proof_types_supported"
+      ]
+    },
+    {
+      "requirement": "metadata-structure",
+      "title": "Structural constraints of the metadata parameters",
+      "level": "shall",
+      "eu": false,
+      "chain": "OpenID4VCI 1.0 12.2.4 proof_types_supported",
+      "specs": [
+        "openid4vci-1.0"
+      ],
+      "quotedSpec": "openid4vci-1.0",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": [
+        "oid4vci/12.2.4/proof_types_supported"
+      ]
+    },
+    {
+      "requirement": "metadata-structure",
+      "title": "Structural constraints of the metadata parameters",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+      "specs": [
+        "cir-2026-1731",
+        "etsi-ts-119-472-3",
+        "haip-1.0"
+      ],
+      "quotedSpec": "etsi-ts-119-472-3",
+      "quoteFound": true,
+      "reqIds": [
+        "GEN-REQ-4.1-02"
+      ],
+      "coveredBy": [
+        "oid4vci/12.2.4/proof_types_supported"
+      ]
+    },
+    {
+      "requirement": "as-metadata",
+      "title": "Authorization server metadata at the RFC 8414 location with a matching issuer",
+      "level": "shall",
+      "eu": false,
+      "chain": "HAIP 1.0 4.1",
+      "specs": [
+        "haip-1.0"
+      ],
+      "quotedSpec": "haip-1.0",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": [
+        "haip/4.1/as-metadata"
+      ]
+    },
+    {
+      "requirement": "as-metadata",
+      "title": "Authorization server metadata at the RFC 8414 location with a matching issuer",
+      "level": "shall",
+      "eu": false,
+      "chain": "HAIP 1.0 4.1 > RFC 8414 3.3",
+      "specs": [
+        "haip-1.0",
+        "rfc-8414"
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [],
+      "coveredBy": [
+        "haip/4.1/as-metadata"
+      ]
+    },
+    {
+      "requirement": "as-metadata",
+      "title": "Authorization server metadata at the RFC 8414 location with a matching issuer",
+      "level": "shall",
+      "eu": false,
+      "chain": "HAIP 1.0 4.1 > RFC 8414 2 token_endpoint",
+      "specs": [
+        "haip-1.0",
+        "rfc-8414"
+      ],
+      "quotedSpec": "rfc-8414",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": [
+        "haip/4.1/as-metadata"
+      ]
+    },
+    {
+      "requirement": "as-metadata",
+      "title": "Authorization server metadata at the RFC 8414 location with a matching issuer",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+      "specs": [
+        "cir-2026-1731",
+        "etsi-ts-119-472-3",
+        "haip-1.0"
+      ],
+      "quotedSpec": "etsi-ts-119-472-3",
+      "quoteFound": true,
+      "reqIds": [
+        "GEN-REQ-4.1-02"
+      ],
+      "coveredBy": [
+        "haip/4.1/as-metadata"
+      ]
+    },
+    {
+      "requirement": "as-response-types",
+      "title": "response_types_supported, or pre-authorized code only",
+      "level": "shall",
+      "eu": false,
+      "chain": "HAIP 1.0 4.1 > RFC 8414 2",
+      "specs": [
+        "haip-1.0",
+        "rfc-8414"
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [],
+      "coveredBy": []
+    },
+    {
+      "requirement": "as-response-types",
+      "title": "response_types_supported, or pre-authorized code only",
+      "level": "may",
+      "eu": false,
+      "chain": "OpenID4VCI 1.0 12.2.4",
+      "specs": [
+        "openid4vci-1.0"
+      ],
+      "quotedSpec": "openid4vci-1.0",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": []
+    },
+    {
+      "requirement": "as-response-types",
+      "title": "response_types_supported, or pre-authorized code only",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+      "specs": [
+        "cir-2026-1731",
+        "etsi-ts-119-472-3",
+        "haip-1.0"
+      ],
+      "quotedSpec": "etsi-ts-119-472-3",
+      "quoteFound": true,
+      "reqIds": [
+        "GEN-REQ-4.1-02"
+      ],
+      "coveredBy": []
+    },
+    {
+      "requirement": "as-grant-types",
+      "title": "Grant types and anonymous pre-authorized access advertised",
+      "level": "note",
+      "eu": false,
+      "chain": "HAIP 1.0 4.1 > RFC 8414 2 grant_types_supported",
+      "specs": [
+        "haip-1.0",
+        "rfc-8414"
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [],
+      "coveredBy": []
+    },
+    {
+      "requirement": "as-grant-types",
+      "title": "Grant types and anonymous pre-authorized access advertised",
+      "level": "note",
+      "eu": false,
+      "chain": "OpenID4VCI 1.0 12.3 pre-authorized_grant_anonymous_access_supported",
+      "specs": [
+        "openid4vci-1.0"
+      ],
+      "quotedSpec": "openid4vci-1.0",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": []
+    },
+    {
+      "requirement": "as-grant-types",
+      "title": "Grant types and anonymous pre-authorized access advertised",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+      "specs": [
+        "cir-2026-1731",
+        "etsi-ts-119-472-3",
+        "haip-1.0"
+      ],
+      "quotedSpec": "etsi-ts-119-472-3",
+      "quoteFound": true,
+      "reqIds": [
+        "GEN-REQ-4.1-02"
+      ],
+      "coveredBy": []
+    },
+    {
+      "requirement": "as-pkce",
+      "title": "PKCE with S256",
+      "level": "shall",
+      "eu": false,
+      "chain": "HAIP 1.0 clause 4 > FAPI 2.0 Security Profile",
+      "specs": [
+        "haip-1.0",
+        null
+      ],
+      "quotedSpec": "haip-1.0",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": [
+        "haip/4/pkce"
+      ]
+    },
+    {
+      "requirement": "as-pkce",
+      "title": "PKCE with S256",
+      "level": "shall",
+      "eu": false,
+      "chain": "HAIP 1.0 clause 4 > FAPI 2.0 Security Profile 5.3.2.2 (authorization endpoint flows, authorization server)",
+      "specs": [
+        "haip-1.0",
+        null
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [],
+      "coveredBy": [
+        "haip/4/pkce"
+      ]
+    },
+    {
+      "requirement": "as-pkce",
+      "title": "PKCE with S256",
+      "level": "note",
+      "eu": false,
+      "chain": "RFC 8414 2 code_challenge_methods_supported",
+      "specs": [
+        "rfc-8414"
+      ],
+      "quotedSpec": "rfc-8414",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": [
+        "haip/4/pkce"
+      ]
+    },
+    {
+      "requirement": "as-pkce",
+      "title": "PKCE with S256",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+      "specs": [
+        "cir-2026-1731",
+        "etsi-ts-119-472-3",
+        "haip-1.0"
+      ],
+      "quotedSpec": "etsi-ts-119-472-3",
+      "quoteFound": true,
+      "reqIds": [
+        "GEN-REQ-4.1-02"
+      ],
+      "coveredBy": [
+        "haip/4/pkce"
+      ]
+    },
+    {
+      "requirement": "as-par",
+      "title": "Pushed authorization requests",
+      "level": "shall",
+      "eu": false,
+      "chain": "HAIP 1.0 clause 4 > FAPI 2.0 Security Profile",
+      "specs": [
+        "haip-1.0",
+        null
+      ],
+      "quotedSpec": "haip-1.0",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": [
+        "haip/4/par"
+      ]
+    },
+    {
+      "requirement": "as-par",
+      "title": "Pushed authorization requests",
+      "level": "shall",
+      "eu": false,
+      "chain": "HAIP 1.0 clause 4 > FAPI 2.0 Security Profile 5.3.2.2",
+      "specs": [
+        "haip-1.0",
+        null
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [],
+      "coveredBy": [
+        "haip/4/par"
+      ]
+    },
+    {
+      "requirement": "as-par",
+      "title": "Pushed authorization requests",
+      "level": "note",
+      "eu": false,
+      "chain": "HAIP 1.0 clause 4",
+      "specs": [
+        "haip-1.0"
+      ],
+      "quotedSpec": "haip-1.0",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": [
+        "haip/4/par"
+      ]
+    },
+    {
+      "requirement": "as-par",
+      "title": "Pushed authorization requests",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+      "specs": [
+        "cir-2026-1731",
+        "etsi-ts-119-472-3",
+        "haip-1.0"
+      ],
+      "quotedSpec": "etsi-ts-119-472-3",
+      "quoteFound": true,
+      "reqIds": [
+        "GEN-REQ-4.1-02"
+      ],
+      "coveredBy": [
+        "haip/4/par"
+      ]
+    },
+    {
+      "requirement": "as-par-required-flag",
+      "title": "require_pushed_authorization_requests advertised",
+      "level": "note",
+      "eu": false,
+      "chain": "HAIP 1.0 clause 4 > FAPI 2.0 Security Profile 5.3.2.2 > RFC 9126 5",
+      "specs": [
+        "haip-1.0",
+        null,
+        "rfc-9126"
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [],
+      "coveredBy": []
+    },
+    {
+      "requirement": "as-par-required-flag",
+      "title": "require_pushed_authorization_requests advertised",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+      "specs": [
+        "cir-2026-1731",
+        "etsi-ts-119-472-3",
+        "haip-1.0"
+      ],
+      "quotedSpec": "etsi-ts-119-472-3",
+      "quoteFound": true,
+      "reqIds": [
+        "GEN-REQ-4.1-02"
+      ],
+      "coveredBy": []
+    },
+    {
+      "requirement": "as-dpop",
+      "title": "DPoP support advertised",
+      "level": "shall",
+      "eu": false,
+      "chain": "HAIP 1.0 clause 4",
+      "specs": [
+        "haip-1.0"
+      ],
+      "quotedSpec": "haip-1.0",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": [
+        "haip/4/dpop"
+      ]
+    },
+    {
+      "requirement": "as-dpop",
+      "title": "DPoP support advertised",
+      "level": "note",
+      "eu": false,
+      "chain": "RFC 9449 5.1",
+      "specs": [
+        "rfc-9449"
+      ],
+      "quotedSpec": "rfc-9449",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": [
+        "haip/4/dpop"
+      ]
+    },
+    {
+      "requirement": "as-dpop",
+      "title": "DPoP support advertised",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+      "specs": [
+        "cir-2026-1731",
+        "etsi-ts-119-472-3",
+        "haip-1.0"
+      ],
+      "quotedSpec": "etsi-ts-119-472-3",
+      "quoteFound": true,
+      "reqIds": [
+        "GEN-REQ-4.1-02"
+      ],
+      "coveredBy": [
+        "haip/4/dpop"
+      ]
+    },
+    {
+      "requirement": "as-client-auth",
+      "title": "Client authentication with wallet attestations advertised",
+      "level": "shall",
+      "eu": false,
+      "chain": "HAIP 1.0 4.4.1",
+      "specs": [
+        "haip-1.0"
+      ],
+      "quotedSpec": "haip-1.0",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": [
+        "abca-07/10.1/auth-method",
+        "haip/4.4.1/client-auth"
+      ]
+    },
+    {
+      "requirement": "as-client-auth",
+      "title": "Client authentication with wallet attestations advertised",
+      "level": "should",
+      "eu": false,
+      "chain": "HAIP 1.0 4.4.1",
+      "specs": [
+        "haip-1.0"
+      ],
+      "quotedSpec": "haip-1.0",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": [
+        "abca-07/10.1/auth-method",
+        "haip/4.4.1/client-auth"
+      ]
+    },
+    {
+      "requirement": "as-client-auth",
+      "title": "Client authentication with wallet attestations advertised",
+      "level": "should",
+      "eu": false,
+      "chain": "OpenID4VCI 1.0 Appendix E > draft-ietf-oauth-attestation-based-client-auth-07 10.1",
+      "specs": [
+        "openid4vci-1.0",
+        "attestation-client-auth-07"
+      ],
+      "quotedSpec": "attestation-client-auth-07",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": [
+        "abca-07/10.1/auth-method",
+        "haip/4.4.1/client-auth"
+      ]
+    },
+    {
+      "requirement": "as-client-auth",
+      "title": "Client authentication with wallet attestations advertised",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 TOKEN-REQ-4.5.1-01",
+      "specs": [
+        "cir-2026-1731",
+        "etsi-ts-119-472-3"
+      ],
+      "quotedSpec": "etsi-ts-119-472-3",
+      "quoteFound": true,
+      "reqIds": [
+        "TOKEN-REQ-4.5.1-01"
+      ],
+      "coveredBy": [
+        "abca-07/10.1/auth-method",
+        "haip/4.4.1/client-auth"
+      ]
+    },
+    {
+      "requirement": "as-iss",
+      "title": "The iss parameter in the authorization response advertised",
+      "level": "shall",
+      "eu": false,
+      "chain": "HAIP 1.0 clause 4 > FAPI 2.0 Security Profile",
+      "specs": [
+        "haip-1.0",
+        null
+      ],
+      "quotedSpec": "haip-1.0",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": [
+        "haip/4/iss"
+      ]
+    },
+    {
+      "requirement": "as-iss",
+      "title": "The iss parameter in the authorization response advertised",
+      "level": "shall",
+      "eu": false,
+      "chain": "HAIP 1.0 clause 4 > FAPI 2.0 Security Profile 5.3.2.2",
+      "specs": [
+        "haip-1.0",
+        null
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [],
+      "coveredBy": [
+        "haip/4/iss"
+      ]
+    },
+    {
+      "requirement": "as-iss",
+      "title": "The iss parameter in the authorization response advertised",
+      "level": "note",
+      "eu": false,
+      "chain": "RFC 9207 3",
+      "specs": [
+        null
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [],
+      "coveredBy": [
+        "haip/4/iss"
+      ]
+    },
+    {
+      "requirement": "as-iss",
+      "title": "The iss parameter in the authorization response advertised",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+      "specs": [
+        "cir-2026-1731",
+        "etsi-ts-119-472-3",
+        "haip-1.0"
+      ],
+      "quotedSpec": "etsi-ts-119-472-3",
+      "quoteFound": true,
+      "reqIds": [
+        "GEN-REQ-4.1-02"
+      ],
+      "coveredBy": [
+        "haip/4/iss"
+      ]
+    },
+    {
+      "requirement": "as-servers",
+      "title": "authorization_servers and the offer's authorization_server hint",
+      "level": "shall",
+      "eu": false,
+      "chain": "HAIP 1.0 4.1 > OpenID4VCI 1.0 12.2.4 authorization_servers",
+      "specs": [
+        "haip-1.0",
+        "openid4vci-1.0"
+      ],
+      "quotedSpec": "openid4vci-1.0",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": [
+        "oid4vci/12.2.4/authorization_servers"
+      ]
+    },
+    {
+      "requirement": "as-servers",
+      "title": "authorization_servers and the offer's authorization_server hint",
+      "level": "shall",
+      "eu": false,
+      "chain": "OpenID4VCI 1.0 4.1.1 authorization_server",
+      "specs": [
+        "openid4vci-1.0"
+      ],
+      "quotedSpec": "openid4vci-1.0",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": [
+        "oid4vci/12.2.4/authorization_servers"
+      ]
+    },
+    {
+      "requirement": "as-servers",
+      "title": "authorization_servers and the offer's authorization_server hint",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+      "specs": [
+        "cir-2026-1731",
+        "etsi-ts-119-472-3",
+        "haip-1.0"
+      ],
+      "quotedSpec": "etsi-ts-119-472-3",
+      "quoteFound": true,
+      "reqIds": [
+        "GEN-REQ-4.1-02"
+      ],
+      "coveredBy": [
+        "oid4vci/12.2.4/authorization_servers"
+      ]
+    },
+    {
+      "requirement": "issuer-info",
+      "title": "issuer_info with the registration certificate",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 ISS-MDATA-REG_CERT-4.2.3-01 / -02",
+      "specs": [
+        "cir-2026-1731",
+        "etsi-ts-119-472-3"
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [
+        "ISS-MDATA-REG_CERT-4.2.3-01"
+      ],
+      "coveredBy": [
+        "cir/annex-xi/ISS-MDATA-REG_CERT-4.2.3-04",
+        "etsi-472-3/ISS-MDATA-REG_CERT-4.2.3-01"
+      ]
+    },
+    {
+      "requirement": "issuer-info",
+      "title": "issuer_info with the registration certificate",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR 2026/1731 Annex XI (adapting ISS-MDATA-REG_CERT-4.2.3-04, 'may' in the TS)",
+      "specs": [
+        "cir-2026-1731"
+      ],
+      "quotedSpec": "cir-2026-1731",
+      "quoteFound": true,
+      "reqIds": [
+        "ISS-MDATA-REG_CERT-4.2.3-04"
+      ],
+      "coveredBy": [
+        "cir/annex-xi/ISS-MDATA-REG_CERT-4.2.3-04",
+        "etsi-472-3/ISS-MDATA-REG_CERT-4.2.3-01"
+      ]
+    },
+    {
+      "requirement": "issuer-info",
+      "title": "issuer_info with the registration certificate",
+      "level": "shall",
+      "eu": true,
+      "chain": "ETSI TS 119 472-3 V1.1.1 ISS-MDATA-REG_CERT-4.2.3-05 / -06",
+      "specs": [
+        "etsi-ts-119-472-3"
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [
+        "ISS-MDATA-REG_CERT-4.2.3-05"
+      ],
+      "coveredBy": [
+        "cir/annex-xi/ISS-MDATA-REG_CERT-4.2.3-04",
+        "etsi-472-3/ISS-MDATA-REG_CERT-4.2.3-01"
+      ]
+    },
+    {
+      "requirement": "issuer-info",
+      "title": "issuer_info with the registration certificate",
+      "level": "note",
+      "eu": true,
+      "chain": "CIR 2026/1731 Annex XI",
+      "specs": [
+        "cir-2026-1731"
+      ],
+      "quotedSpec": "cir-2026-1731",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": [
+        "cir/annex-xi/ISS-MDATA-REG_CERT-4.2.3-04",
+        "etsi-472-3/ISS-MDATA-REG_CERT-4.2.3-01"
+      ]
+    },
+    {
+      "requirement": "registration-certificate-signature",
+      "title": "The registration certificate is signed by a registrar on the trusted list",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2025/848 Art 8 + Annex V pt 3 (CIR 2026/1730 Annex III) > ETSI TS 119 475 V1.2.1 GEN-5.2.1-03",
+      "specs": [
+        null,
+        null
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [
+        "GEN-5.2.1-03"
+      ],
+      "coveredBy": []
+    },
+    {
+      "requirement": "registration-certificate-signature",
+      "title": "The registration certificate is signed by a registrar on the trusted list",
+      "level": "shall",
+      "eu": true,
+      "chain": "ETSI TS 119 475 V1.2.1 GEN-5.2.2-01, Table 5 (x5c)",
+      "specs": [
+        null
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [
+        "GEN-5.2.2-01"
+      ],
+      "coveredBy": []
+    },
+    {
+      "requirement": "registration-certificate-signature",
+      "title": "The registration certificate is signed by a registrar on the trusted list",
+      "level": "note",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2980 Annex II section 5 (CIR 2026/1731 Annex X)",
+      "specs": [
+        "cir-2026-1731"
+      ],
+      "quotedSpec": "cir-2026-1731",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": []
+    },
+    {
+      "requirement": "registration-certificate-header",
+      "title": "Registration certificate header: typ, alg, x5c",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2025/848 Annex V pt 3 (CIR 2026/1730 Annex III) > ETSI TS 119 475 V1.2.1 GEN-5.2.2-01, Table 5",
+      "specs": [
+        null,
+        null
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [
+        "GEN-5.2.2-01"
+      ],
+      "coveredBy": []
+    },
+    {
+      "requirement": "registration-certificate-payload",
+      "title": "Registration certificate payload: every Table 7 field",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2025/848 Annex V pt 3 (CIR 2026/1730 Annex III) > ETSI TS 119 475 V1.2.1 GEN-5.2.4-01, Table 7",
+      "specs": [
+        null,
+        null
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [
+        "GEN-5.2.4-01"
+      ],
+      "coveredBy": []
+    },
+    {
+      "requirement": "registration-certificate-entitlements",
+      "title": "Registration certificate entitlements from Annex A.2",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2025/848 Annex V pt 3 (CIR 2026/1730 Annex III) > ETSI TS 119 475 V1.2.1 GEN-5.2.4-03",
+      "specs": [
+        null,
+        null
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [
+        "GEN-5.2.4-03"
+      ],
+      "coveredBy": []
+    },
+    {
+      "requirement": "registration-certificate-provider",
+      "title": "The embedded registration certificate is an attestation provider's",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 ISS-MDATA-REG_CERT-4.2.3-06",
+      "specs": [
+        "cir-2026-1731",
+        "etsi-ts-119-472-3"
+      ],
+      "quotedSpec": "etsi-ts-119-472-3",
+      "quoteFound": true,
+      "reqIds": [
+        "ISS-MDATA-REG_CERT-4.2.3-06"
+      ],
+      "coveredBy": []
+    },
+    {
+      "requirement": "registration-certificate-provider",
+      "title": "The embedded registration certificate is an attestation provider's",
+      "level": "note",
+      "eu": true,
+      "chain": "ETSI TS 119 475 V1.2.1 A.2.2 to A.2.5",
+      "specs": [
+        null
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [],
+      "coveredBy": []
+    },
+    {
+      "requirement": "registration-certificate-provides-attestations",
+      "title": "provides_attestations for an attestation provider",
+      "level": "should",
+      "eu": true,
+      "chain": "CIR (EU) 2025/848 Annex V pt 3 (CIR 2026/1730 Annex III) > ETSI TS 119 475 V1.2.1 GEN-5.2.4-05, Table 8",
+      "specs": [
+        null,
+        null
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [
+        "GEN-5.2.4-05"
+      ],
+      "coveredBy": []
+    },
+    {
+      "requirement": "registration-certificate-subject",
+      "title": "sub is an EN 319 412-1 semantic identifier",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2025/848 Annex V pt 3 (CIR 2026/1730 Annex III) > ETSI TS 119 475 V1.2.1 GEN-5.1.3-01 / -02 / -03",
+      "specs": [
+        null,
+        null
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [
+        "GEN-5.1.3-01"
+      ],
+      "coveredBy": []
+    },
+    {
+      "requirement": "registration-certificate-subject",
+      "title": "sub is an EN 319 412-1 semantic identifier",
+      "level": "note",
+      "eu": true,
+      "chain": "ETSI TS 119 475 V1.2.1 Table 2",
+      "specs": [
+        null
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [],
+      "coveredBy": []
+    },
+    {
+      "requirement": "registration-certificate-binding",
+      "title": "The registration certificate belongs to the access certificate's subject",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 ISS-MDATA-4.2.1-02 and ISS-MDATA-REG_CERT-4.2.3-06",
+      "specs": [
+        "cir-2026-1731",
+        "etsi-ts-119-472-3"
+      ],
+      "quotedSpec": "etsi-ts-119-472-3",
+      "quoteFound": true,
+      "reqIds": [
+        "ISS-MDATA-4.2.1-02",
+        "ISS-MDATA-REG_CERT-4.2.3-06"
+      ],
+      "coveredBy": []
+    },
+    {
+      "requirement": "registration-certificate-binding",
+      "title": "The registration certificate belongs to the access certificate's subject",
+      "level": "note",
+      "eu": true,
+      "chain": "ETSI TS 119 475 V1.2.1 4.5 and Table 1",
+      "specs": [
+        null
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [],
+      "coveredBy": []
+    },
+    {
+      "requirement": "registration-certificate-validity",
+      "title": "Registration certificate valid at most 12 months",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2025/848 Annex V pt 3 (CIR 2026/1730 Annex III) > ETSI TS 119 475 V1.2.1 GEN-5.2.4-08",
+      "specs": [
+        null,
+        null
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [
+        "GEN-5.2.4-08"
+      ],
+      "coveredBy": []
+    },
+    {
+      "requirement": "proof-types-key-attestations",
+      "title": "Device-bound configurations list the jwt and attestation proof types with key_attestations_required",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2979 Art 6(2) + Annex Ib (CIR 2026/1731 Annex III) > TR_KA-4",
+      "specs": [
+        "cir-2026-1731",
+        null
+      ],
+      "quotedSpec": "cir-2026-1731",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": [
+        "cir/TR_KA-4"
+      ]
+    },
+    {
+      "requirement": "proof-types-key-attestations",
+      "title": "Device-bound configurations list the jwt and attestation proof types with key_attestations_required",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2979 Annex Ib (CIR 2026/1731 Annex III) > TR_KA-4.1",
+      "specs": [
+        "cir-2026-1731",
+        null
+      ],
+      "quotedSpec": "cir-2026-1731",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": [
+        "cir/TR_KA-4"
+      ]
+    },
+    {
+      "requirement": "reuse-policy",
+      "title": "credential_reuse_policy structure",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 ISS-MDATA-EAA-REUSE-POL-4.2.4.1-03 to -08",
+      "specs": [
+        "cir-2026-1731",
+        "etsi-ts-119-472-3"
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [
+        "ISS-MDATA-EAA-REUSE-POL-4.2.4.1-03"
+      ],
+      "coveredBy": [
+        "cir/annex-xi/ISS-MDATA-EAA-REUSE-POL-4.2.4.2-09"
+      ]
+    },
+    {
+      "requirement": "reuse-policy",
+      "title": "credential_reuse_policy structure",
+      "level": "shall",
+      "eu": true,
+      "chain": "ETSI TS 119 472-3 V1.1.1 ISS-MDATA-EAA-REUSE-POL-4.2.4.2-01 to -13",
+      "specs": [
+        "etsi-ts-119-472-3"
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [
+        "ISS-MDATA-EAA-REUSE-POL-4.2.4.2-01"
+      ],
+      "coveredBy": [
+        "cir/annex-xi/ISS-MDATA-EAA-REUSE-POL-4.2.4.2-09"
+      ]
+    },
+    {
+      "requirement": "reuse-policy",
+      "title": "credential_reuse_policy structure",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR 2026/1731 Annex XI (adapting ISS-MDATA-EAA-REUSE-POL-4.2.4.2-09)",
+      "specs": [
+        "cir-2026-1731"
+      ],
+      "quotedSpec": "cir-2026-1731",
+      "quoteFound": true,
+      "reqIds": [
+        "ISS-MDATA-EAA-REUSE-POL-4.2.4.2-09"
+      ],
+      "coveredBy": [
+        "cir/annex-xi/ISS-MDATA-EAA-REUSE-POL-4.2.4.2-09"
+      ]
+    },
+    {
+      "requirement": "reuse-policy-batch-ignored",
+      "title": "batch_credential_issuance is ignored next to a reuse policy",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 ISS-MDATA-EAA-REUSE-POL-4.2.4.2-14",
+      "specs": [
+        "cir-2026-1731",
+        "etsi-ts-119-472-3"
+      ],
+      "quotedSpec": "etsi-ts-119-472-3",
+      "quoteFound": true,
+      "reqIds": [
+        "ISS-MDATA-EAA-REUSE-POL-4.2.4.2-14"
+      ],
+      "coveredBy": []
+    },
+    {
+      "requirement": "status-period-placement",
+      "title": "Preferred status maintenance periods are placed where the CIR says",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2979 Art 6(2) + Annex Ib (CIR 2026/1731 Annex III) > LC_WIA-1 / LC_WIA-1.1",
+      "specs": [
+        "cir-2026-1731",
+        null
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [],
+      "coveredBy": [
+        "cir/LC_WIA-1"
+      ]
+    },
+    {
+      "requirement": "status-period-placement",
+      "title": "Preferred status maintenance periods are placed where the CIR says",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2979 Annex Ib (CIR 2026/1731 Annex III) > LC_KA-1 / LC_KA-1.1",
+      "specs": [
+        "cir-2026-1731",
+        null
+      ],
+      "quotedSpec": "cir-2026-1731",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": [
+        "cir/LC_WIA-1"
+      ]
+    },
+    {
+      "requirement": "formats",
+      "title": "Credential formats from OpenID4VCI Annex A",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 ISS-MDATA-4.2.1-03",
+      "specs": [
+        "cir-2026-1731",
+        "etsi-ts-119-472-3"
+      ],
+      "quotedSpec": "etsi-ts-119-472-3",
+      "quoteFound": true,
+      "reqIds": [
+        "ISS-MDATA-4.2.1-03"
+      ],
+      "coveredBy": [
+        "oid4vci/12.2.4/format"
+      ]
+    },
+    {
+      "requirement": "formats",
+      "title": "Credential formats from OpenID4VCI Annex A",
+      "level": "shall",
+      "eu": true,
+      "chain": "ETSI TS 119 472-3 V1.1.1 Annex B ISS-MDATA-B.2-01 / -02 (Annex A is disapplied by CIR 2026/1731 Annex XI)",
+      "specs": [
+        "cir-2026-1731"
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [
+        "ISS-MDATA-B.2-01"
+      ],
+      "coveredBy": [
+        "oid4vci/12.2.4/format"
+      ]
+    },
+    {
+      "requirement": "embedded-disclosure-policy",
+      "title": "Embedded disclosure policies are identified by a unique URI",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2979 Art 10(1) + Annex III (CIR 2026/1731 Annex V) > ETSI TS 119 472-3 V1.1.1 ISS-MDATA-EBD-4.2.5.2-01 / -03",
+      "specs": [
+        "cir-2026-1731",
+        "etsi-ts-119-472-3"
+      ],
+      "quotedSpec": "etsi-ts-119-472-3",
+      "quoteFound": true,
+      "reqIds": [
+        "ISS-MDATA-EBD-4.2.5.2-01"
+      ],
+      "coveredBy": []
+    },
+    {
+      "requirement": "embedded-disclosure-policy",
+      "title": "Embedded disclosure policies are identified by a unique URI",
+      "level": "should",
+      "eu": true,
+      "chain": "ETSI TS 119 472-3 V1.1.1 ISS-MDATA-EBD-4.2.5.2-13",
+      "specs": [
+        "etsi-ts-119-472-3"
+      ],
+      "quotedSpec": "etsi-ts-119-472-3",
+      "quoteFound": true,
+      "reqIds": [
+        "ISS-MDATA-EBD-4.2.5.2-13"
+      ],
+      "coveredBy": []
+    },
+    {
+      "requirement": "signature-suites-advertised",
+      "title": "ES256, ES384 and ES512 advertised for attestations, proofs of possession and key proofs",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2979 Art 6(2) + Annex Ib (CIR 2026/1731 Annex III) > SA-1",
+      "specs": [
+        "cir-2026-1731",
+        null
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [],
+      "coveredBy": []
+    },
+    {
+      "requirement": "signature-suites-advertised",
+      "title": "ES256, ES384 and ES512 advertised for attestations, proofs of possession and key proofs",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2979 Art 6(2) + Annex Ib (CIR 2026/1731 Annex III) > SA-3",
+      "specs": [
+        "cir-2026-1731",
+        null
+      ],
+      "quotedSpec": "cir-2026-1731",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": []
+    },
+    {
+      "requirement": "signature-suites-advertised",
+      "title": "ES256, ES384 and ES512 advertised for attestations, proofs of possession and key proofs",
+      "level": "shall",
+      "eu": false,
+      "chain": "HAIP 1.0 clause 7",
+      "specs": [
+        "haip-1.0"
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [],
+      "coveredBy": []
+    },
+    {
+      "requirement": "encryption-gcm",
+      "title": "A128GCM and A256GCM supported",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 CRYPTO-5-01",
+      "specs": [
+        "cir-2026-1731",
+        "etsi-ts-119-472-3"
+      ],
+      "quotedSpec": "etsi-ts-119-472-3",
+      "quoteFound": true,
+      "reqIds": [
+        "CRYPTO-5-01"
+      ],
+      "coveredBy": [
+        "etsi-472-3/CRYPTO-5-01"
+      ]
+    },
+    {
+      "requirement": "offer-delivery",
+      "title": "The Credential Offer, by value or by reference",
+      "level": "shall",
+      "eu": false,
+      "chain": "HAIP 1.0 clause 4",
+      "specs": [
+        "haip-1.0"
+      ],
+      "quotedSpec": "haip-1.0",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": [
+        "oid4vci/4.1/by-reference"
+      ]
+    },
+    {
+      "requirement": "offer-delivery",
+      "title": "The Credential Offer, by value or by reference",
+      "level": "shall",
+      "eu": false,
+      "chain": "OpenID4VCI 1.0 4.1 / 4.1.3",
+      "specs": [
+        "openid4vci-1.0"
+      ],
+      "quotedSpec": "openid4vci-1.0",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": [
+        "oid4vci/4.1/by-reference"
+      ]
+    },
+    {
+      "requirement": "offer-delivery",
+      "title": "The Credential Offer, by value or by reference",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+      "specs": [
+        "cir-2026-1731",
+        "etsi-ts-119-472-3",
+        "haip-1.0"
+      ],
+      "quotedSpec": "etsi-ts-119-472-3",
+      "quoteFound": true,
+      "reqIds": [
+        "GEN-REQ-4.1-02"
+      ],
+      "coveredBy": [
+        "oid4vci/4.1/by-reference"
+      ]
+    },
+    {
+      "requirement": "offer-scheme",
+      "title": "The URL scheme that invokes the wallet",
+      "level": "may",
+      "eu": false,
+      "chain": "HAIP 1.0 4.2",
+      "specs": [
+        "haip-1.0"
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [],
+      "coveredBy": [
+        "etsi-472-3/GEN-REQ-4.1-06"
+      ]
+    },
+    {
+      "requirement": "offer-scheme",
+      "title": "The URL scheme that invokes the wallet",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-06",
+      "specs": [
+        "cir-2026-1731",
+        "etsi-ts-119-472-3"
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [
+        "GEN-REQ-4.1-06"
+      ],
+      "coveredBy": [
+        "etsi-472-3/GEN-REQ-4.1-06"
+      ]
+    },
+    {
+      "requirement": "offer-configuration-ids",
+      "title": "Offered configuration ids exist in the metadata",
+      "level": "shall",
+      "eu": false,
+      "chain": "HAIP 1.0 4.2 > OpenID4VCI 1.0 4.1.1 credential_configuration_ids",
+      "specs": [
+        "haip-1.0",
+        "openid4vci-1.0"
+      ],
+      "quotedSpec": "openid4vci-1.0",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": [
+        "oid4vci/4.1.1/credential_configuration_ids"
+      ]
+    },
+    {
+      "requirement": "offer-configuration-ids",
+      "title": "Offered configuration ids exist in the metadata",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+      "specs": [
+        "cir-2026-1731",
+        "etsi-ts-119-472-3",
+        "haip-1.0"
+      ],
+      "quotedSpec": "etsi-ts-119-472-3",
+      "quoteFound": true,
+      "reqIds": [
+        "GEN-REQ-4.1-02"
+      ],
+      "coveredBy": [
+        "oid4vci/4.1.1/credential_configuration_ids"
+      ]
+    },
+    {
+      "requirement": "offer-grants",
+      "title": "Grant types the offer carries",
+      "level": "shall",
+      "eu": false,
+      "chain": "HAIP 1.0 4.2",
+      "specs": [
+        "haip-1.0"
+      ],
+      "quotedSpec": "haip-1.0",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": [
+        "etsi-472-3/ISS-CRED-OFFER-4.3-01"
+      ]
+    },
+    {
+      "requirement": "offer-grants",
+      "title": "Grant types the offer carries",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-04 and ISS-CRED-OFFER-4.3-01",
+      "specs": [
+        "cir-2026-1731",
+        "etsi-ts-119-472-3"
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [
+        "GEN-REQ-4.1-04",
+        "ISS-CRED-OFFER-4.3-01"
+      ],
+      "coveredBy": [
+        "etsi-472-3/ISS-CRED-OFFER-4.3-01"
+      ]
+    },
+    {
+      "requirement": "offer-tx-code",
+      "title": "The tx_code object",
+      "level": "shall",
+      "eu": false,
+      "chain": "HAIP 1.0 4.2 > OpenID4VCI 1.0 4.1.1 tx_code",
+      "specs": [
+        "haip-1.0",
+        "openid4vci-1.0"
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [],
+      "coveredBy": []
+    },
+    {
+      "requirement": "offer-tx-code",
+      "title": "The tx_code object",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+      "specs": [
+        "cir-2026-1731",
+        "etsi-ts-119-472-3",
+        "haip-1.0"
+      ],
+      "quotedSpec": "etsi-ts-119-472-3",
+      "quoteFound": true,
+      "reqIds": [
+        "GEN-REQ-4.1-02"
+      ],
+      "coveredBy": []
+    },
+    {
+      "requirement": "offer-authorization-server",
+      "title": "The authorization_server hint only when the metadata lists several",
+      "level": "shall",
+      "eu": false,
+      "chain": "HAIP 1.0 4.2 > OpenID4VCI 1.0 4.1.1 authorization_server",
+      "specs": [
+        "haip-1.0",
+        "openid4vci-1.0"
+      ],
+      "quotedSpec": "openid4vci-1.0",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": []
+    },
+    {
+      "requirement": "offer-authorization-server",
+      "title": "The authorization_server hint only when the metadata lists several",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+      "specs": [
+        "cir-2026-1731",
+        "etsi-ts-119-472-3",
+        "haip-1.0"
+      ],
+      "quotedSpec": "etsi-ts-119-472-3",
+      "quoteFound": true,
+      "reqIds": [
+        "GEN-REQ-4.1-02"
+      ],
+      "coveredBy": []
+    },
+    {
+      "requirement": "par-request",
+      "title": "Pushed authorization request",
+      "level": "shall",
+      "eu": false,
+      "chain": "HAIP 1.0 4.3",
+      "specs": [
+        "haip-1.0"
+      ],
+      "quotedSpec": "haip-1.0",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": [
+        "cir/TR-WIA-3/par",
+        "etsi-472-3/AUTH-REQ-4.4.2-01",
+        "haip/4.3/par-client-auth"
+      ]
+    },
+    {
+      "requirement": "par-request",
+      "title": "Pushed authorization request",
+      "level": "shall",
+      "eu": false,
+      "chain": "HAIP 1.0 clause 4 > FAPI 2.0 Security Profile 5.3.2.2 > RFC 9126 2.2",
+      "specs": [
+        "haip-1.0",
+        null,
+        "rfc-9126"
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [],
+      "coveredBy": [
+        "cir/TR-WIA-3/par",
+        "etsi-472-3/AUTH-REQ-4.4.2-01",
+        "haip/4.3/par-client-auth"
+      ]
+    },
+    {
+      "requirement": "par-request",
+      "title": "Pushed authorization request",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 AUTH-REQ-4.4.2-01 / -02, AUTH-REQ-PROC-4.4.3-01 to -03",
+      "specs": [
+        "cir-2026-1731",
+        "etsi-ts-119-472-3"
+      ],
+      "quotedSpec": "etsi-ts-119-472-3",
+      "quoteFound": true,
+      "reqIds": [
+        "AUTH-REQ-4.4.2-01",
+        "AUTH-REQ-PROC-4.4.3-01"
+      ],
+      "coveredBy": [
+        "cir/TR-WIA-3/par",
+        "etsi-472-3/AUTH-REQ-4.4.2-01",
+        "haip/4.3/par-client-auth"
+      ]
+    },
+    {
+      "requirement": "token-pre-authorized-request",
+      "title": "The pre-authorized code token request",
+      "level": "shall",
+      "eu": false,
+      "chain": "HAIP 1.0 4.4 > OpenID4VCI 1.0 6.1",
+      "specs": [
+        "haip-1.0",
+        "openid4vci-1.0"
+      ],
+      "quotedSpec": "openid4vci-1.0",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": []
+    },
+    {
+      "requirement": "token-pre-authorized-request",
+      "title": "The pre-authorized code token request",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+      "specs": [
+        "cir-2026-1731",
+        "etsi-ts-119-472-3",
+        "haip-1.0"
+      ],
+      "quotedSpec": "etsi-ts-119-472-3",
+      "quoteFound": true,
+      "reqIds": [
+        "GEN-REQ-4.1-02"
+      ],
+      "coveredBy": []
+    },
+    {
+      "requirement": "token-response",
+      "title": "The token response: DPoP-bound, uncacheable",
+      "level": "shall",
+      "eu": false,
+      "chain": "HAIP 1.0 4.4 > OpenID4VCI 1.0 6.2 > RFC 6749 5.1",
+      "specs": [
+        "haip-1.0",
+        "openid4vci-1.0",
+        "rfc-6749"
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [],
+      "coveredBy": []
+    },
+    {
+      "requirement": "token-response",
+      "title": "The token response: DPoP-bound, uncacheable",
+      "level": "shall",
+      "eu": false,
+      "chain": "HAIP 1.0 clause 4 > RFC 9449 5",
+      "specs": [
+        "haip-1.0",
+        "rfc-9449"
+      ],
+      "quotedSpec": "rfc-9449",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": []
+    },
+    {
+      "requirement": "token-response",
+      "title": "The token response: DPoP-bound, uncacheable",
+      "level": "shall",
+      "eu": false,
+      "chain": "HAIP 1.0 clause 4 > FAPI 2.0 Security Profile 5.3.2.1",
+      "specs": [
+        "haip-1.0",
+        null
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [],
+      "coveredBy": []
+    },
+    {
+      "requirement": "token-response",
+      "title": "The token response: DPoP-bound, uncacheable",
+      "level": "shall",
+      "eu": false,
+      "chain": "HAIP 1.0 clause 4",
+      "specs": [
+        "haip-1.0"
+      ],
+      "quotedSpec": "haip-1.0",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": []
+    },
+    {
+      "requirement": "token-response",
+      "title": "The token response: DPoP-bound, uncacheable",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+      "specs": [
+        "cir-2026-1731",
+        "etsi-ts-119-472-3",
+        "haip-1.0"
+      ],
+      "quotedSpec": "etsi-ts-119-472-3",
+      "quoteFound": true,
+      "reqIds": [
+        "GEN-REQ-4.1-02"
+      ],
+      "coveredBy": []
+    },
+    {
+      "requirement": "token-code-single-use",
+      "title": "A pre-authorized code is single use",
+      "level": "shall",
+      "eu": false,
+      "chain": "HAIP 1.0 4.2 > OpenID4VCI 1.0 4.1.1 pre-authorized_code",
+      "specs": [
+        "haip-1.0",
+        "openid4vci-1.0"
+      ],
+      "quotedSpec": "openid4vci-1.0",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": []
+    },
+    {
+      "requirement": "token-code-single-use",
+      "title": "A pre-authorized code is single use",
+      "level": "note",
+      "eu": false,
+      "chain": "OpenID4VCI 1.0 6.3",
+      "specs": [
+        "openid4vci-1.0"
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [],
+      "coveredBy": []
+    },
+    {
+      "requirement": "token-code-single-use",
+      "title": "A pre-authorized code is single use",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+      "specs": [
+        "cir-2026-1731",
+        "etsi-ts-119-472-3",
+        "haip-1.0"
+      ],
+      "quotedSpec": "etsi-ts-119-472-3",
+      "quoteFound": true,
+      "reqIds": [
+        "GEN-REQ-4.1-02"
+      ],
+      "coveredBy": []
+    },
+    {
+      "requirement": "token-client-authentication",
+      "title": "Client authentication is required at the token endpoint",
+      "level": "shall",
+      "eu": false,
+      "chain": "HAIP 1.0 4.4.1",
+      "specs": [
+        "haip-1.0"
+      ],
+      "quotedSpec": "haip-1.0",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": [
+        "cir/TR-WIA-3/token",
+        "etsi-472-3/TOKEN-REQ-4.5.1-01",
+        "haip/4.4.1/require-client-auth"
+      ]
+    },
+    {
+      "requirement": "token-client-authentication",
+      "title": "Client authentication is required at the token endpoint",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 TOKEN-REQ-4.5.1-01 / -02",
+      "specs": [
+        "cir-2026-1731",
+        "etsi-ts-119-472-3"
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [
+        "TOKEN-REQ-4.5.1-01"
+      ],
+      "coveredBy": [
+        "cir/TR-WIA-3/token",
+        "etsi-472-3/TOKEN-REQ-4.5.1-01",
+        "haip/4.4.1/require-client-auth"
+      ]
+    },
+    {
+      "requirement": "token-wallet-attestation-verification",
+      "title": "The wallet instance attestation and its proof of possession are verified",
+      "level": "shall",
+      "eu": false,
+      "chain": "HAIP 1.0 4.4.1 > OpenID4VCI 1.0 Appendix E > draft-ietf-oauth-attestation-based-client-auth-07 9",
+      "specs": [
+        "haip-1.0",
+        "openid4vci-1.0",
+        "attestation-client-auth-07"
+      ],
+      "quotedSpec": "attestation-client-auth-07",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": [
+        "cir/FR-WIA-1.1",
+        "cir/TR-WIA-4",
+        "etsi-472-3/TOKEN-REQ-PROC-4.5.2"
+      ]
+    },
+    {
+      "requirement": "token-wallet-attestation-verification",
+      "title": "The wallet instance attestation and its proof of possession are verified",
+      "level": "shall",
+      "eu": false,
+      "chain": "draft-ietf-oauth-attestation-based-client-auth-07 6.3 (token endpoint)",
+      "specs": [
+        "attestation-client-auth-07"
+      ],
+      "quotedSpec": "attestation-client-auth-07",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": [
+        "cir/FR-WIA-1.1",
+        "cir/TR-WIA-4",
+        "etsi-472-3/TOKEN-REQ-PROC-4.5.2"
+      ]
+    },
+    {
+      "requirement": "token-wallet-attestation-verification",
+      "title": "The wallet instance attestation and its proof of possession are verified",
+      "level": "shall",
+      "eu": false,
+      "chain": "HAIP 1.0 4.4.1",
+      "specs": [
+        "haip-1.0"
+      ],
+      "quotedSpec": "haip-1.0",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": [
+        "cir/FR-WIA-1.1",
+        "cir/TR-WIA-4",
+        "etsi-472-3/TOKEN-REQ-PROC-4.5.2"
+      ]
+    },
+    {
+      "requirement": "token-wallet-attestation-verification",
+      "title": "The wallet instance attestation and its proof of possession are verified",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 TOKEN-REQ-PROC-4.5.2-01 to -03",
+      "specs": [
+        "cir-2026-1731",
+        "etsi-ts-119-472-3"
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [
+        "TOKEN-REQ-PROC-4.5.2-01"
+      ],
+      "coveredBy": [
+        "cir/FR-WIA-1.1",
+        "cir/TR-WIA-4",
+        "etsi-472-3/TOKEN-REQ-PROC-4.5.2"
+      ]
+    },
+    {
+      "requirement": "token-wallet-attestation-verification",
+      "title": "The wallet instance attestation and its proof of possession are verified",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2979 Art 6(2) + Annex Ib (CIR 2026/1731 Annex III) > TR-WIA-4 to TR-WIA-4.3",
+      "specs": [
+        "cir-2026-1731",
+        null
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [
+        "TR-WIA-4",
+        "TR-WIA-4.3"
+      ],
+      "coveredBy": [
+        "cir/FR-WIA-1.1",
+        "cir/TR-WIA-4",
+        "etsi-472-3/TOKEN-REQ-PROC-4.5.2"
+      ]
+    },
+    {
+      "requirement": "token-wallet-attestation-verification",
+      "title": "The wallet instance attestation and its proof of possession are verified",
+      "level": "note",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2980 Art 5 + Annex II section 2 point 1(h) (CIR 2026/1731 Annex X)",
+      "specs": [
+        "cir-2026-1731"
+      ],
+      "quotedSpec": "cir-2026-1731",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": [
+        "cir/FR-WIA-1.1",
+        "cir/TR-WIA-4",
+        "etsi-472-3/TOKEN-REQ-PROC-4.5.2"
+      ]
+    },
+    {
+      "requirement": "token-anonymous-access",
+      "title": "A token request without a client id",
+      "level": "note",
+      "eu": false,
+      "chain": "HAIP 1.0 4.4 > OpenID4VCI 1.0 6.3",
+      "specs": [
+        "haip-1.0",
+        "openid4vci-1.0"
+      ],
+      "quotedSpec": "openid4vci-1.0",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": []
+    },
+    {
+      "requirement": "token-anonymous-access",
+      "title": "A token request without a client id",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+      "specs": [
+        "cir-2026-1731",
+        "etsi-ts-119-472-3",
+        "haip-1.0"
+      ],
+      "quotedSpec": "etsi-ts-119-472-3",
+      "quoteFound": true,
+      "reqIds": [
+        "GEN-REQ-4.1-02"
+      ],
+      "coveredBy": []
+    },
+    {
+      "requirement": "token-tx-code",
+      "title": "Transaction Code handling",
+      "level": "shall",
+      "eu": false,
+      "chain": "HAIP 1.0 4.4 > OpenID4VCI 1.0 6.3",
+      "specs": [
+        "haip-1.0",
+        "openid4vci-1.0"
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [],
+      "coveredBy": []
+    },
+    {
+      "requirement": "token-tx-code",
+      "title": "Transaction Code handling",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+      "specs": [
+        "cir-2026-1731",
+        "etsi-ts-119-472-3",
+        "haip-1.0"
+      ],
+      "quotedSpec": "etsi-ts-119-472-3",
+      "quoteFound": true,
+      "reqIds": [
+        "GEN-REQ-4.1-02"
+      ],
+      "coveredBy": []
+    },
+    {
+      "requirement": "dpop-nonce-challenge",
+      "title": "A use_dpop_nonce challenge is answered",
+      "level": "may",
+      "eu": false,
+      "chain": "HAIP 1.0 clause 4 > RFC 9449 8",
+      "specs": [
+        "haip-1.0",
+        "rfc-9449"
+      ],
+      "quotedSpec": "rfc-9449",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": []
+    },
+    {
+      "requirement": "dpop-nonce-challenge",
+      "title": "A use_dpop_nonce challenge is answered",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+      "specs": [
+        "cir-2026-1731",
+        "etsi-ts-119-472-3",
+        "haip-1.0"
+      ],
+      "quotedSpec": "etsi-ts-119-472-3",
+      "quoteFound": true,
+      "reqIds": [
+        "GEN-REQ-4.1-02"
+      ],
+      "coveredBy": []
+    },
+    {
+      "requirement": "refresh-tokens",
+      "title": "Refresh tokens",
+      "level": "should",
+      "eu": false,
+      "chain": "HAIP 1.0 4.4",
+      "specs": [
+        "haip-1.0"
+      ],
+      "quotedSpec": "haip-1.0",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": [
+        "etsi-472-3/TOKEN-REQ-PROC-4.5.2-04",
+        "haip/4.4/refresh"
+      ]
+    },
+    {
+      "requirement": "refresh-tokens",
+      "title": "Refresh tokens",
+      "level": "may",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 TOKEN-REQ-PROC-4.5.2-04",
+      "specs": [
+        "cir-2026-1731",
+        "etsi-ts-119-472-3"
+      ],
+      "quotedSpec": "etsi-ts-119-472-3",
+      "quoteFound": true,
+      "reqIds": [
+        "TOKEN-REQ-PROC-4.5.2-04"
+      ],
+      "coveredBy": [
+        "etsi-472-3/TOKEN-REQ-PROC-4.5.2-04",
+        "haip/4.4/refresh"
+      ]
+    },
+    {
+      "requirement": "wallet-attestation-revocation",
+      "title": "A revoked wallet instance attestation is refused",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2979 Art 8 + Annex II (CIR 2026/1731 Annex IV) > EAA-6.2.10.1-16",
+      "specs": [
+        "cir-2026-1731",
+        null
+      ],
+      "quotedSpec": "cir-2026-1731",
+      "quoteFound": true,
+      "reqIds": [
+        "EAA-6.2.10.1-16"
+      ],
+      "coveredBy": []
+    },
+    {
+      "requirement": "wallet-attestation-revocation",
+      "title": "A revoked wallet instance attestation is refused",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2025/1569 Art 3(1) + Annex I (CIR 2026/1735 Annex I) > ETSI TS 119 471 V1.1.1 REQ-EAASP-4.2.2.3-03 (QEAA and PuB-EAA providers)",
+      "specs": [
+        null,
+        null
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [
+        "REQ-EAASP-4.2.2.3-03"
+      ],
+      "coveredBy": []
+    },
+    {
+      "requirement": "wallet-attestation-revocation",
+      "title": "A revoked wallet instance attestation is refused",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2025/1569 Art 3(1) + Annex I (CIR 2026/1735 Annex I) > ETSI TS 119 471 V1.1.1 REQ-EAASP-4.2.2.3-07 (QEAA and PuB-EAA providers)",
+      "specs": [
+        null,
+        null
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [
+        "REQ-EAASP-4.2.2.3-07"
+      ],
+      "coveredBy": []
+    },
+    {
+      "requirement": "wallet-attestation-revocation",
+      "title": "A revoked wallet instance attestation is refused",
+      "level": "may",
+      "eu": false,
+      "chain": "HAIP 1.0 4.4.1 > OpenID4VCI 1.0 Appendix E",
+      "specs": [
+        "haip-1.0",
+        "openid4vci-1.0"
+      ],
+      "quotedSpec": "openid4vci-1.0",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": []
+    },
+    {
+      "requirement": "wallet-attestation-suites-and-chains",
+      "title": "Every signature suite and certificate chain of a wallet instance attestation is accepted",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2979 Art 6(2) + Annex Ib (CIR 2026/1731 Annex III) > SA-1",
+      "specs": [
+        "cir-2026-1731",
+        null
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [],
+      "coveredBy": [
+        "haip/4.4.1/x5c"
+      ]
+    },
+    {
+      "requirement": "wallet-attestation-suites-and-chains",
+      "title": "Every signature suite and certificate chain of a wallet instance attestation is accepted",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2979 Art 6(2) + Annex Ib (CIR 2026/1731 Annex III) > SA-3",
+      "specs": [
+        "cir-2026-1731",
+        null
+      ],
+      "quotedSpec": "cir-2026-1731",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": [
+        "haip/4.4.1/x5c"
+      ]
+    },
+    {
+      "requirement": "wallet-attestation-suites-and-chains",
+      "title": "Every signature suite and certificate chain of a wallet instance attestation is accepted",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2979 Annex Ib (CIR 2026/1731 Annex III) > TR-WIA-4.1",
+      "specs": [
+        "cir-2026-1731",
+        null
+      ],
+      "quotedSpec": "cir-2026-1731",
+      "quoteFound": true,
+      "reqIds": [
+        "TR-WIA-4.1"
+      ],
+      "coveredBy": [
+        "haip/4.4.1/x5c"
+      ]
+    },
+    {
+      "requirement": "wallet-attestation-suites-and-chains",
+      "title": "Every signature suite and certificate chain of a wallet instance attestation is accepted",
+      "level": "shall",
+      "eu": false,
+      "chain": "HAIP 1.0 clause 7",
+      "specs": [
+        "haip-1.0"
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [],
+      "coveredBy": [
+        "haip/4.4.1/x5c"
+      ]
+    },
+    {
+      "requirement": "dpop-signature-suites",
+      "title": "Every advertised DPoP algorithm is accepted",
+      "level": "note",
+      "eu": false,
+      "chain": "HAIP 1.0 clause 4 > RFC 9449 5.1",
+      "specs": [
+        "haip-1.0",
+        "rfc-9449"
+      ],
+      "quotedSpec": "rfc-9449",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": []
+    },
+    {
+      "requirement": "dpop-signature-suites",
+      "title": "Every advertised DPoP algorithm is accepted",
+      "level": "shall",
+      "eu": false,
+      "chain": "HAIP 1.0 clause 7",
+      "specs": [
+        "haip-1.0"
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [],
+      "coveredBy": []
+    },
+    {
+      "requirement": "dpop-signature-suites",
+      "title": "Every advertised DPoP algorithm is accepted",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+      "specs": [
+        "cir-2026-1731",
+        "etsi-ts-119-472-3",
+        "haip-1.0"
+      ],
+      "quotedSpec": "etsi-ts-119-472-3",
+      "quoteFound": true,
+      "reqIds": [
+        "GEN-REQ-4.1-02"
+      ],
+      "coveredBy": []
+    },
+    {
+      "requirement": "nonce-response",
+      "title": "The nonce response",
+      "level": "shall",
+      "eu": false,
+      "chain": "HAIP 1.0 4.1 > OpenID4VCI 1.0 7 / 7.2",
+      "specs": [
+        "haip-1.0",
+        "openid4vci-1.0"
+      ],
+      "quotedSpec": "openid4vci-1.0",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": [
+        "oid4vci/7.2/c_nonce"
+      ]
+    },
+    {
+      "requirement": "nonce-response",
+      "title": "The nonce response",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+      "specs": [
+        "cir-2026-1731",
+        "etsi-ts-119-472-3",
+        "haip-1.0"
+      ],
+      "quotedSpec": "etsi-ts-119-472-3",
+      "quoteFound": true,
+      "reqIds": [
+        "GEN-REQ-4.1-02"
+      ],
+      "coveredBy": [
+        "oid4vci/7.2/c_nonce"
+      ]
+    },
+    {
+      "requirement": "nonce-no-store",
+      "title": "The nonce response is uncacheable",
+      "level": "shall",
+      "eu": false,
+      "chain": "HAIP 1.0 4.1 > OpenID4VCI 1.0 7.2",
+      "specs": [
+        "haip-1.0",
+        "openid4vci-1.0"
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [],
+      "coveredBy": [
+        "oid4vci/7.2/no-store"
+      ]
+    },
+    {
+      "requirement": "nonce-no-store",
+      "title": "The nonce response is uncacheable",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+      "specs": [
+        "cir-2026-1731",
+        "etsi-ts-119-472-3",
+        "haip-1.0"
+      ],
+      "quotedSpec": "etsi-ts-119-472-3",
+      "quoteFound": true,
+      "reqIds": [
+        "GEN-REQ-4.1-02"
+      ],
+      "coveredBy": [
+        "oid4vci/7.2/no-store"
+      ]
+    },
+    {
+      "requirement": "nonce-unpredictable",
+      "title": "Nonces are unpredictable",
+      "level": "shall",
+      "eu": false,
+      "chain": "HAIP 1.0 4.1 > OpenID4VCI 1.0 7.2",
+      "specs": [
+        "haip-1.0",
+        "openid4vci-1.0"
+      ],
+      "quotedSpec": "openid4vci-1.0",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": [
+        "oid4vci/7.2/c_nonce"
+      ]
+    },
+    {
+      "requirement": "nonce-unpredictable",
+      "title": "Nonces are unpredictable",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+      "specs": [
+        "cir-2026-1731",
+        "etsi-ts-119-472-3",
+        "haip-1.0"
+      ],
+      "quotedSpec": "etsi-ts-119-472-3",
+      "quoteFound": true,
+      "reqIds": [
+        "GEN-REQ-4.1-02"
+      ],
+      "coveredBy": [
+        "oid4vci/7.2/c_nonce"
+      ]
+    },
+    {
+      "requirement": "nonce-post",
+      "title": "The nonce request is a POST",
+      "level": "note",
+      "eu": false,
+      "chain": "HAIP 1.0 4.1 > OpenID4VCI 1.0 7.1",
+      "specs": [
+        "haip-1.0",
+        "openid4vci-1.0"
+      ],
+      "quotedSpec": "openid4vci-1.0",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": [
+        "oid4vci/7.1/nonce"
+      ]
+    },
+    {
+      "requirement": "nonce-post",
+      "title": "The nonce request is a POST",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+      "specs": [
+        "cir-2026-1731",
+        "etsi-ts-119-472-3",
+        "haip-1.0"
+      ],
+      "quotedSpec": "etsi-ts-119-472-3",
+      "quoteFound": true,
+      "reqIds": [
+        "GEN-REQ-4.1-02"
+      ],
+      "coveredBy": [
+        "oid4vci/7.1/nonce"
+      ]
+    },
+    {
+      "requirement": "nonce-dpop-nonce",
+      "title": "A DPoP nonce from the nonce endpoint",
+      "level": "may",
+      "eu": false,
+      "chain": "HAIP 1.0 4.1 > OpenID4VCI 1.0 7.2",
+      "specs": [
+        "haip-1.0",
+        "openid4vci-1.0"
+      ],
+      "quotedSpec": "openid4vci-1.0",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": []
+    },
+    {
+      "requirement": "nonce-dpop-nonce",
+      "title": "A DPoP nonce from the nonce endpoint",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+      "specs": [
+        "cir-2026-1731",
+        "etsi-ts-119-472-3",
+        "haip-1.0"
+      ],
+      "quotedSpec": "etsi-ts-119-472-3",
+      "quoteFound": true,
+      "reqIds": [
+        "GEN-REQ-4.1-02"
+      ],
+      "coveredBy": []
+    },
+    {
+      "requirement": "credential-response",
+      "title": "A valid Credential Request is answered with the credential",
+      "level": "shall",
+      "eu": false,
+      "chain": "HAIP 1.0 4.5 > OpenID4VCI 1.0 8.3",
+      "specs": [
+        "haip-1.0",
+        "openid4vci-1.0"
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [],
+      "coveredBy": [
+        "oid4vci/8.3/credentials"
+      ]
+    },
+    {
+      "requirement": "credential-response",
+      "title": "A valid Credential Request is answered with the credential",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+      "specs": [
+        "cir-2026-1731",
+        "etsi-ts-119-472-3",
+        "haip-1.0"
+      ],
+      "quotedSpec": "etsi-ts-119-472-3",
+      "quoteFound": true,
+      "reqIds": [
+        "GEN-REQ-4.1-02"
+      ],
+      "coveredBy": [
+        "oid4vci/8.3/credentials"
+      ]
+    },
+    {
+      "requirement": "credential-authorization",
+      "title": "A request without a usable access token is refused",
+      "level": "shall",
+      "eu": false,
+      "chain": "HAIP 1.0 4.5 > OpenID4VCI 1.0 8.3.1.1 > RFC 6750 3",
+      "specs": [
+        "haip-1.0",
+        "openid4vci-1.0",
+        null
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [],
+      "coveredBy": []
+    },
+    {
+      "requirement": "credential-authorization",
+      "title": "A request without a usable access token is refused",
+      "level": "shall",
+      "eu": false,
+      "chain": "HAIP 1.0 clause 4 > RFC 9449 7.1 / 7.2",
+      "specs": [
+        "haip-1.0",
+        "rfc-9449"
+      ],
+      "quotedSpec": "rfc-9449",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": []
+    },
+    {
+      "requirement": "credential-authorization",
+      "title": "A request without a usable access token is refused",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+      "specs": [
+        "cir-2026-1731",
+        "etsi-ts-119-472-3",
+        "haip-1.0"
+      ],
+      "quotedSpec": "etsi-ts-119-472-3",
+      "quoteFound": true,
+      "reqIds": [
+        "GEN-REQ-4.1-02"
+      ],
+      "coveredBy": []
+    },
+    {
+      "requirement": "credential-dpop-proof",
+      "title": "The DPoP proof is checked against the request and the token",
+      "level": "shall",
+      "eu": false,
+      "chain": "HAIP 1.0 clause 4 > RFC 9449 4.3",
+      "specs": [
+        "haip-1.0",
+        "rfc-9449"
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [],
+      "coveredBy": [
+        "haip/4/dpop-credential"
+      ]
+    },
+    {
+      "requirement": "credential-dpop-proof",
+      "title": "The DPoP proof is checked against the request and the token",
+      "level": "shall",
+      "eu": false,
+      "chain": "RFC 9449 7.1",
+      "specs": [
+        "rfc-9449"
+      ],
+      "quotedSpec": "rfc-9449",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": [
+        "haip/4/dpop-credential"
+      ]
+    },
+    {
+      "requirement": "credential-dpop-proof",
+      "title": "The DPoP proof is checked against the request and the token",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+      "specs": [
+        "cir-2026-1731",
+        "etsi-ts-119-472-3",
+        "haip-1.0"
+      ],
+      "quotedSpec": "etsi-ts-119-472-3",
+      "quoteFound": true,
+      "reqIds": [
+        "GEN-REQ-4.1-02"
+      ],
+      "coveredBy": [
+        "haip/4/dpop-credential"
+      ]
+    },
+    {
+      "requirement": "proof-required",
+      "title": "A key proof is required for a bound credential",
+      "level": "shall",
+      "eu": false,
+      "chain": "HAIP 1.0 4.5 > OpenID4VCI 1.0 8.2",
+      "specs": [
+        "haip-1.0",
+        "openid4vci-1.0"
+      ],
+      "quotedSpec": "openid4vci-1.0",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": [
+        "etsi-472-3/CRED-REQ-4.6.1.1-01"
+      ]
+    },
+    {
+      "requirement": "proof-required",
+      "title": "A key proof is required for a bound credential",
+      "level": "shall",
+      "eu": false,
+      "chain": "OpenID4VCI 1.0 8.3.1.2",
+      "specs": [
+        "openid4vci-1.0"
+      ],
+      "quotedSpec": "openid4vci-1.0",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": [
+        "etsi-472-3/CRED-REQ-4.6.1.1-01"
+      ]
+    },
+    {
+      "requirement": "proof-required",
+      "title": "A key proof is required for a bound credential",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 CRED-REQ-4.6.1.1-01",
+      "specs": [
+        "cir-2026-1731",
+        "etsi-ts-119-472-3"
+      ],
+      "quotedSpec": "etsi-ts-119-472-3",
+      "quoteFound": true,
+      "reqIds": [
+        "CRED-REQ-4.6.1.1-01"
+      ],
+      "coveredBy": [
+        "etsi-472-3/CRED-REQ-4.6.1.1-01"
+      ]
+    },
+    {
+      "requirement": "proof-nonce",
+      "title": "The key proof carries the issuer's c_nonce",
+      "level": "shall",
+      "eu": false,
+      "chain": "HAIP 1.0 4.5 > OpenID4VCI 1.0 F.4",
+      "specs": [
+        "haip-1.0",
+        "openid4vci-1.0"
+      ],
+      "quotedSpec": "openid4vci-1.0",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": [
+        "cir/TR_KA-6.1"
+      ]
+    },
+    {
+      "requirement": "proof-nonce",
+      "title": "The key proof carries the issuer's c_nonce",
+      "level": "note",
+      "eu": false,
+      "chain": "OpenID4VCI 1.0 8.3.1.2",
+      "specs": [
+        "openid4vci-1.0"
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [],
+      "coveredBy": [
+        "cir/TR_KA-6.1"
+      ]
+    },
+    {
+      "requirement": "proof-nonce",
+      "title": "The key proof carries the issuer's c_nonce",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 CRED-REQ-PROC-4.6.2.1-03",
+      "specs": [
+        "cir-2026-1731",
+        "etsi-ts-119-472-3"
+      ],
+      "quotedSpec": "etsi-ts-119-472-3",
+      "quoteFound": true,
+      "reqIds": [
+        "CRED-REQ-PROC-4.6.2.1-03"
+      ],
+      "coveredBy": [
+        "cir/TR_KA-6.1"
+      ]
+    },
+    {
+      "requirement": "proof-nonce",
+      "title": "The key proof carries the issuer's c_nonce",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2979 Art 6(2) + Annex Ib (CIR 2026/1731 Annex III) > TR_KA-6.1 / TR_KA-7",
+      "specs": [
+        "cir-2026-1731",
+        null
+      ],
+      "quotedSpec": "cir-2026-1731",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": [
+        "cir/TR_KA-6.1"
+      ]
+    },
+    {
+      "requirement": "proof-signature",
+      "title": "The key proof is signed by the key it names",
+      "level": "shall",
+      "eu": false,
+      "chain": "HAIP 1.0 4.5 > OpenID4VCI 1.0 F.1",
+      "specs": [
+        "haip-1.0",
+        "openid4vci-1.0"
+      ],
+      "quotedSpec": "openid4vci-1.0",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": []
+    },
+    {
+      "requirement": "proof-signature",
+      "title": "The key proof is signed by the key it names",
+      "level": "shall",
+      "eu": false,
+      "chain": "OpenID4VCI 1.0 F.4",
+      "specs": [
+        "openid4vci-1.0"
+      ],
+      "quotedSpec": "openid4vci-1.0",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": []
+    },
+    {
+      "requirement": "proof-signature",
+      "title": "The key proof is signed by the key it names",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+      "specs": [
+        "cir-2026-1731",
+        "etsi-ts-119-472-3",
+        "haip-1.0"
+      ],
+      "quotedSpec": "etsi-ts-119-472-3",
+      "quoteFound": true,
+      "reqIds": [
+        "GEN-REQ-4.1-02"
+      ],
+      "coveredBy": []
+    },
+    {
+      "requirement": "proof-form",
+      "title": "The key proof is well formed: typ, alg, aud, iat, no private key",
+      "level": "shall",
+      "eu": false,
+      "chain": "HAIP 1.0 4.5 > OpenID4VCI 1.0 F.1",
+      "specs": [
+        "haip-1.0",
+        "openid4vci-1.0"
+      ],
+      "quotedSpec": "openid4vci-1.0",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": [
+        "oid4vci/F.1/typ"
+      ]
+    },
+    {
+      "requirement": "proof-form",
+      "title": "The key proof is well formed: typ, alg, aud, iat, no private key",
+      "level": "shall",
+      "eu": false,
+      "chain": "OpenID4VCI 1.0 F.4",
+      "specs": [
+        "openid4vci-1.0"
+      ],
+      "quotedSpec": "openid4vci-1.0",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": [
+        "oid4vci/F.1/typ"
+      ]
+    },
+    {
+      "requirement": "proof-form",
+      "title": "The key proof is well formed: typ, alg, aud, iat, no private key",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+      "specs": [
+        "cir-2026-1731",
+        "etsi-ts-119-472-3",
+        "haip-1.0"
+      ],
+      "quotedSpec": "etsi-ts-119-472-3",
+      "quoteFound": true,
+      "reqIds": [
+        "GEN-REQ-4.1-02"
+      ],
+      "coveredBy": [
+        "oid4vci/F.1/typ"
+      ]
+    },
+    {
+      "requirement": "proofs-shape",
+      "title": "proofs carries exactly one proof type",
+      "level": "shall",
+      "eu": false,
+      "chain": "HAIP 1.0 4.5 > OpenID4VCI 1.0 8.2 proofs",
+      "specs": [
+        "haip-1.0",
+        "openid4vci-1.0"
+      ],
+      "quotedSpec": "openid4vci-1.0",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": [
+        "etsi-472-3/CRED-REQ-4.6.1.2-01"
+      ]
+    },
+    {
+      "requirement": "proofs-shape",
+      "title": "proofs carries exactly one proof type",
+      "level": "should",
+      "eu": false,
+      "chain": "OpenID4VCI 1.0 8.3.1.2",
+      "specs": [
+        "openid4vci-1.0"
+      ],
+      "quotedSpec": "openid4vci-1.0",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": [
+        "etsi-472-3/CRED-REQ-4.6.1.2-01"
+      ]
+    },
+    {
+      "requirement": "proofs-shape",
+      "title": "proofs carries exactly one proof type",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+      "specs": [
+        "cir-2026-1731",
+        "etsi-ts-119-472-3",
+        "haip-1.0"
+      ],
+      "quotedSpec": "etsi-ts-119-472-3",
+      "quoteFound": true,
+      "reqIds": [
+        "GEN-REQ-4.1-02"
+      ],
+      "coveredBy": [
+        "etsi-472-3/CRED-REQ-4.6.1.2-01"
+      ]
+    },
+    {
+      "requirement": "credential-identifiers",
+      "title": "credential_identifier and credential_configuration_id",
+      "level": "shall",
+      "eu": false,
+      "chain": "HAIP 1.0 4.5 > OpenID4VCI 1.0 8.2",
+      "specs": [
+        "haip-1.0",
+        "openid4vci-1.0"
+      ],
+      "quotedSpec": "openid4vci-1.0",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": [
+        "oid4vci/8.2/credential_configuration_id"
+      ]
+    },
+    {
+      "requirement": "credential-identifiers",
+      "title": "credential_identifier and credential_configuration_id",
+      "level": "note",
+      "eu": false,
+      "chain": "OpenID4VCI 1.0 8.3.1.2",
+      "specs": [
+        "openid4vci-1.0"
+      ],
+      "quotedSpec": "openid4vci-1.0",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": [
+        "oid4vci/8.2/credential_configuration_id"
+      ]
+    },
+    {
+      "requirement": "credential-identifiers",
+      "title": "credential_identifier and credential_configuration_id",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+      "specs": [
+        "cir-2026-1731",
+        "etsi-ts-119-472-3",
+        "haip-1.0"
+      ],
+      "quotedSpec": "etsi-ts-119-472-3",
+      "quoteFound": true,
+      "reqIds": [
+        "GEN-REQ-4.1-02"
+      ],
+      "coveredBy": [
+        "oid4vci/8.2/credential_configuration_id"
+      ]
+    },
+    {
+      "requirement": "batch-issuance",
+      "title": "A batch shares the dataset and differs in its keys, within batch_size",
+      "level": "shall",
+      "eu": false,
+      "chain": "HAIP 1.0 clause 4 > OpenID4VCI 1.0 3.3.2",
+      "specs": [
+        "haip-1.0",
+        "openid4vci-1.0"
+      ],
+      "quotedSpec": "openid4vci-1.0",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": []
+    },
+    {
+      "requirement": "batch-issuance",
+      "title": "A batch shares the dataset and differs in its keys, within batch_size",
+      "level": "note",
+      "eu": false,
+      "chain": "OpenID4VCI 1.0 12.2.4 batch_size / 8.3 / 14.6",
+      "specs": [
+        "openid4vci-1.0"
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [],
+      "coveredBy": []
+    },
+    {
+      "requirement": "batch-issuance",
+      "title": "A batch shares the dataset and differs in its keys, within batch_size",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+      "specs": [
+        "cir-2026-1731",
+        "etsi-ts-119-472-3",
+        "haip-1.0"
+      ],
+      "quotedSpec": "etsi-ts-119-472-3",
+      "quoteFound": true,
+      "reqIds": [
+        "GEN-REQ-4.1-02"
+      ],
+      "coveredBy": []
+    },
+    {
+      "requirement": "key-attestation-trust",
+      "title": "The key attestation chains to a trusted wallet provider",
+      "level": "shall",
+      "eu": false,
+      "chain": "HAIP 1.0 4.5.1",
+      "specs": [
+        "haip-1.0"
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [],
+      "coveredBy": [
+        "cir/TR_KA-5"
+      ]
+    },
+    {
+      "requirement": "key-attestation-trust",
+      "title": "The key attestation chains to a trusted wallet provider",
+      "level": "shall",
+      "eu": false,
+      "chain": "HAIP 1.0 4.5.1 > OpenID4VCI 1.0 Appendix D.1",
+      "specs": [
+        "haip-1.0",
+        "openid4vci-1.0"
+      ],
+      "quotedSpec": "openid4vci-1.0",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": [
+        "cir/TR_KA-5"
+      ]
+    },
+    {
+      "requirement": "key-attestation-trust",
+      "title": "The key attestation chains to a trusted wallet provider",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 CRED-REQ-PROC-4.6.2.1-01 / 4.6.2.2-01",
+      "specs": [
+        "cir-2026-1731",
+        "etsi-ts-119-472-3"
+      ],
+      "quotedSpec": "etsi-ts-119-472-3",
+      "quoteFound": true,
+      "reqIds": [
+        "CRED-REQ-PROC-4.6.2.1-01"
+      ],
+      "coveredBy": [
+        "cir/TR_KA-5"
+      ]
+    },
+    {
+      "requirement": "key-attestation-trust",
+      "title": "The key attestation chains to a trusted wallet provider",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2979 Art 6(2) + Annex Ib (CIR 2026/1731 Annex III) > TR_KA-5",
+      "specs": [
+        "cir-2026-1731",
+        null
+      ],
+      "quotedSpec": "cir-2026-1731",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": [
+        "cir/TR_KA-5"
+      ]
+    },
+    {
+      "requirement": "key-attestation-trust",
+      "title": "The key attestation chains to a trusted wallet provider",
+      "level": "note",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2980 Art 5 + Annex II section 2 point 1(h) (CIR 2026/1731 Annex X)",
+      "specs": [
+        "cir-2026-1731"
+      ],
+      "quotedSpec": "cir-2026-1731",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": [
+        "cir/TR_KA-5"
+      ]
+    },
+    {
+      "requirement": "key-attestation-revocation",
+      "title": "A revoked key attestation is refused",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2979 Art 8 + Annex II (CIR 2026/1731 Annex IV) > EAA-6.2.10.1-16",
+      "specs": [
+        "cir-2026-1731",
+        null
+      ],
+      "quotedSpec": "cir-2026-1731",
+      "quoteFound": true,
+      "reqIds": [
+        "EAA-6.2.10.1-16"
+      ],
+      "coveredBy": []
+    },
+    {
+      "requirement": "key-attestation-revocation",
+      "title": "A revoked key attestation is refused",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2025/1569 Art 3(1) + Annex I (CIR 2026/1735 Annex I) > ETSI TS 119 471 V1.1.1 REQ-EAASP-4.2.2.3-07 (QEAA and PuB-EAA providers)",
+      "specs": [
+        null,
+        null
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [
+        "REQ-EAASP-4.2.2.3-07"
+      ],
+      "coveredBy": []
+    },
+    {
+      "requirement": "key-attestation-revocation",
+      "title": "A revoked key attestation is refused",
+      "level": "may",
+      "eu": false,
+      "chain": "HAIP 1.0 4.5.1 > OpenID4VCI 1.0 Appendix D.1",
+      "specs": [
+        "haip-1.0",
+        "openid4vci-1.0"
+      ],
+      "quotedSpec": "openid4vci-1.0",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": []
+    },
+    {
+      "requirement": "key-attestation-storage-level",
+      "title": "A key attestation below the accepted key_storage level is refused",
+      "level": "shall",
+      "eu": false,
+      "chain": "HAIP 1.0 4.5.1 > OpenID4VCI 1.0 12.2.4 key_attestations_required",
+      "specs": [
+        "haip-1.0",
+        "openid4vci-1.0"
+      ],
+      "quotedSpec": "openid4vci-1.0",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": []
+    },
+    {
+      "requirement": "key-attestation-storage-level",
+      "title": "A key attestation below the accepted key_storage level is refused",
+      "level": "note",
+      "eu": false,
+      "chain": "OpenID4VCI 1.0 Appendix D.2",
+      "specs": [
+        "openid4vci-1.0"
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [],
+      "coveredBy": []
+    },
+    {
+      "requirement": "key-attestation-storage-level",
+      "title": "A key attestation below the accepted key_storage level is refused",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2025/1569 Art 3(1) + Annex I (CIR 2026/1735 Annex I) > ETSI TS 119 471 V1.1.1 REQ-EAASP-4.2.1.2-03 (QEAA and PuB-EAA providers)",
+      "specs": [
+        null,
+        null
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [
+        "REQ-EAASP-4.2.1.2-03"
+      ],
+      "coveredBy": []
+    },
+    {
+      "requirement": "key-attestation-storage-level",
+      "title": "A key attestation below the accepted key_storage level is refused",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+      "specs": [
+        "cir-2026-1731",
+        "etsi-ts-119-472-3",
+        "haip-1.0"
+      ],
+      "quotedSpec": "etsi-ts-119-472-3",
+      "quoteFound": true,
+      "reqIds": [
+        "GEN-REQ-4.1-02"
+      ],
+      "coveredBy": []
+    },
+    {
+      "requirement": "eu-one-credential-per-attested-key",
+      "title": "One credential per attested key, no key twice",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 CRED-REQ-PROC-4.6.2.1-04 to -06",
+      "specs": [
+        "cir-2026-1731",
+        "etsi-ts-119-472-3"
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [
+        "CRED-REQ-PROC-4.6.2.1-04"
+      ],
+      "coveredBy": [
+        "etsi-472-3/CRED-REQ-PROC-4.6.2.1-04"
+      ]
+    },
+    {
+      "requirement": "eu-one-credential-per-attested-key",
+      "title": "One credential per attested key, no key twice",
+      "level": "shall",
+      "eu": true,
+      "chain": "ETSI TS 119 472-3 V1.1.1 CRED-REQ-PROC-4.6.2.2-02 to -04",
+      "specs": [
+        "etsi-ts-119-472-3"
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [
+        "CRED-REQ-PROC-4.6.2.2-02"
+      ],
+      "coveredBy": [
+        "etsi-472-3/CRED-REQ-PROC-4.6.2.1-04"
+      ]
+    },
+    {
+      "requirement": "eu-proof-under-first-attested-key",
+      "title": "The jwt proof verifies under attested_keys[0]",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 CRED-REQ-PROC-4.6.2.1-02",
+      "specs": [
+        "cir-2026-1731",
+        "etsi-ts-119-472-3"
+      ],
+      "quotedSpec": "etsi-ts-119-472-3",
+      "quoteFound": true,
+      "reqIds": [
+        "CRED-REQ-PROC-4.6.2.1-02"
+      ],
+      "coveredBy": [
+        "cir/TR_KA-6"
+      ]
+    },
+    {
+      "requirement": "eu-proof-under-first-attested-key",
+      "title": "The jwt proof verifies under attested_keys[0]",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2979 Art 6(2) + Annex Ib (CIR 2026/1731 Annex III) > TR_KA-6",
+      "specs": [
+        "cir-2026-1731",
+        null
+      ],
+      "quotedSpec": "cir-2026-1731",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": [
+        "cir/TR_KA-6"
+      ]
+    },
+    {
+      "requirement": "eu-attestation-proof-type",
+      "title": "The attestation proof type: one key attestation with the nonce",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 CRED-REQ-4.6.1.3-01 to -03",
+      "specs": [
+        "cir-2026-1731",
+        "etsi-ts-119-472-3"
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [
+        "CRED-REQ-4.6.1.3-01"
+      ],
+      "coveredBy": []
+    },
+    {
+      "requirement": "eu-attestation-proof-type",
+      "title": "The attestation proof type: one key attestation with the nonce",
+      "level": "shall",
+      "eu": true,
+      "chain": "ETSI TS 119 472-3 V1.1.1 CRED-REQ-PROC-4.6.2.2-01 to -04",
+      "specs": [
+        "etsi-ts-119-472-3"
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [
+        "CRED-REQ-PROC-4.6.2.2-01"
+      ],
+      "coveredBy": []
+    },
+    {
+      "requirement": "eu-attestation-proof-type",
+      "title": "The attestation proof type: one key attestation with the nonce",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2979 Art 6(2) + Annex Ib (CIR 2026/1731 Annex III) > TR_KA-7",
+      "specs": [
+        "cir-2026-1731",
+        null
+      ],
+      "quotedSpec": "cir-2026-1731",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": []
+    },
+    {
+      "requirement": "key-attestation-suites-and-chains",
+      "title": "Every signature suite and certificate chain of a key attestation and proof is accepted",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2979 Art 6(2) + Annex Ib (CIR 2026/1731 Annex III) > SA-1",
+      "specs": [
+        "cir-2026-1731",
+        null
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [],
+      "coveredBy": []
+    },
+    {
+      "requirement": "key-attestation-suites-and-chains",
+      "title": "Every signature suite and certificate chain of a key attestation and proof is accepted",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2979 Art 6(2) + Annex Ib (CIR 2026/1731 Annex III) > SA-3",
+      "specs": [
+        "cir-2026-1731",
+        null
+      ],
+      "quotedSpec": "cir-2026-1731",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": []
+    },
+    {
+      "requirement": "key-attestation-suites-and-chains",
+      "title": "Every signature suite and certificate chain of a key attestation and proof is accepted",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2979 Annex Ib (CIR 2026/1731 Annex III) > TR_KA-5",
+      "specs": [
+        "cir-2026-1731",
+        null
+      ],
+      "quotedSpec": "cir-2026-1731",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": []
+    },
+    {
+      "requirement": "key-attestation-suites-and-chains",
+      "title": "Every signature suite and certificate chain of a key attestation and proof is accepted",
+      "level": "shall",
+      "eu": false,
+      "chain": "HAIP 1.0 clause 7",
+      "specs": [
+        "haip-1.0"
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [],
+      "coveredBy": []
+    },
+    {
+      "requirement": "credential-response-encrypted",
+      "title": "A response is encrypted when the request asks for it, and such a request is encrypted",
+      "level": "shall",
+      "eu": false,
+      "chain": "HAIP 1.0 4.5 > OpenID4VCI 1.0 8.2",
+      "specs": [
+        "haip-1.0",
+        "openid4vci-1.0"
+      ],
+      "quotedSpec": "openid4vci-1.0",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": []
+    },
+    {
+      "requirement": "credential-response-encrypted",
+      "title": "A response is encrypted when the request asks for it, and such a request is encrypted",
+      "level": "shall",
+      "eu": false,
+      "chain": "OpenID4VCI 1.0 8.3 / 10",
+      "specs": [
+        "openid4vci-1.0"
+      ],
+      "quotedSpec": "openid4vci-1.0",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": []
+    },
+    {
+      "requirement": "credential-response-encrypted",
+      "title": "A response is encrypted when the request asks for it, and such a request is encrypted",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+      "specs": [
+        "cir-2026-1731",
+        "etsi-ts-119-472-3",
+        "haip-1.0"
+      ],
+      "quotedSpec": "etsi-ts-119-472-3",
+      "quoteFound": true,
+      "reqIds": [
+        "GEN-REQ-4.1-02"
+      ],
+      "coveredBy": []
+    },
+    {
+      "requirement": "encrypted-request",
+      "title": "An encrypted request is a JWE to an advertised key and enc",
+      "level": "shall",
+      "eu": false,
+      "chain": "HAIP 1.0 4.5 > OpenID4VCI 1.0 10",
+      "specs": [
+        "haip-1.0",
+        "openid4vci-1.0"
+      ],
+      "quotedSpec": "openid4vci-1.0",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": []
+    },
+    {
+      "requirement": "encrypted-request",
+      "title": "An encrypted request is a JWE to an advertised key and enc",
+      "level": "note",
+      "eu": false,
+      "chain": "OpenID4VCI 1.0 12.2.4 credential_request_encryption / 8.3.1.2",
+      "specs": [
+        "openid4vci-1.0"
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [],
+      "coveredBy": []
+    },
+    {
+      "requirement": "encrypted-request",
+      "title": "An encrypted request is a JWE to an advertised key and enc",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+      "specs": [
+        "cir-2026-1731",
+        "etsi-ts-119-472-3",
+        "haip-1.0"
+      ],
+      "quotedSpec": "etsi-ts-119-472-3",
+      "quoteFound": true,
+      "reqIds": [
+        "GEN-REQ-4.1-02"
+      ],
+      "coveredBy": []
+    },
+    {
+      "requirement": "encryption-required-plaintext",
+      "title": "A plaintext request where encryption is required",
+      "level": "should",
+      "eu": false,
+      "chain": "HAIP 1.0 4.5 > OpenID4VCI 1.0 10",
+      "specs": [
+        "haip-1.0",
+        "openid4vci-1.0"
+      ],
+      "quotedSpec": "openid4vci-1.0",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": []
+    },
+    {
+      "requirement": "encryption-required-plaintext",
+      "title": "A plaintext request where encryption is required",
+      "level": "shall",
+      "eu": false,
+      "chain": "OpenID4VCI 1.0 12.2.4 credential_request_encryption.encryption_required / 8.2",
+      "specs": [
+        "openid4vci-1.0"
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [],
+      "coveredBy": []
+    },
+    {
+      "requirement": "encryption-required-plaintext",
+      "title": "A plaintext request where encryption is required",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+      "specs": [
+        "cir-2026-1731",
+        "etsi-ts-119-472-3",
+        "haip-1.0"
+      ],
+      "quotedSpec": "etsi-ts-119-472-3",
+      "quoteFound": true,
+      "reqIds": [
+        "GEN-REQ-4.1-02"
+      ],
+      "coveredBy": []
+    },
+    {
+      "requirement": "response-encryption-parameters",
+      "title": "Response encryption parameters: jwk with alg, an advertised enc",
+      "level": "shall",
+      "eu": false,
+      "chain": "HAIP 1.0 4.5 > OpenID4VCI 1.0 8.2 credential_response_encryption",
+      "specs": [
+        "haip-1.0",
+        "openid4vci-1.0"
+      ],
+      "quotedSpec": "openid4vci-1.0",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": []
+    },
+    {
+      "requirement": "response-encryption-parameters",
+      "title": "Response encryption parameters: jwk with alg, an advertised enc",
+      "level": "shall",
+      "eu": false,
+      "chain": "OpenID4VCI 1.0 10 / 8.3",
+      "specs": [
+        "openid4vci-1.0"
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [],
+      "coveredBy": []
+    },
+    {
+      "requirement": "response-encryption-parameters",
+      "title": "Response encryption parameters: jwk with alg, an advertised enc",
+      "level": "note",
+      "eu": false,
+      "chain": "OpenID4VCI 1.0 8.3.1.2",
+      "specs": [
+        "openid4vci-1.0"
+      ],
+      "quotedSpec": "openid4vci-1.0",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": []
+    },
+    {
+      "requirement": "response-encryption-parameters",
+      "title": "Response encryption parameters: jwk with alg, an advertised enc",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+      "specs": [
+        "cir-2026-1731",
+        "etsi-ts-119-472-3",
+        "haip-1.0"
+      ],
+      "quotedSpec": "etsi-ts-119-472-3",
+      "quoteFound": true,
+      "reqIds": [
+        "GEN-REQ-4.1-02"
+      ],
+      "coveredBy": []
+    },
+    {
+      "requirement": "response-encryption-required",
+      "title": "A request without encryption parameters where the response must be encrypted",
+      "level": "shall",
+      "eu": false,
+      "chain": "HAIP 1.0 4.5 > OpenID4VCI 1.0 12.2.4 credential_response_encryption.encryption_required",
+      "specs": [
+        "haip-1.0",
+        "openid4vci-1.0"
+      ],
+      "quotedSpec": "openid4vci-1.0",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": []
+    },
+    {
+      "requirement": "response-encryption-required",
+      "title": "A request without encryption parameters where the response must be encrypted",
+      "level": "note",
+      "eu": false,
+      "chain": "OpenID4VCI 1.0 8.3.1.2",
+      "specs": [
+        "openid4vci-1.0"
+      ],
+      "quotedSpec": "openid4vci-1.0",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": []
+    },
+    {
+      "requirement": "response-encryption-required",
+      "title": "A request without encryption parameters where the response must be encrypted",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+      "specs": [
+        "cir-2026-1731",
+        "etsi-ts-119-472-3",
+        "haip-1.0"
+      ],
+      "quotedSpec": "etsi-ts-119-472-3",
+      "quoteFound": true,
+      "reqIds": [
+        "GEN-REQ-4.1-02"
+      ],
+      "coveredBy": []
+    },
+    {
+      "requirement": "notification-response",
+      "title": "Notifications are acknowledged, unknown ids refused",
+      "level": "shall",
+      "eu": false,
+      "chain": "HAIP 1.0 clause 4 > OpenID4VCI 1.0 11.2",
+      "specs": [
+        "haip-1.0",
+        "openid4vci-1.0"
+      ],
+      "quotedSpec": "openid4vci-1.0",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": [
+        "oid4vci/11.1/notification"
+      ]
+    },
+    {
+      "requirement": "notification-response",
+      "title": "Notifications are acknowledged, unknown ids refused",
+      "level": "shall",
+      "eu": false,
+      "chain": "OpenID4VCI 1.0 11.3",
+      "specs": [
+        "openid4vci-1.0"
+      ],
+      "quotedSpec": "openid4vci-1.0",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": [
+        "oid4vci/11.1/notification"
+      ]
+    },
+    {
+      "requirement": "notification-response",
+      "title": "Notifications are acknowledged, unknown ids refused",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 NOT-REQ-4.7-01 (the wallet's side)",
+      "specs": [
+        "cir-2026-1731",
+        "etsi-ts-119-472-3"
+      ],
+      "quotedSpec": "etsi-ts-119-472-3",
+      "quoteFound": true,
+      "reqIds": [
+        "NOT-REQ-4.7-01"
+      ],
+      "coveredBy": [
+        "oid4vci/11.1/notification"
+      ]
+    },
+    {
+      "requirement": "sdjwt-signature-and-chain",
+      "title": "The SD-JWT VC is signed under an x5c chain, anchor excluded",
+      "level": "shall",
+      "eu": false,
+      "chain": "HAIP 1.0 6.1.1",
+      "specs": [
+        "haip-1.0"
+      ],
+      "quotedSpec": "haip-1.0",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": []
+    },
+    {
+      "requirement": "sdjwt-signature-and-chain",
+      "title": "The SD-JWT VC is signed under an x5c chain, anchor excluded",
+      "level": "shall",
+      "eu": false,
+      "chain": "HAIP 1.0 6.1 > SD-JWT VC draft-13 3.2.1 (draft-19: 2.2.1)",
+      "specs": [
+        "haip-1.0",
+        null
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [],
+      "coveredBy": []
+    },
+    {
+      "requirement": "sdjwt-signature-and-chain",
+      "title": "The SD-JWT VC is signed under an x5c chain, anchor excluded",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2977 Art 4(1); CIR 2024/2979 Art 8 + Annex II (CIR 2026/1731 Annex IV) > ETSI TS 119 472-1 V1.2.1 EAA-5.1-01",
+      "specs": [
+        "cir-2026-1731",
+        null
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [
+        "EAA-5.1-01"
+      ],
+      "coveredBy": []
+    },
+    {
+      "requirement": "sdjwt-signature-and-chain",
+      "title": "The SD-JWT VC is signed under an x5c chain, anchor excluded",
+      "level": "may",
+      "eu": true,
+      "chain": "ETSI TS 119 472-1 V1.2.1 EAA-4.6.1-05 / -06",
+      "specs": [
+        null
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [
+        "EAA-4.6.1-05"
+      ],
+      "coveredBy": []
+    },
+    {
+      "requirement": "sdjwt-issuer-identifier",
+      "title": "The iss claim and the Credential Issuer Identifier",
+      "level": "may",
+      "eu": false,
+      "chain": "HAIP 1.0 6.1 > SD-JWT VC draft-13 3.2.2 (draft-19: 2.2.2.3)",
+      "specs": [
+        "haip-1.0",
+        null
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [],
+      "coveredBy": []
+    },
+    {
+      "requirement": "sdjwt-issuer-identifier",
+      "title": "The iss claim and the Credential Issuer Identifier",
+      "level": "note",
+      "eu": false,
+      "chain": "OpenID4VCI 1.0 14.4",
+      "specs": [
+        "openid4vci-1.0"
+      ],
+      "quotedSpec": "openid4vci-1.0",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": []
+    },
+    {
+      "requirement": "sdjwt-issuer-identifier",
+      "title": "The iss claim and the Credential Issuer Identifier",
+      "level": "note",
+      "eu": true,
+      "chain": "ETSI TS 119 472-1 V1.2.1 5.2.4 (EAA-5.2.4.1-01, QEAA-5.2.4.2-01, PuB-EAA-5.2.4.3-01)",
+      "specs": [
+        null
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [
+        "EAA-5.2.4.1-01",
+        "QEAA-5.2.4.2-01",
+        "EAA-5.2.4.3-01"
+      ],
+      "coveredBy": []
+    },
+    {
+      "requirement": "sdjwt-binding",
+      "title": "The SD-JWT VC is bound to the proof key and has the configuration's vct",
+      "level": "shall",
+      "eu": false,
+      "chain": "HAIP 1.0 6.1",
+      "specs": [
+        "haip-1.0"
+      ],
+      "quotedSpec": "haip-1.0",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": []
+    },
+    {
+      "requirement": "sdjwt-binding",
+      "title": "The SD-JWT VC is bound to the proof key and has the configuration's vct",
+      "level": "should",
+      "eu": false,
+      "chain": "HAIP 1.0 4.5 > OpenID4VCI 1.0 8.1 / A.3.2",
+      "specs": [
+        "haip-1.0",
+        "openid4vci-1.0"
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [],
+      "coveredBy": []
+    },
+    {
+      "requirement": "sdjwt-binding",
+      "title": "The SD-JWT VC is bound to the proof key and has the configuration's vct",
+      "level": "should",
+      "eu": true,
+      "chain": "ETSI TS 119 472-1 V1.2.1 EAA-5.5-01 / EAA-5.5-06",
+      "specs": [
+        null
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [
+        "EAA-5.5-01",
+        "EAA-5.5-06"
+      ],
+      "coveredBy": []
+    },
+    {
+      "requirement": "sdjwt-status-reference",
+      "title": "The status claim references a status list",
+      "level": "shall",
+      "eu": false,
+      "chain": "HAIP 1.0 6.1",
+      "specs": [
+        "haip-1.0"
+      ],
+      "quotedSpec": "haip-1.0",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": []
+    },
+    {
+      "requirement": "sdjwt-status-reference",
+      "title": "The status claim references a status list",
+      "level": "shall",
+      "eu": false,
+      "chain": "HAIP 1.0 6.1 > Token Status List draft-20 6.1 / 6.2 (draft-21 identical)",
+      "specs": [
+        "haip-1.0",
+        null
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [],
+      "coveredBy": []
+    },
+    {
+      "requirement": "sdjwt-status-reference",
+      "title": "The status claim references a status list",
+      "level": "may",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2979 Art 8 + Annex II (CIR 2026/1731 Annex IV) > EAA-5.2.10.1-06 (adapting ETSI TS 119 472-1; -04, -05, -07 to -12 void)",
+      "specs": [
+        "cir-2026-1731",
+        null
+      ],
+      "quotedSpec": "cir-2026-1731",
+      "quoteFound": true,
+      "reqIds": [
+        "EAA-5.2.10.1-06"
+      ],
+      "coveredBy": []
+    },
+    {
+      "requirement": "status-index-unique",
+      "title": "Each credential has its own status list index",
+      "level": "shall",
+      "eu": false,
+      "chain": "HAIP 1.0 6.1",
+      "specs": [
+        "haip-1.0"
+      ],
+      "quotedSpec": "haip-1.0",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": []
+    },
+    {
+      "requirement": "status-index-unique",
+      "title": "Each credential has its own status list index",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2979 Art 8 + Annex II (CIR 2026/1731 Annex IV) > EAA-6.2.10.1-13.2 (mdoc)",
+      "specs": [
+        "cir-2026-1731",
+        null
+      ],
+      "quotedSpec": "cir-2026-1731",
+      "quoteFound": true,
+      "reqIds": [
+        "EAA-6.2.10.1-13.2"
+      ],
+      "coveredBy": []
+    },
+    {
+      "requirement": "sdjwt-disclosures",
+      "title": "Disclosures match the claims metadata and use SHA-256",
+      "level": "note",
+      "eu": false,
+      "chain": "HAIP 1.0 4.1 > OpenID4VCI 1.0 12.2.4 credential_metadata.claims",
+      "specs": [
+        "haip-1.0",
+        "openid4vci-1.0"
+      ],
+      "quotedSpec": "openid4vci-1.0",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": []
+    },
+    {
+      "requirement": "sdjwt-disclosures",
+      "title": "Disclosures match the claims metadata and use SHA-256",
+      "level": "shall",
+      "eu": false,
+      "chain": "HAIP 1.0 clause 8",
+      "specs": [
+        "haip-1.0"
+      ],
+      "quotedSpec": "haip-1.0",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": []
+    },
+    {
+      "requirement": "sdjwt-disclosures",
+      "title": "Disclosures match the claims metadata and use SHA-256",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+      "specs": [
+        "cir-2026-1731",
+        "etsi-ts-119-472-3",
+        "haip-1.0"
+      ],
+      "quotedSpec": "etsi-ts-119-472-3",
+      "quoteFound": true,
+      "reqIds": [
+        "GEN-REQ-4.1-02"
+      ],
+      "coveredBy": []
+    },
+    {
+      "requirement": "sdjwt-eu-claims",
+      "title": "The EU claim battery of an SD-JWT VC EAA",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2977 Art 4(1); CIR 2024/2979 Art 8 + Annex II (CIR 2026/1731 Annex IV) > ETSI TS 119 472-1 V1.2.1 EAA-5.2.1.2-01 / -03",
+      "specs": [
+        "cir-2026-1731",
+        null
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [
+        "EAA-5.2.1.2-01"
+      ],
+      "coveredBy": []
+    },
+    {
+      "requirement": "sdjwt-eu-claims",
+      "title": "The EU claim battery of an SD-JWT VC EAA",
+      "level": "shall",
+      "eu": true,
+      "chain": "ETSI TS 119 472-1 V1.2.1 EAA-5.2.7.1-01 / -03",
+      "specs": [
+        null
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [
+        "EAA-5.2.7.1-01"
+      ],
+      "coveredBy": []
+    },
+    {
+      "requirement": "sdjwt-eu-claims",
+      "title": "The EU claim battery of an SD-JWT VC EAA",
+      "level": "shall",
+      "eu": true,
+      "chain": "ETSI TS 119 472-1 V1.2.1 EAA-5.2.4.1-01 / -02 / -04 / -06 / -08 / -09 (with EAA-4.2.4.1-05)",
+      "specs": [
+        null
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [
+        "EAA-5.2.4.1-01",
+        "EAA-4.2.4.1-05"
+      ],
+      "coveredBy": []
+    },
+    {
+      "requirement": "sdjwt-eu-claims",
+      "title": "The EU claim battery of an SD-JWT VC EAA",
+      "level": "may",
+      "eu": true,
+      "chain": "ETSI TS 119 472-1 V1.2.1 EAA-5.2.3-02, EAA-5.2.5.1-02",
+      "specs": [
+        null
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [
+        "EAA-5.2.3-02",
+        "EAA-5.2.5.1-02"
+      ],
+      "coveredBy": []
+    },
+    {
+      "requirement": "sdjwt-eu-claims",
+      "title": "The EU claim battery of an SD-JWT VC EAA",
+      "level": "shall",
+      "eu": true,
+      "chain": "ETSI TS 119 472-1 V1.2.1 EAA-5.2.2.1-01, QEAA-5.2.2.2-01 / -02, PuB-EAA-5.2.2.3-01 / -02",
+      "specs": [
+        null
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [
+        "EAA-5.2.2.1-01",
+        "QEAA-5.2.2.2-01",
+        "EAA-5.2.2.3-01"
+      ],
+      "coveredBy": []
+    },
+    {
+      "requirement": "sdjwt-eu-claims",
+      "title": "The EU claim battery of an SD-JWT VC EAA",
+      "level": "shall",
+      "eu": true,
+      "chain": "ETSI TS 119 472-1 V1.2.1 EAA-4.2.11.1-03, EAA-5.2.12-02",
+      "specs": [
+        null
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [
+        "EAA-4.2.11.1-03",
+        "EAA-5.2.12-02"
+      ],
+      "coveredBy": []
+    },
+    {
+      "requirement": "sdjwt-eu-claims",
+      "title": "The EU claim battery of an SD-JWT VC EAA",
+      "level": "shall",
+      "eu": true,
+      "chain": "ETSI TS 119 472-1 V1.2.1 QEAA-5.2.10.2-01, PuB-EAA-5.2.10.3-01",
+      "specs": [
+        null
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [
+        "QEAA-5.2.10.2-01",
+        "EAA-5.2.10.3-01"
+      ],
+      "coveredBy": []
+    },
+    {
+      "requirement": "sdjwt-eu-claims",
+      "title": "The EU claim battery of an SD-JWT VC EAA",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2979 Annex II (CIR 2026/1731 Annex IV) > EAA-4.2.13-03",
+      "specs": [
+        "cir-2026-1731",
+        null
+      ],
+      "quotedSpec": "cir-2026-1731",
+      "quoteFound": true,
+      "reqIds": [
+        "EAA-4.2.13-03"
+      ],
+      "coveredBy": []
+    },
+    {
+      "requirement": "mdoc-structure",
+      "title": "The mdoc: IssuerSigned, MSO, digests and IssuerAuth signature",
+      "level": "shall",
+      "eu": false,
+      "chain": "HAIP 1.0 clause 4 > OpenID4VCI 1.0 A.2.4",
+      "specs": [
+        "haip-1.0",
+        "openid4vci-1.0"
+      ],
+      "quotedSpec": "openid4vci-1.0",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": []
+    },
+    {
+      "requirement": "mdoc-structure",
+      "title": "The mdoc: IssuerSigned, MSO, digests and IssuerAuth signature",
+      "level": "shall",
+      "eu": false,
+      "chain": "HAIP 1.0 clause 4 > ISO/IEC 18013-5 9.1.2.4 (second edition draft; the 2021 edition is paywalled)",
+      "specs": [
+        "haip-1.0",
+        null
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [],
+      "coveredBy": []
+    },
+    {
+      "requirement": "mdoc-structure",
+      "title": "The mdoc: IssuerSigned, MSO, digests and IssuerAuth signature",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2977 Art 4(1); CIR 2024/2979 Art 8 + Annex II (CIR 2026/1731 Annex IV) > ETSI TS 119 472-1 V1.2.1 EAA-6.1-07, EAA-6.4.1.4-02",
+      "specs": [
+        "cir-2026-1731",
+        null
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [
+        "EAA-6.1-07",
+        "EAA-6.4.1.4-02"
+      ],
+      "coveredBy": []
+    },
+    {
+      "requirement": "mdoc-structure",
+      "title": "The mdoc: IssuerSigned, MSO, digests and IssuerAuth signature",
+      "level": "shall",
+      "eu": true,
+      "chain": "ETSI TS 119 472-1 V1.2.1 EAA-6.5-01 / -02, EAA-6.6.1-01",
+      "specs": [
+        null
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [
+        "EAA-6.5-01",
+        "EAA-6.6.1-01"
+      ],
+      "coveredBy": []
+    },
+    {
+      "requirement": "mdoc-chain",
+      "title": "The mdoc x5chain: signer not self-signed, anchor excluded, validates to the issuer anchors",
+      "level": "shall",
+      "eu": false,
+      "chain": "ISO/IEC 18013-5 9.1.2.4 (second edition draft)",
+      "specs": [
+        null
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [],
+      "coveredBy": []
+    },
+    {
+      "requirement": "mdoc-chain",
+      "title": "The mdoc x5chain: signer not self-signed, anchor excluded, validates to the issuer anchors",
+      "level": "may",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2979 Art 8 + Annex II (CIR 2026/1731 Annex IV) > ETSI TS 119 472-1 V1.2.1 EAA-4.6.1-06",
+      "specs": [
+        "cir-2026-1731",
+        null
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [
+        "EAA-4.6.1-06"
+      ],
+      "coveredBy": []
+    },
+    {
+      "requirement": "mdoc-chain",
+      "title": "The mdoc x5chain: signer not self-signed, anchor excluded, validates to the issuer anchors",
+      "level": "note",
+      "eu": false,
+      "chain": "HAIP 1.0 4.1, 4.4.1, 4.5.1, 6.1.1 (the x5c rule HAIP states for every other chain)",
+      "specs": [
+        "haip-1.0"
+      ],
+      "quotedSpec": "haip-1.0",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": []
+    },
+    {
+      "requirement": "mdoc-binding",
+      "title": "The mdoc's deviceKey is the proof key and its namespaces are the configuration's",
+      "level": "should",
+      "eu": false,
+      "chain": "HAIP 1.0 4.5 > OpenID4VCI 1.0 8.1",
+      "specs": [
+        "haip-1.0",
+        "openid4vci-1.0"
+      ],
+      "quotedSpec": "openid4vci-1.0",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": []
+    },
+    {
+      "requirement": "mdoc-binding",
+      "title": "The mdoc's deviceKey is the proof key and its namespaces are the configuration's",
+      "level": "note",
+      "eu": false,
+      "chain": "OpenID4VCI 1.0 A.2.2 / 12.2.4",
+      "specs": [
+        "openid4vci-1.0"
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [],
+      "coveredBy": []
+    },
+    {
+      "requirement": "mdoc-binding",
+      "title": "The mdoc's deviceKey is the proof key and its namespaces are the configuration's",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+      "specs": [
+        "cir-2026-1731",
+        "etsi-ts-119-472-3",
+        "haip-1.0"
+      ],
+      "quotedSpec": "etsi-ts-119-472-3",
+      "quoteFound": true,
+      "reqIds": [
+        "GEN-REQ-4.1-02"
+      ],
+      "coveredBy": []
+    },
+    {
+      "requirement": "status-list-resolves",
+      "title": "The status list resolves, as CWT for an mdoc",
+      "level": "shall",
+      "eu": false,
+      "chain": "HAIP 1.0 6.1 > Token Status List draft-20 8.1 (draft-21 identical)",
+      "specs": [
+        "haip-1.0",
+        null
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [],
+      "coveredBy": []
+    },
+    {
+      "requirement": "status-list-resolves",
+      "title": "The status list resolves, as CWT for an mdoc",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2979 Art 8 + Annex II (CIR 2026/1731 Annex IV) > EAA-6.2.10.1-07",
+      "specs": [
+        "cir-2026-1731",
+        null
+      ],
+      "quotedSpec": "cir-2026-1731",
+      "quoteFound": true,
+      "reqIds": [
+        "EAA-6.2.10.1-07"
+      ],
+      "coveredBy": []
+    },
+    {
+      "requirement": "status-list-resolves",
+      "title": "The status list resolves, as CWT for an mdoc",
+      "level": "note",
+      "eu": false,
+      "chain": "ISO/IEC 18013-5 12.3.6.1 / 12.3.6.3 (second edition draft; CIR 2026/1731 Annex IV repeats it as a NOTE)",
+      "specs": [
+        "cir-2026-1731"
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [],
+      "coveredBy": []
+    },
+    {
+      "requirement": "status-list-jwt-for-sdjwt",
+      "title": "An SD-JWT VC's status list is a JWT",
+      "level": "shall",
+      "eu": false,
+      "chain": "HAIP 1.0 6.1 > SD-JWT VC draft-13 3.2.2 (draft-19: 2.2.2.3)",
+      "specs": [
+        "haip-1.0",
+        null
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [],
+      "coveredBy": []
+    },
+    {
+      "requirement": "status-list-jwt-for-sdjwt",
+      "title": "An SD-JWT VC's status list is a JWT",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+      "specs": [
+        "cir-2026-1731",
+        "etsi-ts-119-472-3",
+        "haip-1.0"
+      ],
+      "quotedSpec": "etsi-ts-119-472-3",
+      "quoteFound": true,
+      "reqIds": [
+        "GEN-REQ-4.1-02"
+      ],
+      "coveredBy": []
+    },
+    {
+      "requirement": "status-list-token",
+      "title": "The Status List Token is well formed, current and signed",
+      "level": "shall",
+      "eu": false,
+      "chain": "HAIP 1.0 6.1 > Token Status List draft-20 5.1 / 5.2 (draft-21 identical)",
+      "specs": [
+        "haip-1.0",
+        null
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [],
+      "coveredBy": []
+    },
+    {
+      "requirement": "status-list-token",
+      "title": "The Status List Token is well formed, current and signed",
+      "level": "shall",
+      "eu": false,
+      "chain": "Token Status List draft-20 8.3",
+      "specs": [
+        null
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [],
+      "coveredBy": []
+    },
+    {
+      "requirement": "status-list-token",
+      "title": "The Status List Token is well formed, current and signed",
+      "level": "note",
+      "eu": false,
+      "chain": "Token Status List draft-20 11.3",
+      "specs": [
+        null
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [],
+      "coveredBy": []
+    },
+    {
+      "requirement": "status-list-token",
+      "title": "The Status List Token is well formed, current and signed",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+      "specs": [
+        "cir-2026-1731",
+        "etsi-ts-119-472-3",
+        "haip-1.0"
+      ],
+      "quotedSpec": "etsi-ts-119-472-3",
+      "quoteFound": true,
+      "reqIds": [
+        "GEN-REQ-4.1-02"
+      ],
+      "coveredBy": []
+    },
+    {
+      "requirement": "status-list-x5c",
+      "title": "The Status List Token carries its signing chain",
+      "level": "shall",
+      "eu": false,
+      "chain": "HAIP 1.0 6.1",
+      "specs": [
+        "haip-1.0"
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [],
+      "coveredBy": []
+    },
+    {
+      "requirement": "status-list-x5c",
+      "title": "The Status List Token carries its signing chain",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2979 Art 8 + Annex II (CIR 2026/1731 Annex IV) > EAA-6.2.10.1-08 (mdoc)",
+      "specs": [
+        "cir-2026-1731",
+        null
+      ],
+      "quotedSpec": "cir-2026-1731",
+      "quoteFound": true,
+      "reqIds": [
+        "EAA-6.2.10.1-08"
+      ],
+      "coveredBy": []
+    },
+    {
+      "requirement": "status-list-cwt-exp",
+      "title": "An mdoc's status list carries exp",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2979 Art 8 + Annex II (CIR 2026/1731 Annex IV) > EAA-6.2.10.1-08",
+      "specs": [
+        "cir-2026-1731",
+        null
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [
+        "EAA-6.2.10.1-08"
+      ],
+      "coveredBy": []
+    },
+    {
+      "requirement": "status-valid-after-issuance",
+      "title": "A credential is VALID right after issuance",
+      "level": "note",
+      "eu": false,
+      "chain": "HAIP 1.0 6.1 > Token Status List draft-20 7.1 (draft-21 identical)",
+      "specs": [
+        "haip-1.0",
+        null
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [],
+      "coveredBy": []
+    },
+    {
+      "requirement": "status-valid-after-issuance",
+      "title": "A credential is VALID right after issuance",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2982 Art 4(1) + Annex I (CIR 2026/1731 Annex XI) > ETSI TS 119 472-3 V1.1.1 GEN-REQ-4.1-02 > HAIP 1.0 clause 4",
+      "specs": [
+        "cir-2026-1731",
+        "etsi-ts-119-472-3",
+        "haip-1.0"
+      ],
+      "quotedSpec": "etsi-ts-119-472-3",
+      "quoteFound": true,
+      "reqIds": [
+        "GEN-REQ-4.1-02"
+      ],
+      "coveredBy": []
+    },
+    {
+      "requirement": "status-values-revoked-only",
+      "title": "Only valid and invalid for PID, QEAA and PuB-EAA",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2979 Art 8 + Annex II (CIR 2026/1731 Annex IV) > EAA-4.2.11.1-06 / -06.1 (inserted by the CIR)",
+      "specs": [
+        "cir-2026-1731",
+        null
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [
+        "EAA-4.2.11.1-06"
+      ],
+      "coveredBy": []
+    },
+    {
+      "requirement": "status-values-revoked-only",
+      "title": "Only valid and invalid for PID, QEAA and PuB-EAA",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2979 Annex II (CIR 2026/1731 Annex IV) > EAA-6.2.10.1-03 / -03.1 (mdoc)",
+      "specs": [
+        "cir-2026-1731",
+        null
+      ],
+      "quotedSpec": null,
+      "quoteFound": false,
+      "reqIds": [
+        "EAA-6.2.10.1-03"
+      ],
+      "coveredBy": []
+    },
+    {
+      "requirement": "status-values-revoked-only",
+      "title": "Only valid and invalid for PID, QEAA and PuB-EAA",
+      "level": "shall",
+      "eu": true,
+      "chain": "CIR (EU) 2024/2977 Annex (CIR 2026/1731 Annex I), 4.1 and the SD-JWT VC encoding (what makes a credential a PID by its type)",
+      "specs": [
+        "cir-2026-1731"
+      ],
+      "quotedSpec": "cir-2026-1731",
+      "quoteFound": true,
+      "reqIds": [],
+      "coveredBy": []
+    }
+  ]
+}

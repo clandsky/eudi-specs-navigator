@@ -1,0 +1,8 @@
+id: golive-compromises
+title: Temporal go-live compromises
+short: Go-live
+layer: golive
+version: maintained in this repository
+note: >-
+  Time-bounded agreements that relax or replace a binding rule for a go-live period. Authored with the in-tool editor
+  (dev mode writes data/assertions/golive/*.yaml). Each entry records who decided it and where (decided_by, reference).

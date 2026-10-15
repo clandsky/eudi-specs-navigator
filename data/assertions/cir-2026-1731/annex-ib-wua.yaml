@@ -1,0 +1,341 @@
+# CIR (EU) 2026/1731 Annex III = new Annex Ib to 2024/2979: wallet unit attestations (WIA + key attestation).
+- id: cir/FR-WIA-1.1
+  subject: vci.wia
+  spec: cir-2026-1731
+  locator: { req: FR-WIA-1.1, at: "Annex III (Annex Ib), point 2(a)" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ wallet-provider ] }
+  quote: "A wallet instance attestation shall be a wallet attestation as specified in Appendix E of OpenID for Verifiable
+    Credential Issuance v1.0"
+  xref: [ { source: c2bo, id: token-wallet-attestation-verification } ]
+  verified: source-checked
+- id: cir/FR-WIA-1
+  subject: vci.wia
+  spec: cir-2026-1731
+  locator: { req: FR-WIA-1, at: "Annex III (Annex Ib), point 2(a)" }
+  relation: extends
+  level: shall
+  applies_to: { role: [ wallet-provider ] }
+  quote: "A wallet instance attestation shall be a JSON Web Token (JWT) as specified in RFC 7519 (1), signed or sealed by
+    the wallet provider by means of compact JAdES baseline B signature."
+  note: Adds the JAdES baseline B signature profile, which OpenID4VCI Appendix E does not require.
+  verified: source-checked
+- id: cir/TR-WIA-2.1
+  subject: vci.wia.exp
+  spec: cir-2026-1731
+  locator: { req: TR-WIA-2.1, at: "Annex III (Annex Ib), point 2(b)" }
+  relation: extends
+  level: shall
+  applies_to: { role: [ wallet-provider ] }
+  quote: "the difference between the time when the wallet provider verified the integrity of the wallet instance and the
+    time they will indicate in the 'exp' header parameter of the issued wallet instance attestation shall be less than
+    24 hours."
+  verified: needs-review
+  review:
+    reason: >-
+      The CIR calls 'exp' a "header parameter"; in OpenID4VCI Appendix E and draft-07 §5.1 exp is a JWT claim (payload).
+      C_WIA-1 itself requires "the 'exp' claim". Read as the payload claim.
+- id: cir/TR-WIA-3/par
+  subject: vci.par-request.oauth-client-attestation
+  spec: cir-2026-1731
+  locator: { req: TR-WIA-3, at: "Annex III (Annex Ib), point 2(b)" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ wallet ] }
+  quote: "During issuance, a wallet unit shall send a wallet instance attestation to the authorisation server in the
+    pushed authorisation request and the token request, as specified in OID4VCI."
+  xref: [ { source: c2bo, id: par-request } ]
+  verified: source-checked
+- id: cir/TR-WIA-3/token
+  subject: vci.token-request.oauth-client-attestation
+  spec: cir-2026-1731
+  locator: { req: TR-WIA-3, at: "Annex III (Annex Ib), point 2(b)" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ wallet ] }
+  quote: "During issuance, a wallet unit shall send a wallet instance attestation to the authorisation server in the
+    pushed authorisation request and the token request, as specified in OID4VCI."
+  note: Not restricted to one grant type; applies to the authorization code and the pre-authorized code token request alike.
+  xref: [ { source: c2bo, id: token-client-authentication } ]
+  verified: source-checked
+- id: cir/TR-WIA-3.1/par
+  subject: vci.par-request.oauth-client-attestation-pop
+  spec: cir-2026-1731
+  locator: { req: TR-WIA-3.1, at: "Annex III (Annex Ib), point 2(b)" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ wallet ] }
+  quote: "A wallet unit shall send the wallet instance attestation together with a Proof-of-Possession ('PoP') as
+    specified in Appendix E of OID4VCI."
+  verified: source-checked
+- id: cir/TR-WIA-3.1/token
+  subject: vci.token-request.oauth-client-attestation-pop
+  spec: cir-2026-1731
+  locator: { req: TR-WIA-3.1, at: "Annex III (Annex Ib), point 2(b)" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ wallet ] }
+  quote: "A wallet unit shall send the wallet instance attestation together with a Proof-of-Possession ('PoP') as
+    specified in Appendix E of OID4VCI."
+  verified: source-checked
+- id: cir/TR-WIA-3.2
+  subject: vci.wia.lifetime
+  spec: cir-2026-1731
+  locator: { req: TR-WIA-3.2, at: "Annex III (Annex Ib), point 2(b)" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ wallet ] }
+  quote: "A wallet unit shall send the same wallet instance attestation to only one authorisation server."
+  verified: source-checked
+- id: cir/TR-WIA-4
+  subject: vci.wia.verification
+  spec: cir-2026-1731
+  locator: { req: "TR-WIA-4, TR-WIA-4.1, TR-WIA-4.2, TR-WIA-4.3", at: "Annex III (Annex Ib), point 2(b)" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ as ] }
+  condition: Where the authorisation server receives a WIA.
+  quote: "Where an authorisation server receives a wallet instance attestation, it shall verify the signature of the
+    wallet instance attestation using the public key in the signing certificate included in the 'x5c' parameter … The
+    authorisation server shall verify that the wallet instance attestation has not expired. … The authorisation server
+    shall verify the signature of the PoP under the public key present in the 'cnf' claim."
+  xref: [ { source: c2bo, id: token-wallet-attestation-verification } ]
+  verified: source-checked
+- id: cir/TR-WIA-4/silent-on-rejection
+  subject: vci.client-auth.reject-without-wia
+  spec: cir-2026-1731
+  locator: { req: TR-WIA-4, at: "Annex III (Annex Ib), point 2(b)" }
+  relation: silent
+  applies_to: { role: [ as ] }
+  probe: shall reject
+  note: >-
+    TR-WIA-4 only says what an authorisation server verifies "where" it receives a WIA. No CIR text obliges the AS to
+    reject a PAR or token request that comes without one. The obligation to require client authentication comes from
+    HAIP 4.4.1, which does not mandate the WIA format.
+  verified: source-checked
+- id: cir/TR_KA-3
+  subject: vci.credential-request.proofs
+  spec: cir-2026-1731
+  locator: { req: TR_KA-3, at: "Annex III (Annex Ib), point 2(b)" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ wallet ] }
+  condition: Where needed during issuance (device-bound PID/EAA, see TR_KA-1).
+  quote: "Where needed during issuance, a wallet unit shall include a key attestation in the field 'proofs' of a
+    Credential Request to the credential issuer, as specified in OID4VCI, in a proof of either type 'jwt' or type
+    'attestation'."
+  verified: source-checked
+- id: cir/TR_KA_3.1
+  subject: vci.proof-jwt.signing-key
+  spec: cir-2026-1731
+  locator: { req: TR_KA_3.1, at: "Annex III (Annex Ib), point 2(b)" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ wallet ] }
+  quote: "Where a wallet unit includes a key attestation in a 'jwt' element, it shall sign or seal the key attestation
+    using the private key corresponding to the public key at index 0 of the 'attested_keys' array within the
+    'key_attestation' object."
+  verified: needs-review
+  review:
+    reason: >-
+      Read literally, the wallet unit signs "the key attestation" — but the key attestation is signed by the wallet
+      provider (FR-KA-1). ETSI CRED-REQ-4.6.1.2-07 and CIR TR_KA-6 say the jwt element (the proof) is signed with the
+      key at attested_keys[0]. Shown here with the ETSI reading as the effective intent.
+- id: cir/TR_KA-4
+  subject: vci.metadata.ccs.proof_types_supported
+  spec: cir-2026-1731
+  locator: { req: TR_KA-4, at: "Annex III (Annex Ib), point 2(b)" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ issuer ] }
+  condition: Where the credential issuer issues device-bound credentials.
+  quote: "Where a credential issuer issues device-bound credentials, it shall indicate in the 'proof_types_supported'
+    parameter in its Issuer Credential Metadata, as specified in Section 12.2.4 OID4VCI, that it supports both the 'jwt'
+    and the 'attestation' proof type for key attestations that shall include the 'key_attestations_required' object."
+  xref: [ { source: c2bo, id: proof-types-key-attestations } ]
+  verified: source-checked
+- id: cir/TR_KA-4/key_attestations_required
+  subject: vci.metadata.ccs.key_attestations_required
+  spec: cir-2026-1731
+  locator: { req: TR_KA-4, at: "Annex III (Annex Ib), point 2(b)" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ issuer ] }
+  condition: Where the credential issuer issues device-bound credentials.
+  quote: "supports both the 'jwt' and the 'attestation' proof type for key attestations that shall include the
+    'key_attestations_required' object."
+  verified: source-checked
+- id: cir/TR_KA-5
+  subject: vci.ka.verification
+  spec: cir-2026-1731
+  locator: { req: "TR_KA-5, TR_KA-6, TR_KA-6.1", at: "Annex III (Annex Ib), point 2(b)" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ issuer ] }
+  quote: "Where a credential issuer receives a key attestation in a 'jwt' or an 'attestation' proof type, it shall verify
+    the signature of the key attestation under the public key in the signing certificate included in the 'x5c'
+    parameter"
+  xref: [ { source: c2bo, id: key-attestation-trust } ]
+  verified: source-checked
+- id: cir/TR_KA-6
+  subject: vci.proof-jwt.signing-key
+  spec: cir-2026-1731
+  locator: { req: TR_KA-6, at: "Annex III (Annex Ib), point 2(b)" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ issuer ] }
+  quote: "Where a credential issuer receives a key attestation in a 'jwt' proof type, it shall verify the signature of the
+    'jwt' element under the key at index 0 of the 'attested_keys' array within the 'key_attestation' object included in
+    the 'jwt' element."
+  xref: [ { source: c2bo, id: eu-proof-under-first-attested-key } ]
+  verified: source-checked
+- id: cir/TR_KA-6.1
+  subject: vci.proof-jwt.nonce
+  spec: cir-2026-1731
+  locator: { req: TR_KA-6.1, at: "Annex III (Annex Ib), point 2(b)" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ issuer ] }
+  quote: "The credential issuer shall verify that the 'nonce' field of the 'jwt' element includes a valid c_nonce from
+    their nonce_endpoint, as specified in OID4VCI."
+  xref: [ { source: c2bo, id: proof-nonce } ]
+  verified: source-checked
+- id: cir/C_WIA-1/wallet_name
+  subject: vci.wia.wallet_name
+  spec: cir-2026-1731
+  locator: { req: C_WIA-1, at: "Annex III (Annex Ib), point 2(c)" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ wallet-provider ] }
+  quote: "the 'wallet_name' claim specified in Appendix E of OID4VCI, where its value shall be the identifier of the
+    wallet solution that can be found on the list of wallet providers"
+  verified: source-checked
+- id: cir/C_WIA-1/wallet_version
+  subject: vci.wia.wallet_version
+  spec: cir-2026-1731
+  locator: { req: C_WIA-1, at: "Annex III (Annex Ib), point 2(c)" }
+  relation: extends
+  level: shall
+  applies_to: { role: [ wallet-provider ] }
+  quote: "a 'wallet_version' claim (4), that shall be a string whose value shall be the version of the wallet solution."
+  note: Footnote 4 of the CIR says this claim is defined in the CIR because it is not part of OpenID4VCI.
+  verified: source-checked
+- id: cir/C_WIA-1/certification
+  subject: vci.wia.wallet_solution_certification_information
+  spec: cir-2026-1731
+  locator: { req: C_WIA-1, at: "Annex III (Annex Ib), point 2(c)" }
+  relation: extends
+  level: shall
+  applies_to: { role: [ wallet-provider ] }
+  quote: "a 'wallet_solution_certification_information' claim, that shall be a JSON object containing information about
+    the conformity assessment body that certified the wallet solution"
+  verified: source-checked
+- id: cir/C_WIA-1/client_status
+  subject: vci.wia.client_status
+  spec: cir-2026-1731
+  locator: { req: C_WIA-1, at: "Annex III (Annex Ib), point 2(c)" }
+  relation: extends
+  level: shall
+  applies_to: { role: [ wallet-provider ] }
+  quote: "a 'client_status' claim, containing two sub-fields: … 'status': a status list reference as specified in Appendix
+    E of OID4VCI that represents the revocation status of the wallet instance."
+  verified: source-checked
+- id: cir/LC_WIA_3
+  subject: vci.wia.client_status
+  spec: cir-2026-1731
+  locator: { req: LC_WIA_3, at: "Annex III (Annex Ib), point 2(d)" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ wallet-provider ] }
+  quote: "it shall maintain the revocation status of the relevant wallet instance until the 'wallet_instance_status.exp'
+    indicated in that wallet instance attestation has passed."
+  verified: needs-review
+  review:
+    reason: >-
+      LC_WIA_3 refers to 'wallet_instance_status.exp', but C_WIA-1 defines the claim as 'client_status' (with 'status'
+      and 'exp'). No 'wallet_instance_status' claim is defined anywhere in Annex Ib.
+- id: cir/C_WIA-2
+  subject: vci.wia.wallet_link
+  spec: cir-2026-1731
+  locator: { req: C_WIA-2, at: "Annex III (Annex Ib), point 2(c)" }
+  relation: profiles
+  level: should
+  applies_to: { role: [ wallet-provider ] }
+  quote: "A wallet instance attestation should also include the 'wallet_link' claim specified in Appendix E of OID4VCI and
+    the value of this claim shall be a URI where further information about the wallet solution can be obtained."
+  verified: source-checked
+- id: cir/C_KA-1/key_storage
+  subject: vci.ka.key_storage
+  spec: cir-2026-1731
+  locator: { req: C_KA-1, at: "Annex III (Annex Ib), point 2(c)" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ wallet-provider ] }
+  quote: "the 'key_storage' and 'user_authentication' claims specified in Appendix D of OID4VCI. … The 'key_storage' and
+    'user_authentication' attributes shall have value 'iso_18045_high' where a key attestation mentions a WSCD,"
+  note: OpenID4VCI D.1 defines both claims as arrays of strings; the CIR speaks of "value". Read as the array containing
+    iso_18045_high.
+  verified: source-checked
+- id: cir/C_KA-1/certification
+  subject: vci.ka.certification
+  spec: cir-2026-1731
+  locator: { req: C_KA-1, at: "Annex III (Annex Ib), point 2(c)" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ wallet-provider ] }
+  quote: "the 'certification' claim specified in Appendix D of OID4VCI, containing a URL where information can be obtained
+    about the certification achieved by the WSCD or keystore"
+  verified: source-checked
+- id: cir/C_KA-1/key_storage_status
+  subject: vci.ka.key_storage_status
+  spec: cir-2026-1731
+  locator: { req: C_KA-1, at: "Annex III (Annex Ib), point 2(c)" }
+  relation: extends
+  level: shall
+  applies_to: { role: [ wallet-provider ] }
+  quote: "a 'key_storage_status' claim, containing two sub-fields:"
+  verified: source-checked
+- id: cir/LC_WIA-1
+  subject: vci.metadata.preferred_client_status_period
+  spec: cir-2026-1731
+  locator: { req: LC_WIA-1, at: "Annex III (Annex Ib), point 2(d)" }
+  relation: extends
+  level: may
+  applies_to: { role: [ as, issuer ] }
+  quote: "An authorisation server may communicate its preferences for the remaining status maintenance period in wallet
+    instance attestations by including the 'preferred_client_status_period' metadata parameter in their Credential
+    Issuer metadata endpoint"
+  note: Defines a new Credential Issuer metadata parameter, placed at the top level (LC_WIA-1.1).
+  xref: [ { source: c2bo, id: status-period-placement } ]
+  verified: source-checked
+- id: cir/TR-WIA-2.2
+  subject: vci.provisioning
+  spec: cir-2026-1731
+  locator: { req: TR-WIA-2.2, at: "Annex III (Annex Ib), point 2(b)" }
+  relation: extends
+  level: shall
+  applies_to: { role: [ wallet-provider ] }
+  quote: "The wallet provider shall ensure that a wallet unit contains wallet instance attestations as needed for issuance
+    of person identification data and electronic attestations of attributes."
+  verified: source-checked
+- id: cir/TR_KA-2.5
+  subject: vci.provisioning
+  spec: cir-2026-1731
+  locator: { req: TR_KA-2.5, at: "Annex III (Annex Ib), point 2(b)" }
+  relation: extends
+  level: shall
+  applies_to: { role: [ wallet-provider ] }
+  quote: "A wallet provider shall ensure that a wallet unit is in possession of key attestations as needed for issuance of
+    person identification data and device-bound electronic attestations of attributes."
+  verified: source-checked
+- id: cir/TR-WIA-2
+  subject: vci.provisioning
+  spec: cir-2026-1731
+  locator: { req: TR-WIA-2, at: "Annex III (Annex Ib), point 2(b)" }
+  relation: extends
+  level: shall
+  applies_to: { role: [ wallet-provider ] }
+  quote: "A wallet provider shall verify the integrity of the wallet instance and sign or seal the wallet instance
+    attestation."
+  verified: source-checked

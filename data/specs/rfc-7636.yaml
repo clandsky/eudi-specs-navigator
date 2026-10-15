@@ -1,0 +1,11 @@
+id: rfc-7636
+title: "RFC 7636: Proof Key for Code Exchange by OAuth Public Clients (PKCE)"
+short: RFC 7636
+layer: base
+version: RFC 7636
+note: Not in the local corpus (pruned by reachability); sources:build downloads the RFC text.
+source:
+  text: sources/rfc7636.txt
+  fetch: https://www.rfc-editor.org/rfc/rfc7636.txt
+  url: https://www.rfc-editor.org/rfc/rfc7636
+anchor_template: https://www.rfc-editor.org/rfc/rfc7636#section-{section}

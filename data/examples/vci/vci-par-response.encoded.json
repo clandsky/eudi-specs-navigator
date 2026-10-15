@@ -1,0 +1,19 @@
+{
+  "id": "vci-par-response",
+  "http": {
+    "status": 201,
+    "headers": {
+      "Content-Type": "application/json",
+      "Cache-Control": "no-cache, no-store"
+    },
+    "body": {
+      "type": "json",
+      "value": {
+        "request_uri": "urn:ietf:params:oauth:request_uri:6esc_11ACC5bwc014ltc14eY22c",
+        "expires_in": 60
+      }
+    }
+  },
+  "jwts": {},
+  "inputHash": "11130e491762df0a"
+}

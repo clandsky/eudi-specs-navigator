@@ -1,0 +1,11 @@
+id: vci-nonce-response
+title: Nonce Response
+subject: vci.nonce-response
+kind: http-response
+http:
+  status: 200
+  headers: { Content-Type: application/json, Cache-Control: no-store, DPoP-Nonce: eyJ7S_zG.eyJH0-Z.HX4w-7v }
+  body: { type: json, value: { c_nonce: wKI4LT17ac15ES9bw8ac4 } }
+annotations:
+  /http/headers/Cache-Control: vci.nonce-response.cache-control
+  /http/body/c_nonce: vci.nonce-response.c_nonce

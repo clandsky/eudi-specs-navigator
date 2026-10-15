@@ -1,0 +1,28 @@
+# OpenID for Verifiable Presentations 1.0 Final.
+- id: oid4vp/8.3/encryption
+  subject: vp.authorization-response.encryption
+  spec: openid4vp-1.0
+  locator: { section: "8.3" }
+  relation: defines
+  level: may
+  quote: "This section defines how an Authorization Response containing a VP Token (such as when the Response Type value
+    is vp_token or vp_token id_token) can be encrypted at the application level"
+  verified: source-checked
+- id: oid4vp/5.1/verifier_info
+  subject: vp.request-object.verifier_info
+  spec: openid4vp-1.0
+  locator: { section: "5.1" }
+  relation: defines
+  level: may
+  applies_to: { role: [ verifier ] }
+  quote: "verifier_info: OPTIONAL. A non-empty array of attestations about the Verifier relevant to the Credential Request."
+  verified: source-checked
+- id: oid4vp/5.1/verifier_info-element
+  subject: vp.request-object.verifier_info.registration_cert
+  spec: openid4vp-1.0
+  locator: { section: "5.1" }
+  relation: defines
+  level: may
+  applies_to: { role: [ verifier ] }
+  quote: "These attestations MAY include Verifier metadata, policies, trust status, or authorizations."
+  verified: source-checked

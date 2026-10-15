@@ -1,0 +1,337 @@
+# OAuth 2.0 RFCs and the attestation-based client authentication draft (version pinned by ETSI TS 119 472-3).
+- id: abca-07/5.1/typ
+  subject: vci.wia.typ
+  spec: attestation-client-auth-07
+  locator: { section: "5.1" }
+  relation: defines
+  level: shall
+  quote: "typ: REQUIRED. The JWT type MUST be oauth-client-attestation+jwt."
+  verified: source-checked
+- id: abca-07/5.1/sub
+  subject: vci.wia.sub
+  spec: attestation-client-auth-07
+  locator: { section: "5.1" }
+  relation: defines
+  level: shall
+  quote: "sub: REQUIRED. The sub (subject) claim MUST specify client_id value of the OAuth Client."
+  verified: source-checked
+- id: abca-07/5.1/iss
+  subject: vci.wia.iss
+  spec: attestation-client-auth-07
+  locator: { section: "5.1" }
+  relation: defines
+  level: shall
+  quote: "iss: REQUIRED. The iss (issuer) claim MUST contains a unique identifier for the entity that issued the JWT."
+  verified: source-checked
+- id: abca-07/5.1/exp
+  subject: vci.wia.exp
+  spec: attestation-client-auth-07
+  locator: { section: "5.1" }
+  relation: defines
+  level: shall
+  quote: "exp: REQUIRED. The exp (expiration time) claim MUST specify the time at which the Client Attestation is
+    considered expired by its issuer."
+  verified: source-checked
+- id: abca-07/5.1/cnf
+  subject: vci.wia.cnf
+  spec: attestation-client-auth-07
+  locator: { section: "5.1" }
+  relation: defines
+  level: shall
+  quote: "cnf: REQUIRED. The cnf (confirmation) claim MUST specify a key conforming to [RFC7800] that is used by the
+    Client Instance to generate the Client Attestation PoP JWT for client authentication with an authorization server.
+    The key MUST be expressed using the \"jwk\" representation."
+  verified: source-checked
+- id: abca-07/5.2/typ
+  subject: vci.wia-pop.typ
+  spec: attestation-client-auth-07
+  locator: { section: "5.2" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ wallet ] }
+  quote: "typ: REQUIRED. The JWT type MUST be oauth-client-attestation-pop+jwt."
+  verified: source-checked
+- id: abca-07/5.2/aud
+  subject: vci.wia-pop.aud
+  spec: attestation-client-auth-07
+  locator: { section: "5.2" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ wallet ] }
+  quote: "The [RFC8414] issuer identifier URL of the authorization server MUST be used as a value for an \"aud\" element
+    to identify the authorization server as the intended audience of the JWT."
+  verified: source-checked
+- id: abca-07/5.2/jti
+  subject: vci.wia-pop.jti
+  spec: attestation-client-auth-07
+  locator: { section: "5.2" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ wallet ] }
+  quote: "jti: REQUIRED. The jti (JWT identifier) claim MUST specify a unique identifier for the Client Attestation PoP."
+  verified: source-checked
+- id: abca-07/5.2/challenge
+  subject: vci.wia-pop.challenge
+  spec: attestation-client-auth-07
+  locator: { section: "5.2" }
+  relation: defines
+  level: may
+  applies_to: { role: [ wallet ] }
+  quote: "challenge: OPTIONAL. The challenge (challenge) claim MUST specify a String value that is provided by the
+    authorization server for the client to include in the Client Attestation PoP JWT."
+  verified: source-checked
+- id: abca-07/6.1/headers-token
+  subject: vci.token-request.oauth-client-attestation
+  spec: attestation-client-auth-07
+  locator: { section: "6.1" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ wallet ] }
+  condition: When the client attestation is sent with the header-based syntax.
+  quote: "When using headers to transfer the Client Attestation JWT and Client Attestation PoP JWT to an Authorization
+    Server, they MUST be provided in an HTTP request using the following HTTP headers."
+  verified: source-checked
+- id: abca-07/6.1/headers-par
+  subject: vci.par-request.oauth-client-attestation
+  spec: attestation-client-auth-07
+  locator: { section: "6.1" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ wallet ] }
+  condition: When the client attestation is sent with the header-based syntax.
+  quote: "When using headers to transfer the Client Attestation JWT and Client Attestation PoP JWT to an Authorization
+    Server, they MUST be provided in an HTTP request using the following HTTP headers."
+  verified: source-checked
+- id: abca-07/10.1/auth-method
+  subject: vci.as-metadata.token_endpoint_auth_methods_supported
+  spec: attestation-client-auth-07
+  locator: { section: "10.1" }
+  relation: profiles
+  level: should
+  applies_to: { role: [ as ] }
+  quote: "The Authorization Server SHOULD communicate support and requirement for authentication with Attestation-Based
+    Client Authentication by using the value attest_jwt_client_auth in the token_endpoint_auth_methods_supported within
+    its published metadata."
+  xref: [ { source: c2bo, id: as-client-auth } ]
+  verified: source-checked
+- id: abca-07/10.1/alg-values
+  subject: vci.as-metadata.client_attestation_signing_alg_values_supported
+  spec: attestation-client-auth-07
+  locator: { section: "10.1" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ as ] }
+  condition: If token_endpoint_auth_methods_supported includes attest_jwt_client_auth.
+  quote: "The Authorization Server MUST include client_attestation_signing_alg_values_supported and
+    client_attestation_pop_signing_alg_values_supported in its published metadata if the
+    token_endpoint_auth_methods_supported includes attest_jwt_client_auth."
+  verified: source-checked
+- id: abca-07/10.1/pop-alg-values
+  subject: vci.as-metadata.client_attestation_pop_signing_alg_values_supported
+  spec: attestation-client-auth-07
+  locator: { section: "10.1" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ as ] }
+  condition: If token_endpoint_auth_methods_supported includes attest_jwt_client_auth.
+  quote: "client_attestation_pop_signing_alg_values_supported in its published metadata if the
+    token_endpoint_auth_methods_supported includes attest_jwt_client_auth."
+  verified: source-checked
+- id: rfc9126/2/endpoint
+  subject: vci.par-request
+  spec: rfc-9126
+  locator: { section: "2" }
+  relation: defines
+  level: info
+  quote: "The pushed authorization request endpoint is an HTTP API at the authorization server that accepts HTTP \"POST\"
+    requests with parameters in the HTTP request message body using the \"application/x-www-form-urlencoded\" format."
+  verified: source-checked
+- id: rfc9126/2/client-auth
+  subject: vci.client-auth
+  spec: rfc-9126
+  locator: { section: "2" }
+  relation: defines
+  level: info
+  quote: "The rules for client authentication as defined in [RFC6749] for token endpoint requests, including the
+    applicable authentication methods, apply for the PAR endpoint as well."
+  verified: source-checked
+- id: rfc9126/5/metadata
+  subject: vci.as-metadata.pushed_authorization_request_endpoint
+  spec: rfc-9126
+  locator: { section: "2" }
+  relation: defines
+  level: should
+  applies_to: { role: [ as ] }
+  quote: "Authorization servers supporting PAR SHOULD include the URL of their pushed authorization request endpoint in
+    their authorization server metadata document [RFC8414] using the \"pushed_authorization_request_endpoint\"
+    parameter"
+  verified: source-checked
+- id: rfc7636/4.3/code_challenge
+  subject: vci.par-request.code_challenge
+  spec: rfc-7636
+  locator: { section: "4.3" }
+  relation: defines
+  level: info
+  quote: "The client sends the code challenge as part of the OAuth 2.0 Authorization Request (Section 4.1.1 of [RFC6749])
+    using the following additional parameters:"
+  verified: source-checked
+- id: rfc7636/4.5/code_verifier
+  subject: vci.token-request.code_verifier
+  spec: rfc-7636
+  locator: { section: "4.5" }
+  relation: defines
+  level: info
+  quote: "Upon receipt of the Authorization Code, the client sends the Access Token Request to the token endpoint."
+  verified: source-checked
+- id: rfc9449/4/dpop
+  subject: vci.dpop-proof
+  spec: rfc-9449
+  locator: { section: "4" }
+  relation: defines
+  level: info
+  quote: "DPoP introduces the concept of a DPoP proof, which is a JWT created by the client and sent with an HTTP request
+    using the DPoP header field. Each HTTP request requires a unique DPoP proof."
+  verified: source-checked
+- id: rfc9449/4.2/typ
+  subject: vci.dpop-proof.typ
+  spec: rfc-9449
+  locator: { section: "4.2" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ wallet ] }
+  quote: "typ: A field with the value dpop+jwt, which explicitly types the"
+  verified: source-checked
+- id: rfc9449/5/token_type
+  subject: vci.token-response.token_type
+  spec: rfc-9449
+  locator: { section: "5" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ as ] }
+  quote: "A token_type of DPoP MUST be"
+  verified: source-checked
+- id: rfc9449/7.1/scheme
+  subject: vci.credential-request.authorization
+  spec: rfc-9449
+  locator: { section: "7.1" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ wallet ] }
+  quote: "A DPoP-bound access token is sent using the Authorization request header field per Section 11.6.2 of [RFC9110]
+    with an authentication scheme of DPoP."
+  verified: source-checked
+- id: rfc8414/3/well-known
+  subject: vci.as-metadata
+  spec: rfc-8414
+  locator: { section: "3" }
+  relation: defines
+  level: info
+  quote: "/.well-known/oauth-authorization-server"
+  verified: source-checked
+- id: rfc8414/2/issuer
+  subject: vci.as-metadata.issuer
+  spec: rfc-8414
+  locator: { section: "2" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ as ] }
+  quote: "issuer REQUIRED. The authorization server's issuer identifier, which is a URL that uses the \"https\" scheme and
+    has no query or fragment components."
+  verified: source-checked
+- id: rfc8414/2/token_endpoint_auth_methods_supported
+  subject: vci.as-metadata.token_endpoint_auth_methods_supported
+  spec: rfc-8414
+  locator: { section: "2" }
+  relation: defines
+  level: may
+  applies_to: { role: [ as ] }
+  quote: "token_endpoint_auth_methods_supported OPTIONAL. JSON array containing a list of client authentication methods
+    supported by this token endpoint."
+  verified: source-checked
+- id: rfc6749/4.1.3/grant_type
+  subject: vci.token-request.grant_type
+  spec: rfc-6749
+  locator: { section: "4.1.3" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ wallet ] }
+  quote: "grant_type REQUIRED. Value MUST be set to \"authorization_code\"."
+  verified: source-checked
+- id: rfc6749/4.1.3/code
+  subject: vci.token-request.code
+  spec: rfc-6749
+  locator: { section: "4.1.3" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ wallet ] }
+  quote: "code REQUIRED. The authorization code received from the authorization server."
+  verified: source-checked
+- id: rfc6749/4.1.2/code
+  subject: vci.authorization-response.code
+  spec: rfc-6749
+  locator: { section: "4.1.2" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ as ] }
+  quote: "code REQUIRED. The authorization code generated by the authorization server."
+  verified: source-checked
+- id: rfc6749/6/refresh
+  subject: vci.token-response.refresh_token
+  spec: rfc-6749
+  locator: { section: "5.1" }
+  relation: defines
+  level: may
+  applies_to: { role: [ as ] }
+  quote: "refresh_token OPTIONAL. The refresh token, which can be used to obtain new access tokens using the same
+    authorization grant"
+  verified: source-checked
+- id: rfc9126/2.2/request_uri
+  subject: vci.par-response.request_uri
+  spec: rfc-9126
+  locator: { section: "2.2" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ as ] }
+  quote: "request_uri The request URI corresponding to the authorization request posted."
+  verified: source-checked
+- id: rfc9126/4/authorize
+  subject: vci.authorization-request.request_uri
+  spec: rfc-9126
+  locator: { section: "4" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ wallet ] }
+  quote: "The client uses the \"request_uri\" value returned by the authorization server to build an authorization request
+    as defined in [RFC9101]."
+  verified: source-checked
+- id: rfc7636/4.3/code_challenge-required
+  subject: vci.par-request.code_challenge
+  spec: rfc-7636
+  locator: { section: "4.3" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ wallet ] }
+  condition: When the client uses PKCE.
+  quote: "code_challenge REQUIRED. Code challenge. code_challenge_method OPTIONAL, defaults to \"plain\" if not present in
+    the request."
+  verified: source-checked
+- id: rfc7636/4.5/code_verifier-required
+  subject: vci.token-request.code_verifier
+  spec: rfc-7636
+  locator: { section: "4.5" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ wallet ] }
+  condition: When the client used PKCE in the authorization request.
+  quote: "code_verifier REQUIRED. Code verifier"
+  verified: source-checked
+- id: haip/4/pkce-verifier
+  subject: vci.token-request.code_verifier
+  spec: haip-1.0
+  locator: { section: "4" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ wallet ] }
+  quote: "using PKCE [RFC7636] with S256 as the code challenge method"
+  note: HAIP makes PKCE mandatory, which removes the RFC 7636 condition.
+  verified: source-checked

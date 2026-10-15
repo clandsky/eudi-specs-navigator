@@ -1,0 +1,51 @@
+# ETSI TS 119 472-2 V1.2.1 (2026-03): presentation profile. Clauses 4.1, 4.2, 5, 6 binding via CIR Annex XII.
+- id: etsi-472-2/OIDFVP-HAIP-COMMON-RESP-01
+  subject: vp.authorization-response.encryption
+  spec: etsi-ts-119-472-2
+  locator: { req: OIDFVP-HAIP-COMMON-RESP-01, section: "6.3.3" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ wallet ] }
+  quote: "OIDFVP-HAIP-COMMON-RESP-01: The EUDI Wallet shall encrypt the authorization response."
+  verified: source-checked
+- id: etsi-472-2/OIDFVP-HAIP-REDIRECTS-01
+  subject: vp.authorization-response.encryption
+  spec: etsi-ts-119-472-2
+  locator: { req: OIDFVP-HAIP-REDIRECTS-01, section: "6.4.1" }
+  relation: profiles
+  level: info
+  applies_to: { transport: [ redirect ] }
+  quote: "OIDFVP-HAIP-REDIRECTS-01: All the mandatory requirements defined in clause 5.1 of HAIP [11] shall apply."
+  note: Not voided by the CIR (only REDIRECTS-04 is). Keeps HAIP §5.1 direct_post.jwt in force.
+  verified: source-checked
+- id: etsi-472-2/OIDFVP-HAIP-COMMON-REQ-RO-02
+  subject: vp.request-object.verifier_info.registrar_dataset
+  spec: etsi-ts-119-472-2
+  locator: { req: OIDFVP-HAIP-COMMON-REQ-RO-02, section: "6.3.2.2" }
+  relation: extends
+  level: shall
+  applies_to: { role: [ verifier ] }
+  quote: "OIDFVP-HAIP-COMMON-REQ-RO-02: The verifier_info parameter shall contain RP Registrar-provided data."
+  verified: source-checked
+- id: etsi-472-2/OIDFVP-HAIP-COMMON-REQ-RO-13
+  subject: vp.request-object.verifier_info.registration_cert
+  spec: etsi-ts-119-472-2
+  locator: { req: OIDFVP-HAIP-COMMON-REQ-RO-13, section: "6.3.2.2" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ verifier ] }
+  condition: If the RP has a registration certificate.
+  quote: "OIDFVP-HAIP-COMMON-REQ-RO-13: If the RP has a registration certificate, one of the elements of the verifier_info
+    parameter shall include it."
+  verified: source-checked
+- id: etsi-472-2/OIDFVP-HAIP-COMMON-REQ-RO-14
+  subject: vp.request-object.verifier_info.registration_cert
+  spec: etsi-ts-119-472-2
+  locator: { req: OIDFVP-HAIP-COMMON-REQ-RO-14, section: "6.3.2.2" }
+  relation: profiles
+  level: info
+  applies_to: { role: [ verifier ] }
+  quote: "OIDFVP-HAIP-COMMON-REQ-RO-14: The element in the verifier_info array enclosing the registration certificate
+    shall be a JSON Object which shall not contain the credential_ids member."
+  note: Element format rule; not adapted by the CIR, so it applies unchanged.
+  verified: source-checked

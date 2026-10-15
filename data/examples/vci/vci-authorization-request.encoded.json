@@ -1,0 +1,10 @@
+{
+  "id": "vci-authorization-request",
+  "http": {
+    "method": "GET",
+    "url": "https://eaa.example.eu/authorize?client_id=https%3A%2F%2Fwallet-provider.example.eu%2Fwallet-solution%2Feudi-wallet&request_uri=urn%3Aietf%3Aparams%3Aoauth%3Arequest_uri%3A6esc_11ACC5bwc014ltc14eY22c",
+    "headers": {}
+  },
+  "jwts": {},
+  "inputHash": "62d8ac3143b4565e"
+}

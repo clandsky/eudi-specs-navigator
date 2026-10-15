@@ -1,0 +1,30 @@
+- { id: vci.wia, kind: object, parent: vci, title: Wallet Instance Attestation (client attestation JWT) }
+- { id: vci.wia.typ, kind: field, parent: vci.wia, title: typ, location: jwt-header }
+- { id: vci.wia.x5c, kind: field, parent: vci.wia, title: x5c (JOSE header), location: jwt-header }
+- { id: vci.wia.iss, kind: field, parent: vci.wia, title: iss, location: jwt-payload }
+- { id: vci.wia.sub, kind: field, parent: vci.wia, title: sub, location: jwt-payload }
+- { id: vci.wia.exp, kind: field, parent: vci.wia, title: exp, location: jwt-payload }
+- { id: vci.wia.cnf, kind: field, parent: vci.wia, title: cnf.jwk, location: jwt-payload }
+- { id: vci.wia.wallet_name, kind: field, parent: vci.wia, title: wallet_name, location: jwt-payload }
+- { id: vci.wia.wallet_link, kind: field, parent: vci.wia, title: wallet_link, location: jwt-payload }
+- { id: vci.wia.wallet_version, kind: field, parent: vci.wia, title: wallet_version, location: jwt-payload }
+- { id: vci.wia.wallet_solution_certification_information, kind: field, parent: vci.wia, title: wallet_solution_certification_information, location: jwt-payload }
+- { id: vci.wia.client_status, kind: field, parent: vci.wia, title: client_status, location: jwt-payload }
+- { id: vci.wia.verification, kind: behaviour, parent: vci.wia, title: Authorization server verifies the WIA }
+- { id: vci.wia.lifetime, kind: behaviour, parent: vci.wia, title: WIA lifetime and reuse }
+- { id: vci.wia-pop, kind: object, parent: vci, title: Client Attestation PoP JWT }
+- { id: vci.wia-pop.typ, kind: field, parent: vci.wia-pop, title: typ, location: jwt-header }
+- { id: vci.wia-pop.aud, kind: field, parent: vci.wia-pop, title: aud, location: jwt-payload }
+- { id: vci.wia-pop.jti, kind: field, parent: vci.wia-pop, title: jti, location: jwt-payload }
+- { id: vci.wia-pop.challenge, kind: field, parent: vci.wia-pop, title: challenge, location: jwt-payload }
+- { id: vci.ka, kind: object, parent: vci, title: Key attestation (key-attestation+jwt) }
+- { id: vci.ka.typ, kind: field, parent: vci.ka, title: typ, location: jwt-header }
+- { id: vci.ka.x5c, kind: field, parent: vci.ka, title: x5c (JOSE header), location: jwt-header }
+- { id: vci.ka.attested_keys, kind: field, parent: vci.ka, title: attested_keys, location: jwt-payload }
+- { id: vci.ka.exp, kind: field, parent: vci.ka, title: exp, location: jwt-payload }
+- { id: vci.ka.key_storage, kind: field, parent: vci.ka, title: key_storage / user_authentication, location: jwt-payload }
+- { id: vci.ka.certification, kind: field, parent: vci.ka, title: certification, location: jwt-payload }
+- { id: vci.ka.key_storage_status, kind: field, parent: vci.ka, title: key_storage_status, location: jwt-payload }
+- { id: vci.ka.verification, kind: behaviour, parent: vci.ka, title: Credential issuer verifies the key attestation }
+- { id: vci.dpop-proof, kind: object, parent: vci, title: DPoP proof JWT }
+- { id: vci.dpop-proof.typ, kind: field, parent: vci.dpop-proof, title: typ, location: jwt-header }
