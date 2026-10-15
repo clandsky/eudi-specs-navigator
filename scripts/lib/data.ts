@@ -110,7 +110,6 @@ export function loadDataset(opts: { requireEncoded?: boolean } = {}): Dataset {
   const exampleIds = new Set(examples.map((e) => e.id))
   const layerIds = new Set(layers.map((l) => l.id))
   const c2boIds = new Set(c2bo?.groups.flatMap((g) => g.requirements.map((r) => r.id)) ?? [])
-  const specLayer = new Map(specs.map((s) => [s.id, s.layer]))
 
   for (const s of specs) if (!layerIds.has(s.layer)) problems.push(`${s._file}: unknown layer ${s.layer}`)
   for (const s of subjects) if (s.parent && !subjectIds.has(s.parent)) problems.push(`${s._file}: subject ${s.id} has unknown parent ${s.parent}`)
@@ -119,8 +118,9 @@ export function loadDataset(opts: { requireEncoded?: boolean } = {}): Dataset {
     if (!specIds.has(a.spec)) problems.push(`${w}: unknown spec ${a.spec}`)
     if (!subjectIds.has(a.subject)) problems.push(`${w}: unknown subject ${a.subject}`)
     if (a.target && !assertionIds.has(a.target)) problems.push(`${w}: unknown target ${a.target}`)
-    if (specLayer.get(a.spec) === 'golive' && !a.window) problems.push(`${w}: go-live compromises need a window`)
-    if (specLayer.get(a.spec) === 'golive' && !a.target) problems.push(`${w}: go-live compromises need a target`)
+    if (a.spec === 'golive-compromises' && !a.window) problems.push(`${w}: go-live compromises need a window`)
+    if (a.spec === 'golive-compromises' && !a.target) problems.push(`${w}: go-live compromises need a target`)
+    if (a.interpretation && !a.target) problems.push(`${w}: an interpretation needs the target it interprets`)
     for (const x of a.xref) if (x.source === 'c2bo' && c2bo && !c2boIds.has(x.id)) problems.push(`${w}: unknown c2bo requirement ${x.id}`)
   }
   for (const f of flows) {

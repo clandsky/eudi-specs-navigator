@@ -1,0 +1,7 @@
+id: resolved-golive
+title: "Resolved interpretations (d-you current)"
+short: Resolved
+layer: golive
+version: maintained in this repository
+authored: true
+note: Assumptions resolved into the d-you current layer. Each one replaces the literal reading of its target within that layer.

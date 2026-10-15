@@ -13,6 +13,7 @@
   --focus: #1d3f9a;
 
   /* Strata: one colour per precedence layer, reused for badges, lens, diagram and stack. */
+  --l-assumption: #047857;
   --l-golive: #b0245c;
   --l-cir: #1d3f9a;
   --l-etsi: #0b7a83;
@@ -46,7 +47,9 @@
     --rule: #2b3542;
     --rule-strong: #3c4858;
     --focus: #6aa6ff;
-    --l-golive: #f06a9b;
+    --l-assumption: #34d399;
+    --l-assumption: #34d399;
+  --l-golive: #f06a9b;
     --l-cir: #6aa6ff;
     --l-etsi: #3cc2cc;
     --l-haip: #d6b44a;
@@ -72,6 +75,7 @@
   --rule: #2b3542;
   --rule-strong: #3c4858;
   --focus: #6aa6ff;
+  --l-assumption: #34d399;
   --l-golive: #f06a9b;
   --l-cir: #6aa6ff;
   --l-etsi: #3cc2cc;

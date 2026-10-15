@@ -1,0 +1,7 @@
+id: resolved-haip
+title: "Resolved interpretations (HAIP)"
+short: Resolved
+layer: haip
+version: maintained in this repository
+authored: true
+note: Assumptions resolved into the HAIP layer. Each one replaces the literal reading of its target within that layer.

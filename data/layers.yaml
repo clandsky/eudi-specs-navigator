@@ -1,6 +1,15 @@
 # Precedence table. Lower rank = higher precedence. Default order set by the project owner (2026-10-15):
-# temporal go-live compromises > CIR implementing acts > ETSI > standards.
+# assumptions > temporal go-live compromises ("d-you current") > CIR implementing acts > ETSI > standards.
 layers:
+  - id: assumption
+    rank: -1
+    label: Assumption
+    short: Assumed
+    normative: true
+    lens: true
+    description: >-
+      Working assumptions of the project owner: how an unclear or defective rule is read. Highest precedence while they
+      stand; each one can be confirmed into another layer, where it then replaces the literal reading of its target.
   - id: golive
     rank: 0
     label: Go-live compromise

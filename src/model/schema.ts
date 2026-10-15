@@ -2,7 +2,7 @@ import { z } from 'zod'
 
 // Identifiers --------------------------------------------------------------------------------------------------------
 
-export const LayerId = z.enum(['golive', 'cir', 'etsi', 'haip', 'base', 'primitive', 'arf', 'impl-de', 'secondary'])
+export const LayerId = z.enum(['assumption', 'golive', 'cir', 'etsi', 'haip', 'base', 'primitive', 'arf', 'impl-de', 'secondary'])
 export type LayerId = z.infer<typeof LayerId>
 
 /** Roles an assertion can bind. `as` = authorization server, `issuer` = credential issuer. */
@@ -58,6 +58,8 @@ export const Spec = z.object({
   anchor_template: z.string().optional(),
   retrieved: isoDate.optional(),
   note: z.string().optional(),
+  /** Maintained in this repository (assumptions, confirmed readings, go-live compromises): no corpus text to check. */
+  authored: z.boolean().default(false),
 })
 export type Spec = z.infer<typeof Spec>
 
@@ -196,6 +198,11 @@ const AssertionBase = z.object({
   review: z.object({ reason: z.string() }).optional(),
   note: z.string().optional(),
   xref: z.array(z.object({ source: z.string(), id: z.string() })).default([]),
+  /**
+   * A reading of its target within the same layer (an assumption, or an assumption confirmed into that layer). It may
+   * neutralise a target of the same rank, which an ordinary adapts/replaces may not.
+   */
+  interpretation: z.boolean().optional(),
   /** Go-live compromises: who agreed it and where it is recorded. */
   decided_by: z.string().optional(),
   reference: z.string().optional(),

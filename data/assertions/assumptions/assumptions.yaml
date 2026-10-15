@@ -1,0 +1,36 @@
+# Working assumptions: how the project owner reads unclear or defective rules. "Resolve" in the app moves an entry into
+# data/assertions/resolved/<layer>.yaml as a resolved interpretation of that layer.
+- id: assumption/TR-WIA-2.1-exp-claim
+  subject: vci.wia.exp
+  spec: assumptions
+  locator: { at: "Reading of CIR 2026/1731 TR-WIA-2.1" }
+  relation: adapts
+  interpretation: true
+  level: shall
+  applies_to: { role: [wallet-provider] }
+  target: cir/TR-WIA-2.1
+  quote: >-
+    the difference between the time when the wallet provider verified the integrity of the wallet instance and the time
+    they will indicate in the 'exp' claim of the issued wallet instance attestation shall be less than 24 hours.
+  decided_by: project owner (2026-10-15)
+  note: >-
+    "header parameter" in the CIR is read as the exp claim of the JWT payload, as defined by OpenID4VCI Appendix E and
+    draft-07 §5.1 and required by C_WIA-1.
+- id: assumption/TR_KA_3.1-proof-jwt
+  subject: vci.proof-jwt.signing-key
+  spec: assumptions
+  locator: { at: "Reading of CIR 2026/1731 TR_KA_3.1" }
+  relation: adapts
+  interpretation: true
+  level: shall
+  applies_to: { role: [wallet] }
+  target: cir/TR_KA_3.1
+  quote: >-
+    Where a wallet unit includes a key attestation in a 'jwt' element, it shall sign or seal the 'jwt' element (the key
+    proof) using the private key corresponding to the public key at index 0 of the 'attested_keys' array within the
+    'key_attestation' object.
+  decided_by: project owner (2026-10-15)
+  note: >-
+    The key attestation itself is signed by the wallet provider (CIR FR-KA-1); the issuer verifies the signature of the
+    'jwt' element under attested_keys[0] (CIR TR_KA-6, ETSI CRED-REQ-4.6.1.2-07). The literal text ("sign ... the key
+    attestation") is read as signing the proof that carries it.

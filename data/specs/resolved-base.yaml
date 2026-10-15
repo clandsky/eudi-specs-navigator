@@ -1,0 +1,7 @@
+id: resolved-base
+title: "Resolved interpretations (base protocol)"
+short: Resolved
+layer: base
+version: maintained in this repository
+authored: true
+note: Assumptions resolved into the base protocol layer. Each one replaces the literal reading of its target within that layer.

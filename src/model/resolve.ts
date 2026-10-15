@@ -92,7 +92,8 @@ const NON_NORMATIVE = new Set(['silent', 'implements', 'deviates', 'voids'])
  * Resolve the effective rule for one subject's stack in one context.
  *
  * 1. Filter: role and variant match, window contains `asOf`, layer enabled in the lens.
- * 2. Neutralise: voids / replaces / adapts remove their target if they outrank it; otherwise it is a conflict.
+ * 2. Neutralise: voids / replaces / adapts remove their target if they outrank it (an interpretation may also act
+ *    within its own rank); otherwise it is a conflict.
  * 3. Decide: the effective level is the level of the highest-ranked remaining normative assertion. A void can
  *    therefore let a lower layer's rule surface again.
  *    Within a rank, narrowing statements (profiles, adapts, replaces) go before defining ones.
@@ -128,7 +129,7 @@ export function resolve(
     if (removed.has(n.id)) continue
     const target = active.find((a) => a.id === n.target)
     if (!target || removed.has(target.id)) continue
-    if (rank(n) < rank(target)) {
+    if (rank(n) < rank(target) || (n.interpretation && rank(n) === rank(target))) {
       removed.add(target.id)
       neutralised.push({ assertion: target, by: n })
     } else {

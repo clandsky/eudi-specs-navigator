@@ -2,11 +2,13 @@
 //   /__overrules  POST one go-live compromise → data/assertions/golive/<id>.yaml
 //   /__examples   GET ?id= the editable inputs (http, json, jwts) of an example as YAML;
 //                 POST {id, source} replaces them in the example's YAML file and re-signs it (and its dependents)
+//   /__assumptions/resolve  POST {id, layer} moves an assumption into data/assertions/resolved/<layer>.yaml as a
+//                 resolved interpretation of that layer (spec resolved-<layer>)
 // The static build has no server: the overrule editor keeps local drafts there and the example editor is read-only.
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import type { Plugin } from 'vite'
-import { isMap, parse, parseDocument, stringify } from 'yaml'
+import { isMap, isSeq, parse, parseDocument, stringify } from 'yaml'
 import { buildExamples, ensureTestPki } from './scripts/lib/build-examples.ts'
 import { DATA, ROOT, loadDataset } from './scripts/lib/data.ts'
 import { Assertion, Example } from './src/model/schema.ts'
@@ -19,6 +21,7 @@ export function editorPlugin(): Plugin {
     apply: 'serve',
     configureServer(server) {
       server.middlewares.use('/__examples', (req, res) => handleExamples(req, res))
+      server.middlewares.use('/__assumptions/resolve', (req, res) => handleResolve(req, res))
       server.middlewares.use('/__overrules', (req, res) => {
         const send = (status: number, body: unknown) => {
           res.statusCode = status
@@ -119,6 +122,50 @@ async function handleExamples(req: Req, res: Res) {
       writeFileSync(path, before) // keep the repository consistent when encoding fails
       sendJson(res, 400, { error: [(e as Error).message] })
     }
+  } catch (e) {
+    sendJson(res, 500, { error: [(e as Error).message] })
+  }
+}
+
+const RESOLVABLE = ['golive', 'cir', 'etsi', 'haip', 'base'] as const
+
+async function handleResolve(req: Req, res: Res) {
+  try {
+    if (req.method !== 'POST') return sendJson(res, 405, { error: ['POST only'] })
+    const { id, layer } = JSON.parse(await readBody(req)) as { id: string; layer: string }
+    if (!(RESOLVABLE as readonly string[]).includes(layer)) return sendJson(res, 400, { error: [`cannot resolve into layer ${layer}`] })
+    const ds = loadDataset()
+    const a = ds.assertions.find((x) => x.id === id)
+    if (!a || a.spec !== 'assumptions') return sendJson(res, 404, { error: ['not an assumption'] })
+
+    // Remove the entry from its assumptions file.
+    const srcPath = join(ROOT, a.file)
+    const src = parseDocument(readFileSync(srcPath, 'utf8'))
+    const items = isSeq(src.contents) ? src.contents.items : []
+    const index = items.findIndex((it) => isMap(it) && String(it.get('id' as never)) === id)
+    if (index < 0) return sendJson(res, 500, { error: ['assumption not found in its file'] })
+    const entry = (items[index] as unknown as { toJSON(): Record<string, unknown> }).toJSON()
+
+    // Append it to the resolved file of the chosen layer.
+    const resolved = {
+      ...entry,
+      id: id.replace(/^assumption\//, 'resolved/'),
+      spec: `resolved-${layer}`,
+      note: [entry.note, `Resolved from ${id} on ${new Date().toISOString().slice(0, 10)}.`].filter(Boolean).join(' '),
+    }
+    const check = Assertion.safeParse(resolved)
+    if (!check.success) return sendJson(res, 400, { error: check.error.issues.map((i) => `${i.path.join('.')}: ${i.message}`) })
+    if (ds.assertions.some((x) => x.id === resolved.id)) return sendJson(res, 409, { error: [`${resolved.id} already exists`] })
+
+    const dir = join(DATA, 'assertions', 'resolved')
+    mkdirSync(dir, { recursive: true })
+    const dstPath = join(dir, `${layer}.yaml`)
+    const header = `# Assumptions resolved into the ${layer} layer by the specs-navigator Resolve button.\n`
+    const existing = existsSync(dstPath) ? readFileSync(dstPath, 'utf8') : header
+    writeFileSync(dstPath, `${existing.trimEnd()}\n${stringify([resolved], { lineWidth: 120 })}`)
+    items.splice(index, 1)
+    writeFileSync(srcPath, src.toString({ lineWidth: 120 }))
+    sendJson(res, 200, { id: resolved.id, file: dstPath.slice(ROOT.length + 1) })
   } catch (e) {
     sendJson(res, 500, { error: [(e as Error).message] })
   }

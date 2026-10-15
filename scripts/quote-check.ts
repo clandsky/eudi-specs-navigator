@@ -31,8 +31,8 @@ const outcomes: Outcome[] = []
 for (const a of ds.assertions) {
   const spec = specs.get(a.spec)!
   const base = { id: a.id, file: a.file, was: a.verified }
-  if (spec.layer === 'golive' || spec.layer === 'secondary') {
-    outcomes.push({ ...base, result: 'skip', detail: `${spec.layer}: not checked against the corpus` })
+  if (spec.authored || spec.layer === 'secondary') {
+    outcomes.push({ ...base, result: 'skip', detail: `${spec.id}: maintained here, not checked against the corpus` })
     continue
   }
   const text = textOf(a.spec)
@@ -93,7 +93,7 @@ const ok = outcomes.filter((o) => o.result === 'ok')
 const fail = outcomes.filter((o) => o.result === 'fail')
 const skip = outcomes.filter((o) => o.result === 'skip')
 for (const o of fail) console.log(`✗ ${o.id}  [${o.was}]  ${o.detail}\n    ${o.file}`)
-console.log(`\n${ok.length} source-checked, ${fail.length} not verifiable, ${skip.length} skipped (go-live / secondary)`)
+console.log(`\n${ok.length} source-checked, ${fail.length} not verifiable, ${skip.length} skipped (authored or secondary)`)
 const review = ds.assertions.filter((a) => a.verified === 'needs-review')
 if (review.length) {
   console.log(`\nneeds-review (${review.length}):`)

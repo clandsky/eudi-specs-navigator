@@ -1,0 +1,9 @@
+id: assumptions
+title: Working assumptions
+short: Assumption
+layer: assumption
+version: maintained in this repository
+authored: true
+note: >-
+  How the project owner reads unclear or defective rules until they are settled. Each assumption interprets one target
+  rule; "Resolve" moves it into a chosen layer as a resolved interpretation.
