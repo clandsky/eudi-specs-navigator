@@ -9,7 +9,7 @@ http:
 jwts:
   ro:
     key: verifier-access
-    header: { typ: oauth-authz-req+jwt, alg: ES256, x5c: "{{x5c:verifier-access}}" }
+    header: { typ: oauth-authz-req+jwt, alg: ES256, x5c: "{{x5c:verifier-access}}", iat: 1792072800 }
     payload:
       client_id: "{{x509hash:verifier-access}}"
       response_type: vp_token
@@ -26,15 +26,17 @@ jwts:
             format: dc+sd-jwt
             meta: { vct_values: ["urn:eudi:pid:1"] }
             claims: [{ path: [given_name] }, { path: [family_name] }, { path: [birthdate] }]
+            trusted_authorities: [{ type: etsi_tl, values: ["https://ec.europa.eu/tools/lotl/eu-lotl.xml"] }]
       client_metadata:
-        jwks: { keys: ["{{jwk:verifier-enc#enc-1}}"] }
+        jwks: { keys: [{ $jwk: verifier-enc, kid: enc-1, use: enc, alg: ECDH-ES }] }
         encrypted_response_enc_values_supported: [A128GCM, A256GCM]
       verifier_info:
-        - { format: registration_cert, data: "eyJ0eXAiOiJyYy13cnArand0Ii...TEST-REGISTRATION-CERTIFICATE" }
+        - { format: registration_cert, data: "{{b64url:TEST ONLY - RP registration certificate (structure per ETSI TS 119 475, not modelled here)}}" }
 annotations:
   /http/headers/Content-Type: http.content-type
   /jwt/ro/header/typ: vp.request-object.typ
   /jwt/ro/header/x5c: vp.request-object.x5c
+  /jwt/ro/header/iat: vp.request-object.header-iat
   /jwt/ro/payload/client_id: vp.request-object.client_id
   /jwt/ro/payload/response_type: vp.request-object.response_type
   /jwt/ro/payload/response_mode: vp.request-object.response_mode
@@ -54,6 +56,10 @@ annotations:
   /jwt/ro/payload/client_metadata/jwks: vp.request-object.client_metadata.jwks
   /jwt/ro/payload/client_metadata/jwks/keys: vp.request-object.client_metadata.jwks
   /jwt/ro/payload/client_metadata/jwks/keys/*/kid: vp.request-object.client_metadata.jwks
+  /jwt/ro/payload/client_metadata/jwks/keys/*/use: vp.request-object.client_metadata.jwks
+  /jwt/ro/payload/client_metadata/jwks/keys/*/alg: vp.request-object.client_metadata.jwks
+  /jwt/ro/payload/dcql_query/credentials/*/trusted_authorities: vp.dcql.trusted_authorities
+  /jwt/ro/payload/dcql_query/credentials/*/trusted_authorities/**: vp.dcql.trusted_authorities
   /jwt/ro/payload/client_metadata/encrypted_response_enc_values_supported: vp.request-object.client_metadata.enc_values
   /jwt/ro/payload/verifier_info: vp.request-object.verifier_info
   /jwt/ro/payload/verifier_info/0: vp.request-object.verifier_info.registration_cert

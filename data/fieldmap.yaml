@@ -78,4 +78,5 @@
 - { pattern: /jwt/proof/payload/aud, subject: vci.proof-jwt.aud }
 - { pattern: /jwt/proof/payload/iat, subject: vci.proof-jwt.iat }
 - { pattern: /jwt/proof/payload/nonce, subject: vci.proof-jwt.nonce }
-- { pattern: /http/headers/Accept, subject: http.content-type }
+- { pattern: /http/headers/Accept, subject: http.accept }
+- { pattern: /jwt/*/payload/status, subject: tsl.status }

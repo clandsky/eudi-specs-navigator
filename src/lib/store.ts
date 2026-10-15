@@ -82,13 +82,14 @@ export const LENS_STAGES: { id: LayerId; label: string }[] = [
   { id: 'haip', label: '+ HAIP' },
   { id: 'etsi', label: '+ ETSI' },
   { id: 'cir', label: '+ CIR' },
-  { id: 'golive', label: '+ Go-live' },
+  { id: 'golive', label: '+ d-you current' },
 ]
 
-export function layersForStage(stage: number, de: boolean): Set<LayerId> {
+/** The last stage ("+ d-you current") also switches on the German implementation layer. */
+export function layersForStage(stage: number): Set<LayerId> {
   const on = new Set<LayerId>(ds.layers.filter((l) => !l.lens).map((l) => l.id))
   LENS_STAGES.slice(0, stage + 1).forEach((s) => on.add(s.id))
-  if (de) on.add('impl-de')
+  if (stage === LENS_STAGES.length - 1) on.add('impl-de')
   return on
 }
 
@@ -98,7 +99,6 @@ export interface ViewCtx {
   view: View
   asOf: string
   stage: number
-  de: boolean
   layers: Set<LayerId>
   prevLayers: Set<LayerId> | null
 }
@@ -114,10 +114,9 @@ export function useViewCtx(): ViewCtx {
   const lens = params.get('lens')
   const idx = LENS_STAGES.findIndex((s) => s.id === lens)
   const stage = idx >= 0 ? idx : LENS_STAGES.length - 1
-  const de = params.get('de') === '1'
   return useMemo(
-    () => ({ view, asOf, stage, de, layers: layersForStage(stage, de), prevLayers: stage > 0 ? layersForStage(stage - 1, de) : null }),
-    [view, asOf, stage, de],
+    () => ({ view, asOf, stage, layers: layersForStage(stage), prevLayers: stage > 0 ? layersForStage(stage - 1) : null }),
+    [view, asOf, stage],
   )
 }
 

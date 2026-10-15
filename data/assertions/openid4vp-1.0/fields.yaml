@@ -83,10 +83,10 @@
     verified: source-checked
   }
 - {
-    id: oid4vp/5.3/state,
+    id: oid4vp/5.2/state,
     subject: vp.request-object.state,
     spec: openid4vp-1.0,
-    locator: { section: "5.3" },
+    locator: { section: "5.2" },
     relation: defines,
     level: may,
     applies_to: { role: [ verifier ] },
@@ -212,10 +212,10 @@
     verified: source-checked
   }
 - {
-    id: oid4vp/B.3/vct_values,
+    id: oid4vp/B.3.5/vct_values,
     subject: vp.dcql.vct_values,
     spec: openid4vp-1.0,
-    locator: { section: "B.3" },
+    locator: { section: "B.3.5" },
     relation: defines,
     level: shall,
     applies_to: { role: [ verifier ] },
@@ -484,5 +484,243 @@
     level: shall,
     applies_to: { role: [ wallet ] },
     quote: "\"nonce\": REQUIRED. Ensures the freshness of the signature or its binding to the given transaction.",
+    verified: source-checked
+  }
+- {
+    id: oid4vp/8.3/jwk-alg,
+    subject: vp.request-object.client_metadata.jwks,
+    spec: openid4vp-1.0,
+    locator: { section: "8.3" },
+    relation: defines,
+    level: shall,
+    applies_to: { role: [ verifier ] },
+    quote: "The alg parameter MUST be present in the JWKs. The JWE alg algorithm used MUST be equal to the alg value of the
+      chosen jwk.",
+    verified: source-checked
+  }
+- {
+    id: oid4vp/8.3/kid,
+    subject: vp.authorization-response.kid,
+    spec: openid4vp-1.0,
+    locator: { section: "8.3" },
+    relation: defines,
+    level: shall,
+    applies_to: { role: [ wallet ] },
+    condition: If the selected public key contains a kid.,
+    quote: "If the selected public key contains a kid parameter, the JWE MUST include the same value in the kid JWE Header
+      Parameter",
+    verified: source-checked
+  }
+- {
+    id: oid4vp/8.3/enc,
+    subject: vp.authorization-response.enc,
+    spec: openid4vp-1.0,
+    locator: { section: "8.3" },
+    relation: defines,
+    level: info,
+    quote: "The JWE enc content encryption algorithm used is obtained from the encrypted_response_enc_values_supported
+      parameter of client metadata",
+    verified: source-checked
+  }
+- {
+    id: haip/5/enc-wallet,
+    subject: vp.authorization-response.enc,
+    spec: haip-1.0,
+    locator: { section: "5" },
+    relation: profiles,
+    level: should,
+    applies_to: { role: [ wallet ] },
+    condition: If the wallet supports both A128GCM and A256GCM.,
+    quote: "Wallets MUST support A128GCM or A256GCM, or both. If both are supported, the Wallet SHOULD use A256GCM for the
+      JWE enc.",
+    verified: source-checked
+  }
+- {
+    id: oid4vp/6.1/trusted_authorities,
+    subject: vp.dcql.trusted_authorities,
+    spec: openid4vp-1.0,
+    locator: { section: "6.1" },
+    relation: defines,
+    level: may,
+    applies_to: { role: [ verifier ] },
+    quote: "trusted_authorities: OPTIONAL. A non-empty array of objects as defined in Section 6.1.1 that specifies expected
+      authorities or trust frameworks that certify Issuers, that the Verifier will accept.",
+    verified: source-checked
+  }
+- {
+    id: oid4vp/6.1.1.2/etsi_tl,
+    subject: vp.dcql.trusted_authorities,
+    spec: openid4vp-1.0,
+    locator: { section: "6.1.1.2" },
+    relation: defines,
+    level: info,
+    quote: "Type: \"etsi_tl\" Value: The identifier of a Trusted List as specified in ETSI TS 119 612 [ETSI.TL].",
+    verified: source-checked
+  }
+- {
+    id: haip/5/aki,
+    subject: vp.dcql.trusted_authorities,
+    spec: haip-1.0,
+    locator: { section: "5" },
+    relation: profiles,
+    level: shall,
+    applies_to: { role: [ wallet ] },
+    quote: "The Authority Key Identifier (aki)-based Trusted Authority Query (trusted_authorities) for DCQL, as defined in
+      section 6.1.1.1 of [OIDF.OID4VP], MUST be supported.",
+    verified: source-checked
+  }
+- {
+    id: oid4vp/A.2/expected_origins-wallet,
+    subject: vp.request-object.expected_origins,
+    spec: openid4vp-1.0,
+    locator: { section: "A.2" },
+    relation: defines,
+    level: shall,
+    applies_to: { role: [ wallet ], transport: [ dc-api ] },
+    quote: "The Wallet MUST compare values in this parameter to the Origin to detect replay of the request from a malicious
+      Verifier. If the Origin does not match any of the entries in expected_origins, the Wallet MUST return an error.",
+    verified: source-checked
+  }
+- {
+    id: oid4vp/B.3.6/kb-nonce,
+    subject: vp.kb-jwt.nonce,
+    spec: openid4vp-1.0,
+    locator: { section: "B.3.6" },
+    relation: profiles,
+    level: shall,
+    applies_to: { role: [ wallet ] },
+    quote: "the nonce claim MUST be the value of nonce from the Authorization Request;",
+    verified: source-checked
+  }
+- {
+    id: oid4vp/B.3.6/kb-aud,
+    subject: vp.kb-jwt.aud,
+    spec: openid4vp-1.0,
+    locator: { section: "B.3.6" },
+    relation: profiles,
+    level: shall,
+    applies_to: { role: [ wallet ] },
+    quote: "the aud claim MUST be the value of the Client Identifier, except for requests over the DC API where it MUST be
+      the Origin prefixed with origin:, as described in Appendix A.4.",
+    verified: source-checked
+  }
+- {
+    id: oid4vp/A.4/aud-origin,
+    subject: vp.kb-jwt.aud,
+    spec: openid4vp-1.0,
+    locator: { section: "A.4" },
+    relation: profiles,
+    level: shall,
+    applies_to: { role: [ wallet ], transport: [ dc-api ] },
+    quote: "The audience for the response (for example, the aud value in a Key Binding JWT) MUST be the Origin, prefixed
+      with origin:, for example origin:https://verifier.example.com/. This is the case even for signed requests.",
+    verified: source-checked
+  }
+- {
+    id: oid4vp/13.3/response_code,
+    subject: vp.result-fetch,
+    spec: openid4vp-1.0,
+    locator: { section: "13.3" },
+    relation: defines,
+    level: info,
+    applies_to: { device: [ same ] },
+    quote: "The Verifier sends the response_code and the transaction-id from its session to the Response URI.",
+    note: "Non-normative reference design; the redirect_uri must carry a fresh random value (§8.2).",
+    verified: source-checked
+  }
+- {
+    id: oid4vp/8.2/fresh-value,
+    subject: vp.response-ack.redirect_uri,
+    spec: openid4vp-1.0,
+    locator: { section: "8.2" },
+    relation: defines,
+    level: shall,
+    applies_to: { role: [ verifier ] },
+    quote: "The Verifier MUST include a fresh, cryptographically random value in the URL. This value is used to ensure only
+      the receiver of the redirect can fetch and process the Authorization Response.",
+    verified: source-checked
+  }
+- {
+    id: oid4vp/13.3/polling,
+    subject: vp.result-poll,
+    spec: openid4vp-1.0,
+    locator: { section: "13.3" },
+    relation: defines,
+    level: info,
+    applies_to: { device: [ cross ] },
+    quote: "If the Verifier's Response URI did not return a redirect_uri in step (6), the Verifier will periodically query
+      the Response URI with the transaction-id to obtain the Authorization Response once it becomes available.",
+    verified: source-checked
+  }
+- {
+    id: haip/6.1/status-or-exp,
+    subject: sdjwtvc.exp,
+    spec: haip-1.0,
+    locator: { section: "6.1" },
+    relation: profiles,
+    level: info,
+    applies_to: { role: [ issuer ] },
+    quote: "It is RECOMMENDED that Issuers limit the validity period when issuing SD-JWT VC. When doing so, the Issuer MUST
+      use an exp claim, a status claim, or both.",
+    verified: source-checked
+  }
+- {
+    id: haip/6.1/status_list,
+    subject: tsl.status_list,
+    spec: haip-1.0,
+    locator: { section: "6.1" },
+    relation: profiles,
+    level: shall,
+    applies_to: { role: [ issuer ] },
+    condition: In an SD-JWT VC with a status claim.,
+    quote: "The status claim, if present, MUST contain status_list as defined in [I-D.ietf-oauth-status-list]",
+    verified: source-checked
+  }
+- {
+    id: haip/6.1.1/x5c,
+    subject: jose.x5c,
+    spec: haip-1.0,
+    locator: { section: "6.1.1" },
+    relation: profiles,
+    level: shall,
+    applies_to: { role: [ issuer ] },
+    condition: In an issued SD-JWT VC.,
+    quote: "The SD-JWT VC MUST contain the credential issuer's signing certificate along with a trust chain in the x5c JOSE
+      header parameter as described in section 3.5 of [I-D.ietf-oauth-sd-jwt-vc].",
+    verified: source-checked
+  }
+- {
+    id: haip/5/x509_hash-request,
+    subject: vp.authorization-request.client_id,
+    spec: haip-1.0,
+    locator: { section: "5" },
+    relation: profiles,
+    level: shall,
+    applies_to: { role: [ verifier ] },
+    quote: "For signed requests, the Verifier MUST use, and the Wallet MUST accept the Client Identifier Prefix x509_hash as
+      defined in Section 5.9.3 of [OIDF.OID4VP].",
+    verified: source-checked
+  }
+- {
+    id: oid4vp/A.3.2.1/request,
+    subject: vp.dc-api.request.data,
+    spec: openid4vp-1.0,
+    locator: { section: "A.3.2.1" },
+    relation: defines,
+    level: shall,
+    applies_to: { role: [ verifier ], transport: [ dc-api ] },
+    quote: "All request parameters are encoded in a request object as defined in Section 5 and the JWS object is used as the
+      value of the request claim in the data element of the API call.",
+    verified: source-checked
+  }
+- {
+    id: haip/5.2/signed-unsigned,
+    subject: vp.dc-api.unsigned,
+    spec: haip-1.0,
+    locator: { section: "5.2" },
+    relation: profiles,
+    level: shall,
+    applies_to: { role: [ wallet ] },
+    quote: "The Wallet MUST support unsigned, signed, and multi-signed requests as defined in Appendices A.3.1 and A.3.2",
     verified: source-checked
   }

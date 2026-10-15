@@ -281,3 +281,11 @@
   condition: When cryptographic Key Binding is to be supported.
   quote: "cnf: OPTIONAL unless cryptographic Key Binding is to be supported, in which case it is REQUIRED."
   verified: source-checked
+- id: rfc9110/12.5.1/accept
+  subject: http.accept
+  spec: rfc-9110
+  locator: { section: "12.5.1" }
+  relation: defines
+  level: info
+  quote: "The \"Accept\" header field can be used by user agents to specify their preferences regarding response media types."
+  verified: source-checked

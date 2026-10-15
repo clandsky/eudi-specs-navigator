@@ -78,6 +78,9 @@ export function SequenceDiagram({ flow, selected, onSelect }: Props) {
         const x2 = xOf(s.to)
         const left = Math.min(x1, x2)
         const mid = (x1 + x2) / 2
+        const self = s.from === s.to
+        // Self-loops open towards the middle of the diagram so their label stays inside the drawing.
+        const leftward = self && x1 > W / 2
         const subjects = [s.subject, ...descendants(s.subject)]
         const layers = layersTouching(subjects)
         const origin = originOf(s.subject)
@@ -123,25 +126,44 @@ export function SequenceDiagram({ flow, selected, onSelect }: Props) {
                 Δ
               </text>
             )}
-            <line
-              className={`arrow ${dashed}`}
-              x1={x1 + (x2 > x1 ? 2 : -2)}
-              x2={x2 + (x2 > x1 ? -3 : 3)}
-              y1={ay}
-              y2={ay}
-              markerEnd={s.kind === 'internal' ? 'url(#arrowhead-muted)' : 'url(#arrowhead)'}
-            />
-            <text className="label" x={mid} y={ay - 8} textAnchor="middle">
+            {self ? (
+              // Self-message: a small loop to the right of the lifeline (e.g. the wallet validating a request).
+              <path
+                className={`arrow ${dashed}`}
+                d={leftward ? `M${x1 - 2},${ay - 8} h-28 v14 h26` : `M${x1 + 2},${ay - 8} h28 v14 h-26`}
+                markerEnd={s.kind === 'internal' ? 'url(#arrowhead-muted)' : 'url(#arrowhead)'}
+              />
+            ) : (
+              <line
+                className={`arrow ${dashed}`}
+                x1={x1 + (x2 > x1 ? 2 : -2)}
+                x2={x2 + (x2 > x1 ? -3 : 3)}
+                y1={ay}
+                y2={ay}
+                markerEnd={s.kind === 'internal' ? 'url(#arrowhead-muted)' : 'url(#arrowhead)'}
+              />
+            )}
+            <text
+              className="label"
+              x={self ? (leftward ? x1 - 38 : x1 + 38) : mid}
+              y={self ? ay + 2 : ay - 8}
+              textAnchor={self ? (leftward ? 'end' : 'start') : 'middle'}
+            >
               {added && <tspan style={{ fill: layerColor(origin!) }}>◆ </tspan>}
               {s.label}
             </text>
-            <g transform={`translate(${left + 4}, ${ay + 6})`}>
+            <g transform={`translate(${self ? (leftward ? x1 - 38 - layers.length * 8 : x1 + 38) : left + 4}, ${ay + 8})`}>
               {layers.map((l, k) => (
                 <rect key={l} x={k * 8} y={0} width={6} height={10} rx={1.5} style={{ fill: layerColor(l) }} />
               ))}
             </g>
             {s.tags.length > 0 && (
-              <text className="stag" x={left + 8 + layers.length * 8 + 4} y={ay + 15}>
+              <text
+                className="stag"
+                x={self && leftward ? x1 - 42 - layers.length * 8 : (self ? x1 + 34 : left) + 8 + layers.length * 8 + 4}
+                y={ay + 17}
+                textAnchor={self && leftward ? 'end' : 'start'}
+              >
                 {s.tags.join(', ')}
               </text>
             )}

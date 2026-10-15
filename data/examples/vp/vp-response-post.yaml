@@ -9,7 +9,7 @@ http:
   body: { type: form, value: { response: "{{jwe:resp}}" } }
 jwts:
   resp:
-    encrypt: { key: verifier-enc, alg: ECDH-ES, enc: A128GCM }
+    encrypt: { key: verifier-enc, alg: ECDH-ES, enc: A256GCM }
     header: { kid: enc-1 }
     payload:
       vp_token: { pid: ["{{sdjwt:pid}}"] }
@@ -17,7 +17,7 @@ jwts:
   pid:
     key: pid-issuer
     header: { typ: dc+sd-jwt, alg: ES256, x5c: "{{x5c:pid-issuer}}" }
-    payload: { iss: https://pid-provider.example.eu, vct: "urn:eudi:pid:1", iat: 1792000000, exp: 1823536000, cnf: { jwk: "{{jwk:wallet-key-1}}" } }
+    payload: { iss: https://pid-provider.example.eu, vct: "urn:eudi:pid:1", iat: 1792000000, exp: 1823536000, cnf: { jwk: "{{jwk:wallet-key-1}}" }, status: { status_list: { idx: 2048, uri: "https://pid-provider.example.eu/status/pid/7" } } }
     disclosures:
       - { salt: 2GLC42sKQveCfGfryNRN9w, name: given_name, value: Erika }
       - { salt: eluV5Og3gSNII8EYnsxA_A, name: family_name, value: Mustermann }
@@ -28,8 +28,8 @@ jwts:
 annotations:
   /http/body/response: vp.response-post.response
   /jwt/resp/header/alg: vp.authorization-response.encryption
-  /jwt/resp/header/enc: vp.authorization-response.encryption
-  /jwt/resp/header/kid: vp.request-object.client_metadata.jwks
+  /jwt/resp/header/enc: vp.authorization-response.enc
+  /jwt/resp/header/kid: vp.authorization-response.kid
   /jwt/resp/header/epk: vp.authorization-response.encryption
   /jwt/resp/header/epk/*: vp.authorization-response.encryption
   /jwt/resp/payload/vp_token: vp.vp_token

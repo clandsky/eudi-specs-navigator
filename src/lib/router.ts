@@ -1,5 +1,5 @@
 // Minimal hash router. Every view state lives in the URL so a link pasted into a ticket shows exactly the same view:
-//   #/flow/<flowId>?step=<stepId>&field=<json-pointer>&subject=<subjectId>&role=issuer&asOf=YYYY-MM-DD&lens=cir&de=1
+//   #/flow/<flowId>?step=<stepId>&field=<json-pointer>&subject=<subjectId>&role=issuer&asOf=YYYY-MM-DD&lens=cir
 import { useEffect, useSyncExternalStore } from 'react'
 
 export interface Route {
@@ -24,7 +24,7 @@ export function useRoute(): Route {
 }
 
 /** Context parameters survive navigation between views; view-local ones (step, field, subject) do not. */
-const STICKY = ['role', 'asOf', 'lens', 'de']
+const STICKY = ['role', 'asOf', 'lens']
 
 export function href(path: string[] | string, params: Record<string, string | null | undefined> = {}, keep = true): string {
   const current = parse(window.location.hash).params
