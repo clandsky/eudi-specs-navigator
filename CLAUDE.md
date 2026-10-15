@@ -71,6 +71,8 @@ never invent one.
 - UI: `src/lib/router.ts` (hash routes; `role`, `asOf`, `lens`, `de` are sticky query params so links reproduce a view),
   `src/lib/store.ts` (indexes, view context, lens stages), `src/diagram/SequenceDiagram.tsx` (own SVG renderer;
   Mermaid cannot click messages), `src/components/{ObjectView,StackPanel,OverruleEditor}.tsx`, `src/views/`.
+- Layer lens: Base → + HAIP → + ETSI → + CIR → + d-you current (the go-live layer, label set by the project owner).
+  The German implementation layer switches on with that last stage; there is no separate toggle.
 - `src/model/openapi.ts`: OpenAPI 3.1 export, shared by the download button and `scripts/openapi-build.ts`.
 - Visual design: calm, document-like look (`src/styles.css` tokens), dark by default with light opt-in. No violet or
   purple anywhere. A busier blueprint style was tried and reverted.

@@ -31,3 +31,4 @@
 - { id: sdjwtvc.iss, kind: field, parent: sdjwtvc, title: iss, location: jwt-payload }
 - { id: sdjwtvc.exp, kind: field, parent: sdjwtvc, title: exp, location: jwt-payload }
 - { id: sdjwtvc.cnf, kind: field, parent: sdjwtvc, title: cnf, location: jwt-payload }
+- { id: http.accept, kind: field, parent: common, title: Accept header, location: header }

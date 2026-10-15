@@ -43,7 +43,8 @@
     relation: profiles,
     level: shall,
     applies_to: { role: [ verifier ] },
-    quote: "OIDFVP-HAIP-COMMON-REQ-RO-16: The value of the data member of the element in the verifier_info",
+    quote: "The value of the data member of the element in the verifier_info array enclosing the registration certificate
+      shall be the base64url encoding of the serialized RP registration certificate.",
     verified: source-checked
   }
 - {
@@ -103,3 +104,136 @@
       mechanism.",
     verified: source-checked
   }
+- {
+    id: etsi-472-2/OIDFVP-HAIP-COMMON-REQ-01,
+    subject: vp.request-object.client_id,
+    spec: etsi-ts-119-472-2,
+    locator: { req: OIDFVP-HAIP-COMMON-REQ-01, section: "6.3.2.1" },
+    relation: profiles,
+    level: shall,
+    applies_to: { role: [ verifier ] },
+    quote: "OIDFVP-HAIP-COMMON-REQ-01: The Authorization Request shall use the Client Identifier Prefix x509_hash.",
+    verified: source-checked
+  }
+- {
+    id: etsi-472-2/OIDFVP-HAIP-COMMON-REQ-RO-01,
+    subject: vp.request-object.verifier_info,
+    spec: etsi-ts-119-472-2,
+    locator: { req: OIDFVP-HAIP-COMMON-REQ-RO-01, section: "6.3.2.2" },
+    relation: profiles,
+    level: shall,
+    applies_to: { role: [ verifier ] },
+    quote: "OIDFVP-HAIP-COMMON-REQ-RO-01: The RO JWT body shall contain the verifier_info parameter.",
+    verified: source-checked
+  }
+- {
+    id: etsi-472-2/OIDFVP-HAIP-COMMON-REQ-RO-17,
+    subject: vp.dcql.trusted_authorities,
+    spec: etsi-ts-119-472-2,
+    locator: { req: OIDFVP-HAIP-COMMON-REQ-RO-17, section: "6.3.2.2" },
+    relation: profiles,
+    level: shall,
+    applies_to: { role: [ verifier ] },
+    condition: When the Verifier uses a trusted authorities query.,
+    quote: "OIDFVP-HAIP-COMMON-REQ-RO-17: The Authority Key Identifier shall use the ETSI trusted Lists (specified in ETSI
+      TS 119 612 [12]) mechanism (\"etsi_tl\" type).",
+    note: "Wording mixes two OpenID4VP query types: the Authority Key Identifier type is \"aki\", the Trusted List type is
+      \"etsi_tl\". Read as: use etsi_tl.",
+    verified: source-checked
+  }
+- {
+    id: etsi-472-2/OIDFVP-HAIP-COMMON-REQ-RO-20,
+    subject: vp.request-object.client_metadata.jwks,
+    spec: etsi-ts-119-472-2,
+    locator: { req: OIDFVP-HAIP-COMMON-REQ-RO-20, section: "6.3.2.2" },
+    relation: profiles,
+    level: shall,
+    applies_to: { role: [ verifier ] },
+    quote: "OIDFVP-HAIP-COMMON-REQ-RO-20: The jwks member of the client_metadata parameter shall contain the kid and use
+      parameters for identifying the key and the use of the identified key, respectively.",
+    verified: source-checked
+  }
+- {
+    id: etsi-472-2/OIDFVP-HAIP-COMMON-REQ-RO-21,
+    subject: vp.request-object.client_metadata.jwks,
+    spec: etsi-ts-119-472-2,
+    locator: { req: OIDFVP-HAIP-COMMON-REQ-RO-21, section: "6.3.2.2" },
+    relation: profiles,
+    level: shall,
+    applies_to: { role: [ verifier ] },
+    quote: "OIDFVP-HAIP-COMMON-REQ-RO-21: The kid parameters shall univocally identify one key.",
+    verified: source-checked
+  }
+- {
+    id: etsi-472-2/OIDFVP-HAIP-REDIRECTS_RO-02,
+    subject: vp.request-object.x5c,
+    spec: etsi-ts-119-472-2,
+    locator: { req: OIDFVP-HAIP-REDIRECTS_RO-02, section: "6.4.2" },
+    relation: profiles,
+    level: shall,
+    applies_to: { role: [ verifier ], transport: [ redirect ] },
+    quote: "OIDFVP-HAIP-REDIRECTS_RO-02: The x5c header parameter in the JWS Protected Header of the JWS signature on the RO
+      shall contain the RP access certificate in its first element, and its certificate path up to, but excluding, the
+      trust anchor.",
+    verified: source-checked
+  }
+- {
+    id: etsi-472-2/OIDFVP-HAIP-REDIRECTS_RO-03,
+    subject: vp.request-object.header-iat,
+    spec: etsi-ts-119-472-2,
+    locator: { req: OIDFVP-HAIP-REDIRECTS_RO-03, section: "6.4.2" },
+    relation: extends,
+    level: shall,
+    applies_to: { role: [ verifier ], transport: [ redirect ] },
+    quote: "OIDFVP-HAIP-REDIRECTS_RO-03: The JWS Protected Header of the JWS signature on the RO shall incorporate the iat
+      header parameter.",
+    verified: source-checked
+  }
+- {
+    id: etsi-472-2/OIDFVP-HAIP-SUPPORT-02,
+    subject: vp.dc-api.support,
+    spec: etsi-ts-119-472-2,
+    locator: { req: OIDFVP-HAIP-SUPPORT-02, section: "6.2" },
+    relation: profiles,
+    level: may,
+    applies_to: { role: [ wallet ] },
+    quote: "OIDFVP-HAIP-SUPPORT-02: The EUDI Wallet may meet the requirements defined in clause 6.5 of the present document.",
+    verified: source-checked
+  }
+- {
+    id: etsi-472-2/OIDFVP-HAIP-SUPPORT-05,
+    subject: vp.dc-api.support,
+    spec: etsi-ts-119-472-2,
+    locator: { req: OIDFVP-HAIP-SUPPORT-05, section: "6.2" },
+    relation: profiles,
+    level: may,
+    applies_to: { role: [ verifier ] },
+    quote: "OIDFVP-HAIP-SUPPORT-05: A Relying Party may meet the requirements defined in clauses 6.5 of the present document.",
+    verified: source-checked
+  }
+- {
+    id: etsi-472-2/OIDFVP-HAIP-ADD-API-05,
+    subject: vp.dc-api.proximity,
+    spec: etsi-ts-119-472-2,
+    locator: { req: OIDFVP-HAIP-ADD-API-05, section: "6.5.2" },
+    relation: profiles,
+    level: shall,
+    applies_to: { role: [ wallet ], device: [ cross ] },
+    quote: "the EUDI Wallet shall use the CTAP 2.2 hybrid flow as defined in section 11.5 of [13] for cross-device
+      communication between a browser and the device that the EUDI Wallet is installed in.",
+    verified: source-checked
+  }
+- id: etsi-472-2/OIDFVP-HAIP-API-03
+  subject: vp.dc-api.unsigned
+  spec: etsi-ts-119-472-2
+  locator: { req: OIDFVP-HAIP-API-03, section: "6.5.1" }
+  relation: profiles
+  level: shall-not
+  applies_to: { role: [ wallet ] }
+  quote: "OIDFVP-HAIP-API-03: The EUDI Wallet shall not support Authorization Requests with exchange protocol value set to
+    \"openid4vp-1-unsigned\"."
+  verified: needs-review
+  review:
+    reason: >-
+      ETSI names the unsigned protocol "openid4vp-1-unsigned"; OpenID4VP 1.0 Final (Appendix A.1) defines it as
+      "openid4vp-v1-unsigned". Read as: the wallet does not accept unsigned DC API requests.

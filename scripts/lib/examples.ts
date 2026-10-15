@@ -5,6 +5,8 @@
 //   "{{x5c:key}}"     x5c array for test key `key`: leaf certificate plus intermediates, trust anchor excluded
 //   "{{s256:text}}"   base64url(SHA-256(text)) — PKCE code_challenge, DPoP ath
 //   "{{x509hash:key}}" x509_hash client identifier of the key's leaf certificate (OpenID4VP)
+//   "{{b64url:text}}"  base64url of a text (inline only)
+//   { $jwk: key, …}    public JWK of a test key, merged with the other members (kid, use, alg)
 //   "{{jwe:name}}"    compact JWE (ECDH-ES) of example.jwts[name]; the plaintext is stored for display
 // Signatures (ES256) are randomised, so encoded examples are committed and only rebuilt when the inputs change.
 import { createHash } from 'node:crypto'
@@ -69,8 +71,12 @@ export async function substitute(value: unknown, encodedJwt: (kind: 'jwt' | 'sdj
     const m = PLACEHOLDER.exec(value)
     if (!m) {
       // Text-valued placeholders may also sit inside a longer string (a URL carrying an x509_hash client_id).
-      return value.replace(/\{\{(x509hash|s256):([^}]+)\}\}/g, (_all, k: string, arg: string) =>
-        k === 's256' ? s256(arg) : `x509_hash:${b64url(createHash('sha256').update(Buffer.from(x5cOf(arg)[0]!, 'base64')).digest())}`,
+      return value.replace(/\{\{(x509hash|s256|b64url):([^}]+)\}\}/g, (_all, k: string, arg: string) =>
+        k === 's256'
+          ? s256(arg)
+          : k === 'b64url'
+            ? b64url(arg)
+            : `x509_hash:${b64url(createHash('sha256').update(Buffer.from(x5cOf(arg)[0]!, 'base64')).digest())}`,
       )
     }
     const [, kind, arg] = m as unknown as [string, string, string]
@@ -86,6 +92,11 @@ export async function substitute(value: unknown, encodedJwt: (kind: 'jwt' | 'sdj
     if (kind === 's256') return s256(arg)
   }
   if (Array.isArray(value)) return Promise.all(value.map((v) => substitute(v, encodedJwt)))
+  if (value && typeof value === 'object' && typeof (value as Record<string, unknown>).$jwk === 'string') {
+    // { $jwk: key, kid, use, alg }: the public JWK of a test key with extra members.
+    const { $jwk, ...extra } = value as Record<string, unknown>
+    return { ...(await publicJwk($jwk as string)), ...((await substitute(extra, encodedJwt)) as object) }
+  }
   if (value && typeof value === 'object') {
     const out: Record<string, unknown> = {}
     for (const [k, v] of Object.entries(value)) out[k] = await substitute(v, encodedJwt)

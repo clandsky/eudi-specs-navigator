@@ -5,7 +5,7 @@
 - { id: vp.request-object.verifier_info, kind: field, parent: vp.request-object, title: verifier_info, location: jwt-payload }
 - { id: vp.request-object.verifier_info.registration_cert, kind: value, parent: vp.request-object.verifier_info, title: verifier_info element carrying the registration certificate, location: jwt-payload }
 - { id: vp.request-object.verifier_info.registrar_dataset, kind: value, parent: vp.request-object.verifier_info, title: verifier_info element carrying RP Registrar-provided data, location: jwt-payload }
-- { id: vp.wallet.validate-registration-cert, kind: behaviour, parent: vp, title: Wallet authenticates and validates the RP registration certificate }
+- { id: vp.wallet.validate-registration-cert, kind: behaviour, parent: vp.wallet.process-request, title: Wallet authenticates and validates the RP registration certificate }
 - { id: vp.flow.redirect-same, kind: flow, parent: vp, title: "Presentation: OpenID4VP redirect, same device" }
 - { id: vp.flow.redirect-cross, kind: flow, parent: vp, title: "Presentation: OpenID4VP redirect, cross device" }
 - { id: vp.flow.dc-api, kind: flow, parent: vp, title: "Presentation: OpenID4VP over the Digital Credentials API" }
@@ -56,3 +56,13 @@
 - { id: vp.dc-api.response, kind: message, parent: vp, title: Digital Credentials API response, location: json }
 - { id: vp.dc-api.response.data, kind: field, parent: vp.dc-api.response, title: data.response (encrypted JWT), location: json }
 - { id: vp.dc-api.forward, kind: step, parent: vp, title: Verifier frontend forwards the response to its backend (application-specific) }
+- { id: vp.request-object.header-iat, kind: field, parent: vp.request-object, title: iat (JOSE header), location: jwt-header }
+- { id: vp.dcql.trusted_authorities, kind: field, parent: vp.dcql.credentials, title: "credentials[].trusted_authorities", location: jwt-payload }
+- { id: vp.authorization-response.enc, kind: field, parent: vp.authorization-response.encryption, title: enc (JWE header), location: jwt-header }
+- { id: vp.authorization-response.kid, kind: field, parent: vp.authorization-response.encryption, title: kid (JWE header), location: jwt-header }
+- { id: vp.wallet.process-request, kind: step, parent: vp, title: Wallet validates the request and asks the user for consent }
+- { id: vp.wallet.overasking, kind: behaviour, parent: vp.wallet.process-request, title: Over-asking check against the registration certificate }
+- { id: vp.dc-api.support, kind: behaviour, parent: vp.dc-api.request, title: Support of the API-mediated mechanism (Digital Credentials API) }
+- { id: vp.dc-api.proximity, kind: behaviour, parent: vp, title: Proximity check in cross-device flows over the mediating API }
+- { id: vp.result-fetch, kind: step, parent: vp, title: Verifier frontend fetches the response with response_code (same device) }
+- { id: vp.dc-api.unsigned, kind: behaviour, parent: vp.dc-api.support, title: Accepting unsigned requests over the Digital Credentials API }

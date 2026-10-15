@@ -100,10 +100,6 @@ export function LensBar() {
           </button>
         ))}
       </div>
-      <label className="meta" style={{ display: 'inline-flex', gap: 6, alignItems: 'center' }}>
-        <input type="checkbox" checked={vc.de} onChange={(e) => setParams({ de: e.target.checked ? '1' : null })} />
-        German implementation
-      </label>
       <span className="lens-hint">
         {vc.stage < LENS_STAGES.length - 1
           ? `Showing the rules up to ${LENS_STAGES[vc.stage]!.label.replace('+ ', '')}. Δ marks what this step changed.`

@@ -65,3 +65,109 @@
   note: Annex XII NOTE 3 adds that implementing the mechanism should not trigger non-compliance; mitigating session
     fixation is up to relying parties.
   verified: source-checked
+- id: cir/annex-xii/OIDFVP-HAIP-COMMON-REQ-01
+  subject: vp.request-object.client_id
+  spec: cir-2026-1731
+  locator: { req: OIDFVP-HAIP-COMMON-REQ-01, at: "Annex XII, adaptation (15), clause 6.3.2.1" }
+  relation: voids
+  target: etsi-472-2/OIDFVP-HAIP-COMMON-REQ-01
+  quote: "OIDFVP-HAIP-COMMON-REQ-01: void."
+  note: HAIP §5 still requires x509_hash for signed requests and stays in scope (Annex XII adaptation 1(b)); the void only
+    removes the ETSI duplicate.
+  verified: source-checked
+- id: cir/annex-xii/OIDFVP-HAIP-COMMON-REQ-RO-23
+  subject: vp.request-object.x5c
+  spec: cir-2026-1731
+  locator: { req: OIDFVP-HAIP-COMMON-REQ-RO-23, at: "Annex XII, adaptation (16), clause 6.3.2.2" }
+  relation: replaces
+  level: shall
+  applies_to: { role: [ verifier ] }
+  target: etsi-472-2/OIDFVP-HAIP-COMMON-REQ-RO-23
+  quote: "OIDFVP-HAIP-COMMON-REQ-RO-23: The leaf certificate mentioned in OpenID4VP section 5.9.3 for use with the
+    x509_hash Client Identifier Prefix shall be a RP access certificate as specified in ETSI TS 119 475 [14]."
+  verified: source-checked
+- id: cir/annex-xii/OIDFVP-HAIP-REDIRECTS-04
+  subject: vp.authorization-request.request_uri
+  spec: cir-2026-1731
+  locator: { req: OIDFVP-HAIP-REDIRECTS-04, at: "Annex XII, adaptation (18), clause 6.4.1" }
+  relation: voids
+  target: etsi-472-2/OIDFVP-HAIP-REDIRECTS-04
+  quote: "OIDFVP-HAIP-REDIRECTS-04: void."
+  note: HAIP §5.1 still requires JAR with the request_uri parameter for the redirect mechanism.
+  verified: source-checked
+- id: cir/annex-xii/OIDFVP-HAIP-SUPPORT-02
+  subject: vp.dc-api.support
+  spec: cir-2026-1731
+  locator: { req: OIDFVP-HAIP-SUPPORT-02, at: "Annex XII, adaptation (13), clause 6.2" }
+  relation: adapts
+  level: shall
+  applies_to: { role: [ wallet ] }
+  target: etsi-472-2/OIDFVP-HAIP-SUPPORT-02
+  quote: "OIDFVP-HAIP-SUPPORT-02: The EUDI Wallet shall meet the requirements specified in clause 6.5 of the present Annex."
+  verified: source-checked
+- id: cir/annex-xii/OIDFVP-HAIP-SUPPORT-05
+  subject: vp.dc-api.support
+  spec: cir-2026-1731
+  locator: { req: OIDFVP-HAIP-SUPPORT-05, at: "Annex XII, adaptation (13), clause 6.2" }
+  relation: adapts
+  level: shall
+  applies_to: { role: [ verifier ] }
+  target: etsi-472-2/OIDFVP-HAIP-SUPPORT-05
+  quote: "OIDFVP-HAIP-SUPPORT-05: A Relying Party shall meet the requirements specified in clauses 6.5 of the present Annex."
+  verified: source-checked
+- id: cir/annex-xii/EAAP-API-GEN-01
+  subject: vp.dc-api.support
+  spec: cir-2026-1731
+  locator: { req: EAAP-API-GEN-01, at: "Annex XII, adaptation (5), new clause 4.3" }
+  relation: extends
+  level: shall
+  applies_to: { role: [ wallet ] }
+  quote: "EAAP-API-GEN-01: The EUDI Wallet shall support a mediating API that supports both protocols defined in clause
+    5.2 of [11] and in Annex C of [16]."
+  verified: source-checked
+- id: cir/annex-xii/OIDFVP-HAIP-ADD-API-05
+  subject: vp.dc-api.proximity
+  spec: cir-2026-1731
+  locator: { req: OIDFVP-HAIP-ADD-API-05, at: "Annex XII, adaptation (19), clause 6.5.2" }
+  relation: replaces
+  level: shall
+  applies_to: { role: [ wallet ], device: [ cross ] }
+  target: etsi-472-2/OIDFVP-HAIP-ADD-API-05
+  quote: "OIDFVP-HAIP-ADD-API-05: EUDI Wallets shall verify, in cross-device flows, using the mediating API, that the
+    interacting device is in close physical proximity to the EUDI Wallet"
+  verified: source-checked
+- id: cir/annex-xii/WRP-VALIDATION-01
+  subject: vp.wallet.validate-registration-cert
+  spec: cir-2026-1731
+  locator: { req: WRP-VALIDATION-01, at: "Annex XII, adaptation (6), new clause 4.4" }
+  relation: extends
+  level: shall
+  applies_to: { role: [ wallet ] }
+  quote: "WRP-VALIDATION-01: The EUDI Wallet shall validate the wallet-relying party registration certificate received in
+    the request before presenting any requested PID or electronic attestation of attributes to the wallet user for
+    approval."
+  verified: needs-review
+  review:
+    reason: >-
+      Annex XII states this without a date, while Article 3(4) of 2024/2982 (same obligation) applies only from 11
+      August 2028 and recital 6 says the requirement should only apply as of that date.
+- id: cir/annex-xii/WRP-OVERASKING-01
+  subject: vp.wallet.overasking
+  spec: cir-2026-1731
+  locator: { req: WRP-OVERASKING-01, at: "Annex XII, adaptation (6), new clause 4.4" }
+  relation: extends
+  level: shall
+  applies_to: { role: [ wallet ] }
+  quote: "WRP-OVERASKING-01: The EUDI Wallet shall compare the attestations and attributes requested by the wallet-relying
+    party with the registered attestations and attributes in the wallet-relying party registration certificate."
+  verified: source-checked
+- id: cir/annex-xii/WRP-OVERASKING-02
+  subject: vp.wallet.overasking
+  spec: cir-2026-1731
+  locator: { req: WRP-OVERASKING-02, at: "Annex XII, adaptation (6), new clause 4.4" }
+  relation: extends
+  level: shall
+  applies_to: { role: [ wallet ] }
+  quote: "the EUDI Wallet shall clearly warn the wallet user before any disclosure. The warning shall identify that the
+    wallet-relying party is requesting more information than it has registered."
+  verified: source-checked

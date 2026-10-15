@@ -80,17 +80,17 @@ describe('worked example C: verifier_info with the registration certificate', ()
     expect(ids(r.silent)).toEqual(['haip/verifier_info/silent'])
   })
 
-  it('wallet validation of the registration certificate only applies from 2028-08-11', () => {
+  it('wallet validation of the registration certificate: Annex XII applies now, Article 3(4) from 2028 (flagged)', () => {
     const stack = stackOf('vp.wallet.validate-registration-cert')
     const before = resolve(stack, ctx({ asOf: '2026-10-15' }), table, specLayer)
-    expect(before.status).toBe('undecided')
+    // CIR Annex XII WRP-VALIDATION-01 carries no date; Article 3(4) of 2024/2982 starts on 2028-08-11.
+    expect(before.level).toBe('shall')
+    expect(ids(before.decidedBy)).toEqual(['cir/annex-xii/WRP-VALIDATION-01'])
+    expect(before.status).toBe('needs-review')
     expect(before.upcoming.map((e) => [e.date, e.kind])).toEqual([['2028-08-11', 'starts']])
     const after = resolve(stack, ctx({ asOf: '2028-08-11' }), table, specLayer)
-    expect(after.level).toBe('shall')
-    expect(timeline(stack, ctx({}), table, specLayer).map((t) => [t.from, t.rule.level])).toEqual([
-      ['2026-10-15', null],
-      ['2028-08-11', 'shall'],
-    ])
+    expect(ids(after.decidedBy)).toEqual(['cir/2982-art-3-4'])
+    expect(ids(after.agreeing)).toEqual(['cir/annex-xii/WRP-VALIDATION-01'])
   })
 })
 
