@@ -1,0 +1,451 @@
+# ETSI TS 119 472-3 V1.1.1 (2026-03): issuance profile. Binding via CIR 2026/1731 Annex XI.
+- id: etsi-472-3/GEN-REQ-4.1-01
+  subject: vci
+  spec: etsi-ts-119-472-3
+  locator: { req: GEN-REQ-4.1-01, section: "4.1" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ wallet ] }
+  quote: "The EUDI Wallet shall implement the profile of the protocol defined in OpenID4VCI [2] specified by the
+    requirements defined for the Wallet in OpenID4VC-HAIP [1], clause 4 and its subclauses, unless specified otherwise
+    in the present document."
+  verified: source-checked
+- id: etsi-472-3/GEN-REQ-4.1-02
+  subject: vci
+  spec: etsi-ts-119-472-3
+  locator: { req: GEN-REQ-4.1-02, section: "4.1" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ issuer, as ] }
+  quote: "they shall implement the protocol defined in OpenID4VCI [2], specified by the requirements defined for the
+    Issuer in OpenID4VC-HAIP [1], clause 4 and its subclauses, unless specified otherwise in the present document."
+  xref: [ { source: c2bo, id: metadata-retrieval } ]
+  verified: source-checked
+- id: etsi-472-3/GEN-REQ-4.1-03
+  subject: vci.grant.authorization_code
+  spec: etsi-ts-119-472-3
+  locator: { req: GEN-REQ-4.1-03, section: "4.1" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ wallet ] }
+  quote: "The EUDI Wallet shall support the following flows: the Authorisation Code Flow as specified in clause 3.4 of
+    OpenID4VCI [2], and the Pre-Authorised Code Flow as specified in clause 3.5 of OpenID4VCI [2]."
+  verified: source-checked
+- id: etsi-472-3/GEN-REQ-4.1-04
+  subject: vci.grant.authorization_code
+  spec: etsi-ts-119-472-3
+  locator: { req: GEN-REQ-4.1-04, section: "4.1" }
+  relation: profiles
+  level: may
+  applies_to: { role: [ issuer, as ] }
+  quote: "shall implement at least one of the following flows: the Authorisation Code Flow as specified in clause 3.4 of
+    OpenID4VCI [2], or the Pre-Authorised Code Flow as specified in clause 3.5 of OpenID4VCI [2]."
+  note: Recorded as MAY for the authorization code flow on its own, because a provider can choose the pre-authorized code
+    flow instead. HAIP §4 requires the authorization code flow ("MUST support the authorization code flow"); ETSI, which
+    ranks higher, allows the choice.
+  verified: needs-review
+  review:
+    reason: >-
+      ETSI GEN-REQ-4.1-04 lets a PID/EAA provider implement only the pre-authorized code flow, while HAIP §4 (pulled in
+      by GEN-REQ-4.1-02 "unless specified otherwise") says both Wallet and Credential Issuer MUST support the
+      authorization code flow. By precedence ETSI decides; confirm that "at least one of" is meant to override HAIP.
+- id: etsi-472-3/GEN-REQ-4.1-05
+  subject: vci.preauth.physical-presence
+  spec: etsi-ts-119-472-3
+  locator: { req: GEN-REQ-4.1-05, section: "4.1" }
+  relation: extends
+  level: shall
+  applies_to: { role: [ issuer ], grant: [ pre-authorized_code ] }
+  quote: "PID Providers implementing the Pre-Authorised Code Flow shall perform user authorisation with the physical
+    presence."
+  verified: source-checked
+- id: etsi-472-3/GEN-REQ-4.1-06
+  subject: vci.offer.scheme
+  spec: etsi-ts-119-472-3
+  locator: { req: GEN-REQ-4.1-06, section: "4.1" }
+  relation: profiles
+  level: shall
+  quote: "The custom URL scheme \"eu-eaa-offer://\" shall be used to invoke the EUDI Wallet."
+  xref: [ { source: c2bo, id: offer-scheme } ]
+  verified: source-checked
+- id: etsi-472-3/ISS-MDATA-4.2.1-01
+  subject: vci.metadata.signed
+  spec: etsi-ts-119-472-3
+  locator: { req: ISS-MDATA-4.2.1-01, section: "4.2.1" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ issuer ] }
+  quote: "The Issuer Metadata shall be a signed metadata according to clause 12.2.3 of OpenID4VCI [2] with a JSON Web
+    Signature (JWS hereinafter) specified in IETF RFC 7515 [8]."
+  xref: [ { source: c2bo, id: metadata-signed } ]
+  verified: source-checked
+- id: etsi-472-3/ISS-MDATA-4.2.1-02
+  subject: vci.metadata.x5c
+  spec: etsi-ts-119-472-3
+  locator: { req: ISS-MDATA-4.2.1-02, section: "4.2.1" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ issuer ] }
+  quote: "The signing certificate of the signature on the Issuer Metadata shall be the access certificate of the PID/EAA
+    Provider."
+  xref: [ { source: c2bo, id: metadata-signing-chain } ]
+  verified: source-checked
+- id: etsi-472-3/ISS-MDATA-ACC_CERT-4.2.2-02
+  subject: vci.metadata.x5c
+  spec: etsi-ts-119-472-3
+  locator: { req: "ISS-MDATA-ACC_CERT-4.2.2-01, ISS-MDATA-ACC_CERT-4.2.2-02", section: "4.2.2" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ issuer ] }
+  quote: "The x5c header parameter shall contain the base64 (IETF RFC 4648 [7]) encoding of the DER-encoded access
+    certificate of the PID/EAA Provider, which shall also be the signing certificate."
+  verified: source-checked
+- id: etsi-472-3/ISS-MDATA-REG_CERT-4.2.3-01
+  subject: vci.metadata.issuer_info
+  spec: etsi-ts-119-472-3
+  locator: { req: ISS-MDATA-REG_CERT-4.2.3-01, section: "4.2.3" }
+  relation: extends
+  level: shall
+  applies_to: { role: [ issuer ] }
+  quote: "The Issuer Metadata shall contain the issuer_info metadata parameter."
+  note: issuer_info is not an OpenID4VCI parameter; ETSI adds it with the structure of OpenID4VP verifier_info (-03).
+  xref: [ { source: c2bo, id: issuer-info } ]
+  verified: source-checked
+- id: etsi-472-3/ISS-MDATA-REG_CERT-4.2.3-04
+  subject: vci.metadata.issuer_info.registration_cert
+  spec: etsi-ts-119-472-3
+  locator: { req: ISS-MDATA-REG_CERT-4.2.3-04, section: "4.2.3" }
+  relation: profiles
+  level: may
+  applies_to: { role: [ issuer ] }
+  quote: "One of the elements in the issuer_info array parameter may contain the PID/EAA Provider's registration certificate."
+  verified: source-checked
+- id: etsi-472-3/ISS-MDATA-REG_CERT-4.2.3-05
+  subject: vci.metadata.issuer_info.registration_cert
+  spec: etsi-ts-119-472-3
+  locator: { req: ISS-MDATA-REG_CERT-4.2.3-05, section: "4.2.3" }
+  relation: profiles
+  level: info
+  applies_to: { role: [ issuer ] }
+  quote: "The value of the format member of the element in the issuer_info array parameter that contains the PID/EAA
+    Provider's registration certificate shall be \"registration_cert\"."
+  verified: source-checked
+- id: etsi-472-3/ISS-MDATA-REG_CERT-4.2.3-07
+  subject: vci.metadata.issuer_info.registrar_dataset
+  spec: etsi-ts-119-472-3
+  locator: { req: ISS-MDATA-REG_CERT-4.2.3-07, section: "4.2.3" }
+  relation: extends
+  level: shall
+  applies_to: { role: [ issuer ] }
+  quote: "One of the elements of issuer_info shall contain the PID/EAA Provider's registration information provided by the
+    PID/EAA Provider's Registrar."
+  verified: source-checked
+- id: etsi-472-3/ISS-MDATA-REG_CERT-4.2.3-08
+  subject: vci.metadata.issuer_info.registrar_dataset
+  spec: etsi-ts-119-472-3
+  locator: { req: ISS-MDATA-REG_CERT-4.2.3-08, section: "4.2.3" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ issuer ] }
+  quote: "parameter that contains the PID/EAA Provider's registration information shall be \"registrar_dataset\"."
+  verified: source-checked
+- id: etsi-472-3/ISS-MDATA-EAA-REUSE-POL-4.2.4.1-01
+  subject: vci.metadata.ccs.credential_reuse_policy
+  spec: etsi-ts-119-472-3
+  locator: { req: ISS-MDATA-EAA-REUSE-POL-4.2.4.1-01, section: "4.2.4.1" }
+  relation: extends
+  level: may
+  applies_to: { role: [ issuer ] }
+  quote: "The credential_metadata child parameter of credential_configurations_supported parameter in the Issuer Metadata
+    may contain the parameter credential_reuse_policy"
+  verified: source-checked
+- id: etsi-472-3/ISS-MDATA-EAA-REUSE-POL-4.2.4.2-03
+  subject: vci.metadata.ccs.credential_reuse_policy
+  spec: etsi-ts-119-472-3
+  locator: { req: ISS-MDATA-EAA-REUSE-POL-4.2.4.2-03, section: "4.2.4.2" }
+  relation: profiles
+  level: info
+  applies_to: { role: [ issuer ] }
+  quote: "the array mapped to the label \"details\" shall contain either \"once_only\" or \"limited_time\"."
+  verified: needs-review
+  review:
+    reason: >-
+      Spelling conflict inside ETSI 472-3: -03 uses "limited_time" (underscore), while NOTE 3 and -12 use "limited-time"
+      (hyphen). Implementations cannot know which string to send or accept.
+- id: etsi-472-3/ISS-MDATA-EAA-REUSE-POL-4.2.4.2-09
+  subject: vci.metadata.ccs.credential_reuse_policy
+  spec: etsi-ts-119-472-3
+  locator: { req: ISS-MDATA-EAA-REUSE-POL-4.2.4.2-09, section: "4.2.4.2" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ issuer ] }
+  condition: id = arf_annex_ii and details contains once_only.
+  quote: "contains the value \"once_only\", then the JSON Object that contains this array mapped to the label \"details\"
+    shall also contain a JSON number mapped to the label \"reissue_trigger_unused\"."
+  verified: source-checked
+- id: etsi-472-3/ISS-MDATA-A.2-01
+  subject: vci.metadata.ccs.format
+  spec: etsi-ts-119-472-3
+  locator: { req: ISS-MDATA-A.2-01, section: "A.2" }
+  relation: extends
+  level: shall
+  applies_to: { role: [ issuer ] }
+  condition: If the provider is able to issue X509-AC EAAs.
+  quote: "If the PID/EAA Provider is able to issue X509-AC EAAs, then the set of possible values for the format parameter
+    of credential_configurations_supported parameter of the Issuer Metadata shall include the value \"x509_attr\""
+  verified: source-checked
+- id: etsi-472-3/ISS-CRED-OFFER-4.3-01
+  subject: vci.offer.grants
+  spec: etsi-ts-119-472-3
+  locator: { req: ISS-CRED-OFFER-4.3-01, section: "4.3" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ issuer ] }
+  quote: "PID/EAA Providers shall support at least one of the following Grant Types: \"authorisation_code\" or
+    \"urn:ietf:params:oauth:grant-type:pre-authorised_code\", as defined in clause 4.1.1 of OpenID4VCI [2]."
+  note: ETSI spells both grant type identifiers with British "authorised"; OpenID4VCI defines authorization_code and
+    urn:ietf:params:oauth:grant-type:pre-authorized_code. The OpenID4VCI identifiers are the ones on the wire.
+  xref: [ { source: c2bo, id: offer-grants } ]
+  verified: source-checked
+- id: etsi-472-3/AUTH-REQ-4.4.1-01
+  subject: vci.par
+  spec: etsi-ts-119-472-3
+  locator: { req: AUTH-REQ-4.4.1-01, section: "4.4.1" }
+  relation: profiles
+  level: info
+  applies_to: { grant: [ authorization_code ] }
+  quote: "shall only apply to the PID/EAA Providers that implement the Authorisation Code Flow as specified in clause 3.5
+    of OpenID4VCI [2]."
+  verified: needs-review
+  review:
+    reason: >-
+      Wrong cross-reference: clause 3.5 of OpenID4VCI 1.0 is the Pre-Authorized Code Flow; the Authorization Code Flow
+      is clause 3.4 (as GEN-REQ-4.1-03 says). Read as "Authorisation Code Flow".
+- id: etsi-472-3/AUTH-REQ-4.4.2-01
+  subject: vci.par-request.oauth-client-attestation
+  spec: etsi-ts-119-472-3
+  locator: { req: AUTH-REQ-4.4.2-01, section: "4.4.2" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ wallet ], grant: [ authorization_code ] }
+  quote: "The Pushed Authorisation Request shall include the Wallet Instance Attestation (WIA) as an
+    OAuth-Client-Attestation parameter, as specified in Appendix E of OpenID4VCI [2], and IETF
+    draft-ietf-oauth-attestation-based-client-auth-07 [5]."
+  xref: [ { source: c2bo, id: par-request } ]
+  verified: source-checked
+- id: etsi-472-3/AUTH-REQ-4.4.2-02
+  subject: vci.par-request.oauth-client-attestation-pop
+  spec: etsi-ts-119-472-3
+  locator: { req: AUTH-REQ-4.4.2-02, section: "4.4.2" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ wallet ], grant: [ authorization_code ] }
+  quote: "The Pushed Authorisation Request shall include a Proof-of-Possession of the public key included within the cnf
+    claim, as specified in Appendix E of OpenID4VCI [2], and IETF draft-ietf-oauth-attestation-based-client-auth-07
+    [5]."
+  verified: source-checked
+- id: etsi-472-3/AUTH-REQ-PROC-4.4.3
+  subject: vci.wia.verification
+  spec: etsi-ts-119-472-3
+  locator: { req: "AUTH-REQ-PROC-4.4.3-01, AUTH-REQ-PROC-4.4.3-02, AUTH-REQ-PROC-4.4.3-03", section: "4.4.3" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ as ] }
+  quote: "When a PID/EAA Provider receives a WIA, then it shall check that the signature of the JWT verifies under the
+    Wallet Provider's public key as found on the Trusted List of Wallet Providers."
+  verified: source-checked
+- id: etsi-472-3/TOKEN-REQ-4.5.1-01
+  subject: vci.token-request.oauth-client-attestation
+  spec: etsi-ts-119-472-3
+  locator: { req: TOKEN-REQ-4.5.1-01, section: "4.5.1" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ wallet ] }
+  quote: "The Token Request shall include the Wallet Instance Attestation (WIA) as an OAuth-Client-Attestation parameter,
+    as specified in Appendix E of OpenID4VCI [2], and IETF draft-ietf-oauth-attestation-based-client-auth-07 [5]."
+  note: No grant restriction; applies to both grant types.
+  xref: [ { source: c2bo, id: token-client-authentication } ]
+  verified: source-checked
+- id: etsi-472-3/TOKEN-REQ-4.5.1-02
+  subject: vci.token-request.oauth-client-attestation-pop
+  spec: etsi-ts-119-472-3
+  locator: { req: TOKEN-REQ-4.5.1-02, section: "4.5.1" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ wallet ] }
+  quote: "The Token Request shall include a Proof-of-Possession of the public key included within the cnf claim, as
+    specified in Appendix E of OpenID4VCI [2], and IETF draft-ietf-oauth-attestation-based-client-auth-07"
+  verified: source-checked
+- id: etsi-472-3/TOKEN-REQ-PROC-4.5.2
+  subject: vci.wia.verification
+  spec: etsi-ts-119-472-3
+  locator: { req: "TOKEN-REQ-PROC-4.5.2-01, TOKEN-REQ-PROC-4.5.2-02, TOKEN-REQ-PROC-4.5.2-03", section: "4.5.2" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ as ] }
+  quote: "TOKEN-REQ-PROC-4.5.2-02: When a PID/EAA Provider receives a WIA, then it shall check that it has not expired."
+  xref: [ { source: c2bo, id: token-wallet-attestation-verification } ]
+  verified: source-checked
+- id: etsi-472-3/TOKEN-REQ-PROC-4.5.2-04
+  subject: vci.refresh-token
+  spec: etsi-ts-119-472-3
+  locator: { req: TOKEN-REQ-PROC-4.5.2-04, section: "4.5.2" }
+  relation: profiles
+  level: may
+  applies_to: { role: [ as ] }
+  quote: "Refresh tokens for credential refresh may be supported."
+  note: HAIP §4.4 RECOMMENDS refresh tokens; ETSI, which ranks higher, only permits them. The effective rule is MAY.
+  xref: [ { source: c2bo, id: refresh-tokens } ]
+  verified: source-checked
+- id: etsi-472-3/CRED-REQ-4.6.1.1-01
+  subject: vci.credential-request.proofs
+  spec: etsi-ts-119-472-3
+  locator: { req: CRED-REQ-4.6.1.1-01, section: "4.6.1.1" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ wallet ] }
+  condition: If the PID/EAA is cryptographically bound to the device.
+  quote: "If the PID/EAA is cryptographically bound to the device, the Credential Request shall include the proofs parameter."
+  xref: [ { source: c2bo, id: proof-required } ]
+  verified: source-checked
+- id: etsi-472-3/CRED-REQ-4.6.1.1-02
+  subject: vci.credential-request.proofs
+  spec: etsi-ts-119-472-3
+  locator: { req: CRED-REQ-4.6.1.1-02, section: "4.6.1.1" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ wallet ] }
+  quote: "The proofs parameter shall contain either the jwt child member or the attestation child member."
+  verified: source-checked
+- id: etsi-472-3/CRED-REQ-4.6.1.2-01
+  subject: vci.credential-request.proofs.jwt
+  spec: etsi-ts-119-472-3
+  locator: { req: CRED-REQ-4.6.1.2-01, section: "4.6.1.2" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ wallet ] }
+  quote: "The jwt JSON array member shall have 1 element."
+  note: OpenID4VCI allows several jwt proofs for batch issuance; ETSI allows one, with the batch carried by attested_keys
+    in the key attestation.
+  xref: [ { source: c2bo, id: proofs-shape } ]
+  verified: source-checked
+- id: etsi-472-3/CRED-REQ-4.6.1.2-02
+  subject: vci.proof-jwt.nonce
+  spec: etsi-ts-119-472-3
+  locator: { req: CRED-REQ-4.6.1.2-02, section: "4.6.1.2" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ wallet ] }
+  quote: "The element in the jwt member shall contain the nonce claim in their corresponding JWT Bodies, obtained from the
+    Nonce Endpoint of the PID/EAA Provider."
+  verified: source-checked
+- id: etsi-472-3/CRED-REQ-4.6.1.2-03
+  subject: vci.proof-jwt.key_attestation
+  spec: etsi-ts-119-472-3
+  locator: { req: CRED-REQ-4.6.1.2-03, section: "4.6.1.2" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ wallet ] }
+  quote: "The element in the jwt array member shall contain the key_attestation parameter in the Protected Header."
+  verified: source-checked
+- id: etsi-472-3/CRED-REQ-4.6.1.2-04
+  subject: vci.proof-jwt.key_attestation
+  spec: etsi-ts-119-472-3
+  locator: { req: CRED-REQ-4.6.1.2-04, section: "4.6.1.2" }
+  relation: profiles
+  level: info
+  applies_to: { role: [ wallet ] }
+  quote: "The key_attestation parameter of the element in the jwt array member shall be the WUA, signed by the Wallet
+    Provider."
+  verified: needs-review
+  review:
+    reason: >-
+      Terminology clash: ETSI calls the key attestation "the WUA", while CIR Annex Ib point 1 defines a wallet unit
+      attestation as one or more WIAs plus one or more key attestations. The CIR term governs: this element is the key
+      attestation.
+- id: etsi-472-3/CRED-REQ-4.6.1.2-07
+  subject: vci.proof-jwt.signing-key
+  spec: etsi-ts-119-472-3
+  locator: { req: CRED-REQ-4.6.1.2-07, section: "4.6.1.2" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ wallet ] }
+  quote: "The element in the jwt array member shall be signed by the Wallet Unit using the private key corresponding to
+    the public key present in the first element of the attested_keys claim in the key_attestation parameter (the WUA)."
+  verified: source-checked
+- id: etsi-472-3/CRED-REQ-4.6.1.3-03
+  subject: vci.credential-request.proofs.attestation
+  spec: etsi-ts-119-472-3
+  locator: { req: "CRED-REQ-4.6.1.3-01, CRED-REQ-4.6.1.3-02, CRED-REQ-4.6.1.3-03", section: "4.6.1.3" }
+  relation: profiles
+  level: may
+  applies_to: { role: [ wallet ] }
+  quote: "The attestation array member shall contain only one element. … The element in the attestation array member shall
+    be the WUA."
+  note: Alternative to proofs.jwt (CRED-REQ-4.6.1.1-02); recorded as MAY because the wallet chooses one of the two.
+  verified: source-checked
+- id: etsi-472-3/CRED-REQ-PROC-4.6.2.1-02
+  subject: vci.proof-jwt.signing-key
+  spec: etsi-ts-119-472-3
+  locator: { req: CRED-REQ-PROC-4.6.2.1-02, section: "4.6.2.1" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ issuer ] }
+  quote: "The PID/EAA Provider shall verify that the signature of the element of the jwt array member verifies under the
+    public key contained in the first position of the attested_keys array within the key_attestation parameter."
+  verified: source-checked
+- id: etsi-472-3/CRED-REQ-PROC-4.6.2.1-03
+  subject: vci.proof-jwt.nonce
+  spec: etsi-ts-119-472-3
+  locator: { req: CRED-REQ-PROC-4.6.2.1-03, section: "4.6.2.1" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ issuer ] }
+  quote: "The PID/EAA Provider shall verify that the element of the jwt array member includes the nonce claim in its JWT
+    Body with a valid nonce value from its Nonce endpoint."
+  verified: source-checked
+- id: etsi-472-3/CRED-REQ-PROC-4.6.2.1-01
+  subject: vci.ka.verification
+  spec: etsi-ts-119-472-3
+  locator: { req: CRED-REQ-PROC-4.6.2.1-01, section: "4.6.2.1" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ issuer ] }
+  quote: "The PID/EAA Provider shall verify that the signature of the key_attestation parameter in the element of the jwt
+    array member (the WUA), verifies under the Wallet Provider's public key as found on the Trusted List for Wallet
+    Providers."
+  verified: source-checked
+- id: etsi-472-3/CRED-REQ-PROC-4.6.2.1-04
+  subject: vci.credential-response.one-per-key
+  spec: etsi-ts-119-472-3
+  locator: { req: "CRED-REQ-PROC-4.6.2.1-04, CRED-REQ-PROC-4.6.2.1-05, CRED-REQ-PROC-4.6.2.1-06", section: "4.6.2.1" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ issuer ] }
+  quote: "The PID/EAA Provider shall generate as many PIDs/EAAs as elements present in the attested_keys array within the
+    key_attestation parameter."
+  note: OpenID4VCI F.1 only says SHOULD issue a credential per attested key; ETSI makes it SHALL.
+  xref: [ { source: c2bo, id: eu-one-credential-per-attested-key } ]
+  verified: source-checked
+- id: etsi-472-3/NOT-REQ-4.7-01
+  subject: vci.notification-request
+  spec: etsi-ts-119-472-3
+  locator: { req: NOT-REQ-4.7-01, section: "4.7" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ wallet ] }
+  condition: If the EUDI Wallet supports notifications.
+  quote: "If the EUDI Wallet supports notifications, then it shall send one or more Notification Requests per
+    notification_id value received from the PID/EAA Provider."
+  note: OpenID4VCI §11.1 says MAY.
+  verified: source-checked
+- id: etsi-472-3/CRYPTO-5-01
+  subject: vci.crypto.aes-gcm
+  spec: etsi-ts-119-472-3
+  locator: { req: CRYPTO-5-01, section: "5" }
+  relation: extends
+  level: shall
+  quote: "In addition to the crypto suites specified in OpenID4VC-HAIP [1], the EUDI Wallet and the PID/EAA Providers
+    shall support the A128GCM algorithm and the A256GCM algorithm specified in NIST SP 800.38D [10]."
+  xref: [ { source: c2bo, id: encryption-gcm } ]
+  verified: source-checked

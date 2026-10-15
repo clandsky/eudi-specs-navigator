@@ -1,0 +1,10 @@
+id: rfc-9449
+title: "RFC 9449: OAuth 2.0 Demonstrating Proof of Possession (DPoP)"
+short: RFC 9449
+layer: base
+version: RFC 9449
+source:
+  local: "eIDAS + all references/standards/rfc/RFC9449.txt"
+  text: sources/rfc9449.txt
+  url: https://www.rfc-editor.org/rfc/rfc9449
+anchor_template: https://www.rfc-editor.org/rfc/rfc9449#section-{section}

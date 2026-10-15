@@ -1,0 +1,21 @@
+# CIR (EU) 2026/1731 Article 4: amendments to the articles of 2024/2982.
+- id: cir/2982-art-3-4
+  subject: vp.wallet.validate-registration-cert
+  spec: cir-2026-1731
+  locator: { at: "Article 4(2)(d): new Article 3(4) of 2024/2982" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ wallet ] }
+  window: { from: "2028-08-11" }
+  quote: "(4) authenticate and validate the wallet-relying party registration certificate;"
+  note: Applies from 11 August 2028 (Article 4(5), new Article 8 of 2024/2982; recital 6).
+  verified: source-checked
+- id: cir/2982-art-8
+  subject: vp.wallet.validate-registration-cert
+  spec: cir-2026-1731
+  locator: { at: "Article 4(5): new Article 8 of 2024/2982" }
+  relation: profiles
+  level: info
+  applies_to: { role: [ wallet ] }
+  quote: "Article 3(4) shall apply from 11 August 2028."
+  verified: source-checked

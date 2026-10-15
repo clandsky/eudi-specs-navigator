@@ -1,0 +1,10 @@
+id: rfc-7519
+title: "RFC 7519: JSON Web Token (JWT)"
+short: RFC 7519
+layer: primitive
+version: RFC 7519
+source:
+  local: "eIDAS + all references/standards/rfc/RFC7519.txt"
+  text: sources/rfc7519.txt
+  url: https://www.rfc-editor.org/rfc/rfc7519
+anchor_template: https://www.rfc-editor.org/rfc/rfc7519#section-{section}

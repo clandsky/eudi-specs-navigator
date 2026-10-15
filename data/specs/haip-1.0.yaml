@@ -1,0 +1,11 @@
+id: haip-1.0
+title: OpenID4VC High Assurance Interoperability Profile 1.0
+short: HAIP
+layer: haip
+version: 1.0 Final
+binding_via: ETSI TS 119 472-3 GEN-REQ-4.1-01/-02; CIR Annex XII scope clause 1(b)
+source:
+  local: "eIDAS + all references/standards/openid/OpenID4VC-HAIP-1_0.pdf"
+  text: sources/haip-1.0.txt
+  url: https://openid.net/specs/openid4vc-high-assurance-interoperability-profile-1_0-final.html
+anchor_template: https://openid.net/specs/openid4vc-high-assurance-interoperability-profile-1_0-final.html#section-{section}

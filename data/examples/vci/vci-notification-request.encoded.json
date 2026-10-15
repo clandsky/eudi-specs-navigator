@@ -1,0 +1,20 @@
+{
+  "id": "vci-notification-request",
+  "http": {
+    "method": "POST",
+    "url": "https://eaa.example.eu/notification",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "DPoP Kz~8mXK1EalYznwH-LC-1fBAo.4Ljp~zsPE_NeO.gxU"
+    },
+    "body": {
+      "type": "json",
+      "value": {
+        "notification_id": "3fwe98js",
+        "event": "credential_accepted"
+      }
+    }
+  },
+  "jwts": {},
+  "inputHash": "604716759c726a12"
+}

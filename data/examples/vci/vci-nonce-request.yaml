@@ -1,0 +1,8 @@
+id: vci-nonce-request
+title: Nonce Request
+subject: vci.nonce-request
+kind: http-request
+http:
+  method: POST
+  url: https://eaa.example.eu/nonce
+  headers: { Content-Length: "0" }

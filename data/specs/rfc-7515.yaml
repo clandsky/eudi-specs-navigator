@@ -1,0 +1,10 @@
+id: rfc-7515
+title: "RFC 7515: JSON Web Signature (JWS)"
+short: RFC 7515
+layer: primitive
+version: RFC 7515
+source:
+  local: "eIDAS + all references/standards/rfc/RFC7515.txt"
+  text: sources/rfc7515.txt
+  url: https://www.rfc-editor.org/rfc/rfc7515
+anchor_template: https://www.rfc-editor.org/rfc/rfc7515#section-{section}

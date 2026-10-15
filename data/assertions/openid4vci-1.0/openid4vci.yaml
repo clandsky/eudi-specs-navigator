@@ -1,0 +1,601 @@
+# OpenID for Verifiable Credential Issuance 1.0 Final.
+- id: oid4vci/4.1/offer
+  subject: vci.offer
+  spec: openid4vci-1.0
+  locator: { section: "4.1" }
+  relation: defines
+  level: may
+  applies_to: { role: [ issuer ] }
+  quote: "The Credential Issuer makes a Credential Offer by allowing the End-User to invoke the Wallet using the Wallet's
+    Credential Offer Endpoint defined in Section 12.1."
+  verified: source-checked
+- id: oid4vci/4.1/by-reference
+  subject: vci.offer.credential_offer_uri
+  spec: openid4vci-1.0
+  locator: { section: "4.1" }
+  relation: defines
+  level: may
+  quote: "credential_offer_uri: String that is a URL using the https scheme referencing a resource containing a JSON
+    object with the Credential Offer parameters. This MUST NOT be present when the credential_offer parameter is
+    present."
+  xref: [ { source: c2bo, id: offer-delivery } ]
+  verified: source-checked
+- id: oid4vci/4.1/by-value
+  subject: vci.offer.credential_offer
+  spec: openid4vci-1.0
+  locator: { section: "4.1" }
+  relation: defines
+  level: may
+  quote: "credential_offer: Object with the Credential Offer parameters. This MUST NOT be present when the
+    credential_offer_uri parameter is present."
+  verified: source-checked
+- id: oid4vci/4.1.1/credential_issuer
+  subject: vci.offer.credential_issuer
+  spec: openid4vci-1.0
+  locator: { section: "4.1.1" }
+  relation: defines
+  level: shall
+  quote: "credential_issuer: REQUIRED. The URL of the Credential Issuer, as defined in Section 12.2.1, from which the
+    Wallet is requested to obtain one or more Credentials."
+  verified: source-checked
+- id: oid4vci/4.1.1/credential_configuration_ids
+  subject: vci.offer.credential_configuration_ids
+  spec: openid4vci-1.0
+  locator: { section: "4.1.1" }
+  relation: defines
+  level: shall
+  quote: "credential_configuration_ids: REQUIRED. A non-empty array of unique strings that each identify one of the keys
+    in the name/value pairs stored in the credential_configurations_supported Credential Issuer metadata."
+  xref: [ { source: c2bo, id: offer-configuration-ids } ]
+  verified: source-checked
+- id: oid4vci/4.1.1/grants
+  subject: vci.offer.grants
+  spec: openid4vci-1.0
+  locator: { section: "4.1.1" }
+  relation: defines
+  level: may
+  quote: "grants: OPTIONAL. Object indicating to the Wallet the Grant Types the Credential Issuer's Authorization Server
+    is prepared to process for this Credential Offer."
+  verified: source-checked
+- id: oid4vci/4.1.1/issuer_state
+  subject: vci.offer.issuer_state
+  spec: openid4vci-1.0
+  locator: { section: "4.1.1" }
+  relation: defines
+  level: may
+  applies_to: { role: [ issuer ] }
+  quote: "issuer_state: OPTIONAL. String value created by the Credential Issuer and opaque to the Wallet that is used to
+    bind the subsequent Authorization Request with a context set up during previous process steps."
+  verified: source-checked
+- id: oid4vci/4.1.1/issuer_state-wallet
+  subject: vci.par-request.issuer_state
+  spec: openid4vci-1.0
+  locator: { section: "4.1.1" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ wallet ] }
+  condition: If the Credential Offer carried issuer_state.
+  quote: "If the Wallet decides to use the Authorization Code Flow and received a value for this parameter, it MUST
+    include it in the subsequent Authorization Request to the Authorization Server as the issuer_state parameter value."
+  verified: source-checked
+- id: oid4vci/scheme/default
+  subject: vci.offer.scheme
+  spec: openid4vci-1.0
+  locator: { section: "G.7.1" }
+  relation: defines
+  level: may
+  quote: "openid-credential-offer"
+  note: OpenID4VCI registers the openid-credential-offer URI scheme for the Wallet's Credential Offer Endpoint.
+  verified: source-checked
+- id: oid4vci/5.1.2/scope
+  subject: vci.par-request.scope
+  spec: openid4vci-1.0
+  locator: { section: "5.1.2" }
+  relation: defines
+  level: may
+  applies_to: { role: [ wallet ] }
+  quote: "Credential Issuers MUST interpret each scope value as a request to access the Credential Endpoint as defined in
+    Section 8 for the issuance of a Credential type identified by that scope value."
+  verified: source-checked
+- id: oid4vci/5.1.4/par
+  subject: vci.par
+  spec: openid4vci-1.0
+  locator: { section: "5.1.4" }
+  relation: defines
+  level: should
+  quote: "Use of Pushed Authorization Requests is RECOMMENDED to ensure confidentiality, integrity, and authenticity of
+    the request data and to avoid issues caused by large requests sizes."
+  verified: source-checked
+- id: oid4vci/5.1.4/par-headers
+  subject: vci.par-request.oauth-client-attestation
+  spec: openid4vci-1.0
+  locator: { section: "5.1.4" }
+  relation: defines
+  level: info
+  quote: "OAuth-Client-Attestation: eyJ... OAuth-Client-Attestation-PoP: eyJ..."
+  note: Non-normative example of a Pushed Authorization Request carrying the client attestation headers.
+  verified: source-checked
+- id: oid4vci/5.2/authz-response
+  subject: vci.authorization-response
+  spec: openid4vci-1.0
+  locator: { section: "5.2" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ as ] }
+  quote: "Authorization Responses MUST be made as defined in [RFC6749]."
+  verified: source-checked
+- id: oid4vci/6.1/token
+  subject: vci.token-request
+  spec: openid4vci-1.0
+  locator: { section: "6.1" }
+  relation: defines
+  level: shall
+  quote: "The Token Request is made as defined in Section 4.1.3 of [RFC6749]."
+  verified: source-checked
+- id: oid4vci/6.1/client-auth
+  subject: vci.token-request.oauth-client-attestation
+  spec: openid4vci-1.0
+  locator: { section: "6.1" }
+  relation: defines
+  level: may
+  applies_to: { role: [ wallet ] }
+  quote: "Requirements around how the Wallet identifies and, if applicable, authenticates itself with the Authorization
+    Server in the Token Request depend on the Client type defined in Section 2.1 of [RFC6749] and the Client
+    authentication method indicated in the token_endpoint_auth_method Client metadata"
+  verified: source-checked
+- id: oid4vci/6.2/credential_identifiers
+  subject: vci.token-response.credential_identifiers
+  spec: openid4vci-1.0
+  locator: { section: "6.2" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ as ] }
+  condition: When authorization_details of type openid_credential is returned.
+  quote: "credential_identifiers: REQUIRED. A non-empty array of strings, each uniquely identifying a Credential Dataset
+    that can be issued using the Access Token returned in this response."
+  verified: source-checked
+- id: oid4vci/7.1/nonce
+  subject: vci.nonce-request
+  spec: openid4vci-1.0
+  locator: { section: "7.1" }
+  relation: defines
+  level: info
+  quote: "A request for a nonce is made by sending an HTTP POST request to the URL provided in the nonce_endpoint
+    Credential Issuer Metadata parameter. The Nonce Endpoint is not a protected resource, meaning the Wallet does not
+    need to supply an access token to access it."
+  xref: [ { source: c2bo, id: nonce-post } ]
+  verified: source-checked
+- id: oid4vci/7.2/c_nonce
+  subject: vci.nonce-response.c_nonce
+  spec: openid4vci-1.0
+  locator: { section: "7.2" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ issuer ] }
+  quote: "c_nonce: REQUIRED. String containing a challenge to be used when creating a proof of possession of the key (see
+    Section 8.2). It is at the discretion of the Credential Issuer when to return a new challenge value as opposed to
+    the one returned in the previous request. New challenge values MUST be unpredictable."
+  xref: [ { source: c2bo, id: nonce-response }, { source: c2bo, id: nonce-unpredictable } ]
+  verified: source-checked
+- id: oid4vci/7.2/no-store
+  subject: vci.nonce-response.cache-control
+  spec: openid4vci-1.0
+  locator: { section: "7.2" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ issuer ] }
+  quote: "the Credential Issuer MUST make the response uncacheable by adding a Cache-Control header field including the
+    value no-store."
+  xref: [ { source: c2bo, id: nonce-no-store } ]
+  verified: source-checked
+- id: oid4vci/8.2/credential_configuration_id
+  subject: vci.credential-request.credential_configuration_id
+  spec: openid4vci-1.0
+  locator: { section: "8.2" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ wallet ] }
+  condition: If no credential_identifiers were returned in the Token Response.
+  quote: "credential_configuration_id: REQUIRED if a credential_identifiers parameter was not returned from the Token
+    Response as part of the authorization_details parameter."
+  xref: [ { source: c2bo, id: credential-identifiers } ]
+  verified: source-checked
+- id: oid4vci/8.2/proofs
+  subject: vci.credential-request.proofs
+  spec: openid4vci-1.0
+  locator: { section: "8.2" }
+  relation: defines
+  level: may
+  applies_to: { role: [ wallet ] }
+  quote: "proofs: OPTIONAL. Object providing one or more proof of possessions of the cryptographic key material to which
+    the issued Credential instances will be bound to."
+  verified: source-checked
+- id: oid4vci/8.3/credentials
+  subject: vci.credential-response.credentials
+  spec: openid4vci-1.0
+  locator: { section: "8.3" }
+  relation: defines
+  level: may
+  applies_to: { role: [ issuer ] }
+  quote: "credentials: OPTIONAL. Contains an array of one or more issued Credentials. It MUST NOT be used if the
+    transaction_id parameter is present."
+  xref: [ { source: c2bo, id: credential-response } ]
+  verified: source-checked
+- id: oid4vci/8.3/notification_id
+  subject: vci.credential-response.notification_id
+  spec: openid4vci-1.0
+  locator: { section: "8.3" }
+  relation: defines
+  level: may
+  applies_to: { role: [ issuer ] }
+  quote: "notification_id: OPTIONAL. String identifying one or more Credentials issued in one Credential Response. It MUST
+    be included in the Notification Request as defined in Section 11.1."
+  verified: source-checked
+- id: oid4vci/11.1/notification
+  subject: vci.notification-request
+  spec: openid4vci-1.0
+  locator: { section: "11.1" }
+  relation: defines
+  level: may
+  applies_to: { role: [ wallet ] }
+  quote: "If the Wallet supports the Notification Endpoint, the Wallet MAY send one or more Notification Requests per
+    notification_id value received."
+  xref: [ { source: c2bo, id: notification-response } ]
+  verified: source-checked
+- id: oid4vci/11.1/event
+  subject: vci.notification-request.event
+  spec: openid4vci-1.0
+  locator: { section: "11.1" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ wallet ] }
+  quote: "event: REQUIRED. Type of the notification event. It MUST be a case sensitive string whose value is either
+    credential_accepted, credential_failure, or credential_deleted."
+  verified: source-checked
+- id: oid4vci/12.2.2/unsigned
+  subject: vci.metadata
+  spec: openid4vci-1.0
+  locator: { section: "12.2.2" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ issuer ] }
+  quote: "The Credential Issuer MUST support returning metadata in an unsigned form 'application/json' and MAY support
+    returning it in a signed form 'application/jwt'."
+  xref: [ { source: c2bo, id: metadata-retrieval } ]
+  verified: source-checked
+- id: oid4vci/12.2.2/signed
+  subject: vci.metadata.signed
+  spec: openid4vci-1.0
+  locator: { section: "12.2.2" }
+  relation: defines
+  level: may
+  applies_to: { role: [ issuer ] }
+  quote: "MAY support returning it in a signed form 'application/jwt'."
+  verified: source-checked
+- id: oid4vci/12.2.3/typ
+  subject: vci.metadata.typ
+  spec: openid4vci-1.0
+  locator: { section: "12.2.3" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ issuer ] }
+  quote: "typ: REQUIRED. MUST be openidvci-issuer-metadata+jwt"
+  xref: [ { source: c2bo, id: metadata-signed-form } ]
+  verified: source-checked
+- id: oid4vci/12.2.3/sub
+  subject: vci.metadata.sub
+  spec: openid4vci-1.0
+  locator: { section: "12.2.3" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ issuer ] }
+  quote: "sub: REQUIRED. String matching the Credential Issuer Identifier"
+  verified: source-checked
+- id: oid4vci/12.2.3/iat
+  subject: vci.metadata.iat
+  spec: openid4vci-1.0
+  locator: { section: "12.2.3" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ issuer ] }
+  quote: "iat: REQUIRED. Integer for the time at which the Credential Issuer Metadata was issued using the syntax defined
+    in [RFC7519]."
+  verified: source-checked
+- id: oid4vci/12.2.3/x5c
+  subject: vci.metadata.x5c
+  spec: openid4vci-1.0
+  locator: { section: "12.2.3" }
+  relation: defines
+  level: info
+  quote: "e.g., using JOSE header parameters like x5c, kid or trust_chain to convey the public key. The concrete
+    mechanisms for doing this are out of scope of this specification."
+  verified: source-checked
+- id: oid4vci/12.2.4/credential_issuer
+  subject: vci.metadata.credential_issuer
+  spec: openid4vci-1.0
+  locator: { section: "12.2.4" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ issuer ] }
+  quote: "credential_issuer: REQUIRED. The Credential Issuer's identifier, as defined in Section 12.2.1. The value MUST be
+    identical to the Credential Issuer's identifier value into which the well-known URI string was inserted to create
+    the URL used to retrieve the metadata."
+  xref: [ { source: c2bo, id: metadata-identity } ]
+  verified: source-checked
+- id: oid4vci/12.2.4/authorization_servers
+  subject: vci.metadata.authorization_servers
+  spec: openid4vci-1.0
+  locator: { section: "12.2.4" }
+  relation: defines
+  level: may
+  applies_to: { role: [ issuer ] }
+  quote: "authorization_servers: OPTIONAL. A non-empty array of strings, where each string is an identifier of the OAuth
+    2.0 Authorization Server (as defined in [RFC8414]) the Credential Issuer relies on for authorization."
+  xref: [ { source: c2bo, id: as-servers } ]
+  verified: source-checked
+- id: oid4vci/12.2.4/credential_endpoint
+  subject: vci.metadata.credential_endpoint
+  spec: openid4vci-1.0
+  locator: { section: "12.2.4" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ issuer ] }
+  quote: "credential_endpoint: REQUIRED. URL of the Credential Issuer's Credential Endpoint, as defined in Section 8.2.
+    This URL MUST use the https scheme"
+  xref: [ { source: c2bo, id: endpoints-https } ]
+  verified: source-checked
+- id: oid4vci/12.2.4/nonce_endpoint
+  subject: vci.metadata.nonce_endpoint
+  spec: openid4vci-1.0
+  locator: { section: "12.2.4" }
+  relation: defines
+  level: may
+  applies_to: { role: [ issuer ] }
+  quote: "nonce_endpoint: OPTIONAL. URL of the Credential Issuer's Nonce Endpoint, as defined in Section 7. This URL MUST
+    use the https scheme and MAY contain port, path, and query parameter components. If omitted, the Credential Issuer
+    does not require the use of c_nonce."
+  verified: source-checked
+- id: oid4vci/12.2.4/notification_endpoint
+  subject: vci.metadata.notification_endpoint
+  spec: openid4vci-1.0
+  locator: { section: "12.2.4" }
+  relation: defines
+  level: may
+  applies_to: { role: [ issuer ] }
+  quote: "notification_endpoint: OPTIONAL. URL of the Credential Issuer's Notification Endpoint, as defined in Section 11."
+  verified: source-checked
+- id: oid4vci/12.2.4/batch
+  subject: vci.metadata.batch_credential_issuance
+  spec: openid4vci-1.0
+  locator: { section: "12.2.4" }
+  relation: defines
+  level: may
+  applies_to: { role: [ issuer ] }
+  quote: "batch_credential_issuance: OPTIONAL. Object containing information about the Credential Issuer's"
+  verified: source-checked
+- id: oid4vci/12.2.4/ccs
+  subject: vci.metadata.credential_configurations_supported
+  spec: openid4vci-1.0
+  locator: { section: "12.2.4" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ issuer ] }
+  quote: "credential_configurations_supported: REQUIRED. Object that describes specifics of the Credential that the
+    Credential Issuer supports issuance of."
+  verified: source-checked
+- id: oid4vci/12.2.4/format
+  subject: vci.metadata.ccs.format
+  spec: openid4vci-1.0
+  locator: { section: "12.2.4" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ issuer ] }
+  quote: "format: REQUIRED. A JSON string identifying the format of this Credential"
+  xref: [ { source: c2bo, id: formats } ]
+  verified: source-checked
+- id: oid4vci/12.2.4/scope
+  subject: vci.metadata.ccs.scope
+  spec: openid4vci-1.0
+  locator: { section: "12.2.4" }
+  relation: defines
+  level: may
+  applies_to: { role: [ issuer ] }
+  quote: "scope: OPTIONAL. A JSON string identifying the scope value that this Credential Issuer supports for this
+    particular Credential."
+  verified: source-checked
+- id: oid4vci/12.2.4/cryptographic_binding_methods_supported
+  subject: vci.metadata.ccs.cryptographic_binding_methods_supported
+  spec: openid4vci-1.0
+  locator: { section: "12.2.4" }
+  relation: defines
+  level: may
+  applies_to: { role: [ issuer ] }
+  quote: "It MUST be present when Cryptographic Key Binding is required for a Credential, and omitted otherwise."
+  verified: source-checked
+- id: oid4vci/12.2.4/proof_types_supported
+  subject: vci.metadata.ccs.proof_types_supported
+  spec: openid4vci-1.0
+  locator: { section: "12.2.4" }
+  relation: defines
+  level: may
+  applies_to: { role: [ issuer ] }
+  quote: "proof_types_supported: OPTIONAL. Object that describes specifics of the key proof(s) that the Credential Issuer
+    supports. It MUST be present if cryptographic_binding_methods_supported is present, and omitted otherwise."
+  xref: [ { source: c2bo, id: metadata-structure } ]
+  verified: source-checked
+- id: oid4vci/12.2.4/key_attestations_required
+  subject: vci.metadata.ccs.key_attestations_required
+  spec: openid4vci-1.0
+  locator: { section: "12.2.4" }
+  relation: defines
+  level: may
+  applies_to: { role: [ issuer ] }
+  quote: "key_attestations_required: OPTIONAL. Object that describes the requirement for key attestations as described in
+    Appendix D, which the Credential Issuer expects the Wallet to send within the proof(s) of the Credential Request. If
+    the Credential Issuer does not require a key attestation, this parameter MUST NOT be present in the metadata."
+  verified: source-checked
+- id: oid4vci/D.1/ka
+  subject: vci.ka
+  spec: openid4vci-1.0
+  locator: { section: "D.1" }
+  relation: defines
+  level: may
+  applies_to: { role: [ wallet ] }
+  quote: "A Wallet MAY provide key attestations to inform the Credential Issuer about the properties of the cryptographic
+    public keys, such as those used in proof types sent in the Credential Request."
+  verified: source-checked
+- id: oid4vci/D.1/typ
+  subject: vci.ka.typ
+  spec: openid4vci-1.0
+  locator: { section: "D.1" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ wallet-provider ] }
+  quote: "typ: REQUIRED. MUST be key-attestation+jwt"
+  verified: source-checked
+- id: oid4vci/D.1/attested_keys
+  subject: vci.ka.attested_keys
+  spec: openid4vci-1.0
+  locator: { section: "D.1" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ wallet-provider ] }
+  quote: "attested_keys : REQUIRED. A non-empty array of attested keys from the same key storage component using the
+    syntax of JWK as defined in [RFC7517]."
+  verified: source-checked
+- id: oid4vci/D.1/exp
+  subject: vci.ka.exp
+  spec: openid4vci-1.0
+  locator: { section: "D.1" }
+  relation: defines
+  level: may
+  applies_to: { role: [ wallet-provider ] }
+  quote: "exp: OPTIONAL (number). Integer for the time at which the key attestation and the key(s) it is attesting expire,
+    using the syntax defined in [RFC7519]. MUST be present if the attestation is used with the JWT proof type."
+  verified: source-checked
+- id: oid4vci/D.1/key_storage
+  subject: vci.ka.key_storage
+  spec: openid4vci-1.0
+  locator: { section: "D.1" }
+  relation: defines
+  level: may
+  applies_to: { role: [ wallet-provider ] }
+  quote: "key_storage : OPTIONAL. A non-empty array of case sensitive strings that assert the attack potential resistance
+    of the key storage component and its keys attested in the attested_keys parameter."
+  verified: source-checked
+- id: oid4vci/D.1/certification
+  subject: vci.ka.certification
+  spec: openid4vci-1.0
+  locator: { section: "D.1" }
+  relation: defines
+  level: may
+  applies_to: { role: [ wallet-provider ] }
+  quote: "certification : OPTIONAL. A String that contains a URL that links to the certification of the key storage
+    component."
+  verified: source-checked
+- id: oid4vci/E/wia
+  subject: vci.wia
+  spec: openid4vci-1.0
+  locator: { section: "E" }
+  relation: defines
+  level: may
+  quote: "The Wallet Attestation defined in this section is a client authentication method especially designed for native
+    App Wallets."
+  verified: source-checked
+- id: oid4vci/E/where
+  subject: vci.token-request.oauth-client-attestation
+  spec: openid4vci-1.0
+  locator: { section: "E" }
+  relation: defines
+  level: may
+  applies_to: { role: [ wallet ] }
+  quote: "There are two requests where Wallets may need to authenticate during Credential issuance: The Wallet sends it in
+    the Pushed Authorization Request The Wallet sends it in the Token Request"
+  verified: source-checked
+- id: oid4vci/E/where-par
+  subject: vci.par-request.oauth-client-attestation
+  spec: openid4vci-1.0
+  locator: { section: "E" }
+  relation: defines
+  level: may
+  applies_to: { role: [ wallet ] }
+  quote: "There are two requests where Wallets may need to authenticate during Credential issuance: The Wallet sends it in
+    the Pushed Authorization Request"
+  verified: source-checked
+- id: oid4vci/E/as-verify
+  subject: vci.wia.verification
+  spec: openid4vci-1.0
+  locator: { section: "E" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ as ] }
+  quote: "The Authorization Server MUST verify that the Wallet Attestation is signed by an issuer that the Credential
+    Issuer trusts for this purpose."
+  verified: source-checked
+- id: oid4vci/E/wallet_name
+  subject: vci.wia.wallet_name
+  spec: openid4vci-1.0
+  locator: { section: "E" }
+  relation: defines
+  level: may
+  applies_to: { role: [ wallet-provider ] }
+  quote: "wallet_name: OPTIONAL. String containing a human-readable name of the Wallet."
+  verified: source-checked
+- id: oid4vci/E/wallet_link
+  subject: vci.wia.wallet_link
+  spec: openid4vci-1.0
+  locator: { section: "E" }
+  relation: defines
+  level: may
+  applies_to: { role: [ wallet-provider ] }
+  quote: "wallet_link: OPTIONAL. String containing a URL to get further information about the Wallet and the Wallet Provider."
+  verified: source-checked
+- id: oid4vci/F.1/typ
+  subject: vci.proof-jwt.typ
+  spec: openid4vci-1.0
+  locator: { section: "F.1" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ wallet ] }
+  quote: "typ: REQUIRED. MUST be openid4vci-proof+jwt"
+  xref: [ { source: c2bo, id: proof-form } ]
+  verified: source-checked
+- id: oid4vci/F.1/key_attestation
+  subject: vci.proof-jwt.key_attestation
+  spec: openid4vci-1.0
+  locator: { section: "F.1" }
+  relation: defines
+  level: may
+  applies_to: { role: [ wallet ] }
+  quote: "key_attestation: OPTIONAL. JOSE Header containing a key attestation as described in Appendix D."
+  verified: source-checked
+- id: oid4vci/F.1/aud
+  subject: vci.proof-jwt.aud
+  spec: openid4vci-1.0
+  locator: { section: "F.1" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ wallet ] }
+  quote: "aud: REQUIRED (string). The value of this claim MUST be the Credential Issuer Identifier."
+  verified: source-checked
+- id: oid4vci/F.1/nonce
+  subject: vci.proof-jwt.nonce
+  spec: openid4vci-1.0
+  locator: { section: "F.1" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ wallet ] }
+  condition: When the issuer has a Nonce Endpoint.
+  quote: "nonce: OPTIONAL (string). The value type of this claim MUST be a string, where the value is a server-provided
+    c_nonce. It MUST be present when the issuer has a Nonce Endpoint as defined in Section 7."
+  verified: source-checked
+- id: oid4vci/F.1/one-per-key
+  subject: vci.credential-response.one-per-key
+  spec: openid4vci-1.0
+  locator: { section: "F.1" }
+  relation: defines
+  level: should
+  applies_to: { role: [ issuer ] }
+  quote: "The Credential Issuer SHOULD issue a Credential for each cryptographic public key specified in the attested_keys
+    claim within the key_attestation parameter."
+  verified: source-checked

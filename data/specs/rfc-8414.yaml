@@ -1,0 +1,10 @@
+id: rfc-8414
+title: "RFC 8414: OAuth 2.0 Authorization Server Metadata"
+short: RFC 8414
+layer: base
+version: RFC 8414
+source:
+  local: "eIDAS + all references/standards/rfc/RFC8414.txt"
+  text: sources/rfc8414.txt
+  url: https://www.rfc-editor.org/rfc/rfc8414
+anchor_template: https://www.rfc-editor.org/rfc/rfc8414#section-{section}

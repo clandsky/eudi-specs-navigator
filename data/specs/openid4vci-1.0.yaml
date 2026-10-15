@@ -1,0 +1,10 @@
+id: openid4vci-1.0
+title: OpenID for Verifiable Credential Issuance 1.0
+short: OID4VCI
+layer: base
+version: 1.0 Final
+source:
+  local: "eIDAS + all references/standards/openid/OpenID4VCI-1_0.pdf"
+  text: sources/openid4vci-1.0.txt
+  url: https://openid.net/specs/openid-4-verifiable-credential-issuance-1_0.html
+anchor_template: https://openid.net/specs/openid-4-verifiable-credential-issuance-1_0.html#section-{section}

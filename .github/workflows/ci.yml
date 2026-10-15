@@ -1,0 +1,21 @@
+# Prepared for when the repository gets a remote. The quote check needs the local corpus (PDFs are git-ignored), so it
+# runs only where the corpus is present; schema validation, tests and the build run everywhere.
+name: ci
+on: [push, pull_request]
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 24, cache: pnpm }
+      - run: sudo apt-get install -y poppler-utils
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm validate
+      - name: Quote check (needs the corpus)
+        if: ${{ hashFiles('eIDAS + all references/**/*.pdf') != '' }}
+        run: pnpm sources:build && pnpm quote-check --ci
+      - run: pnpm test
+      - run: pnpm build
+      - run: npx @redocly/cli@2 lint dist/issuer.openapi.yaml --skip-rule info-license --skip-rule operation-2xx-response

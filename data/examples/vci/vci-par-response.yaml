@@ -1,0 +1,10 @@
+id: vci-par-response
+title: PAR response
+subject: vci.par-response
+kind: http-response
+http:
+  status: 201
+  headers: { Content-Type: application/json, Cache-Control: "no-cache, no-store" }
+  body: { type: json, value: { request_uri: "urn:ietf:params:oauth:request_uri:6esc_11ACC5bwc014ltc14eY22c", expires_in: 60 } }
+annotations:
+  /http/body/request_uri: vci.par-response.request_uri

@@ -1,0 +1,17 @@
+id: vci-token-response
+title: Token Response with a DPoP-bound access token (scope-based request, no authorization_details)
+subject: vci.token-response
+kind: http-response
+http:
+  status: 200
+  headers: { Content-Type: application/json, Cache-Control: no-store }
+  body:
+    type: json
+    value:
+      access_token: Kz~8mXK1EalYznwH-LC-1fBAo.4Ljp~zsPE_NeO.gxU
+      token_type: DPoP
+      expires_in: 300
+      refresh_token: Q..Zkm29lexi8VnWg2zPW1x-tgGad0Ibc3s3EwM_Ni4-g
+annotations:
+  /http/body/token_type: vci.token-response.token_type
+  /http/body/refresh_token: vci.token-response.refresh_token

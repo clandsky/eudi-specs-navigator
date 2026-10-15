@@ -1,0 +1,57 @@
+id: vci-wia
+title: Wallet Instance Attestation and key attestation (as provisioned by the Wallet Provider)
+subject: vci.provisioning
+kind: jwt
+note: Signed with TEST keys. iat 2026-10-15T12:00Z; the WIA expires after 23 h (TR-WIA-2.1 requires less than 24 h).
+jwts:
+  wia:
+    key: wp-signer
+    header: { typ: oauth-client-attestation+jwt, alg: ES256, x5c: "{{x5c:wp-signer}}" }
+    payload:
+      iss: https://wallet-provider.example.eu
+      sub: https://wallet-provider.example.eu/wallet-solution/eudi-wallet
+      iat: 1792065600
+      exp: 1792148400
+      cnf: { jwk: "{{jwk:wallet-instance}}" }
+      wallet_name: EXAMPLE-WALLET-SOLUTION-01
+      wallet_link: https://wallet-provider.example.eu/wallet
+      wallet_version: 3.4.1
+      wallet_solution_certification_information:
+        conformity_assessment_body: TEST CAB
+        certification_number: TEST-2026-0001
+      client_status:
+        status: { status_list: { idx: 4711, uri: "https://wallet-provider.example.eu/status/wia/1" } }
+        exp: 1823601600
+  ka:
+    key: wp-signer
+    header: { typ: key-attestation+jwt, alg: ES256, x5c: "{{x5c:wp-signer}}" }
+    payload:
+      iss: https://wallet-provider.example.eu
+      iat: 1792065600
+      exp: 1792152000
+      attested_keys: ["{{jwk:wallet-key-1}}", "{{jwk:wallet-key-2}}"]
+      key_storage: [iso_18045_high]
+      user_authentication: [iso_18045_high]
+      certification: https://wallet-provider.example.eu/certification/wscd
+      key_storage_status:
+        status: { status_list: { idx: 12, uri: "https://wallet-provider.example.eu/status/wscd/1" } }
+        exp: 1823601600
+annotations:
+  /jwt/wia/header/typ: vci.wia.typ
+  /jwt/wia/header/x5c: vci.wia.x5c
+  /jwt/wia/payload/iss: vci.wia.iss
+  /jwt/wia/payload/sub: vci.wia.sub
+  /jwt/wia/payload/exp: vci.wia.exp
+  /jwt/wia/payload/cnf: vci.wia.cnf
+  /jwt/wia/payload/wallet_name: vci.wia.wallet_name
+  /jwt/wia/payload/wallet_link: vci.wia.wallet_link
+  /jwt/wia/payload/wallet_version: vci.wia.wallet_version
+  /jwt/wia/payload/wallet_solution_certification_information: vci.wia.wallet_solution_certification_information
+  /jwt/wia/payload/client_status: vci.wia.client_status
+  /jwt/ka/header/typ: vci.ka.typ
+  /jwt/ka/header/x5c: vci.ka.x5c
+  /jwt/ka/payload/exp: vci.ka.exp
+  /jwt/ka/payload/attested_keys: vci.ka.attested_keys
+  /jwt/ka/payload/key_storage: vci.ka.key_storage
+  /jwt/ka/payload/certification: vci.ka.certification
+  /jwt/ka/payload/key_storage_status: vci.ka.key_storage_status

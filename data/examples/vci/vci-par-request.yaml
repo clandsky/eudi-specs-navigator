@@ -1,0 +1,49 @@
+id: vci-par-request
+title: Pushed Authorization Request with WIA, PoP and PKCE
+subject: vci.par-request
+kind: http-request
+http:
+  method: POST
+  url: https://eaa.example.eu/par
+  headers:
+    Content-Type: application/x-www-form-urlencoded
+    OAuth-Client-Attestation: "{{jwt:wia}}"
+    OAuth-Client-Attestation-PoP: "{{jwt:pop}}"
+  body:
+    type: form
+    value:
+      response_type: code
+      client_id: https://wallet-provider.example.eu/wallet-solution/eudi-wallet
+      scope: gym_membership
+      code_challenge: "{{s256:dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk}}"
+      code_challenge_method: S256
+      redirect_uri: https://wallet.example.eu/cb
+      issuer_state: eyJhbGciOiJSU0Et...FYUaBy
+      state: af0ifjsldkj
+jwts:
+  wia: { use: vci-wia/wia }
+  pop:
+    key: wallet-instance
+    header: { typ: oauth-client-attestation-pop+jwt, alg: ES256 }
+    payload: { iss: https://wallet-provider.example.eu/wallet-solution/eudi-wallet, aud: https://eaa.example.eu, jti: 6f1c2b7e-par-0001, iat: 1792072800 }
+annotations:
+  /http/headers/OAuth-Client-Attestation: vci.par-request.oauth-client-attestation
+  /http/headers/OAuth-Client-Attestation-PoP: vci.par-request.oauth-client-attestation-pop
+  /http/body/client_id: vci.par-request.client_id
+  /http/body/scope: vci.par-request.scope
+  /http/body/code_challenge: vci.par-request.code_challenge
+  /http/body/issuer_state: vci.par-request.issuer_state
+  /jwt/pop/header/typ: vci.wia-pop.typ
+  /jwt/pop/payload/aud: vci.wia-pop.aud
+  /jwt/pop/payload/jti: vci.wia-pop.jti
+  /jwt/wia/header/typ: vci.wia.typ
+  /jwt/wia/header/x5c: vci.wia.x5c
+  /jwt/wia/payload/iss: vci.wia.iss
+  /jwt/wia/payload/sub: vci.wia.sub
+  /jwt/wia/payload/exp: vci.wia.exp
+  /jwt/wia/payload/cnf: vci.wia.cnf
+  /jwt/wia/payload/wallet_name: vci.wia.wallet_name
+  /jwt/wia/payload/wallet_link: vci.wia.wallet_link
+  /jwt/wia/payload/wallet_version: vci.wia.wallet_version
+  /jwt/wia/payload/wallet_solution_certification_information: vci.wia.wallet_solution_certification_information
+  /jwt/wia/payload/client_status: vci.wia.client_status

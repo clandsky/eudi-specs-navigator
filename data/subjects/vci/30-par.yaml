@@ -1,0 +1,14 @@
+- { id: vci.par-request, kind: message, parent: vci, title: Pushed Authorization Request, endpoint: { method: POST, path: /par, server: as } }
+- { id: vci.par-request.oauth-client-attestation, kind: field, parent: vci.par-request, title: "OAuth-Client-Attestation (WIA)", location: header }
+- { id: vci.par-request.oauth-client-attestation-pop, kind: field, parent: vci.par-request, title: OAuth-Client-Attestation-PoP, location: header }
+- { id: vci.par-request.client_id, kind: field, parent: vci.par-request, title: client_id, location: form }
+- { id: vci.par-request.scope, kind: field, parent: vci.par-request, title: scope, location: form }
+- { id: vci.par-request.code_challenge, kind: field, parent: vci.par-request, title: code_challenge / code_challenge_method, location: form }
+- { id: vci.par-request.issuer_state, kind: field, parent: vci.par-request, title: issuer_state, location: form }
+- { id: vci.par-response, kind: message, parent: vci, title: PAR response (201) }
+- { id: vci.par-response.request_uri, kind: field, parent: vci.par-response, title: request_uri, location: json }
+- { id: vci.authorization-request, kind: message, parent: vci, title: Authorization Request (front channel), endpoint: { method: GET, path: /authorize, server: as } }
+- { id: vci.authorization-request.request_uri, kind: field, parent: vci.authorization-request, title: request_uri, location: query }
+- { id: vci.authorization-response, kind: message, parent: vci, title: Authorization Response (redirect) }
+- { id: vci.authorization-response.code, kind: field, parent: vci.authorization-response, title: code, location: query }
+- { id: vci.authorization-response.iss, kind: field, parent: vci.authorization-response, title: iss, location: query }

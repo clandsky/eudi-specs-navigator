@@ -1,0 +1,11 @@
+id: vci-authorization-response
+title: Authorization Response with iss (RFC 9207)
+subject: vci.authorization-response
+kind: http-response
+http:
+  status: 302
+  url: "https://wallet.example.eu/cb?code=SplxlOBeZQQYbYS6WxSbIA&state=af0ifjsldkj&iss=https%3A%2F%2Feaa.example.eu"
+  headers: { Location: "https://wallet.example.eu/cb?code=SplxlOBeZQQYbYS6WxSbIA&state=af0ifjsldkj&iss=https%3A%2F%2Feaa.example.eu" }
+annotations:
+  /http/query/code: vci.authorization-response.code
+  /http/query/iss: vci.authorization-response.iss

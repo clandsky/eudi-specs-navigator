@@ -1,0 +1,10 @@
+id: etsi-ts-119-472-2
+title: "ETSI TS 119 472-2: Profiles for EAA/PID presentations to relying party"
+short: ETSI 472-2
+layer: etsi
+version: V1.2.1 (2026-03)
+binding_via: cir-2026-1731 Annex XII (clauses 4.1, 4.2, 5, 6)
+source:
+  local: "eIDAS + all references/standards/ETSI/ETSI-TS-119472-2.pdf"
+  text: sources/etsi-ts-119-472-2-v1.2.1.txt
+  url: https://www.etsi.org/deliver/etsi_ts/119400_119499/11947202/01.02.01_60/ts_11947202v010201p.pdf

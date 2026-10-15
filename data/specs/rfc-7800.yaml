@@ -1,0 +1,10 @@
+id: rfc-7800
+title: "RFC 7800: Proof-of-Possession Key Semantics for JWTs"
+short: RFC 7800
+layer: primitive
+version: RFC 7800
+source:
+  local: "eIDAS + all references/standards/rfc/RFC7800.txt"
+  text: sources/rfc7800.txt
+  url: https://www.rfc-editor.org/rfc/rfc7800
+anchor_template: https://www.rfc-editor.org/rfc/rfc7800#section-{section}

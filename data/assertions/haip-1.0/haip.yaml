@@ -1,0 +1,332 @@
+# OpenID4VC High Assurance Interoperability Profile 1.0 Final.
+- id: haip/4/auth-code
+  subject: vci.grant.authorization_code
+  spec: haip-1.0
+  locator: { section: "4" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ wallet, issuer, as ] }
+  quote: "When implementing OpenID for Verifiable Credential Issuance, both the Wallet and the Credential Issuer: MUST
+    support the authorization code flow."
+  verified: source-checked
+- id: haip/4/pkce
+  subject: vci.pkce
+  spec: haip-1.0
+  locator: { section: "4" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ wallet, as ] }
+  quote: "This includes, but is not limited to using PKCE [RFC7636] with S256 as the code challenge method, Pushed
+    Authorization Requests (PAR) [RFC9126] (where applicable) and the iss value in the Authorization response
+    [RFC9207]."
+  xref: [ { source: c2bo, id: as-pkce } ]
+  verified: source-checked
+- id: haip/4/pkce-on-par
+  subject: vci.par-request.code_challenge
+  spec: haip-1.0
+  locator: { section: "4" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ wallet, as ] }
+  quote: "using PKCE [RFC7636] with S256 as the code challenge method"
+  verified: source-checked
+- id: haip/4/par
+  subject: vci.par
+  spec: haip-1.0
+  locator: { section: "4" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ wallet, as ], grant: [ authorization_code ] }
+  quote: "Pushed Authorization Requests (PAR): Only required when using the Authorization Endpoint as defined in Section 5
+    of [OIDF.OID4VCI]."
+  xref: [ { source: c2bo, id: as-par } ]
+  verified: source-checked
+- id: haip/4/iss
+  subject: vci.authorization-response.iss
+  spec: haip-1.0
+  locator: { section: "4" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ as ] }
+  quote: "and the iss value in the Authorization response [RFC9207]."
+  note: RFC 9207 is not in the local corpus; the requirement is taken from HAIP's own text.
+  xref: [ { source: c2bo, id: as-iss } ]
+  verified: source-checked
+- id: haip/4/dpop
+  subject: vci.dpop
+  spec: haip-1.0
+  locator: { section: "4" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ wallet, as, issuer ] }
+  quote: "Sender-constrained access token: MUST support DPoP as defined in [RFC9449]."
+  xref: [ { source: c2bo, id: as-dpop } ]
+  verified: source-checked
+- id: haip/4/dpop-token
+  subject: vci.token-request.dpop
+  spec: haip-1.0
+  locator: { section: "4" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ wallet, as ] }
+  quote: "Sender-constrained access token: MUST support DPoP as defined in [RFC9449]."
+  verified: source-checked
+- id: haip/4/dpop-credential
+  subject: vci.credential-request.dpop
+  spec: haip-1.0
+  locator: { section: "4" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ wallet, issuer ] }
+  quote: "Sender-constrained access token: MUST support DPoP as defined in [RFC9449]."
+  xref: [ { source: c2bo, id: credential-dpop-proof } ]
+  verified: source-checked
+- id: haip/4/offer
+  subject: vci.offer
+  spec: haip-1.0
+  locator: { section: "4" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ issuer ] }
+  condition: If issuer-initiated flows are supported.
+  quote: "If Issuer-initiated flows are supported, they MUST use the Credential Offer as defined in Section 4.1 of
+    [OIDF.OID4VCI]."
+  verified: source-checked
+- id: haip/4/batch
+  subject: vci.metadata.batch_credential_issuance
+  spec: haip-1.0
+  locator: { section: "4" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ issuer ] }
+  quote: "The Issuer MUST indicate whether batch issuance is supported by including or omitting the
+    batch_credential_issuance metadata parameter."
+  verified: source-checked
+- id: haip/4.1/as-metadata
+  subject: vci.as-metadata
+  spec: haip-1.0
+  locator: { section: "4.1" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ as ] }
+  quote: "The Authorization Server MUST support metadata according to [RFC8414]."
+  xref: [ { source: c2bo, id: as-metadata } ]
+  verified: source-checked
+- id: haip/4.1/scope
+  subject: vci.metadata.ccs.scope
+  spec: haip-1.0
+  locator: { section: "4.1" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ issuer ] }
+  quote: "The Credential Issuer metadata MUST include a scope for every Credential Configuration it supports."
+  xref: [ { source: c2bo, id: metadata-scope } ]
+  verified: source-checked
+- id: haip/4.1/signed-metadata
+  subject: vci.metadata.signed
+  spec: haip-1.0
+  locator: { section: "4.1" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ wallet, issuer ] }
+  condition: When ecosystem policies require issuer authentication beyond TLS.
+  quote: "When Ecosystem policies require Issuer Authentication to a higher level than possible with TLS alone, signed
+    Credential Issuer Metadata as specified in Section 11.2.3 in [OIDF.OID4VCI] MUST be supported by both the Wallet and
+    the Issuer."
+  note: "\"Section 11.2.3\" is a typo for OpenID4VCI 1.0 §12.2.3 (Signed Metadata), also flagged by the c2bo tester."
+  xref: [ { source: c2bo, id: metadata-signed } ]
+  verified: source-checked
+- id: haip/4.1/x5c
+  subject: vci.metadata.x5c
+  spec: haip-1.0
+  locator: { section: "4.1" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ wallet, issuer ] }
+  quote: "Key resolution to validate the signed Issuer Metadata MUST be supported using the x5c JOSE header parameter as
+    defined in [RFC7515]. In this case, the X.509 certificate of the trust anchor MUST NOT be included in the x5c JOSE
+    header of the signed request."
+  xref: [ { source: c2bo, id: metadata-signing-chain } ]
+  verified: source-checked
+- id: haip/4.1/nonce-endpoint
+  subject: vci.metadata.nonce_endpoint
+  spec: haip-1.0
+  locator: { section: "4.1" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ issuer ] }
+  condition: If a credential configuration requires key binding.
+  quote: "If the Issuer supports Credential Configurations that require key binding, as indicated by the presence of
+    cryptographic_binding_methods_supported, the nonce_endpoint MUST be present in the Credential Issuer Metadata."
+  xref: [ { source: c2bo, id: metadata-nonce-endpoint } ]
+  verified: source-checked
+- id: haip/4.2/auth-code-grant
+  subject: vci.offer.grants.authorization_code
+  spec: haip-1.0
+  locator: { section: "4.2" }
+  relation: profiles
+  level: shall
+  quote: "The Grant Type authorization_code MUST be supported as defined in Section 4.1.1 in [OIDF.OID4VCI]"
+  verified: source-checked
+- id: haip/4.2/scheme
+  subject: vci.offer.scheme
+  spec: haip-1.0
+  locator: { section: "4.2" }
+  relation: profiles
+  level: may
+  quote: "As a way to invoke the Wallet the custom URL scheme haip-vci:// MAY be supported. Implementations MAY support
+    other ways to invoke Wallets as agreed upon by trust frameworks/Ecosystems/jurisdictions"
+  verified: source-checked
+- id: haip/4.3/par-client-auth
+  subject: vci.par-request.oauth-client-attestation
+  spec: haip-1.0
+  locator: { section: "4.3" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ wallet ] }
+  quote: "Wallets MUST authenticate themselves at the PAR endpoint using the same rules as defined in Section 4.4 for
+    client authentication at the token endpoint."
+  xref: [ { source: c2bo, id: par-request } ]
+  verified: source-checked
+- id: haip/4.3/scope
+  subject: vci.par-request.scope
+  spec: haip-1.0
+  locator: { section: "4.3" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ wallet ] }
+  quote: "MUST use the scope parameter to communicate Credential Type(s) to be issued. The scope value MUST map to a
+    specific Credential Type."
+  verified: source-checked
+- id: haip/4.4/refresh
+  subject: vci.refresh-token
+  spec: haip-1.0
+  locator: { section: "4.4" }
+  relation: profiles
+  level: should
+  applies_to: { role: [ as ] }
+  quote: "Refresh tokens are RECOMMENDED to be supported for Credential refresh."
+  xref: [ { source: c2bo, id: refresh-tokens } ]
+  verified: source-checked
+- id: haip/4.4.1/client-auth
+  subject: vci.client-auth
+  spec: haip-1.0
+  locator: { section: "4.4.1" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ wallet, as ] }
+  quote: "Wallets MUST use, and Issuers MUST require, an OAuth2 Client authentication mechanism at OAuth2 Endpoints that
+    support client authentication (such as the PAR and Token Endpoints)."
+  xref: [ { source: c2bo, id: as-client-auth } ]
+  verified: source-checked
+- id: haip/4.4.1/require-client-auth
+  subject: vci.client-auth.reject-without-wia
+  spec: haip-1.0
+  locator: { section: "4.4.1" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ as ] }
+  quote: "Wallets MUST use, and Issuers MUST require, an OAuth2 Client authentication mechanism at OAuth2 Endpoints that
+    support client authentication"
+  note: >-
+    Requires client authentication, not specifically the WIA (Appendix E is only SHOULD at ecosystem level). In the EUDI
+    ecosystem the wallet always sends a WIA (CIR TR-WIA-3), so in practice the mechanism is the WIA, but no binding text
+    says the AS must reject a request without one.
+  xref: [ { source: c2bo, id: token-client-authentication } ]
+  verified: source-checked
+- id: haip/4.4.1/token
+  subject: vci.token-request.oauth-client-attestation
+  spec: haip-1.0
+  locator: { section: "4.4.1" }
+  relation: profiles
+  level: should
+  applies_to: { role: [ wallet ] }
+  quote: "Ecosystems that desire wallet-issuer interoperability on the level of Wallet Attestations SHOULD require Wallets
+    to support the authentication mechanism and Wallet Attestation format specified in Appendix E of [OIDF.OID4VCI]."
+  verified: source-checked
+- id: haip/4.4.1/par
+  subject: vci.par-request.oauth-client-attestation
+  spec: haip-1.0
+  locator: { section: "4.4.1" }
+  relation: profiles
+  level: should
+  applies_to: { role: [ wallet ] }
+  quote: "Ecosystems that desire wallet-issuer interoperability on the level of Wallet Attestations SHOULD require Wallets
+    to support the authentication mechanism and Wallet Attestation format specified in Appendix E of [OIDF.OID4VCI]."
+  verified: source-checked
+- id: haip/4.4.1/x5c
+  subject: vci.wia.x5c
+  spec: haip-1.0
+  locator: { section: "4.4.1" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ wallet-provider ] }
+  quote: "used to validate the signature on the Wallet Attestation MUST be included in the x5c JOSE header of the Client
+    Attestation JWT"
+  xref: [ { source: c2bo, id: wallet-attestation-suites-and-chains } ]
+  verified: source-checked
+- id: haip/4.4.1/reuse
+  subject: vci.wia.lifetime
+  spec: haip-1.0
+  locator: { section: "4.4.1" }
+  relation: profiles
+  level: shall-not
+  applies_to: { role: [ wallet ] }
+  quote: "Wallet Attestations MUST NOT be reused across different Issuers."
+  verified: source-checked
+- id: haip/4.4.1/sub
+  subject: vci.wia.sub
+  spec: haip-1.0
+  locator: { section: "4.4.1" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ wallet-provider ] }
+  quote: "The subject claim for the Wallet Attestation MUST be a value that is shared by all Wallet instances using the
+    present type of wallet implementation."
+  verified: source-checked
+- id: haip/4.4.1/client_id
+  subject: vci.par-request.client_id
+  spec: haip-1.0
+  locator: { section: "4.4.1" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ wallet ] }
+  quote: "if applicable, the client_id value in the PAR request MUST be the string in the sub value in the client
+    attestation JWT."
+  verified: source-checked
+- id: haip/5/encryption
+  subject: vp.authorization-response.encryption
+  spec: haip-1.0
+  locator: { section: "5" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ wallet, verifier ] }
+  quote: "Response encryption MUST be performed as specified in Section 8.3 of [OIDF.OID4VP]."
+  verified: source-checked
+- id: haip/5.1/direct_post.jwt
+  subject: vp.authorization-response.encryption
+  spec: haip-1.0
+  locator: { section: "5.1" }
+  relation: profiles
+  level: shall
+  applies_to: { transport: [ redirect ] }
+  quote: "Response encryption MUST be used by utilizing response mode direct_post.jwt, as defined in Section 8.3 of
+    [OIDF.OID4VP]."
+  verified: source-checked
+- id: haip/5.2/dc_api.jwt
+  subject: vp.authorization-response.encryption
+  spec: haip-1.0
+  locator: { section: "5.2" }
+  relation: profiles
+  level: shall
+  applies_to: { transport: [ dc-api ] }
+  quote: "The Wallet MUST support the Response Mode dc_api.jwt. The Verifier MUST use the Response Mode dc_api.jwt."
+  verified: source-checked
+- id: haip/verifier_info/silent
+  subject: vp.request-object.verifier_info.registration_cert
+  spec: haip-1.0
+  locator: { at: "whole document" }
+  relation: silent
+  probe: verifier_info
+  note: HAIP 1.0 does not mention verifier_info; registration certificates are out of its scope.
+  verified: source-checked

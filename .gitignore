@@ -1,0 +1,14 @@
+node_modules/
+dist/
+coverage/
+test-results/
+playwright-report/
+.vite/
+*.log
+.DS_Store
+
+# Converted spec texts: ETSI texts must not be redistributed
+sources/*.txt
+
+# Source corpus PDFs (200 MB, partly not redistributable); indexes and .md files stay tracked
+eIDAS + all references/**/*.pdf

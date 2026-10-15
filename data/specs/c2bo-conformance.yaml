@@ -1,0 +1,9 @@
+id: c2bo-conformance
+title: Issuer Conformance (conformance.c2bo.net)
+short: c2bo
+layer: secondary
+version: snapshot 2026-10-15
+note: Secondary source. Requirement chains are imported as candidates and adopted only after a quote check against the local corpus.
+source:
+  url: https://conformance.c2bo.net/#requirements
+retrieved: 2026-10-15

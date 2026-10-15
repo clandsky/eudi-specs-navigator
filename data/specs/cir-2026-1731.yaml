@@ -1,0 +1,11 @@
+id: cir-2026-1731
+title: Commission Implementing Regulation (EU) 2026/1731
+short: CIR 2026/1731
+layer: cir
+version: OJ L, 22.7.2026 (adopted 15 July 2026, in force 11 August 2026)
+note: Amends 2024/2977, 2024/2979, 2024/2980 and 2024/2982. Annex III = new Annex Ib (WUA), Annex XI = issuance profile (ETSI TS 119 472-3 with adaptations), Annex XII = presentation profile (ETSI TS 119 472-2 with adaptations).
+source:
+  local: "eIDAS + all references/cir/CIR-2026-1731-amending-2977-2979-2980-2982-standards.pdf"
+  text: sources/cir-2026-1731.txt
+  url: http://data.europa.eu/eli/reg_impl/2026/1731/oj
+retrieved: 2026-07-23
