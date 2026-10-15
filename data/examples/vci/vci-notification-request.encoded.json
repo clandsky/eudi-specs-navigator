@@ -5,7 +5,8 @@
     "url": "https://eaa.example.eu/notification",
     "headers": {
       "Content-Type": "application/json",
-      "Authorization": "DPoP Kz~8mXK1EalYznwH-LC-1fBAo.4Ljp~zsPE_NeO.gxU"
+      "Authorization": "DPoP Kz~8mXK1EalYznwH-LC-1fBAo.4Ljp~zsPE_NeO.gxU",
+      "DPoP": "eyJ0eXAiOiJkcG9wK2p3dCIsImFsZyI6IkVTMjU2IiwiandrIjp7Imt0eSI6IkVDIiwiY3J2IjoiUC0yNTYiLCJ4IjoiazVMM19qNTNlYmFab0lrOWpSTWNubFNEY2N6Skw5YkstbGZrcUlzencxZyIsInkiOiJfYjE1Sjc4ZXQ5OHh5VDRRNWFHLTdNaUxkakYwZVZnZEpQLUxyaXpPSEZRIn19.eyJqdGkiOiJkcG9wLW5vdGlmaWNhdGlvbi0wMDAxIiwiaHRtIjoiUE9TVCIsImh0dSI6Imh0dHBzOi8vZWFhLmV4YW1wbGUuZXUvbm90aWZpY2F0aW9uIiwiaWF0IjoxNzkyMDczMDAwLCJub25jZSI6ImV5SjdTX3pHLmV5SkgwLVouSFg0dy03diIsImF0aCI6ImZVSHlPMnIyWjNEWjUzRXNOcldCYjB4V1hvYU55NTlJaUtDQXFrc21RRW8ifQ.A8P9oOQH2pf6hU3ozcgELIrSgO07f8YzFxtE5XXx5b7QMABqRmgc37u9oKeqCjEyjGoi9WOagaFz0qBF0i3TCQ"
     },
     "body": {
       "type": "json",
@@ -15,6 +16,8 @@
       }
     }
   },
-  "jwts": {},
-  "inputHash": "604716759c726a12"
+  "jwts": {
+    "dpop": "eyJ0eXAiOiJkcG9wK2p3dCIsImFsZyI6IkVTMjU2IiwiandrIjp7Imt0eSI6IkVDIiwiY3J2IjoiUC0yNTYiLCJ4IjoiazVMM19qNTNlYmFab0lrOWpSTWNubFNEY2N6Skw5YkstbGZrcUlzencxZyIsInkiOiJfYjE1Sjc4ZXQ5OHh5VDRRNWFHLTdNaUxkakYwZVZnZEpQLUxyaXpPSEZRIn19.eyJqdGkiOiJkcG9wLW5vdGlmaWNhdGlvbi0wMDAxIiwiaHRtIjoiUE9TVCIsImh0dSI6Imh0dHBzOi8vZWFhLmV4YW1wbGUuZXUvbm90aWZpY2F0aW9uIiwiaWF0IjoxNzkyMDczMDAwLCJub25jZSI6ImV5SjdTX3pHLmV5SkgwLVouSFg0dy03diIsImF0aCI6ImZVSHlPMnIyWjNEWjUzRXNOcldCYjB4V1hvYU55NTlJaUtDQXFrc21RRW8ifQ.A8P9oOQH2pf6hU3ozcgELIrSgO07f8YzFxtE5XXx5b7QMABqRmgc37u9oKeqCjEyjGoi9WOagaFz0qBF0i3TCQ"
+  },
+  "inputHash": "452666e7fa351dab"
 }

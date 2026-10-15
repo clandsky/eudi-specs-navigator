@@ -161,14 +161,12 @@
   quote: "key_attestation: OPTIONAL. JOSE Header containing a key attestation as described in Appendix D. If the
     Credential Issuer provided a c_nonce, the nonce claim in the key attestation MUST be set to a server-provided
     c_nonce."
-  verified: needs-review
-  review:
-    reason: >-
-      OpenID4VCI F.1 requires the c_nonce inside the key attestation when it travels in a jwt proof. ETSI
-      CRED-REQ-4.6.1.2-02 and CIR TR_KA-6.1 put the nonce in the jwt proof, and CIR C_KA-2 requires it in the key
-      attestation only for the attestation proof type. A key attestation provisioned in advance by the Wallet Provider
-      (TR_KA-2.5) cannot contain an issuer's c_nonce. No higher layer says the base rule does not apply, so it stands;
-      the phase-1 example (pre-provisioned key attestation without nonce) does not meet it.
+  note: >-
+    ETSI CRED-REQ-4.6.1.2-02 and CIR TR_KA-6.1 also put the nonce into the jwt proof, and CIR C_KA-2 asks for it in the
+    key attestation only for the attestation proof type; neither excludes it here, so this base rule stands. It means
+    the key attestation is obtained per issuance, after the c_nonce (consistent with CIR TR_KA-2.4: one key attestation
+    per issuance). The flows show it that way.
+  verified: source-checked
 - id: oid4vci/E/status
   subject: vci.wia.client_status.status
   spec: openid4vci-1.0
@@ -178,4 +176,56 @@
   applies_to: { role: [ wallet-provider ] }
   quote: "status: OPTIONAL. Status mechanism for the Wallet Attestation as defined in [I-D.ietf-oauth-status-list]"
   note: OpenID4VCI defines a top-level status claim; the CIR places the status reference inside client_status instead.
+  verified: source-checked
+- id: oid4vci/7.2/dpop-nonce
+  subject: vci.nonce-response.dpop-nonce
+  spec: openid4vci-1.0
+  locator: { section: "7.2" }
+  relation: defines
+  level: may
+  applies_to: { role: [ issuer ] }
+  quote: "The Credential Issuer MAY provide a DPoP nonce in an HTTP header as defined in Section 8.2 of [RFC9449]."
+  xref: [ { source: c2bo, id: nonce-dpop-nonce } ]
+  verified: source-checked
+- id: oid4vci/7.2/dpop-nonce-use
+  subject: vci.dpop-proof.nonce
+  spec: openid4vci-1.0
+  locator: { section: "7.2" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ wallet ] }
+  condition: When the Nonce Response carried a DPoP-Nonce header.
+  quote: "In this case, the Wallet uses the new nonce value in the DPoP proof when presenting an access token at the
+    Credential Endpoint."
+  verified: source-checked
+- id: oid4vci/11/access-token
+  subject: vci.notification-request.dpop
+  spec: openid4vci-1.0
+  locator: { section: "11" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ wallet ] }
+  quote: "The Wallet MUST present to the Notification Endpoint a valid Access Token issued at the Token Endpoint as
+    defined in Section 6."
+  verified: source-checked
+- id: oid4vci/3.4/user-authentication
+  subject: vci.user-authentication
+  spec: openid4vci-1.0
+  locator: { section: "3.4" }
+  relation: defines
+  level: info
+  applies_to: { grant: [ authorization_code ] }
+  quote: "The Authorization Endpoint processes the Authorization Request, which typically includes authenticating the
+    End-User and gathering End-User consent."
+  verified: source-checked
+- id: oid4vci/F.1/ka-nonce-step
+  subject: vci.ka-request
+  spec: openid4vci-1.0
+  locator: { section: "F.1" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ wallet ] }
+  condition: When the Credential Issuer provided a c_nonce.
+  quote: "If the Credential Issuer provided a c_nonce, the nonce claim in the key attestation MUST be set to a
+    server-provided c_nonce."
   verified: source-checked

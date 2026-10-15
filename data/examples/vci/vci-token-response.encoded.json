@@ -4,7 +4,8 @@
     "status": 200,
     "headers": {
       "Content-Type": "application/json",
-      "Cache-Control": "no-store"
+      "Cache-Control": "no-store",
+      "Pragma": "no-cache"
     },
     "body": {
       "type": "json",
@@ -17,5 +18,5 @@
     }
   },
   "jwts": {},
-  "inputHash": "1d6e735267a72d76"
+  "inputHash": "b31e2dfd9109d33f"
 }

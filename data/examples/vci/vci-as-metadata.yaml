@@ -14,7 +14,7 @@ http:
       pushed_authorization_request_endpoint: https://eaa.example.eu/par
       require_pushed_authorization_requests: true
       response_types_supported: [code]
-      grant_types_supported: [authorization_code, refresh_token]
+      grant_types_supported: [authorization_code, "urn:ietf:params:oauth:grant-type:pre-authorized_code", refresh_token]
       code_challenge_methods_supported: [S256]
       token_endpoint_auth_methods_supported: [attest_jwt_client_auth]
       client_attestation_signing_alg_values_supported: [ES256]

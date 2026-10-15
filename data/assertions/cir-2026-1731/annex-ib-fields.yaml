@@ -60,3 +60,12 @@
   quote: "it shall verify the signature of the key attestation under the public key in the signing certificate included in
     the 'x5c' parameter in the JOSE header of the key attestation"
   verified: source-checked
+- id: cir/TR_KA-2.4/per-issuance
+  subject: vci.ka-request
+  spec: cir-2026-1731
+  locator: { req: TR_KA-2.4, at: "Annex III (Annex Ib), point 2(b)" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ wallet ] }
+  quote: "A wallet unit shall use a key attestation during at most one credential issuance or re-issuance process."
+  verified: source-checked

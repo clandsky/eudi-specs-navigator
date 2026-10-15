@@ -13,7 +13,7 @@ participants:
   - { id: as, label: Authorization Server, role: as }
   - { id: issuer, label: Credential Issuer, role: issuer }
 steps:
-  - { id: provision, from: wp, to: wallet, kind: internal, label: WIA + key attestation, subject: vci.provisioning, example: vci-wia, tags: [WIA, KA] }
+  - { id: provision, from: wp, to: wallet, kind: internal, label: Wallet Instance Attestation, subject: vci.provisioning, example: vci-wia, tags: [WIA] }
   - { id: offer, from: issuer, to: wallet, kind: redirect, label: QR code with credential_offer_uri, subject: vci.offer, example: vci-offer-preauth, tags: ["eu-eaa-offer://", by reference] }
   - { id: offer-fetch, from: wallet, to: issuer, kind: request, label: GET credential_offer_uri, subject: vci.offer-fetch, example: vci-offer-fetch, tags: [pre-authorized_code, tx_code] }
   - { id: tx-code, from: issuer, to: wallet, kind: internal, label: Transaction Code (SMS, e-mail), subject: vci.tx-code-delivery, note: The user types the code into the wallet. }
@@ -22,8 +22,10 @@ steps:
   - { id: token, from: wallet, to: as, kind: request, label: POST /token (pre-authorized code), subject: vci.token-request, example: vci-token-request-preauth, tags: [WIA + PoP, DPoP, tx_code] }
   - { id: token-response, from: as, to: wallet, kind: response, label: DPoP access token, subject: vci.token-response, example: vci-token-response }
   - { id: nonce, from: wallet, to: issuer, kind: request, label: POST /nonce, subject: vci.nonce-request, example: vci-nonce-request }
-  - { id: nonce-response, from: issuer, to: wallet, kind: response, label: c_nonce, subject: vci.nonce-response, example: vci-nonce-response }
-  - { id: credential, from: wallet, to: issuer, kind: request, label: POST /credential, subject: vci.credential-request, example: vci-credential-request, tags: [DPoP, proofs.jwt + KA] }
+  - { id: nonce-response, from: issuer, to: wallet, kind: response, label: c_nonce, subject: vci.nonce-response, example: vci-nonce-response, tags: [DPoP-Nonce] }
+  - { id: ka-request, from: wallet, to: wp, kind: request, label: request key attestation (c_nonce), subject: vci.ka-request, note: Wallet-to-Wallet-Provider interface; not standardised by OpenID4VCI. }
+  - { id: ka, from: wp, to: wallet, kind: response, label: key attestation, subject: vci.ka-request, example: vci-key-attestation, tags: [nonce, attested_keys] }
+  - { id: credential, from: wallet, to: issuer, kind: request, label: POST /credential, subject: vci.credential-request, example: vci-credential-request, tags: [DPoP + nonce, proofs.jwt + KA] }
   - { id: credential-response, from: issuer, to: wallet, kind: response, label: credentials, subject: vci.credential-response, example: vci-credential-response }
-  - { id: notification, from: wallet, to: issuer, kind: request, label: POST /notification, subject: vci.notification-request, example: vci-notification-request }
+  - { id: notification, from: wallet, to: issuer, kind: request, label: POST /notification, subject: vci.notification-request, example: vci-notification-request, tags: [DPoP] }
   - { id: notification-response, from: issuer, to: wallet, kind: response, label: "204", subject: vci.notification-response }

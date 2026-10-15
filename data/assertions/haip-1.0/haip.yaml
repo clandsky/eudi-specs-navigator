@@ -341,3 +341,23 @@
     the key attestation The X.509 certificate of the trust anchor MUST NOT be included in the x5c JOSE header of the key
     attestation."
   verified: source-checked
+- id: haip/4/dpop-notification
+  subject: vci.notification-request.dpop
+  spec: haip-1.0
+  locator: { section: "4" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ wallet, issuer ] }
+  quote: "Sender-constrained access token: MUST support DPoP as defined in [RFC9449]."
+  note: A DPoP-bound access token is presented with a DPoP proof that carries ath (RFC 9449 §7.1, §4.2).
+  verified: source-checked
+- id: haip/6.1/unique-index
+  subject: tsl.idx
+  spec: haip-1.0
+  locator: { section: "6.1" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ issuer ] }
+  quote: "Each Credential MUST have its own unique, unpredictable status list index, even when multiple Credentials
+    reference the same status list URI"
+  verified: source-checked
