@@ -8,6 +8,7 @@ import {
   Assertion,
   C2boSnapshot,
   Example,
+  FieldMapFile,
   Flow,
   LayersFile,
   Spec,
@@ -89,6 +90,9 @@ export function loadDataset(opts: { requireEncoded?: boolean } = {}): Dataset {
   const assertions = many(Assertion, join(DATA, 'assertions'), problems)
   const examples = many(Example, join(DATA, 'examples'), problems)
 
+  const fieldmapPath = join(DATA, 'fieldmap.yaml')
+  const fieldmap = existsSync(fieldmapPath) ? (parseWith(FieldMapFile, readYaml(fieldmapPath), 'data/fieldmap.yaml', problems) ?? []) : []
+
   let c2bo: Dataset['c2bo'] = null
   const snaps = walk(join(DATA, 'secondary', 'c2bo'), /^requirements-.*\.json$/)
   const latest = snaps.at(-1)
@@ -129,6 +133,7 @@ export function loadDataset(opts: { requireEncoded?: boolean } = {}): Dataset {
       if (s.example && !exampleIds.has(s.example)) problems.push(`${f._file}: step ${s.id} has unknown example ${s.example}`)
     }
   }
+  for (const f of fieldmap) if (!subjectIds.has(f.subject)) problems.push(`data/fieldmap.yaml: ${f.pattern} → unknown subject ${f.subject}`)
   for (const e of examples) {
     if (!subjectIds.has(e.subject)) problems.push(`${e._file}: example ${e.id} has unknown subject ${e.subject}`)
     for (const [ptr, sub] of Object.entries(e.annotations))
@@ -148,6 +153,7 @@ export function loadDataset(opts: { requireEncoded?: boolean } = {}): Dataset {
     assertions: strip(assertions),
     examples: strip(examples),
     encoded,
+    fieldmap,
     c2bo,
     builtAt: new Date().toISOString().slice(0, 10),
   }

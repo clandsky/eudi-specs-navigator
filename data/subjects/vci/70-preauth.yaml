@@ -1,0 +1,11 @@
+- { id: vci.flow.pre-auth, kind: flow, parent: vci, title: "Issuance: pre-authorized code flow, cross device" }
+- { id: vci.offer-fetch, kind: message, parent: vci, title: Credential Offer fetched by reference, endpoint: { method: GET, path: "/credential-offer/{id}", server: issuer } }
+- { id: vci.offer.grants.pre-authorized_code, kind: value, parent: vci.offer.grants, title: "grants.urn:ietf:params:oauth:grant-type:pre-authorized_code", location: json }
+- { id: vci.offer.pre-authorized_code, kind: field, parent: vci.offer.grants.pre-authorized_code, title: pre-authorized_code, location: json }
+- { id: vci.offer.tx_code, kind: field, parent: vci.offer.grants.pre-authorized_code, title: tx_code, location: json }
+- { id: vci.offer.tx_code.input_mode, kind: field, parent: vci.offer.tx_code, title: tx_code.input_mode, location: json }
+- { id: vci.offer.tx_code.length, kind: field, parent: vci.offer.tx_code, title: tx_code.length, location: json }
+- { id: vci.offer.tx_code.description, kind: field, parent: vci.offer.tx_code, title: tx_code.description, location: json }
+- { id: vci.tx-code-delivery, kind: step, parent: vci, title: Transaction Code delivered to the user on a separate channel }
+- { id: vci.token-request.pre-authorized_code, kind: field, parent: vci.token-request, title: pre-authorized_code, location: form }
+- { id: vci.token-request.tx_code, kind: field, parent: vci.token-request, title: tx_code, location: form }

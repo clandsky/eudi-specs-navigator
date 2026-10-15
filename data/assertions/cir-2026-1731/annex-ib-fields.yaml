@@ -1,0 +1,62 @@
+# CIR 2026/1731 Annex Ib: sub-fields of the WIA and key attestation status claims.
+- id: cir/C_WIA-1/certification-members
+  subject: vci.wia.certification-members
+  spec: cir-2026-1731
+  locator: { req: C_WIA-1, at: "Annex III (Annex Ib), point 2(c)" }
+  relation: defines
+  level: info
+  applies_to: { role: [ wallet-provider ] }
+  quote: "a JSON object containing information about the conformity assessment body that certified the wallet solution,
+    the certification number, as applicable, and other relevant details as regards certification."
+  note: The CIR describes the content but defines no member names; the names in the example are illustrative.
+  verified: source-checked
+- id: cir/C_WIA-1/client_status.status
+  subject: vci.wia.client_status.status
+  spec: cir-2026-1731
+  locator: { req: C_WIA-1, at: "Annex III (Annex Ib), point 2(c)" }
+  relation: extends
+  level: shall
+  applies_to: { role: [ wallet-provider ] }
+  quote: "'status': a status list reference as specified in Appendix E of OID4VCI that represents the revocation status of
+    the wallet instance."
+  verified: source-checked
+- id: cir/C_WIA-1/client_status.exp
+  subject: vci.wia.client_status.exp
+  spec: cir-2026-1731
+  locator: { req: C_WIA-1, at: "Annex III (Annex Ib), point 2(c)" }
+  relation: extends
+  level: shall
+  applies_to: { role: [ wallet-provider ] }
+  quote: "'exp': a NumericDate, as specified in RFC 7519, defining the time until which the wallet provider will maintain
+    the revocation status at the status list index referenced in 'status'."
+  verified: source-checked
+- id: cir/C_KA-1/key_storage_status.status
+  subject: vci.ka.key_storage_status.status
+  spec: cir-2026-1731
+  locator: { req: C_KA-1, at: "Annex III (Annex Ib), point 2(c)" }
+  relation: extends
+  level: shall
+  applies_to: { role: [ wallet-provider ] }
+  quote: "'status': a status list reference as specified in Appendix D.1 of OID4VCI."
+  verified: source-checked
+- id: cir/C_KA-1/key_storage_status.exp
+  subject: vci.ka.key_storage_status.exp
+  spec: cir-2026-1731
+  locator: { at: "Annex III (Annex Ib), point 2(c), C_KA-1" }
+  relation: extends
+  level: shall
+  applies_to: { role: [ wallet-provider ] }
+  quote: "maintain the revocation status at the status list index referenced in 'status'. — the 'exp' claim specified in
+    Appendix D of OID4VCI."
+  note: Same wording as client_status.exp of the WIA, here for the key storage status.
+  verified: source-checked
+- id: cir/TR_KA-5/x5c
+  subject: vci.ka.x5c
+  spec: cir-2026-1731
+  locator: { req: TR_KA-5, at: "Annex III (Annex Ib), point 2(b)" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ issuer ] }
+  quote: "it shall verify the signature of the key attestation under the public key in the signing certificate included in
+    the 'x5c' parameter in the JOSE header of the key attestation"
+  verified: source-checked

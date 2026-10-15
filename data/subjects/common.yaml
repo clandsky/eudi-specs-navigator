@@ -1,0 +1,33 @@
+# Generic building blocks shared by all examples (HTTP, JOSE, JWT, JWK, status list, SD-JWT). Mapped by data/fieldmap.yaml.
+- { id: common, kind: flow, title: Shared building blocks }
+- { id: http.content-type, kind: field, parent: common, title: Content-Type header, location: header }
+- { id: http.content-length, kind: field, parent: common, title: Content-Length header, location: header }
+- { id: http.location, kind: field, parent: common, title: Location header, location: header }
+- { id: http.cache-control, kind: field, parent: common, title: Cache-Control header, location: header }
+- { id: http.authorization-dpop, kind: field, parent: common, title: "Authorization: DPoP <access token>", location: header }
+- { id: jose.alg, kind: field, parent: common, title: alg (JOSE header), location: jwt-header }
+- { id: jose.typ, kind: field, parent: common, title: typ (JOSE header), location: jwt-header }
+- { id: jose.x5c, kind: field, parent: common, title: x5c (JOSE header), location: jwt-header }
+- { id: jose.jwk, kind: field, parent: common, title: jwk (JOSE header), location: jwt-header }
+- { id: jwt.iss, kind: field, parent: common, title: iss claim, location: jwt-payload }
+- { id: jwt.iat, kind: field, parent: common, title: iat claim, location: jwt-payload }
+- { id: jwt.exp, kind: field, parent: common, title: exp claim, location: jwt-payload }
+- { id: jwt.jti, kind: field, parent: common, title: jti claim, location: jwt-payload }
+- { id: jwt.cnf, kind: field, parent: common, title: cnf claim, location: jwt-payload }
+- { id: jwt.cnf.jwk, kind: field, parent: jwt.cnf, title: cnf.jwk, location: jwt-payload }
+- { id: jwk.kty, kind: field, parent: common, title: kty (JWK), location: json }
+- { id: jwk.crv, kind: field, parent: common, title: crv (EC JWK), location: json }
+- { id: jwk.x, kind: field, parent: common, title: x (EC JWK), location: json }
+- { id: jwk.y, kind: field, parent: common, title: y (EC JWK), location: json }
+- { id: tsl.status, kind: field, parent: common, title: status claim (Token Status List reference), location: jwt-payload }
+- { id: tsl.status_list, kind: field, parent: tsl.status, title: status.status_list, location: jwt-payload }
+- { id: tsl.idx, kind: field, parent: tsl.status_list, title: status_list.idx, location: jwt-payload }
+- { id: tsl.uri, kind: field, parent: tsl.status_list, title: status_list.uri, location: jwt-payload }
+- { id: sdjwt._sd, kind: field, parent: common, title: _sd (disclosure digests), location: jwt-payload }
+- { id: sdjwt._sd_alg, kind: field, parent: common, title: _sd_alg, location: jwt-payload }
+- { id: sdjwtvc, kind: object, parent: common, title: SD-JWT VC (issuer-signed JWT) }
+- { id: sdjwtvc.typ, kind: field, parent: sdjwtvc, title: typ = dc+sd-jwt, location: jwt-header }
+- { id: sdjwtvc.vct, kind: field, parent: sdjwtvc, title: vct, location: jwt-payload }
+- { id: sdjwtvc.iss, kind: field, parent: sdjwtvc, title: iss, location: jwt-payload }
+- { id: sdjwtvc.exp, kind: field, parent: sdjwtvc, title: exp, location: jwt-payload }
+- { id: sdjwtvc.cnf, kind: field, parent: sdjwtvc, title: cnf, location: jwt-payload }

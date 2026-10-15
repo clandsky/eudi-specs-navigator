@@ -1,5 +1,5 @@
 import { Fragment, useMemo, useState, type ReactNode } from 'react'
-import { escapeToken, viewOf } from '../model/pointer'
+import { annotationFor, escapeToken, viewOf } from '../model/pointer'
 import { levelLabel } from '../model/resolve'
 import type { Role } from '../model/schema'
 import {
@@ -16,6 +16,7 @@ import {
   useViewCtx,
 } from '../lib/store'
 import { LayerBadges, LevelChip, cssLayer } from './bits'
+import { ExampleEditor } from './ExampleEditor'
 
 interface Props {
   exampleId: string
@@ -25,13 +26,16 @@ interface Props {
   variant?: { grant?: string; transport?: string }
 }
 
-const isJws = (v: unknown): v is string => typeof v === 'string' && /^eyJ[\w-]*\.[\w-]+\.[\w-]+(~[\w-]*)*~?$/.test(v)
+// Compact JWS, SD-JWT (with disclosures and an optional KB-JWT), or compact JWE (five parts).
+const isJws = (v: unknown): v is string =>
+  typeof v === 'string' && (/^eyJ[\w-]*\.[\w-]+\.[\w-]+(~[\w.-]*)*$/.test(v) || /^eyJ[\w-]*\.[\w-]*\.[\w-]+\.[\w-]+\.[\w-]+$/.test(v))
 
 export function ObjectView({ exampleId, sender, selected, onSelect, variant = {} }: Props) {
   const ex = exampleById.get(exampleId)
   const enc = ds.encoded[exampleId]
   const vc = useViewCtx()
   const [raw, setRaw] = useState(false)
+  const [editing, setEditing] = useState(false)
   const view = useMemo(() => (enc ? viewOf(enc) : null), [enc])
   if (!ex || !enc || !view) return <div className="empty">This example has not been built yet. Run pnpm examples:build.</div>
 
@@ -41,8 +45,10 @@ export function ObjectView({ exampleId, sender, selected, onSelect, variant = {}
   const stageLayer = LENS_STAGES[vc.stage]!.id
   const ann = ex.annotations
 
+  const subjectAt = (ptr: string) => annotationFor(ptr, ann, ds.fieldmap)
+
   function FieldKey({ ptr, children }: { ptr: string; children: ReactNode }) {
-    const subjectId = ann[ptr]
+    const subjectId = subjectAt(ptr)
     if (!subjectId) return <span className="k">{children}</span>
     const stack = stackOf(subjectId)
     const role = primaryRole(stack, vc.view, sender)
@@ -118,13 +124,16 @@ export function ObjectView({ exampleId, sender, selected, onSelect, variant = {}
     if (typeof v === 'string') {
       if (isJws(v) && !raw) {
         const name = jwtNames.get(v) ?? jwtNames.get(v.split('~')[0]!)
-        const disclosures = v.includes('~') ? v.split('~').filter(Boolean).length - 1 : 0
+        const parts = v.split('~')
+        const hasKb = parts.length > 1 && parts[parts.length - 1] !== ''
+        const disclosures = parts.length > 1 ? parts.length - 2 : 0
         return (
           <span className="jwt" title={v}>
             "{v.slice(0, 18)}…"{' '}
             <span className="meta">
-              ({name ? `JWT “${name}”, decoded below` : 'JWT'}
-              {disclosures ? `, ${disclosures} disclosures` : ''})
+              ({name ? `${v.split('.').length === 5 ? 'JWE' : 'JWT'} “${name}”, decoded below` : 'JWT'}
+              {disclosures ? `, ${disclosures} disclosures` : ''}
+              {hasKb ? `, Key Binding JWT “${name}-kb”` : ''})
             </span>
           </span>
         )
@@ -157,6 +166,9 @@ export function ObjectView({ exampleId, sender, selected, onSelect, variant = {}
         <label className="meta" style={{ display: 'inline-flex', gap: 5, alignItems: 'center' }}>
           <input type="checkbox" checked={raw} onChange={(e) => setRaw(e.target.checked)} /> Encoded values
         </label>
+        <button className="btn" style={{ padding: '2px 8px' }} onClick={() => setEditing(true)}>
+          Edit body
+        </button>
       </div>
       {ex.note && <p className="meta" style={{ marginTop: -4 }}>{ex.note}</p>}
 
@@ -168,7 +180,7 @@ export function ObjectView({ exampleId, sender, selected, onSelect, variant = {}
           </header>
           {(h.method || h.url || h.status) && (
             <div className="http-line">
-              {ann['/http/url'] ? (
+              {subjectAt('/http/url') ? (
                 <FieldKey ptr="/http/url">{h.method ? `${h.method} ` : ''}{shortUrl(h.url ?? '')}</FieldKey>
               ) : (
                 <>
@@ -218,7 +230,8 @@ export function ObjectView({ exampleId, sender, selected, onSelect, variant = {}
       {Object.entries(view.jwt).map(([name, j]) => (
         <div className="obj-block" key={name}>
           <header>
-            JWT “{name}” <span className="sub">{String(j.header.typ ?? '')}</span>
+            {j.compact.split('.').length === 5 ? 'JWE' : 'JWT'} “{name}”{' '}
+            <span className="sub">{j.compact.split('.').length === 5 ? 'decrypted with the test key' : String(j.header.typ ?? '')}</span>
           </header>
           <div className="meta" style={{ padding: '8px 12px 0' }}>Protected header</div>
           <Tree v={j.header} ptr={`/jwt/${escapeToken(name)}/header`} />
@@ -228,6 +241,7 @@ export function ObjectView({ exampleId, sender, selected, onSelect, variant = {}
         </div>
       ))}
       <p className="meta">Signed with test keys from data/test-keys. The decoded views are derived from the encoded values.</p>
+      <ExampleEditor exampleId={editing ? exampleId : null} onClose={() => setEditing(false)} />
     </div>
   )
 }

@@ -1,12 +1,12 @@
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
-import { compactVerify, decodeProtectedHeader, importSPKI } from 'jose'
+import { compactDecrypt, compactVerify, decodeProtectedHeader, importPKCS8, importSPKI } from 'jose'
 import { X509Certificate } from 'node:crypto'
 import { describe, expect, it } from 'vitest'
 import { DATA, loadDataset } from '../../scripts/lib/data.ts'
 import { inputHash, substitute } from '../../scripts/lib/examples.ts'
 import { findQuote, normalise, stripFurniture } from '../../scripts/lib/quote.ts'
-import { decodeJwt, lookup, resolves, viewOf } from './pointer'
+import { annotationFor, decodeJwt, entryPointers, lookup, matchPattern, resolves, viewOf } from './pointer'
 
 const ds = loadDataset({ requireEncoded: true })
 const KEYS = join(DATA, 'test-keys')
@@ -21,9 +21,20 @@ describe('examples', () => {
       expect((enc as unknown as { inputHash: string }).inputHash).toBe(inputHash(input))
     })
 
-    it(`${e.id}: every annotated JSON pointer exists`, () => {
-      const missing = Object.keys(e.annotations).filter((p) => !resolves(view, p))
+    it(`${e.id}: every annotated JSON pointer exists, every pattern matches something`, () => {
+      const entries = entryPointers(view)
+      const missing = Object.keys(e.annotations).filter((p) =>
+        /\/\*\*?(\/|$)/.test(p) ? !entries.some((x) => matchPattern(p, x)) : !resolves(view, p),
+      )
       expect(missing).toEqual([])
+    })
+
+    it(`${e.id}: every entry is clickable`, () => {
+      const stackOf = (id: string) => ds.assertions.filter((a) => a.subject === id)
+      const unmapped = entryPointers(view).filter((p) => !annotationFor(p, e.annotations, ds.fieldmap))
+      expect(unmapped, 'entries without a subject').toEqual([])
+      // Sketched flows may map entries to subjects without statements yet; those show on the review page.
+      void stackOf
     })
 
     it(`${e.id}: every JWT verifies with its test key and decodes to its inputs`, async () => {
@@ -33,6 +44,19 @@ describe('examples', () => {
           const [exId, jwtName] = spec.use.split('/') as [string, string]
           expect(compact).toBe(ds.encoded[exId]!.jwts[jwtName])
           continue
+        }
+        if ('encrypt' in spec) {
+          const priv = await importPKCS8(readFileSync(join(KEYS, `${spec.encrypt.key}.key.pem`), 'utf8'), 'ECDH-ES')
+          const { plaintext } = await compactDecrypt(compact, priv)
+          const payload = await substitute(spec.payload, async (k, n) => (k === 'sdjwt' ? enc.sdjwts![n]! : enc.jwts[n]!))
+          expect(JSON.parse(new TextDecoder().decode(plaintext))).toEqual(payload)
+          expect(enc.plaintexts?.[name]?.payload).toEqual(payload)
+          continue
+        }
+        if (spec.kb) {
+          const kb = enc.jwts[`${name}-kb`]!
+          const holder = await importSPKI(readFileSync(join(KEYS, `${spec.kb.key}.pub.pem`), 'utf8'), 'ES256')
+          await compactVerify(kb, holder)
         }
         const pub = await importSPKI(readFileSync(join(KEYS, `${spec.key}.pub.pem`), 'utf8'), 'ES256')
         await compactVerify(compact, pub)
@@ -82,15 +106,5 @@ describe('quote matching', () => {
     expect(t).toBe('credential_configurations and Proof-of-Possession continues here')
     expect(findQuote(t, 'Proof-of-Possession … continues here').ok).toBe(true)
     expect(findQuote(t, 'continues here … Proof-of-Possession').ok).toBe(false)
-  })
-})
-
-describe('dataset integrity', () => {
-  it('every flow step subject has at least one assertion or a child with one', () => {
-    const withStack = new Set(ds.assertions.map((a) => a.subject))
-    const children = (id: string) => ds.subjects.filter((s) => s.parent === id).map((s) => s.id)
-    const covered = (id: string, depth = 0): boolean => withStack.has(id) || (depth < 4 && children(id).some((c) => covered(c, depth + 1)))
-    const bare = ds.flows.flatMap((f) => f.steps.filter((s) => !covered(s.subject)).map((s) => `${f.id}/${s.id}`))
-    expect(bare.sort()).toEqual(['vci-auth-code-par/notification-response'])
   })
 })

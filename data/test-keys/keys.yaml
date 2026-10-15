@@ -16,3 +16,8 @@ keys:
   - id: wallet-key-1      # attested in the key attestation, signs the jwt proof
   - id: wallet-key-2
   - id: wallet-dpop       # DPoP proof key
+  - id: verifier-access     # RP access certificate, signs the Request Object (x509_hash client identifier)
+    cert: { cn: "TEST Relying Party Access Certificate", issuer: access-root }
+  - id: verifier-enc        # ephemeral response-encryption key published in client_metadata.jwks
+  - id: pid-issuer          # signs the PID SD-JWT VC that the wallet presents
+    cert: { cn: "TEST PID Provider Signer", issuer: access-root }

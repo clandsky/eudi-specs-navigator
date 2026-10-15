@@ -47,3 +47,7 @@ annotations:
   /jwt/wia/payload/wallet_version: vci.wia.wallet_version
   /jwt/wia/payload/wallet_solution_certification_information: vci.wia.wallet_solution_certification_information
   /jwt/wia/payload/client_status: vci.wia.client_status
+  /http/body/response_type: vci.par-request.response_type
+  /http/body/code_challenge_method: vci.par-request.code_challenge
+  /http/body/redirect_uri: vci.par-request.redirect_uri
+  /http/body/state: vci.par-request.state

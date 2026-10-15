@@ -1,0 +1,9 @@
+{
+  "id": "vp-authorization-request",
+  "http": {
+    "url": "eu-eaap://?client_id=x509_hash:dSZ2hVicxFNe38CE2PmrXkG-VffYZ4OBT9GzMjzANtw&request_uri=https%3A%2F%2Fverifier.example.eu%2Frequest%2Fd7b1",
+    "headers": {}
+  },
+  "jwts": {},
+  "inputHash": "f9e5217b337128de"
+}

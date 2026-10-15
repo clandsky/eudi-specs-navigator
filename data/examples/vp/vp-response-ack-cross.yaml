@@ -1,0 +1,8 @@
+id: vp-response-ack-cross
+title: Response endpoint answer without redirect (cross device)
+subject: vp.response-ack
+kind: http-response
+http:
+  status: 200
+  headers: { Content-Type: application/json, Cache-Control: no-store }
+  body: { type: json, value: {} }

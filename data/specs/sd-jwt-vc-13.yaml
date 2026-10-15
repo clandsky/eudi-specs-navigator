@@ -1,0 +1,12 @@
+id: sd-jwt-vc-13
+title: SD-JWT-based Verifiable Credentials (SD-JWT VC)
+short: SD-JWT VC-13
+layer: base
+version: draft-ietf-oauth-sd-jwt-vc-13
+binding_via: ETSI TS 119 472-1 V1.2.1 (via CIR 2026/1731)
+note: The version ETSI TS 119 472-1 V1.2.1 references; the developer guide cites -15.
+source:
+  local: "eIDAS + all references/standards/rfc/draft-ietf-oauth-sd-jwt-vc-13.txt"
+  text: sources/draft-ietf-oauth-sd-jwt-vc-13.txt
+  url: https://datatracker.ietf.org/doc/html/draft-ietf-oauth-sd-jwt-vc-13
+anchor_template: https://datatracker.ietf.org/doc/html/draft-ietf-oauth-sd-jwt-vc-13#section-{section}

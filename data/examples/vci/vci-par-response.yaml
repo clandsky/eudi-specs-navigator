@@ -8,3 +8,4 @@ http:
   body: { type: json, value: { request_uri: "urn:ietf:params:oauth:request_uri:6esc_11ACC5bwc014ltc14eY22c", expires_in: 60 } }
 annotations:
   /http/body/request_uri: vci.par-response.request_uri
+  /http/body/expires_in: vci.par-response.expires_in

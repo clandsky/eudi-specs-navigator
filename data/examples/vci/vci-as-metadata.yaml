@@ -28,3 +28,10 @@ annotations:
   /http/body/client_attestation_signing_alg_values_supported: vci.as-metadata.client_attestation_signing_alg_values_supported
   /http/body/client_attestation_pop_signing_alg_values_supported: vci.as-metadata.client_attestation_pop_signing_alg_values_supported
   /http/body/dpop_signing_alg_values_supported: vci.as-metadata.dpop_signing_alg_values_supported
+  /http/body/authorization_endpoint: vci.as-metadata.authorization_endpoint
+  /http/body/token_endpoint: vci.as-metadata.token_endpoint
+  /http/body/require_pushed_authorization_requests: vci.as-metadata.require_pushed_authorization_requests
+  /http/body/response_types_supported: vci.as-metadata.response_types_supported
+  /http/body/grant_types_supported: vci.as-metadata.grant_types_supported
+  /http/body/code_challenge_methods_supported: vci.as-metadata.code_challenge_methods_supported
+  /http/body/authorization_response_iss_parameter_supported: vci.as-metadata.authorization_response_iss_parameter_supported

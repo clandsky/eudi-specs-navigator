@@ -1,0 +1,81 @@
+# Global JSON-pointer patterns → subject, applied to every example. "*" = one token, "**" = any depth.
+# Exact example annotations win, then example patterns, then these; among patterns, more literal tokens win.
+# HTTP
+- { pattern: /http/headers/Content-Type, subject: http.content-type }
+- { pattern: /http/headers/Content-Length, subject: http.content-length }
+- { pattern: /http/headers/Location, subject: http.location }
+- { pattern: /http/headers/Cache-Control, subject: http.cache-control }
+- { pattern: /http/headers/Authorization, subject: http.authorization-dpop }
+- { pattern: /http/headers/DPoP-Nonce, subject: vci.nonce-response.dpop-nonce }
+# JOSE / JWT / JWK
+- { pattern: /jwt/*/header/alg, subject: jose.alg }
+- { pattern: /jwt/*/header/typ, subject: jose.typ }
+- { pattern: /jwt/*/header/x5c, subject: jose.x5c }
+- { pattern: /jwt/*/header/jwk, subject: jose.jwk }
+- { pattern: /jwt/*/payload/iss, subject: jwt.iss }
+- { pattern: /jwt/*/payload/iat, subject: jwt.iat }
+- { pattern: /jwt/*/payload/exp, subject: jwt.exp }
+- { pattern: /jwt/*/payload/jti, subject: jwt.jti }
+- { pattern: /jwt/*/payload/cnf, subject: jwt.cnf }
+- { pattern: /jwt/*/payload/cnf/jwk, subject: jwt.cnf.jwk }
+- { pattern: /**/kty, subject: jwk.kty }
+- { pattern: /**/crv, subject: jwk.crv }
+- { pattern: /**/x, subject: jwk.x }
+- { pattern: /**/y, subject: jwk.y }
+# Token Status List references
+- { pattern: /**/status/status_list, subject: tsl.status_list }
+- { pattern: /**/status_list/idx, subject: tsl.idx }
+- { pattern: /**/status_list/uri, subject: tsl.uri }
+# SD-JWT
+- { pattern: /jwt/*/payload/_sd, subject: sdjwt._sd }
+- { pattern: /jwt/*/payload/_sd_alg, subject: sdjwt._sd_alg }
+- { pattern: /jwt/*/payload/vct, subject: sdjwtvc.vct }
+# Wallet Instance Attestation (JWT name "wia")
+- { pattern: /jwt/wia/header/typ, subject: vci.wia.typ }
+- { pattern: /jwt/wia/header/x5c, subject: vci.wia.x5c }
+- { pattern: /jwt/wia/payload/iss, subject: vci.wia.iss }
+- { pattern: /jwt/wia/payload/sub, subject: vci.wia.sub }
+- { pattern: /jwt/wia/payload/exp, subject: vci.wia.exp }
+- { pattern: /jwt/wia/payload/cnf, subject: vci.wia.cnf }
+- { pattern: /jwt/wia/payload/wallet_name, subject: vci.wia.wallet_name }
+- { pattern: /jwt/wia/payload/wallet_link, subject: vci.wia.wallet_link }
+- { pattern: /jwt/wia/payload/wallet_version, subject: vci.wia.wallet_version }
+- { pattern: /jwt/wia/payload/wallet_solution_certification_information, subject: vci.wia.wallet_solution_certification_information }
+- { pattern: /jwt/wia/payload/wallet_solution_certification_information/*, subject: vci.wia.certification-members }
+- { pattern: /jwt/wia/payload/client_status, subject: vci.wia.client_status }
+- { pattern: /jwt/wia/payload/client_status/status, subject: vci.wia.client_status.status }
+- { pattern: /jwt/wia/payload/client_status/exp, subject: vci.wia.client_status.exp }
+# Client attestation PoP (JWT name "pop")
+- { pattern: /jwt/pop/header/typ, subject: vci.wia-pop.typ }
+- { pattern: /jwt/pop/payload/iss, subject: vci.wia-pop.iss }
+- { pattern: /jwt/pop/payload/aud, subject: vci.wia-pop.aud }
+- { pattern: /jwt/pop/payload/jti, subject: vci.wia-pop.jti }
+- { pattern: /jwt/pop/payload/iat, subject: vci.wia-pop.iat }
+- { pattern: /jwt/pop/payload/challenge, subject: vci.wia-pop.challenge }
+# Key attestation (JWT name "ka")
+- { pattern: /jwt/ka/header/typ, subject: vci.ka.typ }
+- { pattern: /jwt/ka/header/x5c, subject: vci.ka.x5c }
+- { pattern: /jwt/ka/payload/exp, subject: vci.ka.exp }
+- { pattern: /jwt/ka/payload/attested_keys, subject: vci.ka.attested_keys }
+- { pattern: /jwt/ka/payload/key_storage, subject: vci.ka.key_storage }
+- { pattern: /jwt/ka/payload/user_authentication, subject: vci.ka.key_storage }
+- { pattern: /jwt/ka/payload/certification, subject: vci.ka.certification }
+- { pattern: /jwt/ka/payload/nonce, subject: vci.ka.nonce }
+- { pattern: /jwt/ka/payload/key_storage_status, subject: vci.ka.key_storage_status }
+- { pattern: /jwt/ka/payload/key_storage_status/status, subject: vci.ka.key_storage_status.status }
+- { pattern: /jwt/ka/payload/key_storage_status/exp, subject: vci.ka.key_storage_status.exp }
+# DPoP proof (JWT name "dpop")
+- { pattern: /jwt/dpop/header/typ, subject: vci.dpop-proof.typ }
+- { pattern: /jwt/dpop/header/jwk, subject: vci.dpop-proof.jwk }
+- { pattern: /jwt/dpop/payload/jti, subject: vci.dpop-proof.jti }
+- { pattern: /jwt/dpop/payload/htm, subject: vci.dpop-proof.htm }
+- { pattern: /jwt/dpop/payload/htu, subject: vci.dpop-proof.htu }
+- { pattern: /jwt/dpop/payload/iat, subject: vci.dpop-proof.iat }
+- { pattern: /jwt/dpop/payload/ath, subject: vci.dpop-proof.ath }
+# Key proof (JWT name "proof")
+- { pattern: /jwt/proof/header/typ, subject: vci.proof-jwt.typ }
+- { pattern: /jwt/proof/header/key_attestation, subject: vci.proof-jwt.key_attestation }
+- { pattern: /jwt/proof/payload/aud, subject: vci.proof-jwt.aud }
+- { pattern: /jwt/proof/payload/iat, subject: vci.proof-jwt.iat }
+- { pattern: /jwt/proof/payload/nonce, subject: vci.proof-jwt.nonce }
+- { pattern: /http/headers/Accept, subject: http.content-type }

@@ -1,0 +1,11 @@
+id: vp-authorization-request
+title: Authorization Request by reference (eu-eaap://)
+subject: vp.authorization-request
+kind: uri
+note: Same URL is opened by a link (same device) or shown as a QR code (cross device).
+http:
+  url: "eu-eaap://?client_id={{x509hash:verifier-access}}&request_uri=https%3A%2F%2Fverifier.example.eu%2Frequest%2Fd7b1"
+annotations:
+  /http/url: vp.authorization-request.scheme
+  /http/query/client_id: vp.authorization-request.client_id
+  /http/query/request_uri: vp.authorization-request.request_uri

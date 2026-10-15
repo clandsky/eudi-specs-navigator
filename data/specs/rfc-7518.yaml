@@ -1,0 +1,10 @@
+id: rfc-7518
+title: "RFC 7518: JSON Web Algorithms (JWA)"
+short: RFC 7518
+layer: primitive
+version: RFC 7518
+source:
+  local: "eIDAS + all references/standards/rfc/RFC7518.txt"
+  text: sources/rfc7518.txt
+  url: https://www.rfc-editor.org/rfc/rfc7518
+anchor_template: https://www.rfc-editor.org/rfc/rfc7518#section-{section}

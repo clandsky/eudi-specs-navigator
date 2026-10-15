@@ -882,3 +882,13 @@ dialog.editor::backdrop {
   padding: 12px 14px;
   color: var(--ink-2);
 }
+
+dialog.editor.editor-wide {
+  width: min(920px, 96vw);
+}
+.editor-wide textarea {
+  min-height: 52vh;
+  font-size: 12.5px;
+  line-height: 1.55;
+  tab-size: 2;
+}

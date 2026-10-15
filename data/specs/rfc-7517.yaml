@@ -1,0 +1,10 @@
+id: rfc-7517
+title: "RFC 7517: JSON Web Key (JWK)"
+short: RFC 7517
+layer: primitive
+version: RFC 7517
+source:
+  local: "eIDAS + all references/standards/rfc/RFC7517.txt"
+  text: sources/rfc7517.txt
+  url: https://www.rfc-editor.org/rfc/rfc7517
+anchor_template: https://www.rfc-editor.org/rfc/rfc7517#section-{section}

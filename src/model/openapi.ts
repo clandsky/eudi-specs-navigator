@@ -2,7 +2,7 @@
 // subjects with an `endpoint`; schemas are inferred from the example objects; `required` and `x-provenance` come from
 // the effective rules resolved for the given context. Pure: used by the app (download) and by the build script.
 import type { Dataset, EncodedExample } from './dataset'
-import { escapeToken, viewOf, type ViewDocument } from './pointer'
+import { annotationFor, escapeToken, viewOf, type ViewDocument } from './pointer'
 import { layerTable, levelLabel, resolve, type Ctx } from './resolve'
 import type { Example, LayerId, Role } from './schema'
 
@@ -52,7 +52,7 @@ export function buildOpenApi(ds: Dataset, opts: OpenApiOptions): Json {
   }
 
   function schemaOf(value: unknown, ptr: string, ex: Example, role: Role, variant: Partial<Ctx>): Json {
-    const ann = ex.annotations[ptr]
+    const ann = annotationFor(ptr, ex.annotations, ds.fieldmap)
     let s: Json
     if (Array.isArray(value)) s = { type: 'array', ...(value.length ? { items: schemaOf(value[0], `${ptr}/0`, ex, role, variant) } : {}) }
     else if (value && typeof value === 'object') {
@@ -61,7 +61,7 @@ export function buildOpenApi(ds: Dataset, opts: OpenApiOptions): Json {
       for (const [k, v] of Object.entries(value as Json)) {
         const p = `${ptr}/${escapeToken(k)}`
         properties[k] = schemaOf(v, p, ex, role, variant)
-        const sub = ex.annotations[p]
+        const sub = annotationFor(p, ex.annotations, ds.fieldmap)
         if (sub) {
           const { rule } = provenance(sub, role, variant)
           if (rule.level === 'shall' && !rule.decidedBy.some((a) => a.condition)) required.push(k)
@@ -135,7 +135,7 @@ export function buildOpenApi(ds: Dataset, opts: OpenApiOptions): Json {
       for (const [name, value] of Object.entries(view.http?.headers ?? {})) {
         if (name.toLowerCase() === 'content-type' || name.toLowerCase() === 'content-length') continue
         const p = `/http/headers/${escapeToken(name)}`
-        const sub = reqEx.annotations[p]
+        const sub = annotationFor(p, reqEx.annotations, ds.fieldmap)
         const prov = sub ? provenance(sub, clientRole, variant) : null
         const jwtName = jwtNameOf(reqEnc, value)
         params.push({
@@ -147,7 +147,7 @@ export function buildOpenApi(ds: Dataset, opts: OpenApiOptions): Json {
         })
       }
       for (const [name, value] of Object.entries(view.http?.query ?? {})) {
-        const sub = reqEx.annotations[`/http/query/${escapeToken(name)}`]
+        const sub = annotationFor(`/http/query/${escapeToken(name)}`, reqEx.annotations, ds.fieldmap)
         const prov = sub ? provenance(sub, clientRole, variant) : null
         params.push({ name, in: 'query', required: prov?.rule.level === 'shall', schema: { type: 'string', example: typeof value === 'string' ? value : JSON.stringify(value) }, ...(prov ? { 'x-provenance': prov.ext } : {}) })
       }
@@ -168,7 +168,7 @@ export function buildOpenApi(ds: Dataset, opts: OpenApiOptions): Json {
       const headers: Json = {}
       for (const [name] of Object.entries(view.http?.headers ?? {})) {
         if (name.toLowerCase() === 'content-type') continue
-        const sub = resEx.annotations[`/http/headers/${escapeToken(name)}`]
+        const sub = annotationFor(`/http/headers/${escapeToken(name)}`, resEx.annotations, ds.fieldmap)
         headers[name] = { schema: { type: 'string' }, ...(sub ? { 'x-provenance': provenance(sub, serverRole, variant).ext } : {}) }
       }
       const content = bodyContent(view.http, resEnc, view, resEx, serverRole, variant, resEx.http?.body?.type)
@@ -181,11 +181,17 @@ export function buildOpenApi(ds: Dataset, opts: OpenApiOptions): Json {
       ;(op.responses as Json)[respStep?.label?.match(/^\d{3}/)?.[0] ?? '200'] = { description: respStep?.label ?? 'Success' }
     }
     if (!op.security) op.security = []
+    // Templated path segments ("/request/{id}") are declared as path parameters.
+    const pathParams = [...subj.endpoint.path.matchAll(/\{([^}]+)\}/g)].map((m) => ({ name: m[1], in: 'path', required: true, schema: { type: 'string' } }))
+    if (pathParams.length) op.parameters = [...pathParams, ...((op.parameters as Json[]) ?? [])]
     ;(op.responses as Json)['400'] = { description: 'Error response as defined by the base protocol for this endpoint.' }
     const path = subj.endpoint.path
     paths[path] = { ...((paths[path] as Json) ?? {}), [subj.endpoint.method.toLowerCase()]: op }
   }
 
+  const usesDpop = Object.values(paths).some((ops) =>
+    Object.values(ops as Json).some((op) => ((op as Json).security as Json[] | undefined)?.some((sec) => 'DPoP' in sec)),
+  )
   const title = opts.view === 'issuer' ? 'EUDI issuer API: authorization server and credential issuer' : 'EUDI verifier API'
   return {
     openapi: '3.1.0',
@@ -199,11 +205,15 @@ export function buildOpenApi(ds: Dataset, opts: OpenApiOptions): Json {
     },
     servers: [{ url: opts.view === 'issuer' ? 'https://eaa.example.eu' : 'https://verifier.example.eu' }],
     paths,
-    components: {
-      securitySchemes: {
-        DPoP: { type: 'http', scheme: 'DPoP', description: 'DPoP-bound access token (RFC 9449 §7.1), required by HAIP §4.' },
-      },
-    },
+    ...(usesDpop
+      ? {
+          components: {
+            securitySchemes: {
+              DPoP: { type: 'http', scheme: 'DPoP', description: 'DPoP-bound access token (RFC 9449 §7.1), required by HAIP §4.' },
+            },
+          },
+        }
+      : {}),
     'x-generated': { by: 'specs-navigator', asOf: opts.asOf, layers: [...opts.layers].sort() },
   }
 }

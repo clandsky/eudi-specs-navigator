@@ -1,0 +1,20 @@
+id: vp-redirect-cross
+title: Presentation — OpenID4VP redirect, cross device
+role: verifier
+subject: vp.flow.redirect-cross
+variant: { transport: redirect, device: cross }
+summary: >-
+  The verifier's website runs on a desktop; the user scans a QR code with the wallet on the phone. The CIR position is
+  that EUDI Wallets should not support the redirects-based mechanism for cross-device flows (session fixation); the
+  API-mediated mechanism is the intended cross-device path.
+participants:
+  - { id: browser, label: Browser (desktop) }
+  - { id: wallet, label: Wallet Unit (phone), role: wallet }
+  - { id: verifier, label: Verifier (Relying Party), role: verifier }
+steps:
+  - { id: qr, from: verifier, to: wallet, kind: redirect, label: QR code with request_uri, subject: vp.cross-device-redirect, example: vp-authorization-request, tags: [CIR - should not support] }
+  - { id: fetch, from: wallet, to: verifier, kind: request, label: GET request_uri, subject: vp.request-uri-fetch, example: vp-request-uri-get }
+  - { id: request-object, from: verifier, to: wallet, kind: response, label: signed Request Object, subject: vp.request-object, example: vp-request-uri-response, tags: [JAR, DCQL] }
+  - { id: response, from: wallet, to: verifier, kind: request, label: POST response_uri (direct_post.jwt), subject: vp.response-post, example: vp-response-post, tags: [JWE] }
+  - { id: ack, from: verifier, to: wallet, kind: response, label: "200 {}", subject: vp.response-ack, example: vp-response-ack-cross }
+  - { id: poll, from: browser, to: verifier, kind: request, label: result for the desktop session, subject: vp.result-poll, note: Application-specific; not defined by OpenID4VP. }

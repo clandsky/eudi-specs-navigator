@@ -1,0 +1,11 @@
+id: rfc-9111
+title: "RFC 9111: HTTP Caching"
+short: RFC 9111
+layer: base
+version: RFC 9111
+note: Not in the local corpus; sources:build downloads the RFC text.
+source:
+  text: sources/rfc9111.txt
+  fetch: https://www.rfc-editor.org/rfc/rfc9111.txt
+  url: https://www.rfc-editor.org/rfc/rfc9111
+anchor_template: https://www.rfc-editor.org/rfc/rfc9111#section-{section}

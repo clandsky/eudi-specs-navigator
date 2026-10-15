@@ -1,0 +1,10 @@
+id: vp-response-ack-same
+title: Response endpoint answer with redirect_uri (same device)
+subject: vp.response-ack
+kind: http-response
+http:
+  status: 200
+  headers: { Content-Type: application/json, Cache-Control: no-store }
+  body: { type: json, value: { redirect_uri: "https://verifier.example.eu/cb#response_code=091535f699ea575c7937fa5f0f454aee" } }
+annotations:
+  /http/body/redirect_uri: vp.response-ack.redirect_uri

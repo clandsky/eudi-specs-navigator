@@ -4,11 +4,13 @@
 //   "{{jwk:key}}"     public JWK of test key `key` (replaces the whole string with an object)
 //   "{{x5c:key}}"     x5c array for test key `key`: leaf certificate plus intermediates, trust anchor excluded
 //   "{{s256:text}}"   base64url(SHA-256(text)) — PKCE code_challenge, DPoP ath
+//   "{{x509hash:key}}" x509_hash client identifier of the key's leaf certificate (OpenID4VP)
+//   "{{jwe:name}}"    compact JWE (ECDH-ES) of example.jwts[name]; the plaintext is stored for display
 // Signatures (ES256) are randomised, so encoded examples are committed and only rebuilt when the inputs change.
 import { createHash } from 'node:crypto'
 import { existsSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
-import { CompactSign, exportJWK, importPKCS8, importSPKI, type JWK } from 'jose'
+import { CompactEncrypt, CompactSign, exportJWK, importPKCS8, importSPKI, type JWK } from 'jose'
 import type { EncodedExample } from '../../src/model/dataset.ts'
 import type { Example } from '../../src/model/schema.ts'
 import { DATA } from './data.ts'
@@ -60,19 +62,27 @@ async function privateKey(key: string) {
   return importPKCS8(readFileSync(join(KEYS, `${key}.key.pem`), 'utf8'), 'ES256')
 }
 
-const PLACEHOLDER = /^\{\{(jwt|sdjwt|jwk|x5c|s256):(.+)\}\}$/
+const PLACEHOLDER = /^\{\{(jwt|sdjwt|jwe|jwk|x5c|x509hash|s256):(.+)\}\}$/
 
-export async function substitute(value: unknown, encodedJwt: (kind: 'jwt' | 'sdjwt', name: string) => Promise<string>): Promise<unknown> {
+export async function substitute(value: unknown, encodedJwt: (kind: 'jwt' | 'sdjwt' | 'jwe', name: string) => Promise<string>): Promise<unknown> {
   if (typeof value === 'string') {
     const m = PLACEHOLDER.exec(value)
     if (!m) {
-      // Inline use inside a longer string, e.g. "DPoP {{access}}" is not supported on purpose: keep values whole.
-      return value
+      // Text-valued placeholders may also sit inside a longer string (a URL carrying an x509_hash client_id).
+      return value.replace(/\{\{(x509hash|s256):([^}]+)\}\}/g, (_all, k: string, arg: string) =>
+        k === 's256' ? s256(arg) : `x509_hash:${b64url(createHash('sha256').update(Buffer.from(x5cOf(arg)[0]!, 'base64')).digest())}`,
+      )
     }
     const [, kind, arg] = m as unknown as [string, string, string]
-    if (kind === 'jwt' || kind === 'sdjwt') return encodedJwt(kind, arg)
-    if (kind === 'jwk') return publicJwk(arg)
+    if (kind === 'jwt' || kind === 'sdjwt' || kind === 'jwe') return encodedJwt(kind, arg)
+    if (kind === 'jwk') {
+      // "{{jwk:key#kid}}" adds a kid, e.g. for a JWK Set in client_metadata.
+      const [key, kid] = arg.split('#') as [string, string | undefined]
+      return kid ? { ...(await publicJwk(key)), kid } : publicJwk(key)
+    }
     if (kind === 'x5c') return x5cOf(arg)
+    // OpenID4VP §5.9.3 x509_hash client identifier: base64url SHA-256 of the DER leaf certificate.
+    if (kind === 'x509hash') return `x509_hash:${b64url(createHash('sha256').update(Buffer.from(x5cOf(arg)[0]!, 'base64')).digest())}`
     if (kind === 's256') return s256(arg)
   }
   if (Array.isArray(value)) return Promise.all(value.map((v) => substitute(v, encodedJwt)))
@@ -97,8 +107,9 @@ export async function encodeExample(
 ): Promise<EncodedExample & { inputHash: string }> {
   const done = new Map<string, string>()
   const inProgress = new Set<string>()
+  const plaintexts: NonNullable<EncodedExample['plaintexts']> = {}
 
-  async function encodedJwt(kind: 'jwt' | 'sdjwt', name: string): Promise<string> {
+  async function encodedJwt(kind: 'jwt' | 'sdjwt' | 'jwe', name: string): Promise<string> {
     const cacheKey = `${kind}:${name}`
     if (done.has(cacheKey)) return done.get(cacheKey)!
     const spec = e.jwts[name]
@@ -110,6 +121,20 @@ export async function encodeExample(
     }
     if (inProgress.has(name)) throw new Error(`${e.id}: jwt "${name}" references itself`)
     inProgress.add(name)
+    if ('encrypt' in spec) {
+      const payload = (await substitute(spec.payload, encodedJwt)) as Record<string, unknown>
+      const extra = (await substitute(spec.header, encodedJwt)) as Record<string, unknown>
+      const protectedHeader = { ...extra, alg: spec.encrypt.alg, enc: spec.encrypt.enc }
+      const pub = await importSPKI(readFileSync(join(KEYS, `${spec.encrypt.key}.pub.pem`), 'utf8'), 'ECDH-ES')
+      const jwe = await new CompactEncrypt(new TextEncoder().encode(JSON.stringify(payload))).setProtectedHeader(protectedHeader as never).encrypt(pub)
+      // Show the full protected header (incl. the generated epk) next to the plaintext the build encrypted.
+      const fullHeader = JSON.parse(Buffer.from(jwe.split('.')[0]!, 'base64url').toString('utf8')) as Record<string, unknown>
+      plaintexts[name] = { header: fullHeader, payload }
+      inProgress.delete(name)
+      done.set(`jwe:${name}`, jwe)
+      return jwe
+    }
+    if (kind === 'jwe') throw new Error(`${e.id}: "${name}" is not an encrypted entry`)
     const header = (await substitute(spec.header, encodedJwt)) as Record<string, unknown>
     const payload = (await substitute(spec.payload, encodedJwt)) as Record<string, unknown>
     let disclosures: string[] = []
@@ -121,7 +146,16 @@ export async function encodeExample(
     const jws = await new CompactSign(new TextEncoder().encode(JSON.stringify(payload)))
       .setProtectedHeader(header as never)
       .sign(await privateKey(spec.key))
-    const out = kind === 'sdjwt' ? `${jws}~${disclosures.map((d) => `${d}~`).join('')}` : jws
+    let out = kind === 'sdjwt' ? `${jws}~${disclosures.map((d) => `${d}~`).join('')}` : jws
+    if (kind === 'sdjwt' && spec.kb) {
+      // Key Binding JWT over the presented SD-JWT (RFC 9901 §4.3): sd_hash = base64url(SHA-256(<sd-jwt>~...~)).
+      const kbPayload = { ...((await substitute(spec.kb.payload, encodedJwt)) as Record<string, unknown>), sd_hash: s256(out) }
+      const kb = await new CompactSign(new TextEncoder().encode(JSON.stringify(kbPayload)))
+        .setProtectedHeader({ typ: 'kb+jwt', alg: 'ES256' })
+        .sign(await privateKey(spec.kb.key))
+      out = `${out}${kb}`
+      done.set(`kb:${name}`, kb)
+    }
     inProgress.delete(name)
     done.set(cacheKey, out)
     return out
@@ -131,12 +165,24 @@ export async function encodeExample(
   const json = e.json !== undefined ? await substitute(e.json, encodedJwt) : undefined
   // Encode every declared JWT, also those only shown as objects (e.g. the WIA on its own).
   for (const [name, spec] of Object.entries(e.jwts))
-    if (!done.has(`jwt:${name}`) && !done.has(`sdjwt:${name}`)) await encodedJwt('disclosures' in spec && spec.disclosures ? 'sdjwt' : 'jwt', name)
+    if (![`jwt:${name}`, `sdjwt:${name}`, `jwe:${name}`].some((k) => done.has(k)))
+      await encodedJwt('encrypt' in spec ? 'jwe' : 'disclosures' in spec && spec.disclosures ? 'sdjwt' : 'jwt', name)
   const jwts: Record<string, string> = {}
+  const sdjwts: Record<string, string> = {}
   for (const [k, v] of done) {
-    const [kind, name] = k.split(':') as ['jwt' | 'sdjwt', string]
-    // The view decodes the issuer-signed part; disclosures stay visible in the raw value.
-    jwts[name] = kind === 'sdjwt' ? v.split('~')[0]! : v
+    const [kind, name] = k.split(':') as ['jwt' | 'sdjwt' | 'jwe' | 'kb', string]
+    if (kind === 'sdjwt') sdjwts[name] = v
+    // The view decodes the issuer-signed part; disclosures stay visible in the raw value. A KB-JWT is its own entry.
+    if (kind === 'kb') jwts[`${name}-kb`] = v
+    else jwts[name] = kind === 'sdjwt' ? v.split('~')[0]! : v
   }
-  return { id: e.id, ...(http ? { http } : {}), ...(json !== undefined ? { json } : {}), jwts, inputHash: inputHash(e) }
+  return {
+    id: e.id,
+    ...(http ? { http } : {}),
+    ...(json !== undefined ? { json } : {}),
+    jwts,
+    ...(Object.keys(plaintexts).length ? { plaintexts } : {}),
+    ...(Object.keys(sdjwts).length ? { sdjwts } : {}),
+    inputHash: inputHash(e),
+  }
 }

@@ -232,10 +232,18 @@ export const SignedJwt = z.object({
   key: slug,
   /** SD-JWT: selectively disclosable top-level claims. Referenced as "{{sdjwt:name}}". */
   disclosures: z.array(z.object({ salt: z.string(), name: z.string(), value: JsonValue })).optional(),
+  /** SD-JWT presentation: appends a Key Binding JWT (typ kb+jwt, sd_hash computed) signed with this key. */
+  kb: z.object({ key: slug, payload: z.record(z.string(), JsonValue) }).optional(),
+})
+/** An encrypted JWT (JWE, ECDH-ES to a test key), referenced as "{{jwe:name}}". The plaintext is kept for display. */
+export const EncryptedJwt = z.object({
+  encrypt: z.object({ key: slug, alg: z.enum(['ECDH-ES']).default('ECDH-ES'), enc: z.enum(['A128GCM', 'A256GCM']).default('A128GCM') }),
+  header: z.record(z.string(), JsonValue).default({}),
+  payload: z.record(z.string(), JsonValue),
 })
 /** Reuse the JWT another example already encoded (`<example-id>/<jwt-name>`), so one WIA travels in PAR and token. */
 export const ReusedJwt = z.object({ use: z.string().regex(/^[\w.-]+\/[\w.-]+$/) })
-export const ExampleJwt = z.union([SignedJwt, ReusedJwt])
+export const ExampleJwt = z.union([ReusedJwt, EncryptedJwt, SignedJwt])
 export type ExampleJwt = z.infer<typeof ExampleJwt>
 
 export const Example = z.object({
@@ -263,6 +271,10 @@ export const Example = z.object({
   note: z.string().optional(),
 })
 export type Example = z.infer<typeof Example>
+
+// Field map -------------------------------------------------------------------------------------------------------
+
+export const FieldMapFile = z.array(z.object({ pattern: z.string().startsWith('/'), subject: slug, note: z.string().optional() }))
 
 // Secondary: c2bo conformance --------------------------------------------------------------------------------------
 

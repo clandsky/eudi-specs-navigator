@@ -1,0 +1,35 @@
+id: vci-token-request-preauth
+title: Token Request (pre-authorized code) with WIA, PoP and DPoP
+subject: vci.token-request
+kind: http-request
+http:
+  method: POST
+  url: https://eaa.example.eu/token
+  headers:
+    Content-Type: application/x-www-form-urlencoded
+    OAuth-Client-Attestation: "{{jwt:wia}}"
+    OAuth-Client-Attestation-PoP: "{{jwt:pop}}"
+    DPoP: "{{jwt:dpop}}"
+  body:
+    type: form
+    value:
+      grant_type: "urn:ietf:params:oauth:grant-type:pre-authorized_code"
+      pre-authorized_code: oaKazRN8I0IbtZ0C7JuMn5
+      tx_code: "493536"
+jwts:
+  wia: { use: vci-wia/wia }
+  pop:
+    key: wallet-instance
+    header: { typ: oauth-client-attestation-pop+jwt, alg: ES256 }
+    payload: { iss: https://wallet-provider.example.eu/wallet-solution/eudi-wallet, aud: https://eaa.example.eu, jti: 6f1c2b7e-token-0003, iat: 1792072860 }
+  dpop:
+    key: wallet-dpop
+    header: { typ: dpop+jwt, alg: ES256, jwk: "{{jwk:wallet-dpop}}" }
+    payload: { jti: dpop-token-0002, htm: POST, htu: https://eaa.example.eu/token, iat: 1792072860 }
+annotations:
+  /http/headers/OAuth-Client-Attestation: vci.token-request.oauth-client-attestation
+  /http/headers/OAuth-Client-Attestation-PoP: vci.token-request.oauth-client-attestation-pop
+  /http/headers/DPoP: vci.token-request.dpop
+  /http/body/grant_type: vci.token-request.grant_type
+  /http/body/pre-authorized_code: vci.token-request.pre-authorized_code
+  /http/body/tx_code: vci.token-request.tx_code

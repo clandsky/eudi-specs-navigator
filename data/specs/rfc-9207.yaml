@@ -1,0 +1,11 @@
+id: rfc-9207
+title: "RFC 9207: OAuth 2.0 Authorization Server Issuer Identification"
+short: RFC 9207
+layer: base
+version: RFC 9207
+note: Not in the local corpus; sources:build downloads the RFC text.
+source:
+  text: sources/rfc9207.txt
+  fetch: https://www.rfc-editor.org/rfc/rfc9207.txt
+  url: https://www.rfc-editor.org/rfc/rfc9207
+anchor_template: https://www.rfc-editor.org/rfc/rfc9207#section-{section}

@@ -28,3 +28,27 @@
 - { id: vci.as-metadata.client_attestation_signing_alg_values_supported, kind: metadata-param, parent: vci.as-metadata, title: client_attestation_signing_alg_values_supported, location: json }
 - { id: vci.as-metadata.client_attestation_pop_signing_alg_values_supported, kind: metadata-param, parent: vci.as-metadata, title: client_attestation_pop_signing_alg_values_supported, location: json }
 - { id: vci.as-metadata.dpop_signing_alg_values_supported, kind: metadata-param, parent: vci.as-metadata, title: dpop_signing_alg_values_supported, location: json }
+- { id: vci.metadata.content-type, kind: field, parent: vci.metadata, title: "Content-Type: application/jwt", location: header }
+- { id: vci.metadata.exp, kind: field, parent: vci.metadata, title: exp, location: jwt-payload }
+- { id: vci.metadata.batch_size, kind: metadata-param, parent: vci.metadata.batch_credential_issuance, title: batch_credential_issuance.batch_size, location: jwt-payload }
+- { id: vci.metadata.issuer_info.format, kind: field, parent: vci.metadata.issuer_info, title: "issuer_info[].format", location: jwt-payload }
+- { id: vci.metadata.issuer_info.data, kind: field, parent: vci.metadata.issuer_info, title: "issuer_info[].data", location: jwt-payload }
+- { id: vci.metadata.ccs.id, kind: metadata-param, parent: vci.metadata.credential_configurations_supported, title: Credential configuration identifier (the key), location: jwt-payload }
+- { id: vci.metadata.ccs.vct, kind: metadata-param, parent: vci.metadata.credential_configurations_supported, title: vct (dc+sd-jwt), location: jwt-payload }
+- { id: vci.metadata.ccs.credential_signing_alg_values_supported, kind: metadata-param, parent: vci.metadata.credential_configurations_supported, title: credential_signing_alg_values_supported, location: jwt-payload }
+- { id: vci.metadata.ccs.proof_type, kind: metadata-param, parent: vci.metadata.ccs.proof_types_supported, title: "Proof type identifier (jwt, attestation)", location: jwt-payload }
+- { id: vci.metadata.ccs.proof_signing_alg_values_supported, kind: metadata-param, parent: vci.metadata.ccs.proof_types_supported, title: proof_signing_alg_values_supported, location: jwt-payload }
+- { id: vci.metadata.ccs.key_attestations_required.values, kind: metadata-param, parent: vci.metadata.ccs.key_attestations_required, title: key_storage / user_authentication accepted, location: jwt-payload }
+- { id: vci.metadata.ccs.credential_metadata, kind: metadata-param, parent: vci.metadata.credential_configurations_supported, title: credential_metadata, location: jwt-payload }
+- { id: vci.metadata.ccs.reuse.id, kind: metadata-param, parent: vci.metadata.ccs.credential_reuse_policy, title: credential_reuse_policy.id, location: jwt-payload }
+- { id: vci.metadata.ccs.reuse.options, kind: metadata-param, parent: vci.metadata.ccs.credential_reuse_policy, title: credential_reuse_policy.options, location: jwt-payload }
+- { id: vci.metadata.ccs.reuse.details, kind: metadata-param, parent: vci.metadata.ccs.reuse.options, title: "options[].details", location: jwt-payload }
+- { id: vci.metadata.ccs.reuse.batch_size, kind: metadata-param, parent: vci.metadata.ccs.reuse.options, title: "options[].batch_size", location: jwt-payload }
+- { id: vci.metadata.ccs.reuse.reissue_trigger_unused, kind: metadata-param, parent: vci.metadata.ccs.reuse.options, title: "options[].reissue_trigger_unused", location: jwt-payload }
+- { id: vci.as-metadata.authorization_endpoint, kind: metadata-param, parent: vci.as-metadata, title: authorization_endpoint, location: json }
+- { id: vci.as-metadata.token_endpoint, kind: metadata-param, parent: vci.as-metadata, title: token_endpoint, location: json }
+- { id: vci.as-metadata.require_pushed_authorization_requests, kind: metadata-param, parent: vci.as-metadata, title: require_pushed_authorization_requests, location: json }
+- { id: vci.as-metadata.response_types_supported, kind: metadata-param, parent: vci.as-metadata, title: response_types_supported, location: json }
+- { id: vci.as-metadata.grant_types_supported, kind: metadata-param, parent: vci.as-metadata, title: grant_types_supported, location: json }
+- { id: vci.as-metadata.code_challenge_methods_supported, kind: metadata-param, parent: vci.as-metadata, title: code_challenge_methods_supported, location: json }
+- { id: vci.as-metadata.authorization_response_iss_parameter_supported, kind: metadata-param, parent: vci.as-metadata, title: authorization_response_iss_parameter_supported, location: json }

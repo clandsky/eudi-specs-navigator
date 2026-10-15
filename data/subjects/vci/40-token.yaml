@@ -9,3 +9,7 @@
 - { id: vci.token-response.token_type, kind: field, parent: vci.token-response, title: token_type, location: json }
 - { id: vci.token-response.refresh_token, kind: field, parent: vci.token-response, title: refresh_token, location: json }
 - { id: vci.token-response.credential_identifiers, kind: field, parent: vci.token-response, title: "authorization_details[].credential_identifiers", location: json }
+- { id: vci.token-request.redirect_uri, kind: field, parent: vci.token-request, title: redirect_uri, location: form }
+- { id: vci.token-response.access_token, kind: field, parent: vci.token-response, title: access_token, location: json }
+- { id: vci.token-response.expires_in, kind: field, parent: vci.token-response, title: expires_in, location: json }
+- { id: vci.token-response.cache-control, kind: field, parent: vci.token-response, title: "Cache-Control: no-store", location: header }

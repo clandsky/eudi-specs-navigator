@@ -1,0 +1,61 @@
+id: vp-request-uri-response
+title: Signed Request Object returned from request_uri
+subject: vp.request-uri-fetch
+kind: http-response
+http:
+  status: 200
+  headers: { Content-Type: application/oauth-authz-req+jwt }
+  body: { type: jwt, value: "{{jwt:ro}}" }
+jwts:
+  ro:
+    key: verifier-access
+    header: { typ: oauth-authz-req+jwt, alg: ES256, x5c: "{{x5c:verifier-access}}" }
+    payload:
+      client_id: "{{x509hash:verifier-access}}"
+      response_type: vp_token
+      response_mode: direct_post.jwt
+      response_uri: https://verifier.example.eu/response
+      nonce: n-0S6_WzA2Mj
+      state: eyJhb...6-sV
+      aud: https://self-issued.me/v2
+      iat: 1792072800
+      exp: 1792073100
+      dcql_query:
+        credentials:
+          - id: pid
+            format: dc+sd-jwt
+            meta: { vct_values: ["urn:eudi:pid:1"] }
+            claims: [{ path: [given_name] }, { path: [family_name] }, { path: [birthdate] }]
+      client_metadata:
+        jwks: { keys: ["{{jwk:verifier-enc#enc-1}}"] }
+        encrypted_response_enc_values_supported: [A128GCM, A256GCM]
+      verifier_info:
+        - { format: registration_cert, data: "eyJ0eXAiOiJyYy13cnArand0Ii...TEST-REGISTRATION-CERTIFICATE" }
+annotations:
+  /http/headers/Content-Type: http.content-type
+  /jwt/ro/header/typ: vp.request-object.typ
+  /jwt/ro/header/x5c: vp.request-object.x5c
+  /jwt/ro/payload/client_id: vp.request-object.client_id
+  /jwt/ro/payload/response_type: vp.request-object.response_type
+  /jwt/ro/payload/response_mode: vp.request-object.response_mode
+  /jwt/ro/payload/response_uri: vp.request-object.response_uri
+  /jwt/ro/payload/nonce: vp.request-object.nonce
+  /jwt/ro/payload/state: vp.request-object.state
+  /jwt/ro/payload/aud: vp.request-object.aud
+  /jwt/ro/payload/dcql_query: vp.dcql
+  /jwt/ro/payload/dcql_query/credentials: vp.dcql.credentials
+  /jwt/ro/payload/dcql_query/credentials/*/id: vp.dcql.id
+  /jwt/ro/payload/dcql_query/credentials/*/format: vp.dcql.format
+  /jwt/ro/payload/dcql_query/credentials/*/meta: vp.dcql.meta
+  /jwt/ro/payload/dcql_query/credentials/*/meta/vct_values: vp.dcql.vct_values
+  /jwt/ro/payload/dcql_query/credentials/*/claims: vp.dcql.claims
+  /jwt/ro/payload/dcql_query/credentials/*/claims/*/path: vp.dcql.path
+  /jwt/ro/payload/client_metadata: vp.request-object.client_metadata
+  /jwt/ro/payload/client_metadata/jwks: vp.request-object.client_metadata.jwks
+  /jwt/ro/payload/client_metadata/jwks/keys: vp.request-object.client_metadata.jwks
+  /jwt/ro/payload/client_metadata/jwks/keys/*/kid: vp.request-object.client_metadata.jwks
+  /jwt/ro/payload/client_metadata/encrypted_response_enc_values_supported: vp.request-object.client_metadata.enc_values
+  /jwt/ro/payload/verifier_info: vp.request-object.verifier_info
+  /jwt/ro/payload/verifier_info/0: vp.request-object.verifier_info.registration_cert
+  /jwt/ro/payload/verifier_info/*/format: vp.request-object.verifier_info.format
+  /jwt/ro/payload/verifier_info/*/data: vp.request-object.verifier_info.data

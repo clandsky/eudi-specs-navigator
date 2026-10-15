@@ -18,4 +18,4 @@ jobs:
         run: pnpm sources:build && pnpm quote-check --ci
       - run: pnpm test
       - run: pnpm build
-      - run: npx @redocly/cli@2 lint dist/issuer.openapi.yaml --skip-rule info-license --skip-rule operation-2xx-response
+      - run: npx @redocly/cli@2 lint dist/issuer.openapi.yaml dist/verifier.openapi.yaml --skip-rule info-license --skip-rule operation-2xx-response

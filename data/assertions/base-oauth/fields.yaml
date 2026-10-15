@@ -1,0 +1,296 @@
+# OAuth, PAR, PKCE, DPoP and RFC 9207 members of the phase-1 examples.
+- id: rfc6749/4.1.1/response_type
+  subject: vci.par-request.response_type
+  spec: rfc-6749
+  locator: { section: "4.1.1" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ wallet ] }
+  quote: "response_type REQUIRED. Value MUST be set to \"code\"."
+  verified: source-checked
+- id: rfc6749/4.1.1/client_id
+  subject: vci.authorization-request.client_id
+  spec: rfc-6749
+  locator: { section: "4.1.1" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ wallet ] }
+  quote: "client_id REQUIRED. The client identifier as described in Section 2.2."
+  verified: source-checked
+- id: rfc6749/4.1.1/client_id-par
+  subject: vci.par-request.client_id
+  spec: rfc-6749
+  locator: { section: "4.1.1" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ wallet ] }
+  quote: "client_id REQUIRED. The client identifier as described in Section 2.2."
+  verified: source-checked
+- id: rfc6749/4.1.1/redirect_uri
+  subject: vci.par-request.redirect_uri
+  spec: rfc-6749
+  locator: { section: "4.1.1" }
+  relation: defines
+  level: may
+  applies_to: { role: [ wallet ] }
+  quote: "redirect_uri OPTIONAL. As described in Section 3.1.2."
+  verified: source-checked
+- id: rfc6749/4.1.1/state
+  subject: vci.par-request.state
+  spec: rfc-6749
+  locator: { section: "4.1.1" }
+  relation: defines
+  level: should
+  applies_to: { role: [ wallet ] }
+  quote: "state RECOMMENDED. An opaque value used by the client to maintain state between the request and callback."
+  verified: source-checked
+- id: rfc6749/4.1.2/state
+  subject: vci.authorization-response.state
+  spec: rfc-6749
+  locator: { section: "4.1.2" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ as ] }
+  condition: If the state parameter was present in the authorization request.
+  quote: "state REQUIRED if the \"state\" parameter was present in the client authorization request. The exact value
+    received from the client."
+  verified: source-checked
+- id: rfc6749/4.1.3/redirect_uri
+  subject: vci.token-request.redirect_uri
+  spec: rfc-6749
+  locator: { section: "4.1.3" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ wallet ] }
+  condition: If redirect_uri was included in the authorization request.
+  quote: "redirect_uri REQUIRED, if the \"redirect_uri\" parameter was included in the authorization request as described
+    in Section 4.1.1, and their values MUST be identical."
+  verified: source-checked
+- id: rfc6749/5.1/access_token
+  subject: vci.token-response.access_token
+  spec: rfc-6749
+  locator: { section: "5.1" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ as ] }
+  quote: "access_token REQUIRED. The access token issued by the authorization server."
+  verified: source-checked
+- id: rfc6749/5.1/expires_in
+  subject: vci.token-response.expires_in
+  spec: rfc-6749
+  locator: { section: "5.1" }
+  relation: defines
+  level: should
+  applies_to: { role: [ as ] }
+  quote: "expires_in RECOMMENDED. The lifetime in seconds of the access token."
+  verified: source-checked
+- id: rfc6749/5.1/cache-control
+  subject: vci.token-response.cache-control
+  spec: rfc-6749
+  locator: { section: "5.1" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ as ] }
+  quote: "The authorization server MUST include the HTTP \"Cache-Control\" response header field [RFC2616] with a value of
+    \"no-store\" in any response containing tokens"
+  verified: source-checked
+- id: rfc9126/2.2/expires_in
+  subject: vci.par-response.expires_in
+  spec: rfc-9126
+  locator: { section: "2.2" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ as ] }
+  quote: "expires_in A JSON number that represents the lifetime of the request URI in seconds as a positive integer."
+  verified: source-checked
+- id: rfc9126/5/require_par
+  subject: vci.as-metadata.require_pushed_authorization_requests
+  spec: rfc-9126
+  locator: { section: "5" }
+  relation: defines
+  level: may
+  applies_to: { role: [ as ] }
+  quote: "require_pushed_authorization_requests Boolean parameter indicating whether the authorization server accepts
+    authorization request data only via PAR. If omitted, the default value is \"false\"."
+  verified: source-checked
+- id: rfc8414/2/authorization_endpoint
+  subject: vci.as-metadata.authorization_endpoint
+  spec: rfc-8414
+  locator: { section: "2" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ as ] }
+  quote: "authorization_endpoint URL of the authorization server's authorization endpoint [RFC6749]. This is REQUIRED
+    unless no grant types are supported that use the authorization endpoint."
+  verified: source-checked
+- id: rfc8414/2/token_endpoint
+  subject: vci.as-metadata.token_endpoint
+  spec: rfc-8414
+  locator: { section: "2" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ as ] }
+  quote: "token_endpoint URL of the authorization server's token endpoint [RFC6749]. This is REQUIRED unless only the
+    implicit grant type is supported."
+  verified: source-checked
+- id: rfc8414/2/response_types_supported
+  subject: vci.as-metadata.response_types_supported
+  spec: rfc-8414
+  locator: { section: "2" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ as ] }
+  quote: "response_types_supported REQUIRED. JSON array containing a list of the OAuth 2.0 \"response_type\" values that
+    this authorization server supports."
+  xref: [ { source: c2bo, id: as-response-types } ]
+  verified: source-checked
+- id: rfc8414/2/grant_types_supported
+  subject: vci.as-metadata.grant_types_supported
+  spec: rfc-8414
+  locator: { section: "2" }
+  relation: defines
+  level: may
+  applies_to: { role: [ as ] }
+  quote: "grant_types_supported OPTIONAL. JSON array containing a list of the OAuth 2.0 grant type values that this
+    authorization server supports."
+  xref: [ { source: c2bo, id: as-grant-types } ]
+  verified: source-checked
+- id: rfc8414/2/code_challenge_methods_supported
+  subject: vci.as-metadata.code_challenge_methods_supported
+  spec: rfc-8414
+  locator: { section: "2" }
+  relation: defines
+  level: may
+  applies_to: { role: [ as ] }
+  quote: "code_challenge_methods_supported OPTIONAL. JSON array containing a list of Proof Key for Code Exchange (PKCE)
+    [RFC7636] code challenge methods supported by this authorization server."
+  xref: [ { source: c2bo, id: as-pkce } ]
+  verified: source-checked
+- id: rfc9449/5.1/dpop_signing_alg_values_supported
+  subject: vci.as-metadata.dpop_signing_alg_values_supported
+  spec: rfc-9449
+  locator: { section: "5.1" }
+  relation: defines
+  level: may
+  applies_to: { role: [ as ] }
+  quote: "dpop_signing_alg_values_supported: A JSON array containing a list of the JWS alg values (from the
+    [IANA.JOSE.ALGS] registry) supported by the authorization server for DPoP proof JWTs."
+  xref: [ { source: c2bo, id: as-dpop } ]
+  verified: source-checked
+- id: rfc9207/3/metadata
+  subject: vci.as-metadata.authorization_response_iss_parameter_supported
+  spec: rfc-9207
+  locator: { section: "3" }
+  relation: defines
+  level: may
+  applies_to: { role: [ as ] }
+  quote: "authorization_response_iss_parameter_supported: Boolean parameter indicating whether the authorization server
+    provides the iss parameter in the authorization response as defined in Section 2. If omitted, the default value is
+    false."
+  verified: source-checked
+- id: rfc9207/2/iss
+  subject: vci.authorization-response.iss
+  spec: rfc-9207
+  locator: { section: "2" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ as ] }
+  quote: "In authorization responses to the client, including error responses, an authorization server supporting this
+    specification MUST indicate its identity by including the iss parameter in the response."
+  verified: source-checked
+- id: rfc9449/4.2/jwk
+  subject: vci.dpop-proof.jwk
+  spec: rfc-9449
+  locator: { section: "4.2" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ wallet ] }
+  quote: "jwk: Represents the public key chosen by the client in JSON Web Key (JWK) [RFC7517] format as defined in Section
+    4.1.3 of [RFC7515]. It MUST NOT contain a private key."
+  verified: source-checked
+- id: rfc9449/4.2/jti
+  subject: vci.dpop-proof.jti
+  spec: rfc-9449
+  locator: { section: "4.2" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ wallet ] }
+  quote: "jti: Unique identifier for the DPoP proof JWT."
+  verified: source-checked
+- id: rfc9449/4.2/htm
+  subject: vci.dpop-proof.htm
+  spec: rfc-9449
+  locator: { section: "4.2" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ wallet ] }
+  quote: "htm: The value of the HTTP method (Section 9.1 of [RFC9110]) of the request to which the JWT is attached."
+  verified: source-checked
+- id: rfc9449/4.2/htu
+  subject: vci.dpop-proof.htu
+  spec: rfc-9449
+  locator: { section: "4.2" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ wallet ] }
+  quote: "htu: The HTTP target URI (Section 7.1 of [RFC9110]) of the request to which the JWT is attached, without query
+    and fragment parts."
+  verified: source-checked
+- id: rfc9449/4.2/iat
+  subject: vci.dpop-proof.iat
+  spec: rfc-9449
+  locator: { section: "4.2" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ wallet ] }
+  quote: "iat: Creation timestamp of the JWT (Section 4.1.6 of [RFC7519])."
+  verified: source-checked
+- id: rfc9449/4.2/ath
+  subject: vci.dpop-proof.ath
+  spec: rfc-9449
+  locator: { section: "4.2" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ wallet ] }
+  condition: When the DPoP proof accompanies an access token at a protected resource.
+  quote: "ath: Hash of the access token. The value MUST be the result of a base64url encoding (as defined in Section 2 of
+    [RFC7515]) the SHA-256 [SHS] hash of the ASCII encoding of the associated access token's value."
+  verified: source-checked
+- id: rfc9449/8/dpop-nonce
+  subject: vci.nonce-response.dpop-nonce
+  spec: rfc-9449
+  locator: { section: "8" }
+  relation: defines
+  level: may
+  applies_to: { role: [ as, issuer ] }
+  quote: "The authorization server includes a DPoP-Nonce HTTP header in the response supplying a nonce value to be used
+    when sending the subsequent request. Nonce values MUST be unpredictable."
+  verified: source-checked
+- id: oid4vci/7.2/dpop-nonce
+  subject: vci.nonce-response.dpop-nonce
+  spec: openid4vci-1.0
+  locator: { section: "7.2" }
+  relation: defines
+  level: may
+  applies_to: { role: [ issuer ] }
+  quote: "The Credential Issuer MAY provide a DPoP nonce in an HTTP header as defined in Section 8.2 of [RFC9449]."
+  xref: [ { source: c2bo, id: nonce-dpop-nonce } ]
+  verified: source-checked
+- id: abca-07/5.2/iss
+  subject: vci.wia-pop.iss
+  spec: attestation-client-auth-07
+  locator: { section: "5.2" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ wallet ] }
+  quote: "iss: REQUIRED. The iss (issuer) claim MUST specify client_id value of the OAuth Client."
+  verified: source-checked
+- id: abca-07/5.2/iat
+  subject: vci.wia-pop.iat
+  spec: attestation-client-auth-07
+  locator: { section: "5.2" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ wallet ] }
+  quote: "iat: REQUIRED. The iat (issued at) claim MUST specify the time at which the Client Attestation PoP was issued."
+  verified: source-checked

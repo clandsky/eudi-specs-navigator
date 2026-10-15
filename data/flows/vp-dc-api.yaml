@@ -1,0 +1,18 @@
+id: vp-dc-api
+title: Presentation — OpenID4VP over the Digital Credentials API
+role: verifier
+subject: vp.flow.dc-api
+variant: { transport: dc-api }
+summary: >-
+  The verifier's web page calls navigator.credentials.get() with a signed OpenID4VP request. The browser and the
+  operating system mediate the wallet (same or cross device); the wallet returns an encrypted response (dc_api.jwt) to
+  the page, which forwards it to the verifier's backend.
+participants:
+  - { id: verifier, label: Verifier (Relying Party), role: verifier }
+  - { id: browser, label: Browser / platform }
+  - { id: wallet, label: Wallet Unit, role: wallet }
+steps:
+  - { id: get, from: verifier, to: browser, kind: request, label: navigator.credentials.get(), subject: vp.dc-api.request, example: vp-dcapi-request, tags: [openid4vp-v1-signed, expected_origins] }
+  - { id: mediate, from: browser, to: wallet, kind: internal, label: wallet selection and invocation, subject: vp.dc-api.request }
+  - { id: answer, from: wallet, to: browser, kind: response, label: encrypted response, subject: vp.dc-api.response, example: vp-dcapi-response, tags: [dc_api.jwt, SD-JWT VC + KB-JWT] }
+  - { id: forward, from: browser, to: verifier, kind: request, label: page forwards the response, subject: vp.dc-api.forward, note: Application-specific; not defined by OpenID4VP. }

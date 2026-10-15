@@ -3,6 +3,7 @@ import { LayerBadges, LayerName, LevelChip, SpecName, StatusTag, cssLayer } from
 import { ObjectView as ObjectViewLazy } from '../components/ObjectView'
 import { OverruleEditor } from '../components/OverruleEditor'
 import { StackPanel } from '../components/StackPanel'
+import { annotationFor, entryPointers, viewOf } from '../model/pointer'
 import type { EffectiveRule } from '../model/resolve'
 import type { Assertion, Role } from '../model/schema'
 import { href } from '../lib/router'
@@ -273,6 +274,19 @@ export function ReviewPage() {
   const undecided = results.filter((r) => r.rule.status === 'undecided')
   const unverified = ds.assertions.filter((a) => a.verified === 'unverified')
   const deviations = ds.assertions.filter((a) => a.relation === 'deviates')
+  // Subjects that flows or example fields point to but that have no statement yet (sketched parts).
+  const withStack = new Set(ds.assertions.map((a) => a.subject))
+  const used = new Map<string, string[]>()
+  const note = (subject: string, where: string) => used.set(subject, [...new Set([...(used.get(subject) ?? []), where])])
+  for (const f of ds.flows) for (const st of f.steps) note(st.subject, f.title)
+  for (const e of ds.examples) {
+    const view = viewOf(ds.encoded[e.id]!)
+    for (const p of entryPointers(view)) {
+      const sub = annotationFor(p, e.annotations, ds.fieldmap)
+      if (sub) note(sub, e.title)
+    }
+  }
+  const unsourced = [...used.entries()].filter(([sub]) => !withStack.has(sub))
   const covered = new Set(ds.assertions.flatMap((a) => a.xref.filter((x) => x.source === 'c2bo').map((x) => x.id)))
   const c2boOpen = ds.c2bo?.groups.flatMap((g) => g.requirements.filter((r) => !covered.has(r.id)).map((r) => ({ ...r, group: g.name }))) ?? []
 
@@ -291,6 +305,7 @@ export function ReviewPage() {
           ['Silent', silent.length],
           ['No binding rule', undecided.length],
           ['Unverified', unverified.length],
+          ['Not sourced yet', unsourced.length],
           ['c2bo not linked', c2boOpen.length],
         ]}
       />
@@ -332,6 +347,22 @@ export function ReviewPage() {
 
       <h2 className="section">Unverified ({unverified.length})</h2>
       {unverified.length === 0 ? <p className="meta">Every quote was found in the local copy of its pinned version.</p> : <AssertionTable items={unverified} />}
+
+      <h2 className="section">Not sourced yet ({unsourced.length})</h2>
+      <p className="meta">Steps and fields of the sketched flows that are clickable but have no spec statement recorded yet.</p>
+      <table className="data">
+        <tbody>
+          {unsourced.map(([sub, where]) => (
+            <tr key={sub}>
+              <td style={{ width: 340 }}>
+                <a href={href(['subject', sub])}>{subjectById.get(sub)?.title ?? sub}</a>
+                <div className="meta mono">{sub}</div>
+              </td>
+              <td className="meta">{where.join('; ')}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
 
       <h2 className="section">c2bo requirements not yet cross-referenced ({c2boOpen.length})</h2>
       <p className="meta">

@@ -1,0 +1,488 @@
+# OpenID4VP 1.0 Final: request object, DCQL, response.
+- {
+    id: oid4vp/5.1/client_metadata,
+    subject: vp.request-object.client_metadata,
+    spec: openid4vp-1.0,
+    locator: { section: "5.1" },
+    relation: defines,
+    level: may,
+    applies_to: { role: [ verifier ] },
+    quote: "client_metadata: OPTIONAL. A JSON object containing the Verifier metadata values. It MUST be UTF-8 encoded.",
+    verified: source-checked
+  }
+- {
+    id: oid4vp/5.1/jwks,
+    subject: vp.request-object.client_metadata.jwks,
+    spec: openid4vp-1.0,
+    locator: { section: "5.1" },
+    relation: defines,
+    level: may,
+    applies_to: { role: [ verifier ] },
+    quote: "jwks: OPTIONAL. A JSON Web Key Set, as defined in [RFC7591], that contains one or more public keys, such as
+      those used by the Wallet as an input to a key agreement that may be used for encryption of the Authorization
+      Response",
+    verified: source-checked
+  }
+- {
+    id: oid4vp/5.1/enc_values,
+    subject: vp.request-object.client_metadata.enc_values,
+    spec: openid4vp-1.0,
+    locator: { section: "5.1" },
+    relation: defines,
+    level: may,
+    applies_to: { role: [ verifier ] },
+    quote: "encrypted_response_enc_values_supported: OPTIONAL. Non-empty array of strings, where each string is a JWE
+      [RFC7516] enc algorithm that can be used as the content encryption algorithm for encrypting the Response.",
+    verified: source-checked
+  }
+- {
+    id: oid4vp/5.1/request_uri_method,
+    subject: vp.authorization-request.request_uri,
+    spec: openid4vp-1.0,
+    locator: { section: "5.1" },
+    relation: defines,
+    level: may,
+    applies_to: { role: [ verifier ] },
+    quote: "request_uri_method: OPTIONAL. A string determining the HTTP method to be used when the request_uri parameter is
+      included in the same request.",
+    verified: source-checked
+  }
+- {
+    id: oid4vp/5.2/nonce,
+    subject: vp.request-object.nonce,
+    spec: openid4vp-1.0,
+    locator: { section: "5.2" },
+    relation: defines,
+    level: shall,
+    applies_to: { role: [ verifier ] },
+    quote: "nonce: REQUIRED. A case-sensitive String representing a value to securely bind Verifiable Presentation(s)
+      provided by the Wallet to the particular transaction.",
+    verified: source-checked
+  }
+- {
+    id: oid4vp/5.2/response_mode,
+    subject: vp.request-object.response_mode,
+    spec: openid4vp-1.0,
+    locator: { section: "5.2" },
+    relation: defines,
+    level: shall,
+    applies_to: { role: [ verifier ] },
+    quote: "response_mode: REQUIRED. Defined in [OAuth.Responses].",
+    verified: source-checked
+  }
+- {
+    id: oid4vp/5.1/dcql_query,
+    subject: vp.dcql,
+    spec: openid4vp-1.0,
+    locator: { section: "5.1" },
+    relation: defines,
+    level: shall,
+    applies_to: { role: [ verifier ] },
+    quote: "dcql_query: A JSON object containing a DCQL query as defined in Section 6. Either a dcql_query or a scope
+      parameter representing a DCQL Query MUST be present in the Authorization Request, but not both.",
+    verified: source-checked
+  }
+- {
+    id: oid4vp/5.3/state,
+    subject: vp.request-object.state,
+    spec: openid4vp-1.0,
+    locator: { section: "5.3" },
+    relation: defines,
+    level: may,
+    applies_to: { role: [ verifier ] },
+    quote: "state: REQUIRED under the conditions defined in Section 5.3. Otherwise, state is OPTIONAL.",
+    verified: source-checked
+  }
+- {
+    id: oid4vp/8.2/response_uri,
+    subject: vp.request-object.response_uri,
+    spec: openid4vp-1.0,
+    locator: { section: "8.2" },
+    relation: defines,
+    level: shall,
+    applies_to: { role: [ verifier ], transport: [ redirect ] },
+    quote: "response_uri: REQUIRED when the Response Mode direct_post is used. The URL to which the Wallet MUST send the
+      Authorization Response using an HTTP POST request as defined by the Response Mode direct_post.",
+    verified: source-checked
+  }
+- {
+    id: oid4vp/A/expected_origins,
+    subject: vp.request-object.expected_origins,
+    spec: openid4vp-1.0,
+    locator: { section: "A.2" },
+    relation: defines,
+    level: shall,
+    applies_to: { role: [ verifier ], transport: [ dc-api ] },
+    quote: "expected_origins: REQUIRED when signed requests defined in Appendix A.3.2 are used with the Digital Credentials
+      API (DC API).",
+    verified: source-checked
+  }
+- {
+    id: oid4vp/5.9.3/x509_hash,
+    subject: vp.request-object.client_id,
+    spec: openid4vp-1.0,
+    locator: { section: "5.9.3" },
+    relation: defines,
+    level: info,
+    quote: "x509_hash: When the Client Identifier Prefix is x509_hash, the original Client Identifier (the part without the
+      x509_hash: prefix) MUST be a hash and match the hash of the leaf certificate passed with the request.",
+    verified: source-checked
+  }
+- {
+    id: oid4vp/5.10/typ,
+    subject: vp.request-object.typ,
+    spec: openid4vp-1.0,
+    locator: { section: "5" },
+    relation: defines,
+    level: shall,
+    applies_to: { role: [ verifier ] },
+    quote: "Wallets MUST NOT process Request Objects where the typ Header Parameter is not present or does not have the
+      value oauth-authz-req+jwt.",
+    verified: source-checked
+  }
+- {
+    id: oid4vp/6/credentials,
+    subject: vp.dcql.credentials,
+    spec: openid4vp-1.0,
+    locator: { section: "6" },
+    relation: defines,
+    level: shall,
+    applies_to: { role: [ verifier ] },
+    quote: "credentials: REQUIRED. A non-empty array of Credential Queries as defined in Section 6.1 that specify the
+      requested Credentials.",
+    verified: source-checked
+  }
+- {
+    id: oid4vp/6.1/id,
+    subject: vp.dcql.id,
+    spec: openid4vp-1.0,
+    locator: { section: "6.1" },
+    relation: defines,
+    level: shall,
+    applies_to: { role: [ verifier ] },
+    quote: "id: REQUIRED. A string identifying the Credential in the response and, if provided, the constraints in
+      credential_sets.",
+    verified: source-checked
+  }
+- {
+    id: oid4vp/6.1/format,
+    subject: vp.dcql.format,
+    spec: openid4vp-1.0,
+    locator: { section: "6.1" },
+    relation: defines,
+    level: shall,
+    applies_to: { role: [ verifier ] },
+    quote: "format: REQUIRED. A string that specifies the format of the requested Credential.",
+    verified: source-checked
+  }
+- {
+    id: oid4vp/6.1/meta,
+    subject: vp.dcql.meta,
+    spec: openid4vp-1.0,
+    locator: { section: "6.1" },
+    relation: defines,
+    level: shall,
+    applies_to: { role: [ verifier ] },
+    quote: "meta: REQUIRED. An object defining additional properties requested by the Verifier that apply to the metadata
+      and validity data of the Credential.",
+    verified: source-checked
+  }
+- {
+    id: oid4vp/6.1/claims,
+    subject: vp.dcql.claims,
+    spec: openid4vp-1.0,
+    locator: { section: "6.1" },
+    relation: defines,
+    level: may,
+    applies_to: { role: [ verifier ] },
+    quote: "claims: OPTIONAL. A non-empty array of objects as defined in Section 6.3 that specifies claims in the requested
+      Credential.",
+    verified: source-checked
+  }
+- {
+    id: oid4vp/6.3/path,
+    subject: vp.dcql.path,
+    spec: openid4vp-1.0,
+    locator: { section: "6.3" },
+    relation: defines,
+    level: shall,
+    applies_to: { role: [ verifier ] },
+    quote: "path: REQUIRED The value MUST be a non-empty array representing a claims path pointer that specifies the path to
+      a claim within the Credential, as defined in Section 7.",
+    verified: source-checked
+  }
+- {
+    id: oid4vp/B.3/vct_values,
+    subject: vp.dcql.vct_values,
+    spec: openid4vp-1.0,
+    locator: { section: "B.3" },
+    relation: defines,
+    level: shall,
+    applies_to: { role: [ verifier ] },
+    quote: "vct_values: REQUIRED. A non-empty array of strings that specifies allowed values for the type of the requested
+      Verifiable Credential.",
+    verified: source-checked
+  }
+- {
+    id: oid4vp/8.1/vp_token,
+    subject: vp.vp_token,
+    spec: openid4vp-1.0,
+    locator: { section: "8.1" },
+    relation: defines,
+    level: shall,
+    applies_to: { role: [ wallet ] },
+    quote: "vp_token: REQUIRED. This is a JSON-encoded object containing entries where the key is the id value used for a
+      Credential Query in the DCQL query and the value is an array of one or more Presentations",
+    verified: source-checked
+  }
+- {
+    id: oid4vp/8.3.1/response,
+    subject: vp.response-post.response,
+    spec: openid4vp-1.0,
+    locator: { section: "8.3.1" },
+    relation: defines,
+    level: shall,
+    applies_to: { role: [ wallet ], transport: [ redirect ] },
+    quote: "The Wallet adds the response parameter containing the JWT as defined in Section 8.3 in the body of an HTTP POST
+      request using the application/x-www-form-urlencoded content type.",
+    verified: source-checked
+  }
+- {
+    id: oid4vp/8.2/redirect_uri,
+    subject: vp.response-ack.redirect_uri,
+    spec: openid4vp-1.0,
+    locator: { section: "8.2" },
+    relation: defines,
+    level: may,
+    applies_to: { role: [ verifier ] },
+    quote: "redirect_uri: OPTIONAL. String containing a URI. When this parameter is present the Wallet MUST redirect the
+      user agent to this URI.",
+    verified: source-checked
+  }
+- {
+    id: oid4vp/A.1/protocol,
+    subject: vp.dc-api.protocol,
+    spec: openid4vp-1.0,
+    locator: { section: "A.1" },
+    relation: defines,
+    level: info,
+    quote: "Signed requests (JWS Compact Serialization): openid4vp-v1-signed",
+    verified: source-checked
+  }
+- {
+    id: oid4vp/8.1/vp_token-dcapi,
+    subject: vp.dc-api.response.data,
+    spec: openid4vp-1.0,
+    locator: { section: "8.1" },
+    relation: defines,
+    level: shall,
+    applies_to: { role: [ wallet ] },
+    quote: "vp_token: REQUIRED. This is a JSON-encoded object containing entries where the key is the id value used for a
+      Credential Query in the DCQL query",
+    verified: source-checked
+  }
+- {
+    id: rfc9901/4.3/kb-typ,
+    subject: vp.kb-jwt.typ,
+    spec: rfc-9901,
+    locator: { section: "4.3" },
+    relation: defines,
+    level: shall,
+    applies_to: { role: [ wallet ] },
+    quote: "typ: REQUIRED. MUST be kb+jwt, which explicitly types the Key Binding JWT as recommended in Section 3.11 of
+      [RFC8725].",
+    verified: source-checked
+  }
+- {
+    id: rfc9901/4.3/sd_hash,
+    subject: vp.kb-jwt.sd_hash,
+    spec: rfc-9901,
+    locator: { section: "4.3" },
+    relation: defines,
+    level: shall,
+    applies_to: { role: [ wallet ] },
+    quote: "sd_hash: REQUIRED. The base64url-encoded hash value over the Issuer-signed JWT and the selected Disclosures as
+      defined below.",
+    verified: source-checked
+  }
+- {
+    id: haip/5/x509_hash,
+    subject: vp.request-object.client_id,
+    spec: haip-1.0,
+    locator: { section: "5" },
+    relation: profiles,
+    level: shall,
+    applies_to: { role: [ verifier ] },
+    quote: "For signed requests, the Verifier MUST use, and the Wallet MUST accept the Client Identifier Prefix x509_hash as
+      defined in Section 5.9.3 of [OIDF.OID4VP].",
+    verified: source-checked
+  }
+- {
+    id: haip/5/vp_token,
+    subject: vp.request-object.response_type,
+    spec: haip-1.0,
+    locator: { section: "5" },
+    relation: profiles,
+    level: shall,
+    applies_to: { role: [ verifier ] },
+    quote: "The Response type MUST be vp_token.",
+    verified: source-checked
+  }
+- {
+    id: haip/5/dcql,
+    subject: vp.dcql,
+    spec: haip-1.0,
+    locator: { section: "5" },
+    relation: profiles,
+    level: shall,
+    applies_to: { role: [ verifier, wallet ] },
+    quote: "The DCQL query and response MUST be used as defined in Section 6 of [OIDF.OID4VP].",
+    verified: source-checked
+  }
+- {
+    id: haip/5/enc-keys,
+    subject: vp.request-object.client_metadata.jwks,
+    spec: haip-1.0,
+    locator: { section: "5" },
+    relation: profiles,
+    level: shall,
+    applies_to: { role: [ verifier ] },
+    quote: "Verifiers MUST supply ephemeral encryption public keys specific to each Authorization Request passed via client
+      metadata as specified in Section 8.3 of [OIDF.OID4VP].",
+    verified: source-checked
+  }
+- {
+    id: haip/5/enc-values,
+    subject: vp.request-object.client_metadata.enc_values,
+    spec: haip-1.0,
+    locator: { section: "5" },
+    relation: profiles,
+    level: shall,
+    applies_to: { role: [ verifier ] },
+    quote: "Verifiers MUST list both A128GCM and A256GCM in encrypted_response_enc_values_supported in their client metadata.",
+    verified: source-checked
+  }
+- {
+    id: haip/5.1/jar,
+    subject: vp.authorization-request.request_uri,
+    spec: haip-1.0,
+    locator: { section: "5.1" },
+    relation: profiles,
+    level: shall,
+    applies_to: { role: [ verifier ], transport: [ redirect ] },
+    quote: "Signed Authorization Requests MUST be used by utilizing JWT-Secured Authorization Request (JAR) [RFC9101] with
+      the request_uri parameter.",
+    verified: source-checked
+  }
+- {
+    id: haip/5.1/same-device,
+    subject: vp.cross-device-redirect,
+    spec: haip-1.0,
+    locator: { section: "5.1" },
+    relation: profiles,
+    level: should-not,
+    applies_to: { role: [ verifier ], transport: [ redirect ] },
+    quote: "Verifiers are RECOMMENDED to use only the \"same-device\" flow unless the Verifier does not rely on session
+      binding for phishing resistance",
+    verified: source-checked
+  }
+- {
+    id: haip/5.1/redirect-back,
+    subject: vp.response-ack.redirect_uri,
+    spec: haip-1.0,
+    locator: { section: "5.1" },
+    relation: profiles,
+    level: shall,
+    applies_to: { role: [ verifier ], device: [ same ] },
+    quote: "Verifiers MUST include redirect_uri in the HTTP response to the Wallet's HTTP POST to the response_uri, as
+      defined in Section 8.2 of [OIDF.OID4VP].",
+    verified: source-checked
+  }
+- {
+    id: haip/5.1/wallet-follows,
+    subject: vp.redirect-back,
+    spec: haip-1.0,
+    locator: { section: "5.1" },
+    relation: profiles,
+    level: shall,
+    applies_to: { role: [ wallet ], device: [ same ] },
+    quote: "Wallets MUST follow the redirect to redirect_uri.",
+    verified: source-checked
+  }
+- {
+    id: haip/5.1/scheme,
+    subject: vp.authorization-request.scheme,
+    spec: haip-1.0,
+    locator: { section: "5.1" },
+    relation: profiles,
+    level: may,
+    quote: "As a way to invoke the Wallet, the custom URL scheme haip-vp:// MAY be supported by the Wallet and the Verifier.",
+    verified: source-checked
+  }
+- {
+    id: haip/5.2/dc-api,
+    subject: vp.dc-api.request,
+    spec: haip-1.0,
+    locator: { section: "5.2" },
+    relation: profiles,
+    level: shall,
+    applies_to: { role: [ verifier ] },
+    quote: "The Verifier MUST use Wallet Invocation via the W3C Digital Credentials API or an equivalent platform API.",
+    verified: source-checked
+  }
+- {
+    id: haip/5.2/dc_api.jwt-mode,
+    subject: vp.request-object.response_mode,
+    spec: haip-1.0,
+    locator: { section: "5.2" },
+    relation: profiles,
+    level: shall,
+    applies_to: { role: [ verifier ], transport: [ dc-api ] },
+    quote: "The Wallet MUST support the Response Mode dc_api.jwt. The Verifier MUST use the Response Mode dc_api.jwt.",
+    verified: source-checked
+  }
+- {
+    id: haip/5.1/direct_post.jwt-mode,
+    subject: vp.request-object.response_mode,
+    spec: haip-1.0,
+    locator: { section: "5.1" },
+    relation: profiles,
+    level: shall,
+    applies_to: { role: [ verifier ], transport: [ redirect ] },
+    quote: "Response encryption MUST be used by utilizing response mode direct_post.jwt, as defined in Section 8.3 of
+      [OIDF.OID4VP].",
+    verified: source-checked
+  }
+- {
+    id: rfc9901/4.3/aud,
+    subject: vp.kb-jwt.aud,
+    spec: rfc-9901,
+    locator: { section: "4.3" },
+    relation: defines,
+    level: shall,
+    applies_to: { role: [ wallet ] },
+    quote: "aud: REQUIRED. The value MUST be a single string that identifies the intended receiver of the Key Binding JWT.",
+    verified: source-checked
+  }
+- {
+    id: oid4vp/5.9.3/x509_hash-request,
+    subject: vp.authorization-request.client_id,
+    spec: openid4vp-1.0,
+    locator: { section: "5.9.3" },
+    relation: defines,
+    level: info,
+    quote: "x509_hash: When the Client Identifier Prefix is x509_hash, the original Client Identifier (the part without the
+      x509_hash: prefix) MUST be a hash and match the hash of the leaf certificate passed with the request.",
+    verified: source-checked
+  }
+- {
+    id: rfc9901/4.3/nonce,
+    subject: vp.kb-jwt.nonce,
+    spec: rfc-9901,
+    locator: { section: "4.3" },
+    relation: defines,
+    level: shall,
+    applies_to: { role: [ wallet ] },
+    quote: "\"nonce\": REQUIRED. Ensures the freshness of the signature or its binding to the given transaction.",
+    verified: source-checked
+  }

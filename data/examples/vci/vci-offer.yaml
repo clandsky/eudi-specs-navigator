@@ -17,3 +17,8 @@ annotations:
   /json/grants: vci.offer.grants
   /json/grants/authorization_code: vci.offer.grants.authorization_code
   /json/grants/authorization_code/issuer_state: vci.offer.issuer_state
+  /http/query/credential_offer/credential_issuer: vci.offer.credential_issuer
+  /http/query/credential_offer/credential_configuration_ids: vci.offer.credential_configuration_ids
+  /http/query/credential_offer/grants: vci.offer.grants
+  /http/query/credential_offer/grants/authorization_code: vci.offer.grants.authorization_code
+  /http/query/credential_offer/grants/authorization_code/issuer_state: vci.offer.issuer_state

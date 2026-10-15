@@ -61,3 +61,21 @@ annotations:
   /jwt/metadata/payload/credential_configurations_supported/gym_membership_sd_jwt/proof_types_supported: vci.metadata.ccs.proof_types_supported
   /jwt/metadata/payload/credential_configurations_supported/gym_membership_sd_jwt/proof_types_supported/jwt/key_attestations_required: vci.metadata.ccs.key_attestations_required
   /jwt/metadata/payload/credential_configurations_supported/gym_membership_sd_jwt/credential_metadata/credential_reuse_policy: vci.metadata.ccs.credential_reuse_policy
+  /http/headers/Content-Type: vci.metadata.content-type
+  /jwt/metadata/payload/exp: vci.metadata.exp
+  /jwt/metadata/payload/batch_credential_issuance/batch_size: vci.metadata.batch_size
+  /jwt/metadata/payload/issuer_info/*/format: vci.metadata.issuer_info.format
+  /jwt/metadata/payload/issuer_info/*/data: vci.metadata.issuer_info.data
+  /jwt/metadata/payload/credential_configurations_supported/*: vci.metadata.ccs.id
+  /jwt/metadata/payload/credential_configurations_supported/*/vct: vci.metadata.ccs.vct
+  /jwt/metadata/payload/credential_configurations_supported/*/credential_signing_alg_values_supported: vci.metadata.ccs.credential_signing_alg_values_supported
+  /jwt/metadata/payload/credential_configurations_supported/*/proof_types_supported/*: vci.metadata.ccs.proof_type
+  /jwt/metadata/payload/credential_configurations_supported/*/proof_types_supported/*/proof_signing_alg_values_supported: vci.metadata.ccs.proof_signing_alg_values_supported
+  /jwt/metadata/payload/credential_configurations_supported/*/proof_types_supported/*/key_attestations_required: vci.metadata.ccs.key_attestations_required
+  /jwt/metadata/payload/credential_configurations_supported/*/proof_types_supported/*/key_attestations_required/*: vci.metadata.ccs.key_attestations_required.values
+  /jwt/metadata/payload/credential_configurations_supported/*/credential_metadata: vci.metadata.ccs.credential_metadata
+  /jwt/metadata/payload/credential_configurations_supported/*/credential_metadata/credential_reuse_policy/id: vci.metadata.ccs.reuse.id
+  /jwt/metadata/payload/credential_configurations_supported/*/credential_metadata/credential_reuse_policy/options: vci.metadata.ccs.reuse.options
+  /jwt/metadata/payload/credential_configurations_supported/*/credential_metadata/credential_reuse_policy/options/*/details: vci.metadata.ccs.reuse.details
+  /jwt/metadata/payload/credential_configurations_supported/*/credential_metadata/credential_reuse_policy/options/*/batch_size: vci.metadata.ccs.reuse.batch_size
+  /jwt/metadata/payload/credential_configurations_supported/*/credential_metadata/credential_reuse_policy/options/*/reissue_trigger_unused: vci.metadata.ccs.reuse.reissue_trigger_unused
