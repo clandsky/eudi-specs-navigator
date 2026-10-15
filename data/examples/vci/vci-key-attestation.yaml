@@ -1,0 +1,21 @@
+id: vci-key-attestation
+title: Key attestation for this issuance, bound to the c_nonce
+subject: vci.ka-request
+kind: jwt
+note: Requested from the Wallet Provider after the Nonce Response, so it can carry the c_nonce (OpenID4VCI F.1) and is used for this issuance only (CIR TR_KA-2.4).
+jwts:
+  ka:
+    key: wp-signer
+    header: { typ: key-attestation+jwt, alg: ES256, x5c: "{{x5c:wp-signer}}" }
+    payload:
+      iss: https://wallet-provider.example.eu
+      iat: 1792072900
+      exp: 1792076500
+      nonce: wKI4LT17ac15ES9bw8ac4
+      attested_keys: ["{{jwk:wallet-key-1}}", "{{jwk:wallet-key-2}}"]
+      key_storage: [iso_18045_high]
+      user_authentication: [iso_18045_high]
+      certification: https://wallet-provider.example.eu/certification/wscd
+      key_storage_status:
+        status: { status_list: { idx: 12, uri: "https://wallet-provider.example.eu/status/wscd/1" } }
+        exp: 1823601600

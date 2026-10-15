@@ -84,7 +84,7 @@
   locator: { section: "G.7.1" }
   relation: defines
   level: may
-  quote: "openid-credential-offer"
+  quote: "URI Scheme: openid-credential-offer Description: Custom scheme used for credential offers"
   note: OpenID4VCI registers the openid-credential-offer URI scheme for the Wallet's Credential Offer Endpoint.
   verified: source-checked
 - id: oid4vci/5.1.2/scope
@@ -434,10 +434,10 @@
     Appendix D, which the Credential Issuer expects the Wallet to send within the proof(s) of the Credential Request. If
     the Credential Issuer does not require a key attestation, this parameter MUST NOT be present in the metadata."
   verified: source-checked
-- id: oid4vci/D.1/ka
+- id: oid4vci/D/ka
   subject: vci.ka
   spec: openid4vci-1.0
-  locator: { section: "D.1" }
+  locator: { section: "D" }
   relation: defines
   level: may
   applies_to: { role: [ wallet ] }

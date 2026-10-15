@@ -4,7 +4,7 @@ subject: vci.token-response
 kind: http-response
 http:
   status: 200
-  headers: { Content-Type: application/json, Cache-Control: no-store }
+  headers: { Content-Type: application/json, Cache-Control: no-store, Pragma: no-cache }
   body:
     type: json
     value:

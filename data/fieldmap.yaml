@@ -80,3 +80,5 @@
 - { pattern: /jwt/proof/payload/nonce, subject: vci.proof-jwt.nonce }
 - { pattern: /http/headers/Accept, subject: http.accept }
 - { pattern: /jwt/*/payload/status, subject: tsl.status }
+- { pattern: /jwt/dpop/payload/nonce, subject: vci.dpop-proof.nonce }
+- { pattern: /http/headers/Pragma, subject: vci.token-response.pragma }

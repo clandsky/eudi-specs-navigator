@@ -8,7 +8,20 @@ http:
   headers:
     Content-Type: application/json
     Authorization: DPoP Kz~8mXK1EalYznwH-LC-1fBAo.4Ljp~zsPE_NeO.gxU
+    DPoP: "{{jwt:dpop}}"
   body: { type: json, value: { notification_id: 3fwe98js, event: credential_accepted } }
+jwts:
+  dpop:
+    key: wallet-dpop
+    header: { typ: dpop+jwt, alg: ES256, jwk: "{{jwk:wallet-dpop}}" }
+    payload:
+      jti: dpop-notification-0001
+      htm: POST
+      htu: https://eaa.example.eu/notification
+      iat: 1792073000
+      nonce: eyJ7S_zG.eyJH0-Z.HX4w-7v
+      ath: "{{s256:Kz~8mXK1EalYznwH-LC-1fBAo.4Ljp~zsPE_NeO.gxU}}"
 annotations:
+  /http/headers/DPoP: vci.notification-request.dpop
   /http/body/event: vci.notification-request.event
   /http/body/notification_id: vci.notification-request.notification_id

@@ -18,6 +18,7 @@
         ],
         "grant_types_supported": [
           "authorization_code",
+          "urn:ietf:params:oauth:grant-type:pre-authorized_code",
           "refresh_token"
         ],
         "code_challenge_methods_supported": [
@@ -40,5 +41,5 @@
     }
   },
   "jwts": {},
-  "inputHash": "a2c0ae82a071b6ca"
+  "inputHash": "ac9588921588fbc1"
 }

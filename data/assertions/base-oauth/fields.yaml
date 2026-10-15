@@ -266,16 +266,6 @@
   quote: "The authorization server includes a DPoP-Nonce HTTP header in the response supplying a nonce value to be used
     when sending the subsequent request. Nonce values MUST be unpredictable."
   verified: source-checked
-- id: oid4vci/7.2/dpop-nonce
-  subject: vci.nonce-response.dpop-nonce
-  spec: openid4vci-1.0
-  locator: { section: "7.2" }
-  relation: defines
-  level: may
-  applies_to: { role: [ issuer ] }
-  quote: "The Credential Issuer MAY provide a DPoP nonce in an HTTP header as defined in Section 8.2 of [RFC9449]."
-  xref: [ { source: c2bo, id: nonce-dpop-nonce } ]
-  verified: source-checked
 - id: abca-07/5.2/iss
   subject: vci.wia-pop.iss
   spec: attestation-client-auth-07
@@ -293,4 +283,47 @@
   level: shall
   applies_to: { role: [ wallet ] }
   quote: "iat: REQUIRED. The iat (issued at) claim MUST specify the time at which the Client Attestation PoP was issued."
+  verified: source-checked
+- id: rfc9449/4.2/nonce
+  subject: vci.dpop-proof.nonce
+  spec: rfc-9449
+  locator: { section: "4.2" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ wallet ] }
+  condition: When the server provided a DPoP-Nonce header.
+  quote: "When the authentication server or resource server provides a DPoP-Nonce HTTP header in a response (see Sections
+    8 and 9), the DPoP proof MUST also contain the following claim: nonce: A recent nonce provided via the DPoP-Nonce
+    HTTP header."
+  verified: source-checked
+- id: rfc6749/5.1/pragma
+  subject: vci.token-response.pragma
+  spec: rfc-6749
+  locator: { section: "5.1" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ as ] }
+  quote: "as well as the \"Pragma\" response header field [RFC2616] with a value of \"no-cache\"."
+  note: RFC 9111 has since deprecated Pragma; RFC 6749 still requires it.
+  verified: source-checked
+- id: abca-07/8/challenge_endpoint
+  subject: vci.as-metadata.challenge_endpoint
+  spec: attestation-client-auth-07
+  locator: { section: "8" }
+  relation: defines
+  level: may
+  applies_to: { role: [ as ] }
+  quote: "An Authorization Server MAY offer a challenge endpoint for Clients to fetch Challenges in the context of this
+    specification."
+  verified: source-checked
+- id: abca-07/8/challenge-required
+  subject: vci.wia-pop.challenge
+  spec: attestation-client-auth-07
+  locator: { section: "8" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ wallet ] }
+  condition: If the Authorization Server offers a challenge endpoint.
+  quote: "If the Authorization Server offers a challenge endpoint, the Client MUST retrieve a challenge and MUST use this
+    challenge in the OAuth-Attestation-PoP as defined in Section 5.2."
   verified: source-checked
