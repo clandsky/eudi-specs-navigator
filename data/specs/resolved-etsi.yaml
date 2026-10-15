@@ -1,0 +1,7 @@
+id: resolved-etsi
+title: "Resolved interpretations (ETSI)"
+short: Resolved
+layer: etsi
+version: maintained in this repository
+authored: true
+note: Assumptions resolved into the ETSI layer. Each one replaces the literal reading of its target within that layer.

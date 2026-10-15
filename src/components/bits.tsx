@@ -48,7 +48,9 @@ export function StatusTag({ rule }: { rule: EffectiveRule }) {
   if (rule.status === 'conflict') return <span className="tag status-conflict">Contradiction</span>
   if (rule.status === 'needs-review') return <span className="tag status-review">Needs review</span>
   if (rule.status === 'undecided') return <span className="tag">No binding rule</span>
-  if (rule.unverified.length) return <span className="tag status-review">Unverified source</span>
+  if (rule.decidedBy.some((a) => specById.get(a.spec)?.layer === 'assumption')) return <span className="tag status-review">Assumed</span>
+  // Authored entries (assumptions, resolved readings, go-live compromises) have no corpus text to check.
+  if (rule.unverified.some((a) => !specById.get(a.spec)?.authored)) return <span className="tag status-review">Unverified source</span>
   return null
 }
 

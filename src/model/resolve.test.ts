@@ -7,7 +7,7 @@ import { Assertion, type LayerId } from './schema'
 let ds: Dataset
 let table: LayerTable
 let specLayer: (id: string) => LayerId
-const ALL: ReadonlySet<LayerId> = new Set(['golive', 'cir', 'etsi', 'haip', 'base', 'primitive', 'arf', 'impl-de'])
+const ALL: ReadonlySet<LayerId> = new Set(['assumption', 'golive', 'cir', 'etsi', 'haip', 'base', 'primitive', 'arf', 'impl-de'])
 
 beforeAll(() => {
   ds = loadDataset()
@@ -173,5 +173,31 @@ describe('same-rank specificity', () => {
     expect(r.level).toBe('should')
     expect(ids(r.decidedBy)).toEqual(['abca-07/10.1/auth-method'])
     expect(ids(r.overruled)).toEqual(['rfc8414/2/token_endpoint_auth_methods_supported'])
+  })
+})
+
+describe('assumptions and resolved interpretations', () => {
+  it('an assumption outranks the literal CIR text it interprets', () => {
+    const r = resolve(stackOf('vci.proof-jwt.signing-key'), ctx({ role: 'wallet' }), table, specLayer)
+    expect(ids(r.decidedBy)).toEqual(['assumption/TR_KA_3.1-proof-jwt'])
+    expect(r.neutralised.map((n) => n.assertion.id)).toEqual(['cir/TR_KA_3.1'])
+    expect(r.status).toBe('decided')
+  })
+
+  it('without the assumption layer the defective CIR text decides and is flagged', () => {
+    const layers = new Set<LayerId>(['cir', 'etsi', 'haip', 'base', 'primitive', 'arf'])
+    const r = resolve(stackOf('vci.proof-jwt.signing-key'), ctx({ role: 'wallet', layers }), table, specLayer)
+    expect(ids(r.decidedBy)).toEqual(['cir/TR_KA_3.1'])
+    expect(r.status).toBe('needs-review')
+  })
+
+  it('once resolved into the CIR layer, the interpretation replaces the literal text within the same rank', () => {
+    const resolved = stackOf('vci.proof-jwt.signing-key').map((a) =>
+      a.id === 'assumption/TR_KA_3.1-proof-jwt' ? { ...a, id: 'resolved/TR_KA_3.1', spec: 'resolved-cir' } : a,
+    )
+    const r = resolve(resolved, ctx({ role: 'wallet' }), table, specLayer)
+    expect(ids(r.decidedBy)).toEqual(['resolved/TR_KA_3.1'])
+    expect(r.neutralised.map((n) => [n.assertion.id, n.by.id])).toEqual([['cir/TR_KA_3.1', 'resolved/TR_KA_3.1']])
+    expect(r.conflicts).toEqual([])
   })
 })

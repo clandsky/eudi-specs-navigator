@@ -1,0 +1,7 @@
+id: resolved-cir
+title: "Resolved interpretations (CIR)"
+short: Resolved
+layer: cir
+version: maintained in this repository
+authored: true
+note: Assumptions resolved into the CIR layer. Each one replaces the literal reading of its target within that layer.

@@ -32,15 +32,7 @@ export function HomeView() {
 
   return (
     <div className="page">
-      <h1>{vc.view === 'issuer' ? 'Issuer API' : 'Verifier API'}: who defines it, who overrules it</h1>
-      <p className="lede">
-        Every message and field below carries its full provenance stack: the base protocol that defines it, the profiles
-        that narrow it, and the binding law that adapts or voids it. The effective rule is computed with the default
-        precedence go-live compromise, then CIR, then ETSI, then HAIP and the standards, and every quote is checked
-        against the pinned version of its source.
-      </p>
-
-      <h2 className="section">Flows</h2>
+      <h2 className="section" style={{ marginTop: 0 }}>Flows</h2>
       {flows.length === 0 ? (
         <div className="notice">
           The verifier flows (OpenID4VP redirect same and cross device, Digital Credentials API) come in phase 3. The

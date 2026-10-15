@@ -419,6 +419,14 @@ function AssertionTable({ items, reason, note }: { items: Assertion[]; reason?: 
             <td>
               <a href={href(['subject', a.subject])}>{subjectById.get(a.subject)?.title}</a>
               {reason && a.review && <p style={{ margin: '4px 0 0' }}>{a.review.reason}</p>}
+              {reason &&
+                ds.assertions
+                  .filter((x) => x.target === a.id && x.interpretation)
+                  .map((x) => (
+                    <p key={x.id} className="meta" style={{ margin: '4px 0 0' }}>
+                      {x.spec === 'assumptions' ? 'Assumed' : 'Resolved'} in <a href={href(['assertion', x.id])}>{x.id}</a>
+                    </p>
+                  ))}
               {note && a.note && <p style={{ margin: '4px 0 0' }}>{a.note}</p>}
               {note && a.probe && <p className="meta" style={{ margin: '4px 0 0' }}>Checked: “{a.probe}” does not occur in the text.</p>}
             </td>

@@ -35,7 +35,7 @@
   review:
     reason: >-
       The CIR calls 'exp' a "header parameter"; in OpenID4VCI Appendix E and draft-07 §5.1 exp is a JWT claim (payload).
-      C_WIA-1 itself requires "the 'exp' claim". Read as the payload claim.
+      C_WIA-1 itself requires "the 'exp' claim". Covered by the assumption assumption/TR-WIA-2.1-exp-claim.
 - id: cir/TR-WIA-3/par
   subject: vci.par-request.oauth-client-attestation
   spec: cir-2026-1731
@@ -141,7 +141,7 @@
     reason: >-
       Read literally, the wallet unit signs "the key attestation" — but the key attestation is signed by the wallet
       provider (FR-KA-1). ETSI CRED-REQ-4.6.1.2-07 and CIR TR_KA-6 say the jwt element (the proof) is signed with the
-      key at attested_keys[0]. Shown here with the ETSI reading as the effective intent.
+      key at attested_keys[0]. Covered by the assumption assumption/TR_KA_3.1-proof-jwt.
 - id: cir/TR_KA-4
   subject: vci.metadata.ccs.proof_types_supported
   spec: cir-2026-1731

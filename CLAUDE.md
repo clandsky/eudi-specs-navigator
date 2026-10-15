@@ -37,8 +37,8 @@ After editing data: `pnpm validate && pnpm quote-check && pnpm test`. After edit
 
 ## Precedence (project owner's default)
 
-**Temporal go-live compromises > CIR implementing acts > ETSI > HAIP > base protocols > primitives > ARF**, encoded in
-`data/layers.yaml` (lower rank wins). The German implementation layer (`impl-de`) never decides, it is shown as
+**Assumptions > temporal go-live compromises ("d-you current") > CIR implementing acts > ETSI > HAIP > base
+protocols > primitives > ARF**, encoded in `data/layers.yaml` (lower rank wins). The German implementation layer (`impl-de`) never decides, it is shown as
 implementation with deviations flagged. `secondary` sources (c2bo conformance tester, Developer Guide) only
 cross-reference. Go-live compromises are not in the corpus: the project owner adds them through the in-app editor;
 never invent one.
@@ -71,8 +71,13 @@ never invent one.
 - UI: `src/lib/router.ts` (hash routes; `role`, `asOf`, `lens`, `de` are sticky query params so links reproduce a view),
   `src/lib/store.ts` (indexes, view context, lens stages), `src/diagram/SequenceDiagram.tsx` (own SVG renderer;
   Mermaid cannot click messages), `src/components/{ObjectView,StackPanel,OverruleEditor}.tsx`, `src/views/`.
-- Layer lens: Base → + HAIP → + ETSI → + CIR → + d-you current (the go-live layer, label set by the project owner).
-  The German implementation layer switches on with that last stage; there is no separate toggle.
+- Layer lens: Base → + HAIP → + ETSI → + CIR → + d-you current (the go-live layer) → + Assumptions. The German
+  implementation layer switches on from the d-you current stage; there is no separate toggle.
+- Assumptions (`data/assertions/assumptions/`, spec `assumptions`, layer `assumption`, rank -1) record how the project
+  owner reads a defective or unclear rule: `relation: adapts`, `interpretation: true`, `target` = the literal rule. The
+  "Resolve" button (dev server, `/__assumptions/resolve`) moves one into `data/assertions/resolved/<layer>.yaml` with
+  spec `resolved-<layer>`; an interpretation may neutralise a target of the same rank. Specs with `authored: true`
+  (assumptions, resolved-*, golive-compromises) are skipped by quote-check. The target keeps its `needs-review` flag.
 - `src/model/openapi.ts`: OpenAPI 3.1 export, shared by the download button and `scripts/openapi-build.ts`.
 - Visual design: calm, document-like look (`src/styles.css` tokens), dark by default with light opt-in. No violet or
   purple anywhere. A busier blueprint style was tried and reverted.

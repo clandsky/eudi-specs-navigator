@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { levelLabel, timeline, type EffectiveRule } from '../model/resolve'
 import type { Assertion, Relation, Role } from '../model/schema'
 import { href } from '../lib/router'
@@ -304,6 +304,7 @@ function Stratum({ a, state, rules, active }: { a: Assertion; state: State; rule
         </div>
       )}
       {a.note && <p className="verdict">{a.note}</p>}
+      {layer === 'assumption' && <ResolveControl a={a} />}
       {(a.decided_by || a.reference) && (
         <p className="verdict">
           {a.decided_by && <>Agreed by {a.decided_by}. </>}
@@ -313,7 +314,15 @@ function Stratum({ a, state, rules, active }: { a: Assertion; state: State; rule
       <div className="meta" style={{ marginTop: 6, display: 'flex', gap: 10, flexWrap: 'wrap' }}>
         <span>{spec.version}</span>
         <span title="Result of the quote check against the local copy of the pinned version">
-          {a.verified === 'source-checked' ? 'Quote checked against source' : a.verified === 'needs-review' ? 'Quote checked, flagged for review' : 'Not verified'}
+          {spec.authored
+            ? layer === 'assumption'
+              ? 'Assumption, not yet resolved'
+              : 'Maintained in this repository'
+            : a.verified === 'source-checked'
+              ? 'Quote checked against source'
+              : a.verified === 'needs-review'
+                ? 'Quote checked, flagged for review'
+                : 'Not verified'}
         </span>
         {a.xref.map((x) =>
           x.source === 'c2bo' ? (
@@ -329,5 +338,58 @@ function Stratum({ a, state, rules, active }: { a: Assertion; state: State; rule
         <a href={href(['assertion', a.id])}>{a.id}</a>
       </div>
     </article>
+  )
+}
+
+const RESOLVE_TARGETS: { layer: string; label: string }[] = [
+  { layer: 'golive', label: 'd-you current' },
+  { layer: 'cir', label: 'CIR' },
+  { layer: 'etsi', label: 'ETSI' },
+  { layer: 'haip', label: 'HAIP' },
+  { layer: 'base', label: 'Base protocol' },
+]
+
+/** "Resolve": moves an assumption into a chosen layer as a resolved interpretation (dev server only). */
+function ResolveControl({ a }: { a: Assertion }) {
+  const target = a.target ? assertionById.get(a.target) : null
+  const [layer, setLayer] = useState<string>(target ? specLayer(target.spec) : 'golive')
+  const [state, setState] = useState<'idle' | 'busy' | 'done' | 'readonly'>('idle')
+  const [error, setError] = useState<string | null>(null)
+  async function resolveNow() {
+    setState('busy')
+    setError(null)
+    try {
+      const res = await fetch('/__assumptions/resolve', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: a.id, layer }) })
+      if (res.status === 404 && !res.headers.get('content-type')?.includes('json')) return setState('readonly')
+      const body = await res.json()
+      if (!res.ok) {
+        setError((body.error ?? [res.statusText]).join('; '))
+        setState('idle')
+        return
+      }
+      setState('done')
+    } catch {
+      setState('readonly')
+    }
+  }
+  return (
+    <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginTop: 8, flexWrap: 'wrap' }}>
+      <label className="meta" style={{ display: 'inline-flex', gap: 6, alignItems: 'center' }}>
+        into
+        <select className="field-input" value={layer} onChange={(e) => setLayer(e.target.value)} disabled={state !== 'idle'} aria-label="Layer to resolve into">
+          {RESOLVE_TARGETS.map((t) => (
+            <option key={t.layer} value={t.layer}>
+              {t.label}
+            </option>
+          ))}
+        </select>
+      </label>
+      <button className="btn btn-primary" onClick={resolveNow} disabled={state !== 'idle'}>
+        {state === 'busy' ? 'Resolving…' : 'Resolve'}
+      </button>
+      {state === 'done' && <span className="success">Resolved. The page reloads with the updated layer.</span>}
+      {state === 'readonly' && <span className="meta">Resolving writes to the repository and needs the dev server (pnpm dev).</span>}
+      {error && <span className="error">{error}</span>}
+    </div>
   )
 }
