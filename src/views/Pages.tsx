@@ -36,7 +36,7 @@ export function SubjectPage({ subjectId, focus }: { subjectId: string; focus?: s
     el?.animate?.([{ boxShadow: 'inset 0 0 0 2px var(--focus)' }, { boxShadow: 'inset 0 0 0 0 transparent' }], { duration: 1600 })
   }, [focus, subjectId])
   return (
-    <div className="page page-sm" style={{ maxWidth: 880 }}>
+    <div className="page" style={{ maxWidth: 880 }}>
       <StackPanel subjectId={subjectId} onAddOverrule={setEditing} />
       {(steps.length > 0 || examples.length > 0) && (
         <>
@@ -66,7 +66,7 @@ export function SubjectPage({ subjectId, focus }: { subjectId: string; focus?: s
 
 export function AssertionPage({ assertionId }: { assertionId: string }) {
   const a = assertionById.get(assertionId)
-  if (!a) return <div className="page page-sm">Unknown assertion “{assertionId}”.</div>
+  if (!a) return <div className="page">Unknown assertion “{assertionId}”.</div>
   return <SubjectPage subjectId={a.subject} focus={a.id} />
 }
 
@@ -74,7 +74,7 @@ export function AssertionPage({ assertionId }: { assertionId: string }) {
 
 export function SpecsIndex() {
   return (
-    <div className="page page-sm">
+    <div className="page">
       <h1>Specs</h1>
       <p className="lede">Every source the stacks cite, by precedence layer, with the version each quote was checked against.</p>
       {ds.layers.map((l) => {
@@ -111,7 +111,7 @@ export function SpecsIndex() {
 
 export function SpecPage({ specId }: { specId: string }) {
   const spec = specById.get(specId)
-  if (!spec) return <div className="page page-sm">Unknown spec “{specId}”.</div>
+  if (!spec) return <div className="page">Unknown spec “{specId}”.</div>
   const items = ds.assertions.filter((a) => a.spec === specId)
   const groups = new Map<string, Assertion[]>()
   for (const a of items) {
@@ -120,7 +120,7 @@ export function SpecPage({ specId }: { specId: string }) {
   }
   const sortedKeys = [...groups.keys()].sort((x, y) => x.localeCompare(y, undefined, { numeric: true }))
   return (
-    <div className="page page-sm">
+    <div className="page">
       <div className="meta" style={cssLayer(spec.layer)}>
         <LayerName id={spec.layer}>{layerById.get(spec.layer)?.label}</LayerName>
       </div>
@@ -180,7 +180,7 @@ export function AdaptationsPage() {
   const vc = useViewCtx()
   const rows = ds.assertions.filter((a) => a.spec === 'cir-2026-1731' && ['voids', 'adapts', 'replaces'].includes(a.relation))
   return (
-    <div className="page page-sm" style={{ maxWidth: 1240 }}>
+    <div className="page" style={{ maxWidth: 1240 }}>
       <h1>How CIR (EU) 2026/1731 adapts the ETSI profiles</h1>
       <p className="lede">
         Annex XI applies ETSI TS 119 472-3 and Annex XII applies TS 119 472-2 with adaptations. The ETSI text applies
@@ -277,7 +277,7 @@ export function ReviewPage() {
   const c2boOpen = ds.c2bo?.groups.flatMap((g) => g.requirements.filter((r) => !covered.has(r.id)).map((r) => ({ ...r, group: g.name }))) ?? []
 
   return (
-    <div className="page page-sm">
+    <div className="page">
       <h1>Contradictions and gaps</h1>
       <p className="lede">
         Everything a human has to decide or confirm: statements flagged for review, contradictions between layers, places
@@ -362,11 +362,11 @@ export function ReviewPage() {
 
 function Counts({ items }: { items: [string, number][] }) {
   return (
-    <dl className="counts">
+    <dl style={{ display: 'flex', flexWrap: 'wrap', gap: '6px 22px', margin: '18px 0 0' }}>
       {items.map(([k, v]) => (
-        <div key={k}>
-          <dt>{k}</dt>
-          <dd>{v}</dd>
+        <div key={k} style={{ display: 'flex', gap: 6, alignItems: 'baseline' }}>
+          <dt className="meta">{k}</dt>
+          <dd style={{ margin: 0, fontWeight: 700, fontSize: 16 }}>{v}</dd>
         </div>
       ))}
     </dl>
@@ -407,7 +407,7 @@ export function EndpointsPage() {
   const servers = vc.view === 'issuer' ? ['as', 'issuer'] : ['verifier']
   const eps = ds.subjects.filter((s) => s.endpoint && servers.includes(s.endpoint.server))
   return (
-    <div className="page page-sm">
+    <div className="page">
       <h1>{vc.view === 'issuer' ? 'Issuer' : 'Verifier'} endpoints</h1>
       <p className="lede">The HTTP endpoints this side has to serve, with the layers that shape each one.</p>
       {eps.length === 0 ? (
@@ -459,7 +459,7 @@ export function EndpointsPage() {
 export function ObjectPage({ exampleId }: { exampleId: string }) {
   const ex = ds.examples.find((e) => e.id === exampleId)
   const [sel, setSel] = useState<{ ptr: string; subject: string } | null>(null)
-  if (!ex) return <div className="page page-sm">Unknown example “{exampleId}”.</div>
+  if (!ex) return <div className="page">Unknown example “{exampleId}”.</div>
   return (
     <div className="flow-grid" style={{ gridTemplateColumns: 'minmax(420px,1fr) minmax(380px,1fr)' }}>
       <section>

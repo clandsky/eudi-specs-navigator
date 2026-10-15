@@ -1,4 +1,4 @@
-import { LayerBadges, LevelChip, SpecName, cssLayer } from '../components/bits'
+import { LayerBadges, LevelChip, SpecName } from '../components/bits'
 import { buildOpenApi } from '../model/openapi'
 import { stringify } from 'yaml'
 import { href } from '../lib/router'
@@ -30,57 +30,15 @@ export function HomeView() {
   }
   const exportable = ds.subjects.some((s) => s.endpoint && (vc.view === 'issuer' ? ['as', 'issuer'] : ['verifier']).includes(s.endpoint.server))
 
-  const ranked = ds.layers.filter((l) => l.rank !== null && l.id !== 'primitive')
-  const sourceChecked = ds.assertions.filter((a) => a.verified !== 'unverified').length
-
   return (
     <div className="page">
-      <section className="hero">
-        <div>
-          <h1>Who defines it. Who overrules it.</h1>
-          <p className="lede">
-            The {vc.view === 'issuer' ? 'issuer' : 'verifier'} side of the EUDI Wallet, drawn layer by layer. Every message
-            and field carries its full provenance stack, from the base protocol that defines it to the binding law that
-            rewords or voids it. The effective rule is computed, and every quote is checked against the pinned version of
-            its source.
-          </p>
-        </div>
-        <figure className="figure">
-          <div className="strata-figure frame">
-            {ranked.map((l) => (
-              <div key={l.id} style={cssLayer(l.id)}>
-                <span className="rank">{l.rank === 0 ? 'Top' : `Rank ${l.rank}`}</span>
-                <span>{l.label}</span>
-                <span className="bar" style={{ width: `${Math.max(14, 96 - (l.rank ?? 0) * 12)}px` }} />
-              </div>
-            ))}
-          </div>
-          <figcaption>Fig. 0&nbsp;&nbsp;Precedence, highest first</figcaption>
-        </figure>
-      </section>
-
-      <dl className="counts">
-        <div>
-          <dt>Statements</dt>
-          <dd>{ds.assertions.length}</dd>
-        </div>
-        <div>
-          <dt>Quote-checked</dt>
-          <dd>{sourceChecked}</dd>
-        </div>
-        <div>
-          <dt>Sources</dt>
-          <dd>{ds.specs.length}</dd>
-        </div>
-        <div>
-          <dt>Fields and messages</dt>
-          <dd>{ds.subjects.length}</dd>
-        </div>
-        <div>
-          <dt>Open review items</dt>
-          <dd>{ds.assertions.filter((a) => a.verified === 'needs-review').length}</dd>
-        </div>
-      </dl>
+      <h1>{vc.view === 'issuer' ? 'Issuer API' : 'Verifier API'}: who defines it, who overrules it</h1>
+      <p className="lede">
+        Every message and field below carries its full provenance stack: the base protocol that defines it, the profiles
+        that narrow it, and the binding law that adapts or voids it. The effective rule is computed with the default
+        precedence go-live compromise, then CIR, then ETSI, then HAIP and the standards, and every quote is checked
+        against the pinned version of its source.
+      </p>
 
       <h2 className="section">Flows</h2>
       {flows.length === 0 ? (
@@ -89,21 +47,16 @@ export function HomeView() {
           verifier rules already recorded are listed below and in the review list.
         </div>
       ) : (
-        <ul className="flow-list">
-          {flows.map((f, i) => (
-            <li key={f.id}>
-              <a className="flow-card frame" href={href(['flow', f.id])}>
-                <span className="idx">F-{String(i + 1).padStart(2, '0')}</span>
-                <span>
-                  <h3>{f.title}</h3>
-                  <p>{f.summary}</p>
-                </span>
-                <span className="meta">
-                  {f.steps.length} steps
-                  <br />
-                  {f.participants.length} parties
-                </span>
+        <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'grid', gap: 10 }}>
+          {flows.map((f) => (
+            <li key={f.id} className="notice" style={{ color: 'var(--ink)' }}>
+              <a href={href(['flow', f.id])} style={{ fontWeight: 600, fontSize: 15 }}>
+                {f.title}
               </a>
+              <p style={{ margin: '4px 0 6px', color: 'var(--ink-2)' }}>{f.summary}</p>
+              <span className="meta">
+                {f.steps.length} steps, {f.participants.map((p) => p.label).join(', ')}
+              </span>
             </li>
           ))}
         </ul>
