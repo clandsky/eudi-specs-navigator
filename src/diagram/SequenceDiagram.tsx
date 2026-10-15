@@ -51,7 +51,10 @@ export function SequenceDiagram({ flow, selected, onSelect }: Props) {
     <svg className="seq" viewBox={`0 0 ${W} ${height}`} role="group" aria-label={`Sequence diagram: ${flow.title}`}>
       <defs>
         <marker id="arrowhead" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-          <path d="M0,0 L10,5 L0,10 z" fill="var(--ink)" />
+          <path d="M0,0 L10,5 L0,10 z" fill="var(--ink-2)" />
+        </marker>
+        <marker id="arrowhead-active" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M0,0 L10,5 L0,10 z" fill="var(--accent)" />
         </marker>
         <marker id="arrowhead-muted" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
           <path d="M0,0 L10,5 L0,10 z" fill="var(--ink-3)" />
@@ -63,7 +66,9 @@ export function SequenceDiagram({ flow, selected, onSelect }: Props) {
         return (
           <g key={p.id} className="actor">
             <line className="lifeline" x1={x} x2={x} y1={TOP + HEAD_H} y2={height - 6} />
-            <rect x={x - 66} y={TOP} width={132} height={HEAD_H} rx={6} />
+            <rect x={x - 66} y={TOP} width={132} height={HEAD_H} />
+            {/* drafting ticks on the box corners */}
+            <path className="tick" d={`M${x - 70},${TOP} h-0 M${x - 70},${TOP - 4} v8 M${x - 74},${TOP} h8 M${x + 70},${TOP + HEAD_H - 4} v8 M${x + 66},${TOP + HEAD_H} h8`} />
             <text x={x} y={TOP + HEAD_H / 2 + 4.5} textAnchor="middle">
               {p.label}
             </text>
@@ -114,9 +119,9 @@ export function SequenceDiagram({ flow, selected, onSelect }: Props) {
             onClick={() => onSelect(s.id)}
             onKeyDown={onKey}
           >
-            <rect className="hit" x={4} y={y + 2} width={W - 8} height={ROW_H - 4} rx={6} />
-            <text className="num" x={16} y={ay + 4}>
-              {i + 1}
+            <rect className="hit" x={4} y={y + 2} width={W - 8} height={ROW_H - 4} />
+            <text className="num" x={12} y={ay + 4}>
+              {String(i + 1).padStart(2, '0')}
             </text>
             {changed && (
               <text className="delta" x={16} y={ay + 18} style={{ fill: layerColor(stageLayer) }}>
@@ -129,7 +134,7 @@ export function SequenceDiagram({ flow, selected, onSelect }: Props) {
               x2={x2 + (x2 > x1 ? -3 : 3)}
               y1={ay}
               y2={ay}
-              markerEnd={s.kind === 'internal' ? 'url(#arrowhead-muted)' : 'url(#arrowhead)'}
+              markerEnd={s.kind === 'internal' ? 'url(#arrowhead-muted)' : selected === s.id ? 'url(#arrowhead-active)' : 'url(#arrowhead)'}
             />
             <text className="label" x={mid} y={ay - 8} textAnchor="middle">
               {added && <tspan style={{ fill: layerColor(origin!) }}>◆ </tspan>}
@@ -137,11 +142,11 @@ export function SequenceDiagram({ flow, selected, onSelect }: Props) {
             </text>
             <g transform={`translate(${left + 4}, ${ay + 6})`}>
               {layers.map((l, k) => (
-                <rect key={l} x={k * 8} y={0} width={6} height={10} rx={1.5} style={{ fill: layerColor(l) }} />
+                <rect key={l} x={k * 6} y={0} width={4} height={10} style={{ fill: layerColor(l) }} />
               ))}
             </g>
             {s.tags.length > 0 && (
-              <text className="stag" x={left + 8 + layers.length * 8 + 4} y={ay + 15}>
+              <text className="stag" x={left + 8 + layers.length * 6 + 4} y={ay + 15}>
                 {s.tags.join(', ')}
               </text>
             )}

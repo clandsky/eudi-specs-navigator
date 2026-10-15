@@ -7,23 +7,23 @@ import { Search } from './Search'
 const THEME_KEY = 'specs-navigator.theme'
 
 function useTheme(): [string, () => void] {
+  // Dark blueprint is the default regardless of the OS setting; light is opt-in.
   const [theme, setTheme] = useState<string>(() => {
     try {
-      return localStorage.getItem(THEME_KEY) ?? 'auto'
+      return localStorage.getItem(THEME_KEY) === 'light' ? 'light' : 'dark'
     } catch {
-      return 'auto'
+      return 'dark'
     }
   })
   useEffect(() => {
-    if (theme === 'auto') document.documentElement.removeAttribute('data-theme')
-    else document.documentElement.setAttribute('data-theme', theme)
+    document.documentElement.setAttribute('data-theme', theme)
     try {
       localStorage.setItem(THEME_KEY, theme)
     } catch {
       /* private mode: theme just isn't remembered */
     }
   }, [theme])
-  const next = () => setTheme((t) => (t === 'auto' ? 'dark' : t === 'dark' ? 'light' : 'auto'))
+  const next = () => setTheme((t) => (t === 'dark' ? 'light' : 'dark'))
   return [theme, next]
 }
 
@@ -46,7 +46,7 @@ export function TopBar() {
           <span style={{ background: 'var(--l-etsi)' }} />
           <span style={{ background: 'var(--l-base)' }} />
         </span>
-        specs-navigator
+        specs/navigator
       </a>
       <div className="segmented" role="group" aria-label="Side of the ecosystem">
         {(['issuer', 'verifier'] as const).map((v) => (
@@ -63,7 +63,7 @@ export function TopBar() {
       </nav>
       <span className="spacer" />
       <Search />
-      <label className="meta" style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+      <label className="check">
         As of
         <input
           className="field-input"
@@ -72,8 +72,8 @@ export function TopBar() {
           onChange={(e) => setParams({ asOf: e.target.value && e.target.value !== today() ? e.target.value : null })}
         />
       </label>
-      <button className="icon-btn" onClick={nextTheme} title={`Theme: ${theme}`} aria-label={`Colour theme: ${theme}. Switch theme.`}>
-        {theme === 'dark' ? '☾' : theme === 'light' ? '☀' : '◐'}
+      <button className="icon-btn" onClick={nextTheme} title={theme === 'dark' ? 'Switch to light' : 'Switch to dark'} aria-label={theme === 'dark' ? 'Switch to the light theme' : 'Switch to the dark theme'}>
+        {theme === 'dark' ? '☀' : '☾'}
       </button>
     </header>
   )
@@ -100,7 +100,7 @@ export function LensBar() {
           </button>
         ))}
       </div>
-      <label className="meta" style={{ display: 'inline-flex', gap: 6, alignItems: 'center' }}>
+      <label className="check">
         <input type="checkbox" checked={vc.de} onChange={(e) => setParams({ de: e.target.checked ? '1' : null })} />
         German implementation
       </label>
