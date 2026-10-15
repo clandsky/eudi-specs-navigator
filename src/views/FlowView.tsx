@@ -25,9 +25,6 @@ export function FlowView({ flowId }: { flowId: string }) {
     <div className="flow-grid">
       <section aria-label="Sequence diagram">
         <div className="pane-head">
-          <span className="fig">
-            <b>Fig. 1</b>&nbsp;&nbsp;Sequence
-          </span>
           <h2>{flow.title}</h2>
           <p>{flow.summary}</p>
         </div>
@@ -38,10 +35,9 @@ export function FlowView({ flowId }: { flowId: string }) {
       </section>
       <section aria-label="Example object">
         <div className="pane-head">
-          <span className="fig">
-            <b>Fig. 2</b>&nbsp;&nbsp;Object, step {flow.steps.indexOf(step) + 1}
-          </span>
-          <h2>{step.label}</h2>
+          <h2>
+            Step {flow.steps.indexOf(step) + 1}: {step.label}
+          </h2>
           <p>{step.note ?? `${subjectById.get(step.subject)?.title}. Click a field to see who defines it and who overrules it.`}</p>
         </div>
         <div className="pane-body">
@@ -60,10 +56,7 @@ export function FlowView({ flowId }: { flowId: string }) {
       </section>
       <section aria-label="Provenance stack">
         <div className="pane-head">
-          <span className="fig">
-            <b>Fig. 3</b>&nbsp;&nbsp;Provenance stack
-          </span>
-          <h2>Who defines it, who overrules it</h2>
+          <h2>Provenance</h2>
           <p>
             {field ? (
               <>

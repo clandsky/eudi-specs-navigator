@@ -62,9 +62,8 @@ never invent one.
   `src/lib/store.ts` (indexes, view context, lens stages), `src/diagram/SequenceDiagram.tsx` (own SVG renderer;
   Mermaid cannot click messages), `src/components/{ObjectView,StackPanel,OverruleEditor}.tsx`, `src/views/`.
 - `src/model/openapi.ts`: OpenAPI 3.1 export, shared by the download button and `scripts/openapi-build.ts`.
-- Visual design: dark blueprint in the style of oxide.computer (dark is the default, light is opt-in). Tokens live in
-  `src/styles.css`: one green accent, one colour per layer, Geist / Geist Mono, small uppercase mono labels,
-  hairlines and crop marks. No violet or purple anywhere, including for new layers or states.
+- Visual design: calm, document-like look (`src/styles.css` tokens), dark by default with light opt-in. No violet or
+  purple anywhere. A busier blueprint style was tried and reverted.
 
 ## Rules for adding knowledge
 

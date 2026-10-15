@@ -7,7 +7,7 @@ import { Search } from './Search'
 const THEME_KEY = 'specs-navigator.theme'
 
 function useTheme(): [string, () => void] {
-  // Dark blueprint is the default regardless of the OS setting; light is opt-in.
+  // Dark is the default; light is opt-in and remembered.
   const [theme, setTheme] = useState<string>(() => {
     try {
       return localStorage.getItem(THEME_KEY) === 'light' ? 'light' : 'dark'
@@ -46,7 +46,7 @@ export function TopBar() {
           <span style={{ background: 'var(--l-etsi)' }} />
           <span style={{ background: 'var(--l-base)' }} />
         </span>
-        specs/navigator
+        specs-navigator
       </a>
       <div className="segmented" role="group" aria-label="Side of the ecosystem">
         {(['issuer', 'verifier'] as const).map((v) => (
@@ -63,7 +63,7 @@ export function TopBar() {
       </nav>
       <span className="spacer" />
       <Search />
-      <label className="check">
+      <label className="meta" style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
         As of
         <input
           className="field-input"
@@ -100,7 +100,7 @@ export function LensBar() {
           </button>
         ))}
       </div>
-      <label className="check">
+      <label className="meta" style={{ display: 'inline-flex', gap: 6, alignItems: 'center' }}>
         <input type="checkbox" checked={vc.de} onChange={(e) => setParams({ de: e.target.checked ? '1' : null })} />
         German implementation
       </label>
