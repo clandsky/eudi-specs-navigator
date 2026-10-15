@@ -1,0 +1,10 @@
+id: vp-request-uri-get
+title: Wallet fetches the Request Object
+subject: vp.request-uri-fetch
+kind: http-request
+http:
+  method: GET
+  url: https://verifier.example.eu/request/d7b1
+  headers: { Accept: application/oauth-authz-req+jwt }
+annotations:
+  /http/headers/Accept: vp.request-uri-fetch

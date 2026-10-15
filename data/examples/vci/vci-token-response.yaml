@@ -15,3 +15,6 @@ http:
 annotations:
   /http/body/token_type: vci.token-response.token_type
   /http/body/refresh_token: vci.token-response.refresh_token
+  /http/headers/Cache-Control: vci.token-response.cache-control
+  /http/body/access_token: vci.token-response.access_token
+  /http/body/expires_in: vci.token-response.expires_in

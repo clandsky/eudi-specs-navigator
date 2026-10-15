@@ -1,0 +1,11 @@
+id: status-list-20
+title: Token Status List
+short: TSL-20
+layer: base
+version: draft-ietf-oauth-status-list-20 (20 Apr 2026)
+binding_via: CIR 2026/1731 (substituted into ETSI TS 119 472-1 ref [25])
+source:
+  local: "eIDAS + all references/standards/rfc/draft-ietf-oauth-status-list-20.txt"
+  text: sources/draft-ietf-oauth-status-list-20.txt
+  url: https://datatracker.ietf.org/doc/html/draft-ietf-oauth-status-list-20
+anchor_template: https://datatracker.ietf.org/doc/html/draft-ietf-oauth-status-list-20#section-{section}

@@ -13,8 +13,12 @@ export interface EncodedExample {
     body?: { type: 'form' | 'json' | 'jwt' | 'none'; value: unknown }
   }
   json?: unknown
-  /** name → compact JWS. */
+  /** name → compact JWS (or JWE for encrypted entries). */
   jwts: Record<string, string>
+  /** name → decrypted header and payload of a JWE, produced by the same build that encrypted it. */
+  plaintexts?: Record<string, { header: Record<string, unknown>; payload: Record<string, unknown> }>
+  /** name → full SD-JWT as emitted (issuer JWT ~ disclosures ~ [KB-JWT]); `jwts[name]` holds only the issuer JWT. */
+  sdjwts?: Record<string, string>
 }
 
 export interface Dataset {
@@ -25,6 +29,8 @@ export interface Dataset {
   assertions: WithFile<Assertion>[]
   examples: WithFile<Example>[]
   encoded: Record<string, EncodedExample>
+  /** Global JSON-pointer patterns → subject, shared by all examples (data/fieldmap.yaml). */
+  fieldmap: { pattern: string; subject: string; note?: string }[]
   c2bo: C2boSnapshot | null
   builtAt: string
 }

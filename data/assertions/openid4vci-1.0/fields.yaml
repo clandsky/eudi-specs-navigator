@@ -1,0 +1,181 @@
+# OpenID4VCI 1.0: members that complete every field of the phase-1 examples.
+- id: oid4vci/12.2.2/content-type
+  subject: vci.metadata.content-type
+  spec: openid4vci-1.0
+  locator: { section: "12.2.2" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ issuer ] }
+  quote: "MAY support returning it in a signed form 'application/jwt'. In all cases the Credential Issuer MUST indicate
+    the media type of the returned Metadata using the HTTP Content-Type header."
+  verified: source-checked
+- id: oid4vci/12.2.3/exp
+  subject: vci.metadata.exp
+  spec: openid4vci-1.0
+  locator: { section: "12.2.3" }
+  relation: defines
+  level: may
+  applies_to: { role: [ issuer ] }
+  quote: "exp: OPTIONAL. Integer for the time at which the Credential Issuer Metadata is expiring, using the syntax
+    defined in [RFC7519]."
+  verified: source-checked
+- id: oid4vci/12.2.4/batch_size
+  subject: vci.metadata.batch_size
+  spec: openid4vci-1.0
+  locator: { section: "12.2.4" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ issuer ] }
+  condition: When batch_credential_issuance is present.
+  quote: "batch_size: REQUIRED. Integer value specifying the maximum array size for the proofs parameter in a Credential
+    Request. It MUST be 2 or greater."
+  xref: [ { source: c2bo, id: metadata-structure } ]
+  verified: source-checked
+- id: oid4vci/12.2.4/ccs-id
+  subject: vci.metadata.ccs.id
+  spec: openid4vci-1.0
+  locator: { section: "12.2.4" }
+  relation: defines
+  level: info
+  quote: "This object contains a list of name/value pairs, where each name is a unique identifier of the supported
+    Credential being described. This identifier is used in the Credential Offer as defined in Section 4.1.1"
+  verified: source-checked
+- id: oid4vci/A.3.2/vct
+  subject: vci.metadata.ccs.vct
+  spec: openid4vci-1.0
+  locator: { section: "A.3.2" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ issuer ] }
+  condition: For the dc+sd-jwt Credential Format.
+  quote: "vct: REQUIRED. String designating the type of the Credential, as defined in [I-D.ietf-oauth-sd-jwt-vc]."
+  verified: source-checked
+- id: oid4vci/12.2.4/credential_signing_alg_values_supported
+  subject: vci.metadata.ccs.credential_signing_alg_values_supported
+  spec: openid4vci-1.0
+  locator: { section: "12.2.4" }
+  relation: defines
+  level: may
+  applies_to: { role: [ issuer ] }
+  quote: "credential_signing_alg_values_supported: OPTIONAL. A non-empty array of algorithm identifiers that identify the
+    algorithms that the Issuer uses to sign the issued Credential."
+  verified: source-checked
+- id: oid4vci/12.2.4/proof-type-ids
+  subject: vci.metadata.ccs.proof_type
+  spec: openid4vci-1.0
+  locator: { section: "12.2.4" }
+  relation: defines
+  level: info
+  quote: "This object contains a list of name/value pairs, where each name is a unique identifier of the supported proof
+    type(s). Valid values are defined in Appendix F, other values MAY be used."
+  verified: source-checked
+- id: oid4vci/F.3/attestation
+  subject: vci.metadata.ccs.proof_type
+  spec: openid4vci-1.0
+  locator: { section: "F.3" }
+  relation: defines
+  level: info
+  quote: "If the Credential Issuer has a Nonce Endpoint (as defined in Section 7), the c_nonce value provided by the
+    Credential Issuer MUST be provided in the key attestation's nonce parameter."
+  note: Defines the attestation proof type; the jwt proof type is defined in F.1.
+  verified: source-checked
+- id: oid4vci/12.2.4/proof_signing_alg_values_supported
+  subject: vci.metadata.ccs.proof_signing_alg_values_supported
+  spec: openid4vci-1.0
+  locator: { section: "12.2.4" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ issuer ] }
+  quote: "proof_signing_alg_values_supported: REQUIRED. A non-empty array of algorithm identifiers that the Issuer
+    supports for this proof type."
+  verified: source-checked
+- id: oid4vci/12.2.4/key_attestations_required-values
+  subject: vci.metadata.ccs.key_attestations_required.values
+  spec: openid4vci-1.0
+  locator: { section: "12.2.4" }
+  relation: defines
+  level: may
+  applies_to: { role: [ issuer ] }
+  quote: "key_storage: OPTIONAL. A non-empty array defining values specified in Appendix D.2 accepted by the Credential
+    Issuer. user_authentication: OPTIONAL. A non-empty array defining values specified in Appendix D.2 accepted by the
+    Credential Issuer."
+  verified: source-checked
+- id: oid4vci/12.2.4/credential_metadata
+  subject: vci.metadata.ccs.credential_metadata
+  spec: openid4vci-1.0
+  locator: { section: "12.2.4" }
+  relation: defines
+  level: may
+  applies_to: { role: [ issuer ] }
+  quote: "credential_metadata: OPTIONAL. Object containing information relevant to the usage and display of issued
+    Credentials."
+  verified: source-checked
+- id: oid4vci/8.3/credential
+  subject: vci.credential-response.credential
+  spec: openid4vci-1.0
+  locator: { section: "8.3" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ issuer ] }
+  quote: "credential: REQUIRED. Contains one issued Credential. The encoding of the Credential depends on the Credential
+    Format and MAY be a string or an object."
+  verified: source-checked
+- id: oid4vci/11.1/notification_id
+  subject: vci.notification-request.notification_id
+  spec: openid4vci-1.0
+  locator: { section: "11.1" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ wallet ] }
+  quote: "notification_id: REQUIRED. String received in the Credential Response or Deferred Credential Response
+    identifying an issuance flow"
+  verified: source-checked
+- id: oid4vci/F.1/iat
+  subject: vci.proof-jwt.iat
+  spec: openid4vci-1.0
+  locator: { section: "F.1" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ wallet ] }
+  quote: "iat: REQUIRED (number). The value of this claim MUST be the time at which the key proof was issued using the
+    syntax defined in [RFC7519]."
+  verified: source-checked
+- id: oid4vci/D.1/user_authentication
+  subject: vci.ka.key_storage
+  spec: openid4vci-1.0
+  locator: { section: "D.1" }
+  relation: defines
+  level: may
+  applies_to: { role: [ wallet-provider ] }
+  quote: "user_authentication : OPTIONAL. A non-empty array of case sensitive strings that assert the attack potential
+    resistance of the user authentication methods allowed to access the private keys from the attested_keys parameter."
+  verified: source-checked
+- id: oid4vci/F.1/ka-nonce
+  subject: vci.ka.nonce
+  spec: openid4vci-1.0
+  locator: { section: "F.1" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ wallet-provider, wallet ] }
+  condition: When the key attestation travels in a jwt proof and the Credential Issuer provided a c_nonce.
+  quote: "key_attestation: OPTIONAL. JOSE Header containing a key attestation as described in Appendix D. If the
+    Credential Issuer provided a c_nonce, the nonce claim in the key attestation MUST be set to a server-provided
+    c_nonce."
+  verified: needs-review
+  review:
+    reason: >-
+      OpenID4VCI F.1 requires the c_nonce inside the key attestation when it travels in a jwt proof. ETSI
+      CRED-REQ-4.6.1.2-02 and CIR TR_KA-6.1 put the nonce in the jwt proof, and CIR C_KA-2 requires it in the key
+      attestation only for the attestation proof type. A key attestation provisioned in advance by the Wallet Provider
+      (TR_KA-2.5) cannot contain an issuer's c_nonce. No higher layer says the base rule does not apply, so it stands;
+      the phase-1 example (pre-provisioned key attestation without nonce) does not meet it.
+- id: oid4vci/E/status
+  subject: vci.wia.client_status.status
+  spec: openid4vci-1.0
+  locator: { section: "E" }
+  relation: defines
+  level: may
+  applies_to: { role: [ wallet-provider ] }
+  quote: "status: OPTIONAL. Status mechanism for the Wallet Attestation as defined in [I-D.ietf-oauth-status-list]"
+  note: OpenID4VCI defines a top-level status claim; the CIR places the status reference inside client_status instead.
+  verified: source-checked

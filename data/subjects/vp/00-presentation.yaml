@@ -6,3 +6,53 @@
 - { id: vp.request-object.verifier_info.registration_cert, kind: value, parent: vp.request-object.verifier_info, title: verifier_info element carrying the registration certificate, location: jwt-payload }
 - { id: vp.request-object.verifier_info.registrar_dataset, kind: value, parent: vp.request-object.verifier_info, title: verifier_info element carrying RP Registrar-provided data, location: jwt-payload }
 - { id: vp.wallet.validate-registration-cert, kind: behaviour, parent: vp, title: Wallet authenticates and validates the RP registration certificate }
+- { id: vp.flow.redirect-same, kind: flow, parent: vp, title: "Presentation: OpenID4VP redirect, same device" }
+- { id: vp.flow.redirect-cross, kind: flow, parent: vp, title: "Presentation: OpenID4VP redirect, cross device" }
+- { id: vp.flow.dc-api, kind: flow, parent: vp, title: "Presentation: OpenID4VP over the Digital Credentials API" }
+- { id: vp.cross-device-redirect, kind: behaviour, parent: vp, title: Wallet support of the redirect mechanism for cross-device flows }
+- { id: vp.authorization-request, kind: message, parent: vp, title: Authorization Request (wallet invocation), location: uri }
+- { id: vp.authorization-request.scheme, kind: value, parent: vp.authorization-request, title: URL scheme that invokes the Wallet, location: uri }
+- { id: vp.authorization-request.client_id, kind: field, parent: vp.authorization-request, title: client_id, location: query }
+- { id: vp.authorization-request.request_uri, kind: field, parent: vp.authorization-request, title: request_uri, location: query }
+- { id: vp.request-uri-fetch, kind: message, parent: vp, title: Request Object fetched from request_uri, endpoint: { method: GET, path: "/request/{id}", server: verifier } }
+- { id: vp.request-object.typ, kind: field, parent: vp.request-object, title: typ = oauth-authz-req+jwt, location: jwt-header }
+- { id: vp.request-object.x5c, kind: field, parent: vp.request-object, title: x5c = RP access certificate, location: jwt-header }
+- { id: vp.request-object.client_id, kind: field, parent: vp.request-object, title: client_id (x509_hash prefix), location: jwt-payload }
+- { id: vp.request-object.response_type, kind: field, parent: vp.request-object, title: response_type, location: jwt-payload }
+- { id: vp.request-object.response_mode, kind: field, parent: vp.request-object, title: response_mode, location: jwt-payload }
+- { id: vp.request-object.response_uri, kind: field, parent: vp.request-object, title: response_uri, location: jwt-payload }
+- { id: vp.request-object.nonce, kind: field, parent: vp.request-object, title: nonce, location: jwt-payload }
+- { id: vp.request-object.state, kind: field, parent: vp.request-object, title: state, location: jwt-payload }
+- { id: vp.request-object.aud, kind: field, parent: vp.request-object, title: aud, location: jwt-payload }
+- { id: vp.request-object.expected_origins, kind: field, parent: vp.request-object, title: expected_origins (DC API), location: jwt-payload }
+- { id: vp.request-object.client_metadata, kind: field, parent: vp.request-object, title: client_metadata, location: jwt-payload }
+- { id: vp.request-object.client_metadata.jwks, kind: field, parent: vp.request-object.client_metadata, title: client_metadata.jwks (response encryption keys), location: jwt-payload }
+- { id: vp.request-object.client_metadata.enc_values, kind: field, parent: vp.request-object.client_metadata, title: encrypted_response_enc_values_supported, location: jwt-payload }
+- { id: vp.request-object.verifier_info.format, kind: field, parent: vp.request-object.verifier_info, title: "verifier_info[].format", location: jwt-payload }
+- { id: vp.request-object.verifier_info.data, kind: field, parent: vp.request-object.verifier_info, title: "verifier_info[].data", location: jwt-payload }
+- { id: vp.dcql, kind: field, parent: vp.request-object, title: dcql_query, location: jwt-payload }
+- { id: vp.dcql.credentials, kind: field, parent: vp.dcql, title: dcql_query.credentials, location: jwt-payload }
+- { id: vp.dcql.id, kind: field, parent: vp.dcql.credentials, title: "credentials[].id", location: jwt-payload }
+- { id: vp.dcql.format, kind: field, parent: vp.dcql.credentials, title: "credentials[].format", location: jwt-payload }
+- { id: vp.dcql.meta, kind: field, parent: vp.dcql.credentials, title: "credentials[].meta", location: jwt-payload }
+- { id: vp.dcql.vct_values, kind: field, parent: vp.dcql.meta, title: meta.vct_values, location: jwt-payload }
+- { id: vp.dcql.claims, kind: field, parent: vp.dcql.credentials, title: "credentials[].claims", location: jwt-payload }
+- { id: vp.dcql.path, kind: field, parent: vp.dcql.claims, title: "claims[].path", location: jwt-payload }
+- { id: vp.response-post, kind: message, parent: vp, title: Authorization Response posted to response_uri (direct_post.jwt), endpoint: { method: POST, path: /response, server: verifier } }
+- { id: vp.response-post.response, kind: field, parent: vp.response-post, title: response (encrypted JWT), location: form }
+- { id: vp.vp_token, kind: field, parent: vp.authorization-response, title: vp_token, location: jwt-payload }
+- { id: vp.kb-jwt, kind: object, parent: vp, title: Key Binding JWT (kb+jwt) }
+- { id: vp.kb-jwt.typ, kind: field, parent: vp.kb-jwt, title: typ = kb+jwt, location: jwt-header }
+- { id: vp.kb-jwt.sd_hash, kind: field, parent: vp.kb-jwt, title: sd_hash, location: jwt-payload }
+- { id: vp.kb-jwt.aud, kind: field, parent: vp.kb-jwt, title: aud, location: jwt-payload }
+- { id: vp.kb-jwt.nonce, kind: field, parent: vp.kb-jwt, title: nonce, location: jwt-payload }
+- { id: vp.response-ack, kind: message, parent: vp, title: Response endpoint answer to the Wallet }
+- { id: vp.response-ack.redirect_uri, kind: field, parent: vp.response-ack, title: redirect_uri, location: json }
+- { id: vp.redirect-back, kind: step, parent: vp, title: Wallet opens the redirect_uri in the browser (same device) }
+- { id: vp.result-poll, kind: step, parent: vp, title: Verifier frontend learns the result from its backend (application-specific) }
+- { id: vp.dc-api.request, kind: message, parent: vp, title: "navigator.credentials.get() request (Digital Credentials API)", location: json }
+- { id: vp.dc-api.protocol, kind: field, parent: vp.dc-api.request, title: protocol, location: json }
+- { id: vp.dc-api.request.data, kind: field, parent: vp.dc-api.request, title: data.request (signed Request Object), location: json }
+- { id: vp.dc-api.response, kind: message, parent: vp, title: Digital Credentials API response, location: json }
+- { id: vp.dc-api.response.data, kind: field, parent: vp.dc-api.response, title: data.response (encrypted JWT), location: json }
+- { id: vp.dc-api.forward, kind: step, parent: vp, title: Verifier frontend forwards the response to its backend (application-specific) }

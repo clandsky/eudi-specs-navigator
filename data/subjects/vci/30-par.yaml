@@ -12,3 +12,9 @@
 - { id: vci.authorization-response, kind: message, parent: vci, title: Authorization Response (redirect) }
 - { id: vci.authorization-response.code, kind: field, parent: vci.authorization-response, title: code, location: query }
 - { id: vci.authorization-response.iss, kind: field, parent: vci.authorization-response, title: iss, location: query }
+- { id: vci.par-request.response_type, kind: field, parent: vci.par-request, title: response_type, location: form }
+- { id: vci.par-request.redirect_uri, kind: field, parent: vci.par-request, title: redirect_uri, location: form }
+- { id: vci.par-request.state, kind: field, parent: vci.par-request, title: state, location: form }
+- { id: vci.par-response.expires_in, kind: field, parent: vci.par-response, title: expires_in, location: json }
+- { id: vci.authorization-request.client_id, kind: field, parent: vci.authorization-request, title: client_id, location: query }
+- { id: vci.authorization-response.state, kind: field, parent: vci.authorization-response, title: state, location: query }

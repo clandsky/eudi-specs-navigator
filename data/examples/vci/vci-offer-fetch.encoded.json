@@ -1,0 +1,31 @@
+{
+  "id": "vci-offer-fetch",
+  "http": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json",
+      "Cache-Control": "no-store"
+    },
+    "body": {
+      "type": "json",
+      "value": {
+        "credential_issuer": "https://eaa.example.eu",
+        "credential_configuration_ids": [
+          "gym_membership_sd_jwt"
+        ],
+        "grants": {
+          "urn:ietf:params:oauth:grant-type:pre-authorized_code": {
+            "pre-authorized_code": "oaKazRN8I0IbtZ0C7JuMn5",
+            "tx_code": {
+              "input_mode": "numeric",
+              "length": 6,
+              "description": "Enter the code we sent to your registered phone number"
+            }
+          }
+        }
+      }
+    }
+  },
+  "jwts": {},
+  "inputHash": "e5900ef9bc95103d"
+}

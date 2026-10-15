@@ -9,3 +9,4 @@ http:
 annotations:
   /http/query/code: vci.authorization-response.code
   /http/query/iss: vci.authorization-response.iss
+  /http/query/state: vci.authorization-response.state

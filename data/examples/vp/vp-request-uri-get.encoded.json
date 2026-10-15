@@ -1,0 +1,12 @@
+{
+  "id": "vp-request-uri-get",
+  "http": {
+    "method": "GET",
+    "url": "https://verifier.example.eu/request/d7b1",
+    "headers": {
+      "Accept": "application/oauth-authz-req+jwt"
+    }
+  },
+  "jwts": {},
+  "inputHash": "289ee1fb85a60afc"
+}

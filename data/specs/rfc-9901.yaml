@@ -1,0 +1,10 @@
+id: rfc-9901
+title: "RFC 9901: Selective Disclosure for JSON Web Tokens (SD-JWT)"
+short: RFC 9901
+layer: primitive
+version: RFC 9901
+source:
+  local: "eIDAS + all references/standards/rfc/RFC9901.txt"
+  text: sources/rfc9901.txt
+  url: https://www.rfc-editor.org/rfc/rfc9901
+anchor_template: https://www.rfc-editor.org/rfc/rfc9901#section-{section}

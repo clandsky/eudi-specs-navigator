@@ -28,3 +28,17 @@
 - { id: vci.ka.verification, kind: behaviour, parent: vci.ka, title: Credential issuer verifies the key attestation }
 - { id: vci.dpop-proof, kind: object, parent: vci, title: DPoP proof JWT }
 - { id: vci.dpop-proof.typ, kind: field, parent: vci.dpop-proof, title: typ, location: jwt-header }
+- { id: vci.wia.certification-members, kind: field, parent: vci.wia.wallet_solution_certification_information, title: Members of wallet_solution_certification_information, location: jwt-payload }
+- { id: vci.wia.client_status.status, kind: field, parent: vci.wia.client_status, title: client_status.status, location: jwt-payload }
+- { id: vci.wia.client_status.exp, kind: field, parent: vci.wia.client_status, title: client_status.exp, location: jwt-payload }
+- { id: vci.wia-pop.iss, kind: field, parent: vci.wia-pop, title: iss, location: jwt-payload }
+- { id: vci.wia-pop.iat, kind: field, parent: vci.wia-pop, title: iat, location: jwt-payload }
+- { id: vci.ka.nonce, kind: field, parent: vci.ka, title: nonce (in the key attestation), location: jwt-payload }
+- { id: vci.ka.key_storage_status.status, kind: field, parent: vci.ka.key_storage_status, title: key_storage_status.status, location: jwt-payload }
+- { id: vci.ka.key_storage_status.exp, kind: field, parent: vci.ka.key_storage_status, title: key_storage_status.exp, location: jwt-payload }
+- { id: vci.dpop-proof.jwk, kind: field, parent: vci.dpop-proof, title: jwk (JOSE header), location: jwt-header }
+- { id: vci.dpop-proof.jti, kind: field, parent: vci.dpop-proof, title: jti, location: jwt-payload }
+- { id: vci.dpop-proof.htm, kind: field, parent: vci.dpop-proof, title: htm, location: jwt-payload }
+- { id: vci.dpop-proof.htu, kind: field, parent: vci.dpop-proof, title: htu, location: jwt-payload }
+- { id: vci.dpop-proof.iat, kind: field, parent: vci.dpop-proof, title: iat, location: jwt-payload }
+- { id: vci.dpop-proof.ath, kind: field, parent: vci.dpop-proof, title: ath, location: jwt-payload }

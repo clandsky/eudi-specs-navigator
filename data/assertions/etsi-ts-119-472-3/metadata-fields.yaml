@@ -1,0 +1,89 @@
+# ETSI TS 119 472-3: members of issuer_info and credential_reuse_policy.
+- id: etsi-472-3/ISS-MDATA-REG_CERT-4.2.3-05/format
+  subject: vci.metadata.issuer_info.format
+  spec: etsi-ts-119-472-3
+  locator: { req: ISS-MDATA-REG_CERT-4.2.3-05, section: "4.2.3" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ issuer ] }
+  quote: "The value of the format member of the element in the issuer_info array parameter that contains the PID/EAA
+    Provider's registration certificate shall be \"registration_cert\"."
+  verified: source-checked
+- id: etsi-472-3/ISS-MDATA-REG_CERT-4.2.3-06/data
+  subject: vci.metadata.issuer_info.data
+  spec: etsi-ts-119-472-3
+  locator: { req: ISS-MDATA-REG_CERT-4.2.3-06, section: "4.2.3" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ issuer ] }
+  quote: "The value of the data member of the element in the issuer_info array parameter that contains the PID/EAA
+    Provider's registration certificate shall be the registration certificate of the PID/EAA Provider."
+  verified: source-checked
+- id: oid4vp/5.1/verifier_info-format
+  subject: vci.metadata.issuer_info.format
+  spec: openid4vp-1.0
+  locator: { section: "5.1" }
+  relation: defines
+  level: shall
+  quote: "format: REQUIRED. A string that identifies the format of the attestation and how it is encoded."
+  note: issuer_info reuses the verifier_info structure (ISS-MDATA-REG_CERT-4.2.3-03).
+  verified: source-checked
+- id: oid4vp/5.1/verifier_info-data
+  subject: vci.metadata.issuer_info.data
+  spec: openid4vp-1.0
+  locator: { section: "5.1" }
+  relation: defines
+  level: shall
+  quote: "data: REQUIRED. An object or string containing an attestation (e.g. a JWT)."
+  verified: source-checked
+- id: etsi-472-3/ISS-MDATA-EAA-REUSE-POL-4.2.4.1-04
+  subject: vci.metadata.ccs.reuse.id
+  spec: etsi-ts-119-472-3
+  locator: { req: ISS-MDATA-EAA-REUSE-POL-4.2.4.1-04, section: "4.2.4.1" }
+  relation: extends
+  level: shall
+  applies_to: { role: [ issuer ] }
+  quote: "The credential_reuse_policy parameter shall have the id member, identifying the PID/EAA reuse policy."
+  verified: source-checked
+- id: etsi-472-3/ISS-MDATA-EAA-REUSE-POL-4.2.4.1-06
+  subject: vci.metadata.ccs.reuse.options
+  spec: etsi-ts-119-472-3
+  locator: { req: ISS-MDATA-EAA-REUSE-POL-4.2.4.1-06, section: "4.2.4.1" }
+  relation: extends
+  level: may
+  applies_to: { role: [ issuer ] }
+  quote: "The credential_reuse_policy parameter may have the options member for providing specific details of the reuse
+    policy identified by the id member."
+  verified: source-checked
+- id: etsi-472-3/ISS-MDATA-EAA-REUSE-POL-4.2.4.2-02
+  subject: vci.metadata.ccs.reuse.details
+  spec: etsi-ts-119-472-3
+  locator: { req: ISS-MDATA-EAA-REUSE-POL-4.2.4.2-02, section: "4.2.4.2" }
+  relation: extends
+  level: shall
+  applies_to: { role: [ issuer ] }
+  condition: If id is arf_annex_ii.
+  quote: "If the id member has the value \"arf_annex_ii\" the element within the options member shall contain the member
+    of label \"details\" mapped to an array of strings."
+  verified: source-checked
+- id: etsi-472-3/ISS-MDATA-EAA-REUSE-POL-4.2.4.2-08
+  subject: vci.metadata.ccs.reuse.batch_size
+  spec: etsi-ts-119-472-3
+  locator: { req: ISS-MDATA-EAA-REUSE-POL-4.2.4.2-08, section: "4.2.4.2" }
+  relation: extends
+  level: shall
+  applies_to: { role: [ issuer ] }
+  quote: "The JSON number mapped to the label \"batch_size\" shall specify the maximum array size for the proofs parameter
+    in a Credential Request and shall be 2 or greater."
+  xref: [ { source: c2bo, id: reuse-policy-batch-ignored } ]
+  verified: source-checked
+- id: etsi-472-3/ISS-MDATA-EAA-REUSE-POL-4.2.4.2-10
+  subject: vci.metadata.ccs.reuse.reissue_trigger_unused
+  spec: etsi-ts-119-472-3
+  locator: { req: ISS-MDATA-EAA-REUSE-POL-4.2.4.2-10, section: "4.2.4.2" }
+  relation: extends
+  level: shall
+  applies_to: { role: [ issuer ] }
+  quote: "The JSON number mapped to the label \"reissue_trigger_unused\" shall specify the lower limit for the number of
+    unused PIDs/EAAs held by the Wallet Unit."
+  verified: source-checked

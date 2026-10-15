@@ -1,0 +1,29 @@
+id: vci-pre-auth
+title: Issuance — pre-authorized code flow, cross device
+role: issuer
+subject: vci.flow.pre-auth
+variant: { grant: pre-authorized_code, device: cross }
+summary: >-
+  The user is authenticated on the issuer's website and scans a QR code with the wallet on a second device. The offer
+  carries a pre-authorized code; a transaction code sent on a separate channel binds it to the user. The token request
+  still carries the WIA (CIR TR-WIA-3 does not depend on the grant).
+participants:
+  - { id: wp, label: Wallet Provider, role: wallet-provider }
+  - { id: wallet, label: Wallet Unit, role: wallet }
+  - { id: as, label: Authorization Server, role: as }
+  - { id: issuer, label: Credential Issuer, role: issuer }
+steps:
+  - { id: provision, from: wp, to: wallet, kind: internal, label: WIA + key attestation, subject: vci.provisioning, example: vci-wia, tags: [WIA, KA] }
+  - { id: offer, from: issuer, to: wallet, kind: redirect, label: QR code with credential_offer_uri, subject: vci.offer, example: vci-offer-preauth, tags: ["eu-eaa-offer://", by reference] }
+  - { id: offer-fetch, from: wallet, to: issuer, kind: request, label: GET credential_offer_uri, subject: vci.offer-fetch, example: vci-offer-fetch, tags: [pre-authorized_code, tx_code] }
+  - { id: tx-code, from: issuer, to: wallet, kind: internal, label: Transaction Code (SMS, e-mail), subject: vci.tx-code-delivery, note: The user types the code into the wallet. }
+  - { id: metadata, from: wallet, to: issuer, kind: request, label: GET /.well-known/openid-credential-issuer, subject: vci.metadata, example: vci-issuer-metadata, tags: [signed] }
+  - { id: as-metadata, from: wallet, to: as, kind: request, label: GET /.well-known/oauth-authorization-server, subject: vci.as-metadata, example: vci-as-metadata }
+  - { id: token, from: wallet, to: as, kind: request, label: POST /token (pre-authorized code), subject: vci.token-request, example: vci-token-request-preauth, tags: [WIA + PoP, DPoP, tx_code] }
+  - { id: token-response, from: as, to: wallet, kind: response, label: DPoP access token, subject: vci.token-response, example: vci-token-response }
+  - { id: nonce, from: wallet, to: issuer, kind: request, label: POST /nonce, subject: vci.nonce-request, example: vci-nonce-request }
+  - { id: nonce-response, from: issuer, to: wallet, kind: response, label: c_nonce, subject: vci.nonce-response, example: vci-nonce-response }
+  - { id: credential, from: wallet, to: issuer, kind: request, label: POST /credential, subject: vci.credential-request, example: vci-credential-request, tags: [DPoP, proofs.jwt + KA] }
+  - { id: credential-response, from: issuer, to: wallet, kind: response, label: credentials, subject: vci.credential-response, example: vci-credential-response }
+  - { id: notification, from: wallet, to: issuer, kind: request, label: POST /notification, subject: vci.notification-request, example: vci-notification-request }
+  - { id: notification-response, from: issuer, to: wallet, kind: response, label: "204", subject: vci.notification-response }

@@ -11,3 +11,4 @@ http:
   body: { type: json, value: { notification_id: 3fwe98js, event: credential_accepted } }
 annotations:
   /http/body/event: vci.notification-request.event
+  /http/body/notification_id: vci.notification-request.notification_id

@@ -330,3 +330,14 @@
   probe: verifier_info
   note: HAIP 1.0 does not mention verifier_info; registration certificates are out of its scope.
   verified: source-checked
+- id: haip/4.5.1/ka-x5c
+  subject: vci.ka.x5c
+  spec: haip-1.0
+  locator: { section: "4.5.1" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ wallet-provider ] }
+  quote: "The public key used to validate the signature on the key attestation MUST be included in the x5c JOSE header of
+    the key attestation The X.509 certificate of the trust anchor MUST NOT be included in the x5c JOSE header of the key
+    attestation."
+  verified: source-checked

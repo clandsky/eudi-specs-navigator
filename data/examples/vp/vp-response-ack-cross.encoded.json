@@ -1,0 +1,16 @@
+{
+  "id": "vp-response-ack-cross",
+  "http": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json",
+      "Cache-Control": "no-store"
+    },
+    "body": {
+      "type": "json",
+      "value": {}
+    }
+  },
+  "jwts": {},
+  "inputHash": "1a206ddc677bc8e8"
+}

@@ -1,0 +1,20 @@
+id: vp-redirect-same
+title: Presentation — OpenID4VP redirect, same device
+role: verifier
+subject: vp.flow.redirect-same
+variant: { transport: redirect, device: same }
+summary: >-
+  The user is on the verifier's website on the phone that holds the wallet. The verifier invokes the wallet with an
+  eu-eaap:// link carrying a request_uri; the wallet fetches the signed Request Object, posts an encrypted response
+  (direct_post.jwt) and follows the redirect_uri back to the browser session.
+participants:
+  - { id: browser, label: Browser }
+  - { id: wallet, label: Wallet Unit, role: wallet }
+  - { id: verifier, label: Verifier (Relying Party), role: verifier }
+steps:
+  - { id: invoke, from: verifier, to: wallet, kind: redirect, label: "eu-eaap:// link with request_uri", subject: vp.authorization-request, example: vp-authorization-request, tags: [x509_hash client_id] }
+  - { id: fetch, from: wallet, to: verifier, kind: request, label: GET request_uri, subject: vp.request-uri-fetch, example: vp-request-uri-get }
+  - { id: request-object, from: verifier, to: wallet, kind: response, label: signed Request Object, subject: vp.request-object, example: vp-request-uri-response, tags: [JAR, DCQL, verifier_info] }
+  - { id: response, from: wallet, to: verifier, kind: request, label: POST response_uri (direct_post.jwt), subject: vp.response-post, example: vp-response-post, tags: [JWE, SD-JWT VC + KB-JWT] }
+  - { id: ack, from: verifier, to: wallet, kind: response, label: 200 redirect_uri, subject: vp.response-ack, example: vp-response-ack-same }
+  - { id: redirect-back, from: wallet, to: browser, kind: redirect, label: open redirect_uri, subject: vp.redirect-back, note: Binds the response to the browser session that started the request. }

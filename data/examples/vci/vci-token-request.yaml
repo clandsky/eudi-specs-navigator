@@ -49,3 +49,4 @@ annotations:
   /jwt/wia/payload/wallet_version: vci.wia.wallet_version
   /jwt/wia/payload/wallet_solution_certification_information: vci.wia.wallet_solution_certification_information
   /jwt/wia/payload/client_status: vci.wia.client_status
+  /http/body/redirect_uri: vci.token-request.redirect_uri

@@ -1,0 +1,129 @@
+# OpenID4VCI 1.0 and HAIP: pre-authorized code flow and offer by reference.
+- id: oid4vci/4.1.3/fetch
+  subject: vci.offer-fetch
+  spec: openid4vci-1.0
+  locator: { section: "4.1.3" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ wallet ] }
+  quote: "Upon receipt of the credential_offer_uri, the Wallet MUST send an HTTP GET request to the URI to retrieve the
+    referenced Credential Offer Object, unless it is already cached"
+  verified: source-checked
+- id: oid4vci/4.1.3/unique-uri
+  subject: vci.offer-fetch
+  spec: openid4vci-1.0
+  locator: { section: "4.1.3" }
+  relation: defines
+  level: should
+  applies_to: { role: [ issuer ] }
+  quote: "The Credential Issuer SHOULD use a unique URI for each Credential Offer utilizing distinct parameters, or
+    otherwise prevent the Credential Issuer from caching the credential_offer_uri."
+  verified: source-checked
+- id: haip/4.2/same-and-cross-device
+  subject: vci.offer
+  spec: haip-1.0
+  locator: { section: "4.2" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ wallet, issuer ] }
+  quote: "Both Issuer and Wallet MUST support Credential Offer in both same-device and cross-device flows."
+  verified: source-checked
+- id: oid4vci/4.1.1/pre-authorized_code
+  subject: vci.offer.pre-authorized_code
+  spec: openid4vci-1.0
+  locator: { section: "4.1.1" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ issuer ] }
+  condition: In the pre-authorized_code grant of the offer.
+  quote: "pre-authorized_code: REQUIRED. The code representing the Credential Issuer's authorization for the Wallet to
+    obtain Credentials of a certain type. This code MUST be short lived and single use."
+  verified: source-checked
+- id: oid4vci/4.1.1/pre-authorized-grant
+  subject: vci.offer.grants.pre-authorized_code
+  spec: openid4vci-1.0
+  locator: { section: "4.1.1" }
+  relation: defines
+  level: may
+  applies_to: { role: [ issuer ] }
+  quote: "If the Wallet decides to use the Pre-Authorized Code Flow, this parameter value MUST be included in the
+    subsequent Token Request with the Pre-Authorized Code Flow."
+  verified: source-checked
+- id: oid4vci/4.1.1/tx_code
+  subject: vci.offer.tx_code
+  spec: openid4vci-1.0
+  locator: { section: "4.1.1" }
+  relation: defines
+  level: may
+  applies_to: { role: [ issuer ] }
+  quote: "tx_code: OPTIONAL. Object indicating that a Transaction Code is required if present, even if empty."
+  verified: source-checked
+- id: oid4vci/4.1.1/input_mode
+  subject: vci.offer.tx_code.input_mode
+  spec: openid4vci-1.0
+  locator: { section: "4.1.1" }
+  relation: defines
+  level: may
+  applies_to: { role: [ issuer ] }
+  quote: "input_mode : OPTIONAL. String specifying the input character set. Possible values are numeric (only digits) and
+    text (any characters). The default is numeric."
+  verified: source-checked
+- id: oid4vci/4.1.1/length
+  subject: vci.offer.tx_code.length
+  spec: openid4vci-1.0
+  locator: { section: "4.1.1" }
+  relation: defines
+  level: may
+  applies_to: { role: [ issuer ] }
+  quote: "length: OPTIONAL. Integer specifying the length of the Transaction Code."
+  verified: source-checked
+- id: oid4vci/4.1.1/description
+  subject: vci.offer.tx_code.description
+  spec: openid4vci-1.0
+  locator: { section: "4.1.1" }
+  relation: defines
+  level: may
+  applies_to: { role: [ issuer ] }
+  quote: "description: OPTIONAL. String containing guidance for the Holder of the Wallet on how to obtain the Transaction
+    Code"
+  verified: source-checked
+- id: oid4vci/4.1.1/separate-channel
+  subject: vci.tx-code-delivery
+  spec: openid4vci-1.0
+  locator: { section: "4.1.1" }
+  relation: defines
+  level: should
+  applies_to: { role: [ issuer ] }
+  quote: "It is RECOMMENDED to send the Transaction Code via a separate channel."
+  verified: source-checked
+- id: oid4vci/6.1/pre-authorized_code
+  subject: vci.token-request.pre-authorized_code
+  spec: openid4vci-1.0
+  locator: { section: "6.1" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ wallet ], grant: [ pre-authorized_code ] }
+  quote: "pre-authorized_code: The code representing the authorization to obtain Credentials of a certain type. This
+    parameter MUST be present if the grant_type is urn:ietf:params:oauth:grant-type:pre-authorized_code."
+  verified: source-checked
+- id: oid4vci/6.1/tx_code
+  subject: vci.token-request.tx_code
+  spec: openid4vci-1.0
+  locator: { section: "6.1" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ wallet ], grant: [ pre-authorized_code ] }
+  condition: If a tx_code object was present in the Credential Offer.
+  quote: "tx_code: OPTIONAL. String value containing a Transaction Code value itself. This value MUST be present if a
+    tx_code object was present in the Credential Offer (including if the object was empty)."
+  verified: source-checked
+- id: oid4vci/6.1/preauth-client-auth
+  subject: vci.client-auth
+  spec: openid4vci-1.0
+  locator: { section: "6.1" }
+  relation: defines
+  level: may
+  applies_to: { grant: [ pre-authorized_code ] }
+  quote: "For the Pre-Authorized Code Grant Type, authentication of the Client is OPTIONAL, as described in Section 3.2.1
+    of OAuth 2.0 [RFC6749]"
+  verified: source-checked

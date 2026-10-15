@@ -1,0 +1,283 @@
+# Generic building blocks: HTTP, JOSE, JWT, JWK, Token Status List, SD-JWT, SD-JWT VC.
+- id: rfc9110/8.3/content-type
+  subject: http.content-type
+  spec: rfc-9110
+  locator: { section: "8.3" }
+  relation: defines
+  level: info
+  quote: "The \"Content-Type\" header field indicates the media type of the associated representation"
+  verified: source-checked
+- id: rfc9110/8.6/content-length
+  subject: http.content-length
+  spec: rfc-9110
+  locator: { section: "8.6" }
+  relation: defines
+  level: info
+  quote: "The \"Content-Length\" header field indicates the associated representation's data length as a decimal
+    non-negative integer number of octets."
+  verified: source-checked
+- id: rfc9110/10.2.2/location
+  subject: http.location
+  spec: rfc-9110
+  locator: { section: "10.2.2" }
+  relation: defines
+  level: info
+  quote: "The \"Location\" header field is used in some responses to refer to a specific resource in relation to the
+    response."
+  verified: source-checked
+- id: rfc9111/5.2/cache-control
+  subject: http.cache-control
+  spec: rfc-9111
+  locator: { section: "5.2" }
+  relation: defines
+  level: info
+  quote: "The \"Cache-Control\" header field is used to list directives for caches along the request/response chain."
+  verified: source-checked
+- id: rfc9110/11.6.2/authorization
+  subject: http.authorization-dpop
+  spec: rfc-9110
+  locator: { section: "11.6.2" }
+  relation: defines
+  level: info
+  quote: "The \"Authorization\" header field allows a user agent to authenticate itself with an origin server"
+  verified: source-checked
+- id: rfc9449/7.1/scheme-generic
+  subject: http.authorization-dpop
+  spec: rfc-9449
+  locator: { section: "7.1" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ wallet ] }
+  quote: "A DPoP-bound access token is sent using the Authorization request header field per Section 11.6.2 of [RFC9110]
+    with an authentication scheme of DPoP."
+  verified: source-checked
+- id: haip/4/dpop-authorization
+  subject: http.authorization-dpop
+  spec: haip-1.0
+  locator: { section: "4" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ wallet, issuer ] }
+  quote: "Sender-constrained access token: MUST support DPoP as defined in [RFC9449]."
+  verified: source-checked
+- id: rfc7515/4.1.1/alg
+  subject: jose.alg
+  spec: rfc-7515
+  locator: { section: "4.1.1" }
+  relation: defines
+  level: shall
+  quote: "The \"alg\" (algorithm) Header Parameter identifies the cryptographic algorithm used to secure the JWS."
+  verified: source-checked
+- id: rfc7515/4.1.9/typ
+  subject: jose.typ
+  spec: rfc-7515
+  locator: { section: "4.1.9" }
+  relation: defines
+  level: may
+  quote: "The \"typ\" (type) Header Parameter is used by JWS applications to declare the media type [IANA.MediaTypes] of
+    this complete JWS."
+  verified: source-checked
+- id: rfc7515/4.1.6/x5c
+  subject: jose.x5c
+  spec: rfc-7515
+  locator: { section: "4.1.6" }
+  relation: defines
+  level: may
+  quote: "The \"x5c\" (X.509 certificate chain) Header Parameter contains the X.509 public key certificate or certificate
+    chain [RFC5280] corresponding to the key used to digitally sign the JWS."
+  verified: source-checked
+- id: rfc7515/4.1.3/jwk
+  subject: jose.jwk
+  spec: rfc-7515
+  locator: { section: "4.1.3" }
+  relation: defines
+  level: may
+  quote: "The \"jwk\" (JSON Web Key) Header Parameter is the public key that corresponds to the key used to digitally sign
+    the JWS."
+  verified: source-checked
+- id: rfc7519/4.1.1/iss
+  subject: jwt.iss
+  spec: rfc-7519
+  locator: { section: "4.1.1" }
+  relation: defines
+  level: may
+  quote: "The \"iss\" (issuer) claim identifies the principal that issued the JWT."
+  verified: source-checked
+- id: rfc7519/4.1.6/iat
+  subject: jwt.iat
+  spec: rfc-7519
+  locator: { section: "4.1.6" }
+  relation: defines
+  level: may
+  quote: "The \"iat\" (issued at) claim identifies the time at which the JWT was issued."
+  verified: source-checked
+- id: rfc7519/4.1.4/exp
+  subject: jwt.exp
+  spec: rfc-7519
+  locator: { section: "4.1.4" }
+  relation: defines
+  level: may
+  quote: "The \"exp\" (expiration time) claim identifies the expiration time on or after which the JWT MUST NOT be
+    accepted for processing."
+  verified: source-checked
+- id: rfc7519/4.1.7/jti
+  subject: jwt.jti
+  spec: rfc-7519
+  locator: { section: "4.1.7" }
+  relation: defines
+  level: may
+  quote: "The \"jti\" (JWT ID) claim provides a unique identifier for the JWT."
+  verified: source-checked
+- id: rfc7800/3.1/cnf
+  subject: jwt.cnf
+  spec: rfc-7800
+  locator: { section: "3.1" }
+  relation: defines
+  level: info
+  quote: "The \"cnf\" claim is used in the JWT to contain members used to identify the proof-of-possession key."
+  verified: source-checked
+- id: rfc7800/3.2/jwk
+  subject: jwt.cnf.jwk
+  spec: rfc-7800
+  locator: { section: "3.2" }
+  relation: defines
+  level: info
+  quote: "When the key held by the presenter is an asymmetric private key, the \"jwk\" member is a JSON Web Key [JWK]
+    representing the corresponding asymmetric public key."
+  verified: source-checked
+- id: rfc7517/4.1/kty
+  subject: jwk.kty
+  spec: rfc-7517
+  locator: { section: "4.1" }
+  relation: defines
+  level: shall
+  quote: "The \"kty\" (key type) parameter identifies the cryptographic algorithm family used with the key, such as
+    \"RSA\" or \"EC\"."
+  verified: source-checked
+- id: rfc7518/6.2.1.1/crv
+  subject: jwk.crv
+  spec: rfc-7518
+  locator: { section: "6.2.1.1" }
+  relation: defines
+  level: shall
+  quote: "The \"crv\" (curve) parameter identifies the cryptographic curve used with the key."
+  verified: source-checked
+- id: rfc7518/6.2.1.2/x
+  subject: jwk.x
+  spec: rfc-7518
+  locator: { section: "6.2.1.2" }
+  relation: defines
+  level: shall
+  quote: "The \"x\" (x coordinate) parameter contains the x coordinate for the Elliptic Curve point."
+  verified: source-checked
+- id: rfc7518/6.2.1.3/y
+  subject: jwk.y
+  spec: rfc-7518
+  locator: { section: "6.2.1.3" }
+  relation: defines
+  level: shall
+  quote: "The \"y\" (y coordinate) parameter contains the y coordinate for the Elliptic Curve point."
+  verified: source-checked
+- id: tsl-20/6.2/status
+  subject: tsl.status
+  spec: status-list-20
+  locator: { section: "6.2" }
+  relation: defines
+  level: shall
+  quote: "status: REQUIRED. The status (status) claim MUST specify a JSON Object that contains at least one reference to a
+    status mechanism."
+  verified: source-checked
+- id: tsl-20/6.2/status_list
+  subject: tsl.status_list
+  spec: status-list-20
+  locator: { section: "6.2" }
+  relation: defines
+  level: shall
+  condition: When the Token Status List mechanism is used.
+  quote: "status_list: REQUIRED when the status mechanism defined in this specification is used. It MUST specify a JSON
+    Object that contains a reference to a Status List Token."
+  verified: source-checked
+- id: tsl-20/6.2/idx
+  subject: tsl.idx
+  spec: status-list-20
+  locator: { section: "6.2" }
+  relation: defines
+  level: shall
+  quote: "idx: REQUIRED. The idx (index) claim MUST specify a non-negative Integer that represents the index to check for
+    status information in the Status List for the current Referenced Token."
+  verified: source-checked
+- id: tsl-20/6.2/uri
+  subject: tsl.uri
+  spec: status-list-20
+  locator: { section: "6.2" }
+  relation: defines
+  level: shall
+  quote: "uri: REQUIRED. The uri (URI) claim MUST specify a String value that identifies the Status List Token containing
+    the status information for the Referenced Token."
+  verified: source-checked
+- id: rfc9901/4.2.4.1/_sd
+  subject: sdjwt._sd
+  spec: rfc-9901
+  locator: { section: "4.2.4.1" }
+  relation: defines
+  level: info
+  quote: "Digests of Disclosures for object properties are added to an array under the new key _sd in the object. The _sd
+    key MUST refer to an array of strings, each string being a digest of a Disclosure or a decoy digest"
+  verified: source-checked
+- id: rfc9901/4.1.1/_sd_alg
+  subject: sdjwt._sd_alg
+  spec: rfc-9901
+  locator: { section: "4.1.1" }
+  relation: defines
+  level: may
+  quote: "The claim _sd_alg indicates the hash algorithm used by the Issuer to generate the digests as described in
+    Section 4.2. When used, this claim MUST appear at the top level of the SD-JWT payload."
+  verified: source-checked
+- id: sdjwtvc-13/typ
+  subject: sdjwtvc.typ
+  spec: sd-jwt-vc-13
+  locator: { section: "3.2.1" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ issuer ] }
+  quote: "The typ header parameter of the SD-JWT MUST be present. The typ value MUST use dc+sd-jwt."
+  verified: source-checked
+- id: sdjwtvc-13/vct
+  subject: sdjwtvc.vct
+  spec: sd-jwt-vc-13
+  locator: { section: "3.2.2.2" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ issuer ] }
+  quote: "vct: REQUIRED. The type of the Verifiable Credential"
+  verified: source-checked
+- id: sdjwtvc-13/iss
+  subject: sdjwtvc.iss
+  spec: sd-jwt-vc-13
+  locator: { section: "3.2.2.2" }
+  relation: defines
+  level: may
+  applies_to: { role: [ issuer ] }
+  quote: "iss: OPTIONAL. As defined in Section 4.1.1 of [RFC7519] this claim explicitly indicates the Issuer of the
+    Verifiable Credential when it is not conveyed by other means"
+  verified: source-checked
+- id: sdjwtvc-13/exp
+  subject: sdjwtvc.exp
+  spec: sd-jwt-vc-13
+  locator: { section: "3.2.2.2" }
+  relation: defines
+  level: may
+  applies_to: { role: [ issuer ] }
+  quote: "exp: OPTIONAL. The expiry time of the Verifiable Credential after which the Verifiable Credential is no longer
+    valid."
+  verified: source-checked
+- id: sdjwtvc-13/cnf
+  subject: sdjwtvc.cnf
+  spec: sd-jwt-vc-13
+  locator: { section: "3.2.2.2" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ issuer ] }
+  condition: When cryptographic Key Binding is to be supported.
+  quote: "cnf: OPTIONAL unless cryptographic Key Binding is to be supported, in which case it is REQUIRED."
+  verified: source-checked

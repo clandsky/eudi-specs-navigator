@@ -1,0 +1,105 @@
+# ETSI TS 119 472-2 V1.2.1: request object, wallet invocation, support.
+- {
+    id: etsi-472-2/OIDFVP-HAIP-REDIRECTS-03,
+    subject: vp.authorization-request.scheme,
+    spec: etsi-ts-119-472-2,
+    locator: { req: OIDFVP-HAIP-REDIRECTS-03, section: "6.4.1" },
+    relation: profiles,
+    level: shall,
+    applies_to: { role: [ wallet ] },
+    quote: "OIDFVP-HAIP-REDIRECTS-03: The EUDI Wallet shall support at least a custom URL scheme \"eu-eaap://\" for its
+      authorization_endpoint.",
+    verified: source-checked
+  }
+- {
+    id: etsi-472-2/OIDFVP-HAIP-REDIRECTS-04,
+    subject: vp.authorization-request.request_uri,
+    spec: etsi-ts-119-472-2,
+    locator: { req: OIDFVP-HAIP-REDIRECTS-04, section: "6.4.1" },
+    relation: profiles,
+    level: shall,
+    applies_to: { role: [ verifier ] },
+    quote: "OIDFVP-HAIP-REDIRECTS-04: The Authorization Request shall contain the request_uri parameter, and therefore shall
+      not contain the Request Object (RO).",
+    verified: source-checked
+  }
+- {
+    id: etsi-472-2/OIDFVP-HAIP-COMMON-REQ-RO-15,
+    subject: vp.request-object.verifier_info.format,
+    spec: etsi-ts-119-472-2,
+    locator: { req: OIDFVP-HAIP-COMMON-REQ-RO-15, section: "6.3.2.2" },
+    relation: profiles,
+    level: shall,
+    applies_to: { role: [ verifier ] },
+    quote: "The value of the format member of the element in the verifier_info array enclosing the registration certificate
+      shall be: \"registration_cert\".",
+    verified: source-checked
+  }
+- {
+    id: etsi-472-2/OIDFVP-HAIP-COMMON-REQ-RO-16,
+    subject: vp.request-object.verifier_info.data,
+    spec: etsi-ts-119-472-2,
+    locator: { req: OIDFVP-HAIP-COMMON-REQ-RO-16, section: "6.3.2.2" },
+    relation: profiles,
+    level: shall,
+    applies_to: { role: [ verifier ] },
+    quote: "OIDFVP-HAIP-COMMON-REQ-RO-16: The value of the data member of the element in the verifier_info",
+    verified: source-checked
+  }
+- {
+    id: etsi-472-2/OIDFVP-HAIP-COMMON-REQ-RO-18,
+    subject: vp.request-object.client_metadata,
+    spec: etsi-ts-119-472-2,
+    locator: { req: OIDFVP-HAIP-COMMON-REQ-RO-18, section: "6.3.2.2" },
+    relation: profiles,
+    level: shall,
+    applies_to: { role: [ verifier ] },
+    quote: "OIDFVP-HAIP-COMMON-REQ-RO-18: The RO JWT body shall contain the client_metadata parameter.",
+    verified: source-checked
+  }
+- {
+    id: etsi-472-2/OIDFVP-HAIP-COMMON-REQ-RO-19,
+    subject: vp.request-object.client_metadata.jwks,
+    spec: etsi-ts-119-472-2,
+    locator: { req: OIDFVP-HAIP-COMMON-REQ-RO-19, section: "6.3.2.2" },
+    relation: profiles,
+    level: shall,
+    applies_to: { role: [ verifier ] },
+    quote: "OIDFVP-HAIP-COMMON-REQ-RO-19: The client_metadata parameter shall contain the jwks member.",
+    verified: source-checked
+  }
+- {
+    id: etsi-472-2/OIDFVP-HAIP-COMMON-REQ-RO-22,
+    subject: vp.request-object.aud,
+    spec: etsi-ts-119-472-2,
+    locator: { req: OIDFVP-HAIP-COMMON-REQ-RO-22, section: "6.3.2.2" },
+    relation: profiles,
+    level: shall,
+    applies_to: { role: [ verifier ] },
+    quote: "OIDFVP-HAIP-COMMON-REQ-RO-22: The RO JWT body shall contain the aud parameter.",
+    verified: source-checked
+  }
+- {
+    id: etsi-472-2/OIDFVP-HAIP-COMMON-REQ-RO-23,
+    subject: vp.request-object.x5c,
+    spec: etsi-ts-119-472-2,
+    locator: { req: OIDFVP-HAIP-COMMON-REQ-RO-23, section: "6.3.2.2" },
+    relation: profiles,
+    level: shall,
+    applies_to: { role: [ verifier ] },
+    quote: "OIDFVP-HAIP-COMMON-REQ-RO-23: The RO shall be signed by the RP using the private key whose corresponding public
+      key is enclosed within the RP access certificate.",
+    verified: source-checked
+  }
+- {
+    id: etsi-472-2/OIDFVP-HAIP-SUPPORT-03,
+    subject: vp.cross-device-redirect,
+    spec: etsi-ts-119-472-2,
+    locator: { req: OIDFVP-HAIP-SUPPORT-03, section: "6.2" },
+    relation: profiles,
+    level: shall-not,
+    applies_to: { role: [ wallet ] },
+    quote: "OIDFVP-HAIP-SUPPORT-03: The EUDI Wallet shall support the cross-device flow using only the API-mediated
+      mechanism.",
+    verified: source-checked
+  }

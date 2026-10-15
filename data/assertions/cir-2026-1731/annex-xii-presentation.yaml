@@ -52,3 +52,16 @@
     certificate."
   note: Drops the ETSI condition "If the RP has a registration certificate".
   verified: source-checked
+- id: cir/annex-xii/OIDFVP-HAIP-SUPPORT-03
+  subject: vp.cross-device-redirect
+  spec: cir-2026-1731
+  locator: { req: OIDFVP-HAIP-SUPPORT-03, at: "Annex XII, adaptation (13), clause 6.2" }
+  relation: adapts
+  level: should-not
+  applies_to: { role: [ wallet ] }
+  target: etsi-472-2/OIDFVP-HAIP-SUPPORT-03
+  quote: "OIDFVP-HAIP-SUPPORT-03: The EUDI Wallet should not support the redirects-based mechanism specified in clause 6.4
+    for cross-device presentation flows."
+  note: Annex XII NOTE 3 adds that implementing the mechanism should not trigger non-compliance; mitigating session
+    fixation is up to relying parties.
+  verified: source-checked
