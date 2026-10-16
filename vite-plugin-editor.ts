@@ -6,6 +6,7 @@
 //   /__assumptions/add  POST one assumption → appended to data/assertions/assumptions/assumptions.yaml
 //   /__authored/update  POST {id, entry} replaces an authored entry (assumption, resolved reading, go-live compromise)
 //                 in the file it lives in; id, subject and spec stay as they are
+//   /__assumptions/delete  POST {id} removes an open assumption from its file
 //   /__assumptions/resolve  POST {id, layer} moves an assumption into data/assertions/resolved/<layer>.yaml as a
 //                 resolved interpretation of that layer (spec resolved-<layer>)
 // The static build has no server: the overrule editor keeps local drafts there and the example editor is read-only.
@@ -29,6 +30,7 @@ export function editorPlugin(): Plugin {
       server.middlewares.use('/__examples', (req, res) => handleExamples(req, res))
       server.middlewares.use('/__assumptions/resolve', (req, res) => handleResolve(req, res))
       server.middlewares.use('/__assumptions/add', (req, res) => handleAddAssumption(req, res))
+      server.middlewares.use('/__assumptions/delete', (req, res) => handleDeleteAssumption(req, res))
       server.middlewares.use('/__authored/update', (req, res) => handleUpdateAuthored(req, res))
       server.middlewares.use('/__overrules', (req, res) => {
         const send = (status: number, body: unknown) => {
@@ -214,6 +216,22 @@ async function handleUpdateAuthored(req: Req, res: Res) {
 }
 
 const RESOLVABLE = ['golive', 'cir', 'etsi', 'haip', 'base'] as const
+
+async function handleDeleteAssumption(req: Req, res: Res) {
+  try {
+    if (req.method !== 'POST') return sendJson(res, 405, { error: ['POST only'] })
+    const { id } = JSON.parse(await readBody(req)) as { id: string }
+    const a = loadDataset().assertions.find((x) => x.id === id)
+    if (!a || a.spec !== 'assumptions') return sendJson(res, 404, { error: ['not an open assumption'] })
+    const path = join(ROOT, a.file)
+    const doc = parseDocument(readFileSync(path, 'utf8'))
+    if (!removeEntry(doc, id)) return sendJson(res, 500, { error: ['assumption not found in its file'] })
+    writeFileSync(path, doc.toString({ lineWidth: 120 }))
+    sendJson(res, 200, { id, file: a.file })
+  } catch (e) {
+    sendJson(res, 500, { error: [(e as Error).message] })
+  }
+}
 
 async function handleResolve(req: Req, res: Res) {
   try {

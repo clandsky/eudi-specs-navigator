@@ -58,7 +58,7 @@ never invent one.
 - `scripts/lib/data.ts` loads and cross-checks the dataset; `vite-plugin-dataset.ts` serves it as `virtual:dataset`
   (the static build has no runtime fetches); `vite-plugin-editor.ts` is the dev-only write-back for the in-app
   editors: go-live compromises to `data/assertions/golive/`, new assumptions appended to
-  `data/assertions/assumptions/assumptions.yaml`, edited example bodies back into `data/examples/` (re-signed). A body edit
+  `data/assertions/assumptions/assumptions.yaml` (and removed again with Delete), edited example bodies back into `data/examples/` (re-signed). A body edit
   saved as an assumption records the changed view pointers under the example's `assumptions` (`src/model/inputs-diff.ts`);
   the object view marks those fields while the Assumptions layer is on. The static build keeps editor drafts in localStorage instead.
 - Examples: authors write decoded inputs with placeholders (`{{jwt:name}}`, `{{sdjwt:name}}` with optional `kb` for a
