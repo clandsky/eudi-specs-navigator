@@ -323,11 +323,14 @@ function Stratum({
       )}
       {a.note && <p className="verdict">{a.note}</p>}
       {layer === 'assumption' && <ResolveControl a={a} />}
-      {onEdit && specById.get(a.spec)?.authored && a.target && (
-        <div style={{ marginTop: 8 }}>
-          <button className="btn" onClick={() => onEdit(a)}>
-            Edit
-          </button>
+      {((onEdit && specById.get(a.spec)?.authored && a.target) || layer === 'assumption') && (
+        <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginTop: 8, flexWrap: 'wrap' }}>
+          {onEdit && specById.get(a.spec)?.authored && a.target && (
+            <button className="btn" onClick={() => onEdit(a)}>
+              Edit
+            </button>
+          )}
+          {layer === 'assumption' && <DeleteControl a={a} />}
         </div>
       )}
       {(a.decided_by || a.reference) && (
@@ -373,6 +376,40 @@ const RESOLVE_TARGETS: { layer: string; label: string }[] = [
   { layer: 'haip', label: 'HAIP' },
   { layer: 'base', label: 'Base protocol' },
 ]
+
+/** "Delete": removes an open assumption from its file after a confirmation (dev server only). */
+function DeleteControl({ a }: { a: Assertion }) {
+  const [state, setState] = useState<'idle' | 'busy' | 'done' | 'readonly'>('idle')
+  const [error, setError] = useState<string | null>(null)
+  async function deleteNow() {
+    if (!window.confirm(`Delete the assumption ${a.id}? The rule it reads applies again as written.`)) return
+    setState('busy')
+    setError(null)
+    try {
+      const res = await fetch('/__assumptions/delete', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: a.id }) })
+      if (res.status === 404 && !res.headers.get('content-type')?.includes('json')) return setState('readonly')
+      const body = await res.json()
+      if (!res.ok) {
+        setError((body.error ?? [res.statusText]).join('; '))
+        setState('idle')
+        return
+      }
+      setState('done')
+    } catch {
+      setState('readonly')
+    }
+  }
+  return (
+    <>
+      <button className="btn" onClick={deleteNow} disabled={state !== 'idle'}>
+        {state === 'busy' ? 'Deleting…' : 'Delete'}
+      </button>
+      {state === 'done' && <span className="success">Deleted. The page reloads without it.</span>}
+      {state === 'readonly' && <span className="meta">Deleting writes to the repository and needs the dev server (pnpm dev).</span>}
+      {error && <span className="error">{error}</span>}
+    </>
+  )
+}
 
 /** "Resolve": moves an assumption into a chosen layer as a resolved interpretation (dev server only). */
 function ResolveControl({ a }: { a: Assertion }) {
