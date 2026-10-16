@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { LayerBadges, LayerName } from '../components/bits'
 import { ObjectView } from '../components/ObjectView'
-import { OverruleEditor } from '../components/OverruleEditor'
+import { OverruleEditor, type EntryKind } from '../components/OverruleEditor'
 import { StackPanel } from '../components/StackPanel'
 import { SequenceDiagram } from '../diagram/SequenceDiagram'
 import { setParams, useRoute } from '../lib/router'
@@ -11,7 +11,7 @@ import { stepNumber } from '../model/steps'
 export function FlowView({ flowId }: { flowId: string }) {
   const flow = flowById.get(flowId)
   const { params } = useRoute()
-  const [editing, setEditing] = useState<string | null>(null)
+  const [editing, setEditing] = useState<{ subjectId: string; kind: EntryKind } | null>(null)
   if (!flow) return <div className="page">Unknown flow “{flowId}”.</div>
 
   const step = flow.steps.find((s) => s.id === params.get('step')) ?? flow.steps[0]!
@@ -72,10 +72,10 @@ export function FlowView({ flowId }: { flowId: string }) {
           </p>
         </div>
         <div className="pane-body">
-          <StackPanel subjectId={subjectId} variant={flow.variant} onAddOverrule={setEditing} />
+          <StackPanel subjectId={subjectId} variant={flow.variant} onAddOverrule={(subjectId, kind) => setEditing({ subjectId, kind })} />
         </div>
       </section>
-      <OverruleEditor subjectId={editing} onClose={() => setEditing(null)} />
+      <OverruleEditor subjectId={editing?.subjectId ?? null} kind={editing?.kind} onClose={() => setEditing(null)} />
     </div>
   )
 }

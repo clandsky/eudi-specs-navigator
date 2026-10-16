@@ -278,6 +278,21 @@ export const Example = z.object({
   /** JSON pointer into the view document → subject id. */
   annotations: z.record(z.string(), slug).default({}),
   note: z.string().optional(),
+  /**
+   * Body edits recorded as assumptions of the project owner (written by the example editor): which fields of the view
+   * document changed or disappeared, and why. The object view marks those fields while the Assumptions layer is on.
+   */
+  assumptions: z
+    .array(
+      z.object({
+        date: isoDate,
+        decided_by: z.string().optional(),
+        note: z.string(),
+        changed: z.array(z.string()).default([]),
+        removed: z.array(z.string()).default([]),
+      }),
+    )
+    .default([]),
 })
 export type Example = z.infer<typeof Example>
 

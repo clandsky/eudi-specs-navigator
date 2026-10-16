@@ -1,4 +1,5 @@
 import { Fragment, useMemo, useState, type ReactNode } from 'react'
+import { coveredBy } from '../model/inputs-diff'
 import { annotationFor, escapeToken, viewOf } from '../model/pointer'
 import { levelLabel } from '../model/resolve'
 import type { Role } from '../model/schema'
@@ -46,6 +47,9 @@ export function ObjectView({ exampleId, sender, selected, onSelect, variant = {}
   const ann = ex.annotations
 
   const subjectAt = (ptr: string) => annotationFor(ptr, ann, ds.fieldmap)
+  // Fields changed by body edits recorded as assumptions; marked while the Assumptions layer is in the lens.
+  const assumedOn = vc.layers.has('assumption')
+  const assumed = ex.assumptions.flatMap((a) => a.changed)
 
   function FieldKey({ ptr, children }: { ptr: string; children: ReactNode }) {
     const subjectId = subjectAt(ptr)
@@ -57,15 +61,20 @@ export function ObjectView({ exampleId, sender, selected, onSelect, variant = {}
     const changed = prev !== null && prev.level !== rule.level
     const absent = !existsAt(subjectId, vc.layers)
     const subject = subjectById.get(subjectId)
-    const tip = absent
+    const isAssumed = assumedOn && coveredBy(ptr, assumed)
+    const tip = (isAssumed ? 'Changed by an assumption. ' : '') + (absent
       ? `${subject?.title}: not part of the protocol at this lens step`
-      : `${subject?.title}: ${levelLabel(rule.level)} for ${ROLE_LABEL[role]}${rule.decidedBy[0] ? `, decided by ${rule.decidedBy[0].id}` : ''}${changed ? ` (was ${levelLabel(prev!.level)})` : ''}`
+      : `${subject?.title}: ${levelLabel(rule.level)} for ${ROLE_LABEL[role]}${rule.decidedBy[0] ? `, decided by ${rule.decidedBy[0].id}` : ''}${changed ? ` (was ${levelLabel(prev!.level)})` : ''}`)
     return (
-      <span className={absent ? 'line-absent' : changed ? 'line-changed' : undefined} style={changed ? cssLayer(stageLayer) : undefined}>
+      <span
+        className={absent ? 'line-absent' : isAssumed ? 'line-changed line-assumed' : changed ? 'line-changed' : undefined}
+        style={isAssumed ? cssLayer('assumption') : changed ? cssLayer(stageLayer) : undefined}
+      >
         <button type="button" className="fkey" data-selected={selected === ptr} title={tip} aria-label={tip} onClick={() => onSelect(ptr, subjectId)}>
           {children}
           <LevelChip level={rule.level} />
           <LayerBadges layers={layersTouching([subjectId])} label={false} />
+          {isAssumed && <span className="assumed-pill">assumed</span>}
         </button>
       </span>
     )
@@ -171,6 +180,25 @@ export function ObjectView({ exampleId, sender, selected, onSelect, variant = {}
         </button>
       </div>
       {ex.note && <p className="meta" style={{ marginTop: -4 }}>{ex.note}</p>}
+      {ex.assumptions.length > 0 && (
+        <div className="assumed-box" style={cssLayer('assumption')}>
+          <strong>Assumed changes</strong>{' '}
+          <span className="meta">
+            {assumedOn ? 'Marked fields were changed by these assumptions.' : 'Not marked at this lens step; switch on + Assumptions to see the fields.'}
+          </span>
+          <ul>
+            {ex.assumptions.map((a, i) => (
+              <li key={i}>
+                {a.note}{' '}
+                <span className="meta">
+                  ({[a.decided_by, a.date].filter(Boolean).join(', ')}; {a.changed.length} changed
+                  {a.removed.length ? `, removed: ${a.removed.join(', ')}` : ''})
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
 
       {h && (
         <div className="obj-block">
