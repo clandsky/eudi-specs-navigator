@@ -1,0 +1,159 @@
+# OpenID4VP 1.0: what Verifier and Wallet do between the messages (substeps of the presentation flows).
+- id: oid4vp/5.2/nonce-fresh
+  subject: vp.verifier.generate-nonce
+  spec: openid4vp-1.0
+  locator: { section: "5.2" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ verifier ] }
+  quote: >-
+    The Verifier MUST create a fresh, cryptographically random number with sufficient entropy for every Authorization
+    Request, store it with its current session, and pass it in the nonce Authorization Request Parameter to the Wallet.
+  verified: source-checked
+- id: oid4vp/5.9.3/x509_hash-sign
+  subject: vp.verifier.sign-request-object
+  spec: openid4vp-1.0
+  locator: { section: "5.9.3" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ verifier ] }
+  quote: >-
+    The request MUST be signed with the private key corresponding to the public key in the leaf X.509 certificate of the
+    certificate chain added to the request in the x5c JOSE header parameter [RFC7515] of the signed request object.
+  verified: source-checked
+- id: oid4vp/5/typ-verifier
+  subject: vp.verifier.sign-request-object
+  spec: openid4vp-1.0
+  locator: { section: "5" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ verifier ] }
+  quote: >-
+    Verifiers MUST include the typ Header Parameter in Request Objects with the value oauth-authz-req+jwt, as defined in
+    [RFC9101].
+  verified: source-checked
+- id: oid4vp/5.9.3/x509_hash-validate
+  subject: vp.wallet.verify-request-signature
+  spec: openid4vp-1.0
+  locator: { section: "5.9.3" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ wallet ] }
+  quote: The Wallet MUST validate the signature and the trust chain of the X.509 leaf certificate.
+  verified: source-checked
+- id: oid4vp/8.3/kid-verifier
+  subject: vp.verifier.decrypt-response
+  spec: openid4vp-1.0
+  locator: { section: "8.3" }
+  relation: defines
+  level: info
+  applies_to: { role: [ verifier ] }
+  quote: This enables the Verifier to easily identify the specific public key that was used to encrypt the response.
+  verified: source-checked
+- id: oid4vp/8.3/unsigned-jwt
+  subject: vp.verifier.decrypt-response
+  spec: openid4vp-1.0
+  locator: { section: "8.3" }
+  relation: defines
+  level: info
+  quote: To encrypt the Authorization Response, implementations MUST use an unsigned, encrypted JWT as described in [RFC7519].
+  verified: source-checked
+- id: oid4vp/14.3.2/state
+  subject: vp.verifier.check-state
+  spec: openid4vp-1.0
+  locator: { section: "14.3.2" }
+  relation: defines
+  level: should
+  applies_to: { role: [ verifier ] }
+  quote: >-
+    The Verifier SHOULD protect its Response URI from inadvertent requests by checking that the value of the received
+    state parameter corresponds to a recent Authorization Request.
+  verified: source-checked
+- id: oid4vp/8.6/validate
+  subject: vp.verifier.validate-response
+  spec: openid4vp-1.0
+  locator: { section: "8.6" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ verifier ] }
+  quote: >-
+    Verifiers MUST validate the VP Token in the following manner: … If any of the checks pertaining to the VP Token or
+    the overall response fails, the VP Token MUST be rejected.
+  verified: source-checked
+- id: oid4vp/14.9/own-checks
+  subject: vp.verifier.validate-response
+  spec: openid4vp-1.0
+  locator: { section: "14.9" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ verifier ] }
+  quote: >-
+    it MUST NOT rely on the Wallet to enforce these constraints. The Wallet is not controlled by the Verifier and the
+    Verifier MUST perform its own security checks on the returned Credentials and Presentations.
+  verified: source-checked
+- id: oid4vp/8.6/format
+  subject: vp.verifier.check-vp-token
+  spec: openid4vp-1.0
+  locator: { section: "8.6" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ verifier ] }
+  quote: >-
+    Validate the format of the VP Token as defined in Section 8.1. … Validate that the returned Credential(s) meet all
+    criteria defined in the query in the Authorization Request (e.g., Claims included in the presentation).
+  verified: source-checked
+- id: oid4vp/8.6/query-satisfied
+  subject: vp.verifier.check-vp-token
+  spec: openid4vp-1.0
+  locator: { section: "8.6" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ verifier ] }
+  quote: >-
+    Check that the set of Presentations returned satisfies all requirements defined in the Verifier's request as
+    described in Section 6.4.
+  verified: source-checked
+- id: oid4vp/8.6/integrity
+  subject: vp.verifier.verify-issuer-signature
+  spec: openid4vp-1.0
+  locator: { section: "8.6" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ verifier ] }
+  quote: Validate the integrity and authenticity of the Presentation and Credential.
+  verified: source-checked
+- id: oid4vp/8.6/holder-binding
+  subject: vp.verifier.verify-kb-jwt
+  spec: openid4vp-1.0
+  locator: { section: "8.6" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ verifier ] }
+  quote: >-
+    For Verifiable Presentations, validate the Holder Binding, including the checks required to prevent replay described
+    in Section 14.1.
+  verified: source-checked
+- id: oid4vp/14.1.2/binding
+  subject: vp.verifier.verify-kb-jwt
+  spec: openid4vp-1.0
+  locator: { section: "14.1.2" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ verifier ] }
+  quote: >-
+    The Verifier MUST validate every individual Verifiable Presentation in an Authorization Response and ensure that it
+    is linked to the values of the client_id and the nonce parameter it had used for the respective Authorization
+    Request. If any Verifiable Presentation in the response does not contain the correct nonce value, the response MUST
+    be rejected.
+  verified: source-checked
+- id: oid4vp/8.6/policy-checks
+  subject: vp.verifier.check-status
+  spec: openid4vp-1.0
+  locator: { section: "8.6" }
+  relation: defines
+  level: info
+  applies_to: { role: [ verifier ] }
+  quote: >-
+    Perform the checks required by the Verifier's policy based on the set of trust requirements such as trust frameworks
+    it belongs to (e.g., revocation checks), if applicable.
+  verified: source-checked

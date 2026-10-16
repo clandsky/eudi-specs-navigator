@@ -1,5 +1,6 @@
 id: vp-response-post
 title: Encrypted Authorization Response (direct_post.jwt) with an SD-JWT VC presentation
+note: Shape follows the d-you verifier (2026-10-16) - German PID (urn:eudi:pid:de:1), A128GCM. The real PID header also carries a kid (issuerSerial), not modelled here.
 subject: vp.response-post
 kind: http-request
 http:
@@ -9,22 +10,21 @@ http:
   body: { type: form, value: { response: "{{jwe:resp}}" } }
 jwts:
   resp:
-    encrypt: { key: verifier-enc, alg: ECDH-ES, enc: A256GCM }
+    encrypt: { key: verifier-enc, alg: ECDH-ES, enc: A128GCM }
     header: { kid: enc-1 }
     payload:
-      vp_token: { pid: ["{{sdjwt:pid}}"] }
+      vp_token: { pid-sd-jwt: ["{{sdjwt:pid}}"] }
       state: eyJhb...6-sV
   pid:
     key: pid-issuer
     header: { typ: dc+sd-jwt, alg: ES256, x5c: "{{x5c:pid-issuer}}" }
-    payload: { iss: https://pid-provider.example.eu, vct: "urn:eudi:pid:1", iat: 1792000000, exp: 1823536000, cnf: { jwk: "{{jwk:wallet-key-1}}" }, status: { status_list: { idx: 2048, uri: "https://pid-provider.example.eu/status/pid/7" } } }
+    payload: { iss: https://pid-provider.example.de, vct: "urn:eudi:pid:de:1", iat: 1791936000, exp: 1793145600, cnf: { jwk: "{{jwk:wallet-key-1}}" }, status: { status_list: { idx: 107, uri: "https://pid-provider.example.de/status/abc3d468-799f-4fbc-85df-99e7f7192da0" } } }
     disclosures:
-      - { salt: 2GLC42sKQveCfGfryNRN9w, name: given_name, value: Erika }
-      - { salt: eluV5Og3gSNII8EYnsxA_A, name: family_name, value: Mustermann }
-      - { salt: 6Ij7tM-a5iVPGboS5tmvVA, name: birthdate, value: "1964-08-12" }
+      - { salt: n7WCBgE874lgmQW-_tIwdw, name: given_name, value: ERIKA }
+      - { salt: Xp_v9sAX6VMkTy7zSA3L9A, name: family_name, value: MUSTERMANN }
     kb:
       key: wallet-key-1
-      payload: { aud: "{{x509hash:verifier-access}}", nonce: n-0S6_WzA2Mj, iat: 1792072860 }
+      payload: { aud: "{{x509hash:verifier-access}}", nonce: n-0S6_WzA2Mj, iat: 1792072814 }
 annotations:
   /http/body/response: vp.response-post.response
   /jwt/resp/header/alg: vp.authorization-response.encryption

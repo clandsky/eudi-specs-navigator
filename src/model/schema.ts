@@ -112,6 +112,8 @@ export const Step = z.object({
   /** Short annotation drawn under the arrow, e.g. "WIA + PoP". */
   tags: z.array(z.string()).default([]),
   note: z.string().optional(),
+  /** Makes this a substep of an earlier step (e.g. the checks inside "validate response"): drawn indented, numbered 4.1, 4.2 … */
+  parent: slug.optional(),
 })
 export type Step = z.infer<typeof Step>
 

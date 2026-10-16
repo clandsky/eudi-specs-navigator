@@ -114,7 +114,7 @@ export function buildOpenApi(ds: Dataset, opts: OpenApiOptions): Json {
     const idx = flow?.steps.findIndex((s) => s.subject === subj.id) ?? -1
     const step = flow?.steps[idx]
     // The response is the next step, sent back by the server; GET metadata steps carry the response example themselves.
-    const next = flow?.steps[idx + 1]
+    const next = flow?.steps.slice(idx + 1).find((s) => s.kind !== 'internal')
     const respStep = next && next.from === step?.to && (next.kind === 'response' || next.kind === 'redirect') ? next : undefined
     const variant: Partial<Ctx> = flow?.variant ?? {}
     const clientRole = (flow?.participants.find((p) => p.id === step?.from)?.role ?? 'wallet') as Role

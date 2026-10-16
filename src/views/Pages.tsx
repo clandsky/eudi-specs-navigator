@@ -6,6 +6,7 @@ import { StackPanel } from '../components/StackPanel'
 import { annotationFor, entryPointers, viewOf } from '../model/pointer'
 import type { EffectiveRule } from '../model/resolve'
 import type { Assertion, Role } from '../model/schema'
+import { stepNumber } from '../model/steps'
 import { href } from '../lib/router'
 import {
   C2BO_URL,
@@ -46,7 +47,7 @@ export function SubjectPage({ subjectId, focus }: { subjectId: string; focus?: s
             {steps.map(({ f, s }) => (
               <li key={`${f.id}/${s.id}`}>
                 <a href={href(['flow', f.id], { step: s.id, subject: subjectId === s.subject ? null : subjectId })}>
-                  {f.title}, step {f.steps.indexOf(s) + 1}: {s.label}
+                  {f.title}, step {stepNumber(f, s)}: {s.label}
                 </a>
               </li>
             ))}
@@ -481,7 +482,7 @@ export function EndpointsPage() {
                   <td>
                     {use.map(({ f, st }) => (
                       <a key={f.id} href={href(['flow', f.id], { step: st.id })}>
-                        step {f.steps.indexOf(st) + 1}
+                        step {stepNumber(f, st)}
                       </a>
                     ))}
                   </td>

@@ -1,0 +1,18 @@
+# Go-live compromise (d-you current), recorded from the curated d-you verifier Request Object.
+- id: golive/request-object.header-iat-2026-10-16
+  subject: vp.request-object.header-iat
+  spec: golive-compromises
+  locator: { at: "d-you verifier Request Object (curated, 2026-10-16)" }
+  relation: replaces
+  level: may
+  applies_to: { role: [verifier], transport: [redirect] }
+  target: etsi-472-2/OIDFVP-HAIP-REDIRECTS_RO-03
+  window: { from: "2026-10-16" }
+  quote: >-
+    The d-you verifier does not put iat into the JWS Protected Header of the Request Object; the issuance time is only
+    carried in the iat claim of the Request Object body.
+  decided_by: d-you implementation (curated verifier JSON, 2026-10-16)
+  reference: d-you verifier Request Object (curated, 2026-10-16)
+  note: >-
+    Observed header: x5c, typ oauth-authz-req+jwt, alg ES256; no iat, no kid. The body carries iat and exp (300 s
+    lifetime).

@@ -724,3 +724,95 @@
     quote: "The Wallet MUST support unsigned, signed, and multi-signed requests as defined in Appendices A.3.1 and A.3.2",
     verified: source-checked
   }
+- {
+    id: oid4vp/5/iss,
+    subject: vp.request-object.iss,
+    spec: openid4vp-1.0,
+    locator: { section: "5" },
+    relation: defines,
+    level: may,
+    applies_to: { role: [ verifier ] },
+    quote: "To avoid breaking existing JAR implementations, the iss claim MAY be present in the Request Object.",
+    verified: source-checked
+  }
+- {
+    id: oid4vp/5/iss-ignore,
+    subject: vp.request-object.iss,
+    spec: openid4vp-1.0,
+    locator: { section: "5" },
+    relation: defines,
+    level: shall,
+    applies_to: { role: [ wallet ] },
+    quote: "However, if it is present, the Wallet MUST ignore it.",
+    verified: source-checked
+  }
+- {
+    id: oid4vp/client_id_scheme/silent,
+    subject: vp.request-object.client_id_scheme,
+    spec: openid4vp-1.0,
+    locator: { at: "whole document" },
+    relation: silent,
+    probe: client_id_scheme,
+    note: "OpenID4VP 1.0 has no client_id_scheme parameter: the Client Identifier Prefix travels inside client_id
+      (x509_hash:...). The parameter comes from earlier drafts; a 1.0 Wallet treats it as an unrecognized parameter.",
+    verified: source-checked
+  }
+- {
+    id: oid4vp/5/unrecognized-params,
+    subject: vp.request-object.client_id_scheme,
+    spec: openid4vp-1.0,
+    locator: { section: "5" },
+    relation: defines,
+    level: shall,
+    applies_to: { role: [ wallet ] },
+    quote: "The Wallet MUST ignore any unrecognized parameters, other than the transaction_data parameter.",
+    verified: source-checked
+  }
+- {
+    id: oid4vp/5.1/vp_formats_supported,
+    subject: vp.request-object.client_metadata.vp_formats_supported,
+    spec: openid4vp-1.0,
+    locator: { section: "5.1" },
+    relation: defines,
+    level: shall,
+    applies_to: { role: [ verifier ] },
+    condition: When the Wallet cannot obtain the Verifier's supported formats by another mechanism.,
+    quote: "vp_formats_supported: REQUIRED when not available to the Wallet via another mechanism.",
+    verified: source-checked
+  }
+- {
+    id: oid4vp/11.1/vp_formats_supported,
+    subject: vp.request-object.client_metadata.vp_formats_supported,
+    spec: openid4vp-1.0,
+    locator: { section: "11.1" },
+    relation: defines,
+    level: info,
+    applies_to: { role: [ verifier ] },
+    quote: "An object containing a list of name/value pairs, where the name is a Credential Format Identifier and the value
+      defines format-specific parameters that a Verifier supports.",
+    verified: source-checked
+  }
+- {
+    id: oid4vp/B.3.4/sd-jwt_alg_values,
+    subject: vp.request-object.client_metadata.sd-jwt_alg_values,
+    spec: openid4vp-1.0,
+    locator: { section: "B.3.4" },
+    relation: defines,
+    level: may,
+    applies_to: { role: [ verifier ], format: [ sd-jwt-vc ] },
+    quote: "sd-jwt_alg_values: OPTIONAL. A non-empty array containing fully-specified identifiers of cryptographic
+      algorithms … supported for an Issuer-signed JWT of an SD-JWT.",
+    verified: source-checked
+  }
+- {
+    id: oid4vp/B.3.4/kb-jwt_alg_values,
+    subject: vp.request-object.client_metadata.kb-jwt_alg_values,
+    spec: openid4vp-1.0,
+    locator: { section: "B.3.4" },
+    relation: defines,
+    level: may,
+    applies_to: { role: [ verifier ], format: [ sd-jwt-vc ] },
+    quote: "kb-jwt_alg_values: OPTIONAL. A non-empty array containing fully-specified identifiers of cryptographic
+      algorithms … supported for a Key Binding JWT (KB-JWT).",
+    verified: source-checked
+  }

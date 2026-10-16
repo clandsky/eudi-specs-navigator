@@ -49,3 +49,14 @@
     shall be a JSON Object which shall not contain the credential_ids member."
   note: Element format rule; not adapted by the CIR, so it applies unchanged.
   verified: source-checked
+- id: etsi-472-2/EAAP-SD-JWT-VC-01
+  subject: vp.verifier.verify-kb-jwt
+  spec: etsi-ts-119-472-2
+  locator: { req: "EAAP-SD-JWT VC-01", section: "4.1" }
+  relation: profiles
+  level: shall
+  quote: >-
+    EAAP-SD-JWT VC-01: If the SD-JWT VC EAA contains the cnf claim, the corresponding SD-JWT VC EAAP shall be a
+    SD-JWT+KB as specified in IETF SD-JWT [2].
+  note: Not adapted by the CIR (it voids only EAAP-SD-JWT VC-04).
+  verified: source-checked

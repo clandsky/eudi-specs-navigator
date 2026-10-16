@@ -6,6 +6,7 @@ import { StackPanel } from '../components/StackPanel'
 import { SequenceDiagram } from '../diagram/SequenceDiagram'
 import { setParams, useRoute } from '../lib/router'
 import { ds, exampleById, flowById, subjectById } from '../lib/store'
+import { stepNumber } from '../model/steps'
 
 export function FlowView({ flowId }: { flowId: string }) {
   const flow = flowById.get(flowId)
@@ -36,7 +37,7 @@ export function FlowView({ flowId }: { flowId: string }) {
       <section aria-label="Example object">
         <div className="pane-head">
           <h2>
-            Step {flow.steps.indexOf(step) + 1}: {step.label}
+            Step {stepNumber(flow, step)}: {step.label}
           </h2>
           <p>{step.note ?? `${subjectById.get(step.subject)?.title}. Click a field to see who defines it and who overrules it.`}</p>
         </div>
