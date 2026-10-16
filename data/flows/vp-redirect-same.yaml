@@ -7,17 +7,16 @@ summary: >-
   The user is on the verifier's website on the phone that holds the wallet. The page opens an eu-eaap:// link carrying
   a request_uri; the wallet fetches the signed Request Object, validates it, posts an encrypted response
   (direct_post.jwt) and opens the returned redirect_uri, whose response_code lets the browser session pick up the
-  result. The split between frontend and backend follows the reference design in OpenID4VP §13.3.
+  result. Frontend and backend are drawn as one Verifier; how the frontend picks up the result with the response_code follows the reference design in OpenID4VP §13.3.
 participants:
-  - { id: browser, label: Verifier frontend }
+  - { id: verifier, label: Verifier, role: verifier }
   - { id: wallet, label: Wallet Unit, role: wallet }
-  - { id: verifier, label: Verifier backend, role: verifier }
 steps:
   - { id: prepare, from: verifier, to: verifier, kind: internal, label: prepare transaction, subject: vp.verifier.prepare-request }
   - { id: prepare-nonce, parent: prepare, from: verifier, to: verifier, kind: internal, label: generate nonce, subject: vp.verifier.generate-nonce }
   - { id: prepare-enc-key, parent: prepare, from: verifier, to: verifier, kind: internal, label: ephemeral encryption key, subject: vp.verifier.ephemeral-enc-key }
   - { id: prepare-sign, parent: prepare, from: verifier, to: verifier, kind: internal, label: sign Request Object, subject: vp.verifier.sign-request-object }
-  - { id: invoke, from: browser, to: wallet, kind: redirect, label: "open eu-eaap:// link", subject: vp.authorization-request, example: vp-authorization-request, tags: [client_id, request_uri] }
+  - { id: invoke, from: verifier, to: wallet, kind: redirect, label: "open eu-eaap:// link", subject: vp.authorization-request, example: vp-authorization-request, tags: [client_id, request_uri] }
   - { id: fetch, from: wallet, to: verifier, kind: request, label: GET request_uri, subject: vp.request-uri-fetch, example: vp-request-uri-get }
   - { id: request-object, from: verifier, to: wallet, kind: response, label: signed Request Object, subject: vp.request-object, example: vp-request-uri-response, tags: [x509_hash, DCQL, verifier_info] }
   - { id: process, from: wallet, to: wallet, kind: internal, label: "validate request, user consent", subject: vp.wallet.process-request, note: "Signature and x509_hash against the access certificate, registration certificate (WRP-VALIDATION), over-asking check (WRP-OVERASKING), then the user approves." }
@@ -36,5 +35,5 @@ steps:
   - { id: validate-validity, parent: validate, from: verifier, to: verifier, kind: internal, label: exp / validity, subject: vp.verifier.check-validity }
   - { id: validate-status, parent: validate, from: verifier, to: verifier, kind: internal, label: status list, subject: vp.verifier.check-status }
   - { id: ack, from: verifier, to: wallet, kind: response, label: 200 redirect_uri, subject: vp.response-ack, example: vp-response-ack-same, tags: [response_code] }
-  - { id: redirect-back, from: wallet, to: browser, kind: redirect, label: open redirect_uri, subject: vp.redirect-back }
-  - { id: result, from: browser, to: verifier, kind: request, label: fetch result with response_code, subject: vp.result-fetch, note: "Application-specific (OpenID4VP §13.3 reference design): only the session that receives the redirect can fetch the response." }
+  - { id: redirect-back, from: wallet, to: verifier, kind: redirect, label: open redirect_uri, subject: vp.redirect-back }
+  - { id: result, from: verifier, to: verifier, kind: internal, label: frontend fetches result (response_code), subject: vp.result-fetch, note: "Application-specific (OpenID4VP §13.3 reference design): only the session that receives the redirect can fetch the response." }
