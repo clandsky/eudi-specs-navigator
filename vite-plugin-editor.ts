@@ -4,6 +4,8 @@
 //                 POST {id, source, assumption?} replaces them in the example's YAML file and re-signs it (and its
 //                 dependents); with assumption {note, decided_by} the changed fields are recorded under `assumptions`
 //   /__assumptions/add  POST one assumption → appended to data/assertions/assumptions/assumptions.yaml
+//   /__authored/update  POST {id, entry} replaces an authored entry (assumption, resolved reading, go-live compromise)
+//                 in the file it lives in; id, subject and spec stay as they are
 //   /__assumptions/resolve  POST {id, layer} moves an assumption into data/assertions/resolved/<layer>.yaml as a
 //                 resolved interpretation of that layer (spec resolved-<layer>)
 // The static build has no server: the overrule editor keeps local drafts there and the example editor is read-only.
@@ -26,6 +28,7 @@ export function editorPlugin(): Plugin {
       server.middlewares.use('/__examples', (req, res) => handleExamples(req, res))
       server.middlewares.use('/__assumptions/resolve', (req, res) => handleResolve(req, res))
       server.middlewares.use('/__assumptions/add', (req, res) => handleAddAssumption(req, res))
+      server.middlewares.use('/__authored/update', (req, res) => handleUpdateAuthored(req, res))
       server.middlewares.use('/__overrules', (req, res) => {
         const send = (status: number, body: unknown) => {
           res.statusCode = status
@@ -172,6 +175,44 @@ async function handleAddAssumption(req: Req, res: Res) {
     const existing = existsSync(ASSUMPTIONS) ? readFileSync(ASSUMPTIONS, 'utf8') : '# Working assumptions of the project owner.\n'
     writeFileSync(ASSUMPTIONS, `${existing.trimEnd()}\n${stringify([out], { lineWidth: 120 })}`)
     sendJson(res, 201, { file: ASSUMPTIONS.slice(ROOT.length + 1) })
+  } catch (e) {
+    sendJson(res, 500, { error: [(e as Error).message] })
+  }
+}
+
+async function handleUpdateAuthored(req: Req, res: Res) {
+  try {
+    if (req.method !== 'POST') return sendJson(res, 405, { error: ['POST only'] })
+    const { id, entry } = JSON.parse(await readBody(req)) as { id: string; entry: unknown }
+    const ds = loadDataset()
+    const old = ds.assertions.find((x) => x.id === id)
+    if (!old || !ds.specs.find((s) => s.id === old.spec)?.authored) return sendJson(res, 404, { error: ['not an authored entry'] })
+    const parsed = Assertion.safeParse(entry)
+    if (!parsed.success) return sendJson(res, 400, { error: parsed.error.issues.map((i) => `${i.path.join('.')}: ${i.message}`) })
+    const a = parsed.data
+    if (a.id !== old.id || a.subject !== old.subject || a.spec !== old.spec) return sendJson(res, 400, { error: ['id, subject and spec cannot change'] })
+    if (!a.target || !ds.assertions.some((x) => x.id === a.target)) return sendJson(res, 400, { error: [`unknown target ${a.target}`] })
+    if (a.spec === 'golive-compromises' && !a.window) return sendJson(res, 400, { error: ['go-live compromises need a window'] })
+
+    const path = join(ROOT, old.file)
+    const doc = parseDocument(readFileSync(path, 'utf8'))
+    const items = isSeq(doc.contents) ? doc.contents.items : []
+    const index = items.findIndex((it) => isMap(it) && String(it.get('id' as never)) === id)
+    if (index < 0) return sendJson(res, 500, { error: ['entry not found in its file'] })
+    // Strip defaults so the file stays short and readable.
+    const { xref, applies_to, verified, ...rest } = a
+    const out = {
+      ...rest,
+      ...(Object.keys(applies_to).length ? { applies_to } : {}),
+      ...(xref.length ? { xref } : {}),
+      ...(verified !== 'unverified' ? { verified } : {}),
+    }
+    // Keep comments attached to the old entry (a file header sits on the first item).
+    const node = doc.createNode(out)
+    node.commentBefore = (items[index] as { commentBefore?: string | null }).commentBefore
+    items[index] = node as never
+    writeFileSync(path, doc.toString({ lineWidth: 120 }))
+    sendJson(res, 200, { file: old.file })
   } catch (e) {
     sendJson(res, 500, { error: [(e as Error).message] })
   }

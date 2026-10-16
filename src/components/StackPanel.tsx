@@ -50,10 +50,12 @@ interface Props {
   /** Variant of the flow the subject is shown in (grant, transport, …). */
   variant?: { grant?: string; transport?: string; device?: string }
   onAddOverrule?: (subjectId: string, kind: EntryKind) => void
+  /** Opens the rule editor on an authored entry (assumption, resolved reading or go-live compromise). */
+  onEditEntry?: (a: Assertion) => void
   compact?: boolean
 }
 
-export function StackPanel({ subjectId, variant = {}, onAddOverrule, compact }: Props) {
+export function StackPanel({ subjectId, variant = {}, onAddOverrule, onEditEntry, compact }: Props) {
   const vc = useViewCtx()
   const subject = subjectById.get(subjectId)
   const stack = stackOf(subjectId)
@@ -117,7 +119,7 @@ export function StackPanel({ subjectId, variant = {}, onAddOverrule, compact }: 
       ) : (
         <div className="strata" aria-label="Provenance stack, highest precedence first">
           {sorted.map((a) => (
-            <Stratum key={a.id} a={a} state={states.get(a.id) ?? 'inactive'} rules={rules} active={isActive(a, vc)} />
+            <Stratum key={a.id} a={a} state={states.get(a.id) ?? 'inactive'} rules={rules} active={isActive(a, vc)} onEdit={onEditEntry} />
           ))}
         </div>
       )}
@@ -238,7 +240,19 @@ function jump(e: React.MouseEvent, id: string) {
   document.getElementById(`stratum-${cssId(id)}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' })
 }
 
-function Stratum({ a, state, rules, active }: { a: Assertion; state: State; rules: { role: Role; rule: EffectiveRule }[]; active: boolean }) {
+function Stratum({
+  a,
+  state,
+  rules,
+  active,
+  onEdit,
+}: {
+  a: Assertion
+  state: State
+  rules: { role: Role; rule: EffectiveRule }[]
+  active: boolean
+  onEdit?: (a: Assertion) => void
+}) {
   const spec = specById.get(a.spec)!
   const layer = specLayer(a.spec)
   const anchor = anchorFor(a)
@@ -309,6 +323,13 @@ function Stratum({ a, state, rules, active }: { a: Assertion; state: State; rule
       )}
       {a.note && <p className="verdict">{a.note}</p>}
       {layer === 'assumption' && <ResolveControl a={a} />}
+      {onEdit && specById.get(a.spec)?.authored && a.target && (
+        <div style={{ marginTop: 8 }}>
+          <button className="btn" onClick={() => onEdit(a)}>
+            Edit
+          </button>
+        </div>
+      )}
       {(a.decided_by || a.reference) && (
         <p className="verdict">
           {a.decided_by && <>Agreed by {a.decided_by}. </>}

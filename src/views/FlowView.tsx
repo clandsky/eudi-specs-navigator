@@ -6,12 +6,13 @@ import { StackPanel } from '../components/StackPanel'
 import { SequenceDiagram } from '../diagram/SequenceDiagram'
 import { setParams, useRoute } from '../lib/router'
 import { ds, exampleById, flowById, subjectById } from '../lib/store'
+import type { Assertion } from '../model/schema'
 import { stepNumber } from '../model/steps'
 
 export function FlowView({ flowId }: { flowId: string }) {
   const flow = flowById.get(flowId)
   const { params } = useRoute()
-  const [editing, setEditing] = useState<{ subjectId: string; kind: EntryKind } | null>(null)
+  const [editing, setEditing] = useState<{ subjectId: string; kind: EntryKind; entry?: Assertion } | null>(null)
   if (!flow) return <div className="page">Unknown flow “{flowId}”.</div>
 
   const step = flow.steps.find((s) => s.id === params.get('step')) ?? flow.steps[0]!
@@ -72,10 +73,15 @@ export function FlowView({ flowId }: { flowId: string }) {
           </p>
         </div>
         <div className="pane-body">
-          <StackPanel subjectId={subjectId} variant={flow.variant} onAddOverrule={(subjectId, kind) => setEditing({ subjectId, kind })} />
+          <StackPanel
+            subjectId={subjectId}
+            variant={flow.variant}
+            onAddOverrule={(subjectId, kind) => setEditing({ subjectId, kind })}
+            onEditEntry={(a) => setEditing({ subjectId: a.subject, kind: a.spec === 'golive-compromises' ? 'golive' : 'assumption', entry: a })}
+          />
         </div>
       </section>
-      <OverruleEditor subjectId={editing?.subjectId ?? null} kind={editing?.kind} onClose={() => setEditing(null)} />
+      <OverruleEditor subjectId={editing?.subjectId ?? null} kind={editing?.kind} entry={editing?.entry} onClose={() => setEditing(null)} />
     </div>
   )
 }
