@@ -1,7 +1,16 @@
 # Prepared for when the repository gets a remote. The quote check needs the local corpus (PDFs are git-ignored), so it
 # runs only where the corpus is present; schema validation, tests and the build run everywhere.
 name: ci
-on: [push, pull_request]
+# Branch pushes are checked through their pull request only, so a push to a PR branch runs once, not twice; main is
+# checked on push (merges). A newer push to the same PR cancels the run still going for the older one.
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+concurrency:
+  group: ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 jobs:
   check:
     runs-on: ubuntu-latest
