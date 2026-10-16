@@ -9,15 +9,14 @@ summary: >-
   EUDI Wallets should not support the redirects-based mechanism for cross-device flows; HAIP recommends that verifiers
   use only same-device redirects. Cross device is meant to run over the Digital Credentials API.
 participants:
-  - { id: browser, label: Frontend (desktop) }
+  - { id: verifier, label: Verifier, role: verifier }
   - { id: wallet, label: Wallet (phone), role: wallet }
-  - { id: verifier, label: Verifier backend, role: verifier }
 steps:
   - { id: prepare, from: verifier, to: verifier, kind: internal, label: prepare transaction, subject: vp.verifier.prepare-request }
   - { id: prepare-nonce, parent: prepare, from: verifier, to: verifier, kind: internal, label: generate nonce, subject: vp.verifier.generate-nonce }
   - { id: prepare-enc-key, parent: prepare, from: verifier, to: verifier, kind: internal, label: ephemeral encryption key, subject: vp.verifier.ephemeral-enc-key }
   - { id: prepare-sign, parent: prepare, from: verifier, to: verifier, kind: internal, label: sign Request Object, subject: vp.verifier.sign-request-object }
-  - { id: qr, from: browser, to: wallet, kind: redirect, label: QR code scanned, subject: vp.cross-device-redirect, example: vp-authorization-request, tags: [CIR - wallet should not support] }
+  - { id: qr, from: verifier, to: wallet, kind: redirect, label: QR code scanned, subject: vp.cross-device-redirect, example: vp-authorization-request, tags: [CIR - wallet should not support] }
   - { id: fetch, from: wallet, to: verifier, kind: request, label: GET request_uri, subject: vp.request-uri-fetch, example: vp-request-uri-get }
   - { id: request-object, from: verifier, to: wallet, kind: response, label: signed Request Object, subject: vp.request-object, example: vp-request-uri-response, tags: [x509_hash, DCQL] }
   - { id: process, from: wallet, to: wallet, kind: internal, label: "validate request, user consent", subject: vp.wallet.process-request }
@@ -36,4 +35,4 @@ steps:
   - { id: validate-validity, parent: validate, from: verifier, to: verifier, kind: internal, label: exp / validity, subject: vp.verifier.check-validity }
   - { id: validate-status, parent: validate, from: verifier, to: verifier, kind: internal, label: status list, subject: vp.verifier.check-status }
   - { id: ack, from: verifier, to: wallet, kind: response, label: "200 {}", subject: vp.response-ack, example: vp-response-ack-cross, tags: [no redirect_uri] }
-  - { id: poll, from: browser, to: verifier, kind: request, label: poll for the result, subject: vp.result-poll, note: Application-specific; OpenID4VP §13.3 describes periodic querying when no redirect_uri is returned. }
+  - { id: poll, from: verifier, to: verifier, kind: internal, label: frontend polls for the result, subject: vp.result-poll, note: Application-specific; OpenID4VP §13.3 describes periodic querying when no redirect_uri is returned. }
