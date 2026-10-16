@@ -12,9 +12,10 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import type { Plugin } from 'vite'
-import { isMap, isSeq, parse, parseDocument, stringify } from 'yaml'
+import { isMap, parse, parseDocument, stringify } from 'yaml'
 import { buildExamples, ensureTestPki } from './scripts/lib/build-examples.ts'
 import { DATA, ROOT, loadDataset } from './scripts/lib/data.ts'
+import { removeEntry, replaceEntry } from './scripts/lib/yaml-edit.ts'
 import { diffInputs } from './src/model/inputs-diff.ts'
 import { Assertion, Example } from './src/model/schema.ts'
 
@@ -196,9 +197,6 @@ async function handleUpdateAuthored(req: Req, res: Res) {
 
     const path = join(ROOT, old.file)
     const doc = parseDocument(readFileSync(path, 'utf8'))
-    const items = isSeq(doc.contents) ? doc.contents.items : []
-    const index = items.findIndex((it) => isMap(it) && String(it.get('id' as never)) === id)
-    if (index < 0) return sendJson(res, 500, { error: ['entry not found in its file'] })
     // Strip defaults so the file stays short and readable.
     const { xref, applies_to, verified, ...rest } = a
     const out = {
@@ -207,10 +205,7 @@ async function handleUpdateAuthored(req: Req, res: Res) {
       ...(xref.length ? { xref } : {}),
       ...(verified !== 'unverified' ? { verified } : {}),
     }
-    // Keep comments attached to the old entry (a file header sits on the first item).
-    const node = doc.createNode(out)
-    node.commentBefore = (items[index] as { commentBefore?: string | null }).commentBefore
-    items[index] = node as never
+    if (!replaceEntry(doc, id, out)) return sendJson(res, 500, { error: ['entry not found in its file'] })
     writeFileSync(path, doc.toString({ lineWidth: 120 }))
     sendJson(res, 200, { file: old.file })
   } catch (e) {
@@ -232,10 +227,9 @@ async function handleResolve(req: Req, res: Res) {
     // Remove the entry from its assumptions file.
     const srcPath = join(ROOT, a.file)
     const src = parseDocument(readFileSync(srcPath, 'utf8'))
-    const items = isSeq(src.contents) ? src.contents.items : []
-    const index = items.findIndex((it) => isMap(it) && String(it.get('id' as never)) === id)
-    if (index < 0) return sendJson(res, 500, { error: ['assumption not found in its file'] })
-    const entry = (items[index] as unknown as { toJSON(): Record<string, unknown> }).toJSON()
+    // Taken out of the parsed file only; the file is rewritten after the resolved copy is saved. Its header stays.
+    const entry = removeEntry(src, id)
+    if (!entry) return sendJson(res, 500, { error: ['assumption not found in its file'] })
 
     // Append it to the resolved file of the chosen layer.
     const resolved = {
@@ -254,7 +248,6 @@ async function handleResolve(req: Req, res: Res) {
     const header = `# Assumptions resolved into the ${layer} layer by the specs-navigator Resolve button.\n`
     const existing = existsSync(dstPath) ? readFileSync(dstPath, 'utf8') : header
     writeFileSync(dstPath, `${existing.trimEnd()}\n${stringify([resolved], { lineWidth: 120 })}`)
-    items.splice(index, 1)
     writeFileSync(srcPath, src.toString({ lineWidth: 120 }))
     sendJson(res, 200, { id: resolved.id, file: dstPath.slice(ROOT.length + 1) })
   } catch (e) {
