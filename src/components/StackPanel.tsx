@@ -12,12 +12,14 @@ import {
   c2boById,
   childrenOf,
   ctxFor,
+  draftIds,
   effective,
   layerById,
   layerOf,
   layersTouching,
   locatorText,
   originOf,
+  readDrafts,
   rankOf,
   rolesOf,
   specById,
@@ -26,6 +28,7 @@ import {
   subjectById,
   table,
   useViewCtx,
+  writeDrafts,
   type ViewCtx,
 } from '../lib/store'
 import type { EntryKind } from './OverruleEditor'
@@ -386,14 +389,14 @@ function Stratum({
       )}
       {a.note && <p className="verdict">{a.note}</p>}
       {layer === 'assumption' && <ResolveControl a={a} />}
-      {((onEdit && specById.get(a.spec)?.authored && a.target) || layer === 'assumption') && (
+      {((onEdit && specById.get(a.spec)?.authored && a.target) || layer === 'assumption' || draftIds.has(a.id)) && (
         <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginTop: 8, flexWrap: 'wrap' }}>
           {onEdit && specById.get(a.spec)?.authored && a.target && (
             <button className="btn" onClick={() => onEdit(a)}>
               Edit
             </button>
           )}
-          {layer === 'assumption' && <DeleteControl a={a} />}
+          {(layer === 'assumption' || draftIds.has(a.id)) && <DeleteControl a={a} />}
         </div>
       )}
       {(a.decided_by || a.reference) && (
@@ -440,12 +443,27 @@ const RESOLVE_TARGETS: { layer: string; label: string }[] = [
   { layer: 'base', label: 'Base protocol' },
 ]
 
-/** "Delete": removes an open assumption from its file after a confirmation (dev server only). */
+/**
+ * "Delete": removes an open assumption from its file after a confirmation (dev server only). A draft saved in this
+ * browser (static build) is removed from localStorage instead, whether it is an assumption or a go-live compromise.
+ */
 function DeleteControl({ a }: { a: Assertion }) {
   const [state, setState] = useState<'idle' | 'busy' | 'done' | 'readonly'>('idle')
   const [error, setError] = useState<string | null>(null)
   async function deleteNow() {
-    if (!window.confirm(`Delete the assumption ${a.id}? The rule it reads applies again as written.`)) return
+    const local = draftIds.has(a.id)
+    const what = layerOf(a) === 'assumption' ? 'assumption' : 'go-live compromise'
+    if (!window.confirm(`Delete the ${local ? 'local draft of the ' : ''}${what} ${a.id}? The rule it reads applies again as written.`)) return
+    if (local) {
+      if (!writeDrafts(readDrafts().filter((d) => d.id !== a.id))) {
+        setError('This browser does not allow saving to local storage.')
+        return
+      }
+      // Drafts are merged into the dataset once at load, so a reload drops it from every view.
+      setState('done')
+      window.location.reload()
+      return
+    }
     setState('busy')
     setError(null)
     try {
