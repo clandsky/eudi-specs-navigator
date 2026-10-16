@@ -13,11 +13,28 @@ participants:
   - { id: wallet, label: Wallet Unit, role: wallet }
   - { id: verifier, label: Verifier backend, role: verifier }
 steps:
+  - { id: prepare, from: verifier, to: verifier, kind: internal, label: prepare transaction, subject: vp.verifier.prepare-request }
+  - { id: prepare-nonce, parent: prepare, from: verifier, to: verifier, kind: internal, label: generate nonce, subject: vp.verifier.generate-nonce }
+  - { id: prepare-enc-key, parent: prepare, from: verifier, to: verifier, kind: internal, label: ephemeral encryption key, subject: vp.verifier.ephemeral-enc-key }
+  - { id: prepare-sign, parent: prepare, from: verifier, to: verifier, kind: internal, label: sign Request Object, subject: vp.verifier.sign-request-object }
   - { id: invoke, from: browser, to: wallet, kind: redirect, label: "open eu-eaap:// link", subject: vp.authorization-request, example: vp-authorization-request, tags: [client_id, request_uri] }
   - { id: fetch, from: wallet, to: verifier, kind: request, label: GET request_uri, subject: vp.request-uri-fetch, example: vp-request-uri-get }
   - { id: request-object, from: verifier, to: wallet, kind: response, label: signed Request Object, subject: vp.request-object, example: vp-request-uri-response, tags: [x509_hash, DCQL, verifier_info] }
-  - { id: process, from: wallet, to: wallet, kind: internal, label: validate request, user consent, subject: vp.wallet.process-request, note: "Signature and x509_hash against the access certificate, registration certificate (WRP-VALIDATION), over-asking check (WRP-OVERASKING), then the user approves." }
+  - { id: process, from: wallet, to: wallet, kind: internal, label: "validate request, user consent", subject: vp.wallet.process-request, note: "Signature and x509_hash against the access certificate, registration certificate (WRP-VALIDATION), over-asking check (WRP-OVERASKING), then the user approves." }
+  - { id: process-signature, parent: process, from: wallet, to: wallet, kind: internal, label: verify signature + access cert, subject: vp.wallet.verify-request-signature }
+  - { id: process-registration, parent: process, from: wallet, to: wallet, kind: internal, label: validate registration cert, subject: vp.wallet.validate-registration-cert }
+  - { id: process-overasking, parent: process, from: wallet, to: wallet, kind: internal, label: over-asking check, subject: vp.wallet.overasking }
+  - { id: process-encrypt, parent: process, from: wallet, to: wallet, kind: internal, label: "build KB-JWT, encrypt", subject: vp.authorization-response.encryption }
   - { id: response, from: wallet, to: verifier, kind: request, label: POST response_uri (direct_post.jwt), subject: vp.response-post, example: vp-response-post, tags: [JWE, SD-JWT VC + KB-JWT] }
+  - { id: validate, from: verifier, to: verifier, kind: internal, label: validate response, subject: vp.verifier.validate-response, note: "OpenID4VP §8.6: the Verifier validates the VP Token itself and rejects it if any check fails." }
+  - { id: validate-decrypt, parent: validate, from: verifier, to: verifier, kind: internal, label: decrypt JWE, subject: vp.verifier.decrypt-response }
+  - { id: validate-state, parent: validate, from: verifier, to: verifier, kind: internal, label: match state, subject: vp.verifier.check-state }
+  - { id: validate-vp-token, parent: validate, from: verifier, to: verifier, kind: internal, label: vp_token vs DCQL, subject: vp.verifier.check-vp-token }
+  - { id: validate-issuer, parent: validate, from: verifier, to: verifier, kind: internal, label: issuer signature + x5c, subject: vp.verifier.verify-issuer-signature }
+  - { id: validate-disclosures, parent: validate, from: verifier, to: verifier, kind: internal, label: disclosures vs _sd, subject: vp.verifier.verify-disclosures }
+  - { id: validate-kb, parent: validate, from: verifier, to: verifier, kind: internal, label: "KB-JWT nonce, aud, sd_hash", subject: vp.verifier.verify-kb-jwt }
+  - { id: validate-validity, parent: validate, from: verifier, to: verifier, kind: internal, label: exp / validity, subject: vp.verifier.check-validity }
+  - { id: validate-status, parent: validate, from: verifier, to: verifier, kind: internal, label: status list, subject: vp.verifier.check-status }
   - { id: ack, from: verifier, to: wallet, kind: response, label: 200 redirect_uri, subject: vp.response-ack, example: vp-response-ack-same, tags: [response_code] }
   - { id: redirect-back, from: wallet, to: browser, kind: redirect, label: open redirect_uri, subject: vp.redirect-back }
   - { id: result, from: browser, to: verifier, kind: request, label: fetch result with response_code, subject: vp.result-fetch, note: "Application-specific (OpenID4VP §13.3 reference design): only the session that receives the redirect can fetch the response." }

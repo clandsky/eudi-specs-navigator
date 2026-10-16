@@ -1,0 +1,17 @@
+# Go-live compromise (d-you current), recorded from the curated d-you verifier Request Object.
+- id: golive/request-object.client_metadata.enc_values-2026-10-16
+  subject: vp.request-object.client_metadata.enc_values
+  spec: golive-compromises
+  locator: { at: "d-you verifier Request Object (curated, 2026-10-16)" }
+  relation: adapts
+  level: shall
+  applies_to: { role: [verifier] }
+  target: haip/5/enc-values
+  window: { from: "2026-10-16" }
+  quote: >-
+    The d-you verifier lists only A128GCM in encrypted_response_enc_values_supported; A256GCM is not offered.
+  decided_by: d-you implementation (curated verifier JSON, 2026-10-16)
+  reference: d-you verifier Request Object (curated, 2026-10-16)
+  note: >-
+    Observed: encrypted_response_enc_values_supported: [A128GCM]. OpenID4VP 1.0 Section 5.1 treats A128GCM as the
+    default single value, for which the parameter SHOULD be absent; d-you sends it explicitly.

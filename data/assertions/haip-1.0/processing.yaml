@@ -1,0 +1,88 @@
+# HAIP 1.0: Verifier processing steps of the presentation flows.
+- id: haip/5/enc-keys-generate
+  subject: vp.verifier.ephemeral-enc-key
+  spec: haip-1.0
+  locator: { section: "5" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ verifier ] }
+  quote: >-
+    Verifiers MUST supply ephemeral encryption public keys specific to each Authorization Request passed via client
+    metadata as specified in Section 8.3 of [OIDF.OID4VP].
+  verified: source-checked
+- id: haip/5/ecdh-es
+  subject: vp.verifier.ephemeral-enc-key
+  spec: haip-1.0
+  locator: { section: "5" }
+  relation: profiles
+  level: shall
+  quote: >-
+    The JWE alg (algorithm) header parameter (see Section 4.1.1 of [RFC7516]) value ECDH-ES (as defined in Section 4.6
+    of [RFC7518]), with key agreement utilizing keys on the P-256 curve (see Section 6.2.1.1 of [RFC7518]) MUST be
+    supported.
+  verified: source-checked
+- id: haip/5/x5c-no-anchor
+  subject: vp.verifier.sign-request-object
+  spec: haip-1.0
+  locator: { section: "5" }
+  relation: profiles
+  level: shall-not
+  applies_to: { role: [ verifier ] }
+  quote: >-
+    The X.509 certificate of the trust anchor MUST NOT be included in the x5c JOSE header of the signed request. The
+    X.509 certificate signing the request MUST NOT be self-signed.
+  verified: source-checked
+- id: haip/5/enc-verifier
+  subject: vp.verifier.decrypt-response
+  spec: haip-1.0
+  locator: { section: "5" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ verifier ] }
+  quote: >-
+    The JWE enc (encryption algorithm) header parameter (see Section 4.1.2 of [RFC7516]) values A128GCM and A256GCM (as
+    defined in Section 5.3 of [RFC7518]) MUST be supported by Verifiers.
+  verified: source-checked
+- id: haip/6.1.1/x509-resolution
+  subject: vp.verifier.verify-issuer-signature
+  spec: haip-1.0
+  locator: { section: "6.1.1" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ verifier ] }
+  quote: >-
+    This specification mandates the support for X.509 certificate-based key resolution to validate the issuer signature
+    of an SD-JWT VC. This MUST be supported by all entities (Issuer, Wallet, Verifier).
+  verified: source-checked
+- id: haip/7/es256-verifier
+  subject: vp.verifier.verify-kb-jwt
+  spec: haip-1.0
+  locator: { section: "7" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ verifier ] }
+  quote: >-
+    Issuers, Verifiers, and Wallets MUST, at a minimum, support ECDSA with P-256 and SHA-256 (JOSE algorithm identifier
+    ES256; COSE algorithm identifier -7 or -9, as applicable) for the purpose of validating the following: … the
+    signature of the Verifiable Presentation, e.g., KB-JWT of an SD-JWT VC
+  verified: source-checked
+- id: haip/6.1.1.1/kb-present
+  subject: vp.verifier.verify-kb-jwt
+  spec: haip-1.0
+  locator: { section: "6.1.1.1" }
+  relation: profiles
+  level: shall
+  quote: >-
+    If the credential has cryptographic holder binding, a KB-JWT, as defined in [I-D.ietf-oauth-sd-jwt-vc], MUST always
+    be present when presenting an SD-JWT VC.
+  verified: source-checked
+- id: haip/7/es256-status
+  subject: vp.verifier.check-status
+  spec: haip-1.0
+  locator: { section: "7" }
+  relation: profiles
+  level: info
+  applies_to: { role: [ verifier ] }
+  quote: the status information of the Verifiable Credential or Wallet Attestation.
+  note: Part of the HAIP §7 list of what Verifiers must be able to validate with ES256.
+  verified: source-checked

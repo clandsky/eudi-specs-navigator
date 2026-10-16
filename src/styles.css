@@ -530,6 +530,18 @@ h2.section {
   font-size: 14px;
   font-weight: 500;
 }
+.seq .num-sub {
+  font-size: 11px;
+  font-weight: 600;
+}
+.seq .label-sub {
+  font-size: 12.5px;
+  font-weight: 400;
+}
+.seq .activation {
+  fill: var(--sheet-2);
+  stroke: var(--rule-strong);
+}
 .seq .stag {
   font-size: 12px;
   fill: var(--ink-2);

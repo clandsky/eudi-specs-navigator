@@ -7,6 +7,7 @@ import { DATA, loadDataset } from '../../scripts/lib/data.ts'
 import { inputHash, substitute } from '../../scripts/lib/examples.ts'
 import { findQuote, normalise, stripFurniture } from '../../scripts/lib/quote.ts'
 import { annotationFor, decodeJwt, entryPointers, lookup, matchPattern, resolves, viewOf } from './pointer'
+import { stepNumber } from './steps'
 
 const ds = loadDataset({ requireEncoded: true })
 const KEYS = join(DATA, 'test-keys')
@@ -106,5 +107,19 @@ describe('quote matching', () => {
     expect(t).toBe('credential_configurations and Proof-of-Possession continues here')
     expect(findQuote(t, 'Proof-of-Possession … continues here').ok).toBe(true)
     expect(findQuote(t, 'continues here … Proof-of-Possession').ok).toBe(false)
+  })
+})
+
+describe('flow substeps', () => {
+  it('numbers substeps under their parent step', () => {
+    const flow = ds.flows.find((f) => f.id === 'vp-redirect-same')!
+    const num = (id: string) => stepNumber(flow, flow.steps.find((s) => s.id === id)!)
+    expect([num('prepare'), num('prepare-sign'), num('invoke')]).toEqual(['1', '1.3', '2'])
+    expect(num('validate-decrypt')).toBe(`${num('validate')}.1`)
+  })
+  it('gives every substep a sourced subject', () => {
+    for (const f of ds.flows)
+      for (const s of f.steps.filter((x) => x.parent))
+        expect(ds.assertions.some((a) => a.subject === s.subject), `${f.id}/${s.id}`).toBe(true)
   })
 })

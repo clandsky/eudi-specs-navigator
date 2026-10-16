@@ -171,3 +171,14 @@
   quote: "the EUDI Wallet shall clearly warn the wallet user before any disclosure. The warning shall identify that the
     wallet-relying party is requesting more information than it has registered."
   verified: source-checked
+- id: cir/annex-xii/OIDFVP-HAIP-COMMON-REQ-RO-23-signing
+  subject: vp.verifier.sign-request-object
+  spec: cir-2026-1731
+  locator: { req: OIDFVP-HAIP-COMMON-REQ-RO-23, at: "Annex XII, adaptation (16), clause 6.3.2.2" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ verifier ] }
+  quote: "OIDFVP-HAIP-COMMON-REQ-RO-23: The leaf certificate mentioned in OpenID4VP section 5.9.3 for use with the
+    x509_hash Client Identifier Prefix shall be a RP access certificate as specified in ETSI TS 119 475 [14]."
+  note: Same requirement as on the x5c field; here it fixes which key signs the Request Object.
+  verified: source-checked

@@ -1,5 +1,6 @@
 id: vp-request-uri-response
 title: Signed Request Object returned from request_uri
+note: Shape follows the d-you verifier (2026-10-16) - no iat in the JWS header, legacy client_id_scheme, iss, only A128GCM, German PID vct, no trusted_authorities.
 subject: vp.request-uri-fetch
 kind: http-response
 http:
@@ -9,9 +10,11 @@ http:
 jwts:
   ro:
     key: verifier-access
-    header: { typ: oauth-authz-req+jwt, alg: ES256, x5c: "{{x5c:verifier-access}}", iat: 1792072800 }
+    header: { typ: oauth-authz-req+jwt, alg: ES256, x5c: "{{x5c:verifier-access}}" }
     payload:
       client_id: "{{x509hash:verifier-access}}"
+      client_id_scheme: x509_hash
+      iss: "{{x509hash:verifier-access}}"
       response_type: vp_token
       response_mode: direct_post.jwt
       response_uri: https://verifier.example.eu/response
@@ -22,22 +25,24 @@ jwts:
       exp: 1792073100
       dcql_query:
         credentials:
-          - id: pid
+          - id: pid-sd-jwt
             format: dc+sd-jwt
-            meta: { vct_values: ["urn:eudi:pid:1"] }
-            claims: [{ path: [given_name] }, { path: [family_name] }, { path: [birthdate] }]
-            trusted_authorities: [{ type: etsi_tl, values: ["https://ec.europa.eu/tools/lotl/eu-lotl.xml"] }]
+            meta: { vct_values: ["urn:eudi:pid:de:1"] }
+            claims: [{ path: [given_name] }, { path: [family_name] }]
       client_metadata:
         jwks: { keys: [{ $jwk: verifier-enc, kid: enc-1, use: enc, alg: ECDH-ES }] }
-        encrypted_response_enc_values_supported: [A128GCM, A256GCM]
+        vp_formats_supported:
+          dc+sd-jwt: { sd-jwt_alg_values: [ES256], kb-jwt_alg_values: [ES256] }
+        encrypted_response_enc_values_supported: [A128GCM]
       verifier_info:
         - { format: registration_cert, data: "{{b64url:TEST ONLY - RP registration certificate (structure per ETSI TS 119 475, not modelled here)}}" }
 annotations:
   /http/headers/Content-Type: http.content-type
   /jwt/ro/header/typ: vp.request-object.typ
   /jwt/ro/header/x5c: vp.request-object.x5c
-  /jwt/ro/header/iat: vp.request-object.header-iat
   /jwt/ro/payload/client_id: vp.request-object.client_id
+  /jwt/ro/payload/client_id_scheme: vp.request-object.client_id_scheme
+  /jwt/ro/payload/iss: vp.request-object.iss
   /jwt/ro/payload/response_type: vp.request-object.response_type
   /jwt/ro/payload/response_mode: vp.request-object.response_mode
   /jwt/ro/payload/response_uri: vp.request-object.response_uri
@@ -58,9 +63,11 @@ annotations:
   /jwt/ro/payload/client_metadata/jwks/keys/*/kid: vp.request-object.client_metadata.jwks
   /jwt/ro/payload/client_metadata/jwks/keys/*/use: vp.request-object.client_metadata.jwks
   /jwt/ro/payload/client_metadata/jwks/keys/*/alg: vp.request-object.client_metadata.jwks
-  /jwt/ro/payload/dcql_query/credentials/*/trusted_authorities: vp.dcql.trusted_authorities
-  /jwt/ro/payload/dcql_query/credentials/*/trusted_authorities/**: vp.dcql.trusted_authorities
   /jwt/ro/payload/client_metadata/encrypted_response_enc_values_supported: vp.request-object.client_metadata.enc_values
+  /jwt/ro/payload/client_metadata/vp_formats_supported: vp.request-object.client_metadata.vp_formats_supported
+  /jwt/ro/payload/client_metadata/vp_formats_supported/dc+sd-jwt: vp.request-object.client_metadata.vp_formats_supported
+  /jwt/ro/payload/client_metadata/vp_formats_supported/dc+sd-jwt/sd-jwt_alg_values: vp.request-object.client_metadata.sd-jwt_alg_values
+  /jwt/ro/payload/client_metadata/vp_formats_supported/dc+sd-jwt/kb-jwt_alg_values: vp.request-object.client_metadata.kb-jwt_alg_values
   /jwt/ro/payload/verifier_info: vp.request-object.verifier_info
   /jwt/ro/payload/verifier_info/0: vp.request-object.verifier_info.registration_cert
   /jwt/ro/payload/verifier_info/*/format: vp.request-object.verifier_info.format

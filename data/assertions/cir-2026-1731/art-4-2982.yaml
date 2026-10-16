@@ -19,3 +19,24 @@
   applies_to: { role: [ wallet ] }
   quote: "Article 3(4) shall apply from 11 August 2028."
   verified: source-checked
+- id: cir/2982-art-3-1
+  subject: vp.wallet.verify-request-signature
+  spec: cir-2026-1731
+  locator: { at: "Article 4(2)(a): new Article 3(1) of 2024/2982" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ wallet ] }
+  quote: >-
+    (1) authenticate and validate the wallet-relying party access certificates where interacting with wallet-relying
+    parties without delegating execution of these processes to an operating system browser or other intermediary
+    application;
+  verified: source-checked
+- id: cir/2982-art-3-3
+  subject: vp.wallet.verify-request-signature
+  spec: cir-2026-1731
+  locator: { at: "Article 4(2)(c): new Article 3(3) of 2024/2982" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ wallet ] }
+  quote: "(3) authenticate and validate requests made using wallet-relying party access certificates;"
+  verified: source-checked

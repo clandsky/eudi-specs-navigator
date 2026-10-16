@@ -2,6 +2,7 @@
 // clickable, keyboard-focusable messages, per-message layer badges and lens-diff markers.
 import type { KeyboardEvent } from 'react'
 import type { Flow } from '../model/schema'
+import { stepNumber } from '../model/steps'
 import { layerColor } from '../components/bits'
 import {
   LENS_STAGES,
@@ -21,6 +22,8 @@ const W = 620
 const TOP = 18
 const HEAD_H = 34
 const ROW_H = 54
+/** Substeps (step.parent set) get a lower, indented row. */
+const SUB_H = 36
 const FIRST_ROW = TOP + HEAD_H + 26
 const SIDE = 74
 
@@ -44,7 +47,16 @@ export function SequenceDiagram({ flow, selected, onSelect }: Props) {
   const vc = useViewCtx()
   const n = flow.participants.length
   const xOf = (id: string) => SIDE + (flow.participants.findIndex((p) => p.id === id) * (W - 2 * SIDE)) / Math.max(1, n - 1)
-  const height = FIRST_ROW + flow.steps.length * ROW_H + 10
+  const rowH = (i: number) => (flow.steps[i]!.parent ? SUB_H : ROW_H)
+  const rowY: number[] = []
+  flow.steps.forEach((_, i) => rowY.push(i === 0 ? FIRST_ROW : rowY[i - 1]! + rowH(i - 1)))
+  const height = rowY.at(-1)! + rowH(flow.steps.length - 1) + 10
+  // An activation bar on the lifeline groups a step with its substeps.
+  const groups = flow.steps.flatMap((s, i) => {
+    let last = i
+    while (flow.steps[last + 1]?.parent === s.id) last++
+    return last > i ? [{ x: xOf(s.from), y1: rowY[i]! + 22, y2: rowY[last]! + SUB_H - 8, id: s.id }] : []
+  })
   const stageLayer = LENS_STAGES[vc.stage]!.id
 
   return (
@@ -71,9 +83,17 @@ export function SequenceDiagram({ flow, selected, onSelect }: Props) {
         )
       })}
 
+      {groups.map((g) => (
+        <rect key={g.id} className="activation" x={g.x - 4} y={g.y1} width={8} height={g.y2 - g.y1} rx={2} />
+      ))}
+
       {flow.steps.map((s, i) => {
-        const y = FIRST_ROW + i * ROW_H
-        const ay = y + 30
+        const sub = !!s.parent
+        const y = rowY[i]!
+        const ay = y + (sub ? 15 : 30)
+        const num = stepNumber(flow, s)
+        // Labels of self-loops start this far from the lifeline.
+        const off = sub ? 28 : 38
         const x1 = xOf(s.from)
         const x2 = xOf(s.to)
         const left = Math.min(x1, x2)
@@ -102,12 +122,13 @@ export function SequenceDiagram({ flow, selected, onSelect }: Props) {
             }
           }
         }
-        const label = `${i + 1}. ${s.label}${added ? `, added by ${layerById.get(origin!)?.short}` : ''}${absent ? ', not in the protocol at this lens step' : ''}${changed ? `, changed by ${layerById.get(stageLayer)?.short}` : ''}`
+        const label = `${num}. ${s.label}${added ? `, added by ${layerById.get(origin!)?.short}` : ''}${absent ? ', not in the protocol at this lens step' : ''}${changed ? `, changed by ${layerById.get(stageLayer)?.short}` : ''}`
         return (
           <g
             key={s.id}
             className="msg"
             data-step={s.id}
+            data-sub={sub}
             data-selected={selected === s.id}
             data-absent={absent}
             tabIndex={0}
@@ -117,9 +138,9 @@ export function SequenceDiagram({ flow, selected, onSelect }: Props) {
             onClick={() => onSelect(s.id)}
             onKeyDown={onKey}
           >
-            <rect className="hit" x={4} y={y + 2} width={W - 8} height={ROW_H - 4} rx={6} />
-            <text className="num" x={16} y={ay + 4}>
-              {i + 1}
+            <rect className="hit" x={sub ? 22 : 4} y={y + 2} width={W - (sub ? 26 : 8)} height={rowH(i) - 4} rx={6} />
+            <text className={sub ? 'num num-sub' : 'num'} x={sub ? 26 : 16} y={ay + 4}>
+              {num}
             </text>
             {changed && (
               <text className="delta" x={16} y={ay + 18} style={{ fill: layerColor(stageLayer) }}>
@@ -130,7 +151,15 @@ export function SequenceDiagram({ flow, selected, onSelect }: Props) {
               // Self-message: a small loop to the right of the lifeline (e.g. the wallet validating a request).
               <path
                 className={`arrow ${dashed}`}
-                d={leftward ? `M${x1 - 2},${ay - 8} h-28 v14 h26` : `M${x1 + 2},${ay - 8} h28 v14 h-26`}
+                d={
+                  sub
+                    ? leftward
+                      ? `M${x1 - 5},${ay - 6} h-18 v10 h16`
+                      : `M${x1 + 5},${ay - 6} h18 v10 h-16`
+                    : leftward
+                      ? `M${x1 - 2},${ay - 8} h-28 v14 h26`
+                      : `M${x1 + 2},${ay - 8} h28 v14 h-26`
+                }
                 markerEnd={s.kind === 'internal' ? 'url(#arrowhead-muted)' : 'url(#arrowhead)'}
               />
             ) : (
@@ -144,15 +173,15 @@ export function SequenceDiagram({ flow, selected, onSelect }: Props) {
               />
             )}
             <text
-              className="label"
-              x={self ? (leftward ? x1 - 38 : x1 + 38) : mid}
+              className={sub ? 'label label-sub' : 'label'}
+              x={self ? (leftward ? x1 - off : x1 + off) : mid}
               y={self ? ay + 2 : ay - 8}
               textAnchor={self ? (leftward ? 'end' : 'start') : 'middle'}
             >
               {added && <tspan style={{ fill: layerColor(origin!) }}>◆ </tspan>}
               {s.label}
             </text>
-            <g transform={`translate(${self ? (leftward ? x1 - 38 - layers.length * 8 : x1 + 38) : left + 4}, ${ay + 8})`}>
+            <g transform={`translate(${self ? (leftward ? x1 - off - layers.length * 8 : x1 + off) : left + 4}, ${ay + (sub ? 7 : 8)})`}>
               {layers.map((l, k) => (
                 <rect key={l} x={k * 8} y={0} width={6} height={10} rx={1.5} style={{ fill: layerColor(l) }} />
               ))}
@@ -160,8 +189,8 @@ export function SequenceDiagram({ flow, selected, onSelect }: Props) {
             {s.tags.length > 0 && (
               <text
                 className="stag"
-                x={self && leftward ? x1 - 42 - layers.length * 8 : (self ? x1 + 34 : left) + 8 + layers.length * 8 + 4}
-                y={ay + 17}
+                x={self && leftward ? x1 - off - 4 - layers.length * 8 : (self ? x1 + off - 4 : left) + 8 + layers.length * 8 + 4}
+                y={ay + (sub ? 15 : 17)}
                 textAnchor={self && leftward ? 'end' : 'start'}
               >
                 {s.tags.join(', ')}

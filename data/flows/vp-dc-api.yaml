@@ -14,8 +14,24 @@ participants:
   - { id: browser, label: Browser / OS }
   - { id: wallet, label: Wallet Unit, role: wallet }
 steps:
+  - { id: prepare, from: verifier, to: verifier, kind: internal, label: prepare transaction, subject: vp.verifier.prepare-request }
+  - { id: prepare-nonce, parent: prepare, from: verifier, to: verifier, kind: internal, label: generate nonce, subject: vp.verifier.generate-nonce }
+  - { id: prepare-enc-key, parent: prepare, from: verifier, to: verifier, kind: internal, label: ephemeral encryption key, subject: vp.verifier.ephemeral-enc-key }
+  - { id: prepare-sign, parent: prepare, from: verifier, to: verifier, kind: internal, label: sign Request Object, subject: vp.verifier.sign-request-object }
   - { id: get, from: verifier, to: browser, kind: request, label: navigator.credentials.get(), subject: vp.dc-api.request, example: vp-dcapi-request, tags: [openid4vp-v1-signed, expected_origins] }
   - { id: invoke, from: browser, to: wallet, kind: internal, label: invoke wallet (local or CTAP hybrid), subject: vp.dc-api.proximity, note: "Cross device: CTAP hybrid with a proximity check (CIR OIDFVP-HAIP-ADD-API-05)." }
   - { id: process, from: wallet, to: wallet, kind: internal, label: "validate request, Origin, consent", subject: vp.wallet.process-request, note: "Origin against expected_origins (OpenID4VP A.2), signature and x509_hash, registration certificate, over-asking check, user consent." }
+  - { id: process-signature, parent: process, from: wallet, to: wallet, kind: internal, label: verify signature + access cert, subject: vp.wallet.verify-request-signature }
+  - { id: process-registration, parent: process, from: wallet, to: wallet, kind: internal, label: validate registration cert, subject: vp.wallet.validate-registration-cert }
+  - { id: process-overasking, parent: process, from: wallet, to: wallet, kind: internal, label: over-asking check, subject: vp.wallet.overasking }
+  - { id: process-encrypt, parent: process, from: wallet, to: wallet, kind: internal, label: "build KB-JWT, encrypt", subject: vp.authorization-response.encryption }
   - { id: answer, from: wallet, to: browser, kind: response, label: encrypted response (dc_api.jwt), subject: vp.dc-api.response, example: vp-dcapi-response, tags: ["aud = origin:", SD-JWT VC + KB-JWT] }
   - { id: forward, from: browser, to: verifier, kind: request, label: page forwards the response, subject: vp.dc-api.forward, note: Application-specific; not defined by OpenID4VP. }
+  - { id: validate, from: verifier, to: verifier, kind: internal, label: validate response, subject: vp.verifier.validate-response, note: "OpenID4VP §8.6: the Verifier validates the VP Token itself and rejects it if any check fails." }
+  - { id: validate-decrypt, parent: validate, from: verifier, to: verifier, kind: internal, label: decrypt JWE, subject: vp.verifier.decrypt-response }
+  - { id: validate-vp-token, parent: validate, from: verifier, to: verifier, kind: internal, label: vp_token vs DCQL, subject: vp.verifier.check-vp-token }
+  - { id: validate-issuer, parent: validate, from: verifier, to: verifier, kind: internal, label: issuer signature + x5c, subject: vp.verifier.verify-issuer-signature }
+  - { id: validate-disclosures, parent: validate, from: verifier, to: verifier, kind: internal, label: disclosures vs _sd, subject: vp.verifier.verify-disclosures }
+  - { id: validate-kb, parent: validate, from: verifier, to: verifier, kind: internal, label: "KB-JWT nonce, aud, sd_hash", subject: vp.verifier.verify-kb-jwt }
+  - { id: validate-validity, parent: validate, from: verifier, to: verifier, kind: internal, label: exp / validity, subject: vp.verifier.check-validity }
+  - { id: validate-status, parent: validate, from: verifier, to: verifier, kind: internal, label: status list, subject: vp.verifier.check-status }

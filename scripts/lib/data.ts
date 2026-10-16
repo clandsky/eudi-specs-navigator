@@ -127,6 +127,13 @@ export function loadDataset(opts: { requireEncoded?: boolean } = {}): Dataset {
     const parts = new Set(f.participants.map((p) => p.id))
     if (!subjectIds.has(f.subject)) problems.push(`${f._file}: unknown flow subject ${f.subject}`)
     dupes(f.steps.map((s) => s.id), `step in ${f.id}`, problems)
+    f.steps.forEach((s, i) => {
+      if (!s.parent) return
+      const prev = f.steps[i - 1]
+      if (!prev || (prev.id !== s.parent && prev.parent !== s.parent))
+        problems.push(`${f._file}: substep ${s.id} must directly follow its parent ${s.parent} or a sibling substep`)
+      if (f.steps.find((x) => x.id === s.parent)?.parent) problems.push(`${f._file}: substep ${s.id} has a substep as parent`)
+    })
     for (const s of f.steps) {
       if (!parts.has(s.from) || !parts.has(s.to)) problems.push(`${f._file}: step ${s.id} uses unknown participant`)
       if (!subjectIds.has(s.subject)) problems.push(`${f._file}: step ${s.id} has unknown subject ${s.subject}`)
