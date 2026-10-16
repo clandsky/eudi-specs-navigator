@@ -1,0 +1,18 @@
+# Assumptions resolved into the golive layer by the specs-navigator Resolve button.
+- id: resolved/TR-WIA-2.1-exp-claim
+  subject: vci.wia.exp
+  spec: resolved-golive
+  locator:
+    at: Reading of CIR 2026/1731 TR-WIA-2.1
+  relation: adapts
+  level: shall
+  quote: the difference between the time when the wallet provider verified the integrity of the wallet instance and the
+    time they will indicate in the 'exp' claim of the issued wallet instance attestation shall be less than 24 hours.
+  target: cir/TR-WIA-2.1
+  note: '"header parameter" in the CIR is read as the exp claim of the JWT payload, as defined by OpenID4VCI Appendix E
+    and draft-07 §5.1 and required by C_WIA-1. Resolved from assumption/TR-WIA-2.1-exp-claim on 2026-10-16.'
+  interpretation: true
+  decided_by: project owner (2026-10-15)
+  applies_to:
+    role:
+      - wallet-provider
