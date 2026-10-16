@@ -94,9 +94,11 @@ never invent one.
 
 ## Corpus (`eIDAS + all references/`)
 
-About 300 files; start with its `README.md`. `cir/CIR-2026-1731-…` is the top source; `attestations.md` is a text
-extract of its Annex Ib; `standards/` holds ETSI, OpenID, RFC and draft texts. PDFs are git-ignored (size; ETSI texts
-must not be redistributed), as are `sources/*.txt`. RFC 7636 and RFC 9126 are not in the corpus; `sources:build`
+Third-party material, git-ignored as a whole and never committed (it was removed from the history): it exists only
+in the main checkout, not in fresh clones or worktrees, so `sources:build` and `quote-check` run only there. The app,
+`pnpm build`, `pnpm validate` and `pnpm test` do not need it. About 300 files; start with its `README.md`.
+`cir/CIR-2026-1731-…` is the top source; `attestations.md` is a text extract of its Annex Ib; `standards/` holds ETSI,
+OpenID, RFC and draft texts. `sources/*.txt` is git-ignored too (ETSI texts must not be redistributed). RFC 7636 and RFC 9126 are not in the corpus; `sources:build`
 downloads them. The corpus README refers to `REFERENCES.md`, `REFERENCES-L2.md`, `ETSI-normative-refs.md` and
 `REVIEW-2026-amending-CIRs.md`, which are not in this repository. ARF, TS3 and the German wallet docs are not in the
 corpus either (pin a release tag when adding them).
