@@ -28,6 +28,7 @@ import {
   useViewCtx,
   type ViewCtx,
 } from '../lib/store'
+import type { EntryKind } from './OverruleEditor'
 import { LayerBadges, LayerName, LevelChip, SpecName, StatusTag, cssLayer, formatDate } from './bits'
 
 const VERB: Record<Relation, string> = {
@@ -48,7 +49,7 @@ interface Props {
   subjectId: string
   /** Variant of the flow the subject is shown in (grant, transport, …). */
   variant?: { grant?: string; transport?: string; device?: string }
-  onAddOverrule?: (subjectId: string) => void
+  onAddOverrule?: (subjectId: string, kind: EntryKind) => void
   compact?: boolean
 }
 
@@ -99,9 +100,12 @@ export function StackPanel({ subjectId, variant = {}, onAddOverrule, compact }: 
       <EffectiveBox rules={rules} vc={vc} subjectId={subjectId} variant={variant} allRoles={allRoles} />
 
       {onAddOverrule && stack.some((a) => a.relation !== 'silent') && (
-        <div style={{ margin: '-6px 0 16px' }}>
-          <button className="btn" onClick={() => onAddOverrule(subjectId)}>
+        <div style={{ margin: '-6px 0 16px', display: 'flex', gap: 8 }}>
+          <button className="btn" onClick={() => onAddOverrule(subjectId, 'golive')}>
             Add go-live compromise
+          </button>
+          <button className="btn" onClick={() => onAddOverrule(subjectId, 'assumption')}>
+            Add assumption
           </button>
         </div>
       )}

@@ -16,6 +16,9 @@ export function ExampleEditor({ exampleId, onClose }: Props) {
   const [file, setFile] = useState('')
   const [state, setState] = useState<'loading' | 'ready' | 'readonly' | 'saving' | 'saved'>('loading')
   const [errors, setErrors] = useState<string[] | null>(null)
+  const [assume, setAssume] = useState(true)
+  const [why, setWhy] = useState('')
+  const [decidedBy, setDecidedBy] = useState(`project owner (${new Date().toISOString().slice(0, 10)})`)
 
   useEffect(() => {
     if (!exampleId) {
@@ -23,6 +26,7 @@ export function ExampleEditor({ exampleId, onClose }: Props) {
       return
     }
     setErrors(null)
+    setWhy('')
     setState('loading')
     ref.current?.showModal()
     fetch(`/__examples?id=${encodeURIComponent(exampleId)}`)
@@ -39,7 +43,11 @@ export function ExampleEditor({ exampleId, onClose }: Props) {
     e.preventDefault()
     setState('saving')
     setErrors(null)
-    const res = await fetch('/__examples', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: exampleId, source }) })
+    const res = await fetch('/__examples', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: exampleId, source, ...(assume ? { assumption: { note: why, decided_by: decidedBy } } : {}) }),
+    })
     const body = await res.json().catch(() => ({ error: [res.statusText] }))
     if (!res.ok) {
       setErrors(Array.isArray(body.error) ? body.error : [String(body.error)])
@@ -78,6 +86,22 @@ export function ExampleEditor({ exampleId, onClose }: Props) {
               <code>{'{ use: example/jwt }'}</code> to reuse another example's JWT. Annotations are not edited here; new fields
               stay clickable through the field map.
             </p>
+            <label className="meta" style={{ display: 'inline-flex', gap: 6, alignItems: 'center' }}>
+              <input type="checkbox" checked={assume} onChange={(e) => setAssume(e.target.checked)} disabled={state !== 'ready'} />
+              Record this change as an assumption (the changed fields are marked while the Assumptions layer is on)
+            </label>
+            {assume && (
+              <div className="row">
+                <label>
+                  Why <span className="meta">(how you read the rules behind this change)</span>
+                  <textarea className="field-input why" value={why} onChange={(e) => setWhy(e.target.value)} required disabled={state !== 'ready'} />
+                </label>
+                <label>
+                  Decided by
+                  <input className="field-input" value={decidedBy} onChange={(e) => setDecidedBy(e.target.value)} disabled={state !== 'ready'} />
+                </label>
+              </div>
+            )}
           </>
         )}
         {errors && (

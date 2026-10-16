@@ -1,7 +1,9 @@
 // Dev-only write-back from the in-app editors, so edits are versioned with the rest of the data:
 //   /__overrules  POST one go-live compromise → data/assertions/golive/<id>.yaml
 //   /__examples   GET ?id= the editable inputs (http, json, jwts) of an example as YAML;
-//                 POST {id, source} replaces them in the example's YAML file and re-signs it (and its dependents)
+//                 POST {id, source, assumption?} replaces them in the example's YAML file and re-signs it (and its
+//                 dependents); with assumption {note, decided_by} the changed fields are recorded under `assumptions`
+//   /__assumptions/add  POST one assumption → appended to data/assertions/assumptions/assumptions.yaml
 //   /__assumptions/resolve  POST {id, layer} moves an assumption into data/assertions/resolved/<layer>.yaml as a
 //                 resolved interpretation of that layer (spec resolved-<layer>)
 // The static build has no server: the overrule editor keeps local drafts there and the example editor is read-only.
@@ -11,6 +13,7 @@ import type { Plugin } from 'vite'
 import { isMap, isSeq, parse, parseDocument, stringify } from 'yaml'
 import { buildExamples, ensureTestPki } from './scripts/lib/build-examples.ts'
 import { DATA, ROOT, loadDataset } from './scripts/lib/data.ts'
+import { diffInputs } from './src/model/inputs-diff.ts'
 import { Assertion, Example } from './src/model/schema.ts'
 
 const DIR = join(DATA, 'assertions', 'golive')
@@ -22,6 +25,7 @@ export function editorPlugin(): Plugin {
     configureServer(server) {
       server.middlewares.use('/__examples', (req, res) => handleExamples(req, res))
       server.middlewares.use('/__assumptions/resolve', (req, res) => handleResolve(req, res))
+      server.middlewares.use('/__assumptions/add', (req, res) => handleAddAssumption(req, res))
       server.middlewares.use('/__overrules', (req, res) => {
         const send = (status: number, body: unknown) => {
           res.statusCode = status
@@ -91,7 +95,11 @@ async function handleExamples(req: Req, res: Res) {
       return sendJson(res, 200, { id: ex.id, file: ex.file, source: stringify(editable, { lineWidth: 120 }) })
     }
     if (req.method !== 'POST') return sendJson(res, 405, { error: 'GET or POST only' })
-    const { id, source } = JSON.parse(await readBody(req)) as { id: string; source: string }
+    const { id, source, assumption } = JSON.parse(await readBody(req)) as {
+      id: string
+      source: string
+      assumption?: { note?: string; decided_by?: string }
+    }
     const ex = ds.examples.find((e) => e.id === id)
     if (!ex) return sendJson(res, 404, { error: 'unknown example' })
     let edited: Record<string, unknown>
@@ -107,6 +115,23 @@ async function handleExamples(req: Req, res: Res) {
     const before = readFileSync(path, 'utf8')
     const doc = parseDocument(before)
     if (!isMap(doc.contents)) return sendJson(res, 500, { error: ['example file is not a mapping'] })
+    const old = doc.toJS() as Record<string, unknown>
+    if (assumption) {
+      const note = assumption.note?.trim()
+      if (!note) return sendJson(res, 400, { error: ['say why the change is an assumption'] })
+      const pick = (o: Record<string, unknown>) => Object.fromEntries(EDITABLE.map((k) => [k, o[k]]))
+      const { changed, removed } = diffInputs(pick(old), pick(edited))
+      if (!changed.length && !removed.length) return sendJson(res, 400, { error: ['nothing changed, so there is no assumption to record'] })
+      const entry = {
+        date: new Date().toISOString().slice(0, 10),
+        ...(assumption.decided_by?.trim() ? { decided_by: assumption.decided_by.trim() } : {}),
+        note,
+        ...(changed.length ? { changed } : {}),
+        ...(removed.length ? { removed } : {}),
+      }
+      const list = Array.isArray(old.assumptions) ? old.assumptions : []
+      doc.set('assumptions', doc.createNode([...list, entry]))
+    }
     for (const k of EDITABLE) {
       if (edited[k] === undefined) doc.delete(k)
       else doc.set(k, doc.createNode(edited[k]))
@@ -122,6 +147,31 @@ async function handleExamples(req: Req, res: Res) {
       writeFileSync(path, before) // keep the repository consistent when encoding fails
       sendJson(res, 400, { error: [(e as Error).message] })
     }
+  } catch (e) {
+    sendJson(res, 500, { error: [(e as Error).message] })
+  }
+}
+
+const ASSUMPTIONS = join(DATA, 'assertions', 'assumptions', 'assumptions.yaml')
+
+async function handleAddAssumption(req: Req, res: Res) {
+  try {
+    if (req.method !== 'POST') return sendJson(res, 405, { error: ['POST only'] })
+    const parsed = Assertion.safeParse(JSON.parse(await readBody(req)))
+    if (!parsed.success) return sendJson(res, 400, { error: parsed.error.issues.map((i) => `${i.path.join('.')}: ${i.message}`) })
+    const a = parsed.data
+    if (a.spec !== 'assumptions') return sendJson(res, 400, { error: ['only assumptions can be written here'] })
+    if (!a.target || !a.interpretation) return sendJson(res, 400, { error: ['an assumption needs the target it reads'] })
+    const ds = loadDataset()
+    if (!ds.assertions.some((x) => x.id === a.target)) return sendJson(res, 400, { error: [`unknown target ${a.target}`] })
+    if (!ds.subjects.some((s) => s.id === a.subject)) return sendJson(res, 400, { error: [`unknown subject ${a.subject}`] })
+    if (ds.assertions.some((x) => x.id === a.id)) return sendJson(res, 409, { error: [`${a.id} already exists`] })
+    // Strip defaults so the file stays short and readable.
+    const { xref, applies_to, verified, ...rest } = a
+    const out = { ...rest, ...(Object.keys(applies_to).length ? { applies_to } : {}), ...(xref.length ? { xref } : {}) }
+    const existing = existsSync(ASSUMPTIONS) ? readFileSync(ASSUMPTIONS, 'utf8') : '# Working assumptions of the project owner.\n'
+    writeFileSync(ASSUMPTIONS, `${existing.trimEnd()}\n${stringify([out], { lineWidth: 120 })}`)
+    sendJson(res, 201, { file: ASSUMPTIONS.slice(ROOT.length + 1) })
   } catch (e) {
     sendJson(res, 500, { error: [(e as Error).message] })
   }

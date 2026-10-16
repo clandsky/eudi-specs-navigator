@@ -629,6 +629,31 @@ h2.section {
   box-shadow: inset 2px 0 0 var(--c, var(--insert));
   display: inline;
 }
+.line-assumed {
+  box-shadow: inset 2px 0 0 var(--c), inset 0 -1px 0 var(--c);
+}
+.assumed-pill {
+  margin-left: 4px;
+  padding: 0 5px;
+  border-radius: 4px;
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--l-assumption);
+  border: 1px solid color-mix(in srgb, var(--l-assumption) 55%, transparent);
+}
+.assumed-box {
+  border: 1px solid color-mix(in srgb, var(--c) 45%, var(--rule));
+  border-left: 3px solid var(--c);
+  background: color-mix(in srgb, var(--c) 8%, var(--sheet));
+  border-radius: 6px;
+  padding: 8px 12px;
+  margin: 0 0 12px;
+  font-size: 13px;
+}
+.assumed-box ul {
+  margin: 6px 0 0;
+  padding-left: 18px;
+}
 .line-absent {
   opacity: 0.4;
   text-decoration: line-through;
@@ -899,6 +924,11 @@ dialog.editor::backdrop {
   color: var(--ink-2);
 }
 
+.editor-wide textarea.why {
+  min-height: 64px;
+  font-family: var(--font-ui);
+  font-size: 13px;
+}
 dialog.editor.editor-wide {
   width: min(920px, 96vw);
 }

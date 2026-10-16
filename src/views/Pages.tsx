@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { LayerBadges, LayerName, LevelChip, SpecName, StatusTag, cssLayer } from '../components/bits'
 import { ObjectView as ObjectViewLazy } from '../components/ObjectView'
-import { OverruleEditor } from '../components/OverruleEditor'
+import { OverruleEditor, type EntryKind } from '../components/OverruleEditor'
 import { StackPanel } from '../components/StackPanel'
 import { annotationFor, entryPointers, viewOf } from '../model/pointer'
 import type { EffectiveRule } from '../model/resolve'
@@ -28,7 +28,7 @@ import {
 // Subject / assertion pages ---------------------------------------------------------------------------------------
 
 export function SubjectPage({ subjectId, focus }: { subjectId: string; focus?: string }) {
-  const [editing, setEditing] = useState<string | null>(null)
+  const [editing, setEditing] = useState<{ subjectId: string; kind: EntryKind } | null>(null)
   const steps = ds.flows.flatMap((f) => f.steps.filter((s) => s.subject === subjectId || subjectId.startsWith(`${s.subject}.`)).map((s) => ({ f, s })))
   const examples = ds.examples.filter((e) => Object.values(e.annotations).includes(subjectId) || e.subject === subjectId)
   useEffect(() => {
@@ -39,7 +39,7 @@ export function SubjectPage({ subjectId, focus }: { subjectId: string; focus?: s
   }, [focus, subjectId])
   return (
     <div className="page" style={{ maxWidth: 880 }}>
-      <StackPanel subjectId={subjectId} onAddOverrule={setEditing} />
+      <StackPanel subjectId={subjectId} onAddOverrule={(subjectId, kind) => setEditing({ subjectId, kind })} />
       {(steps.length > 0 || examples.length > 0) && (
         <>
           <h2 className="section">Where it appears</h2>
@@ -61,7 +61,7 @@ export function SubjectPage({ subjectId, focus }: { subjectId: string; focus?: s
           </ul>
         </>
       )}
-      <OverruleEditor subjectId={editing} onClose={() => setEditing(null)} />
+      <OverruleEditor subjectId={editing?.subjectId ?? null} kind={editing?.kind} onClose={() => setEditing(null)} />
     </div>
   )
 }
