@@ -30,9 +30,9 @@
   --warn-bg: #fff4dc;
   --conflict-bg: #fde9e7;
 
-  --font-ui: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif;
-  --font-quote: 'Source Serif 4', ui-serif, Georgia, serif;
-  --font-code: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+  --font-ui: 'Instrument Sans Variable', 'Instrument Sans', ui-sans-serif, system-ui, sans-serif;
+  --font-quote: 'Source Serif 4 Variable', 'Source Serif 4', ui-serif, Georgia, serif;
+  --font-code: 'JetBrains Mono Variable', 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
   color-scheme: light;
 }
 
