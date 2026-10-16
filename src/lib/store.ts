@@ -82,11 +82,11 @@ export const LENS_STAGES: { id: LayerId; label: string }[] = [
   { id: 'haip', label: '+ HAIP' },
   { id: 'etsi', label: '+ ETSI' },
   { id: 'cir', label: '+ CIR' },
-  { id: 'golive', label: '+ d-you current' },
+  { id: 'golive', label: '+ d-you' },
   { id: 'assumption', label: '+ Assumptions' },
 ]
 
-/** The "+ d-you current" stage (and every stage above it) also switches on the German implementation layer. */
+/** The "+ d-you" stage (and every stage above it) also switches on the German implementation layer. */
 export function layersForStage(stage: number): Set<LayerId> {
   const on = new Set<LayerId>(ds.layers.filter((l) => !l.lens).map((l) => l.id))
   LENS_STAGES.slice(0, stage + 1).forEach((s) => on.add(s.id))

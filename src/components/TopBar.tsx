@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { href, setParams, useRoute } from '../lib/router'
+import { href, navigate, setParams, useRoute } from '../lib/router'
 import { LENS_STAGES, today, useViewCtx } from '../lib/store'
 import { cssLayer } from './bits'
 import { Search } from './Search'
@@ -32,6 +32,12 @@ export function TopBar() {
   const vc = useViewCtx()
   const [theme, nextTheme] = useTheme()
   const section = path[0] ?? ''
+  // A flow belongs to one side; switching sides from a flow goes back to the flow selection of the other side.
+  const pickSide = (v: 'issuer' | 'verifier') => {
+    const role = v === 'issuer' ? null : v
+    if (section === 'flow' && v !== vc.view) navigate(href([], { role }))
+    else setParams({ role })
+  }
   const navItem = (to: string, label: string, match: string[]) => (
     <a href={href([to])} aria-current={match.includes(section) ? 'page' : undefined}>
       {label}
@@ -50,7 +56,7 @@ export function TopBar() {
       </a>
       <div className="segmented" role="group" aria-label="Side of the ecosystem">
         {(['issuer', 'verifier'] as const).map((v) => (
-          <button key={v} aria-pressed={vc.view === v} onClick={() => setParams({ role: v === 'issuer' ? null : v })}>
+          <button key={v} aria-pressed={vc.view === v} onClick={() => pickSide(v)}>
             {v === 'issuer' ? 'Issuer' : 'Verifier'}
           </button>
         ))}
@@ -60,6 +66,8 @@ export function TopBar() {
         {navItem('endpoints', 'Endpoints', ['endpoints'])}
         {navItem('spec', 'Specs', ['spec'])}
         {navItem('review', 'Review', ['review'])}
+        {navItem('compare', 'Compare wallets', ['compare'])}
+        {navItem('rss', 'RSS', ['rss'])}
       </nav>
       <span className="spacer" />
       <Search />

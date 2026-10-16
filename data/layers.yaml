@@ -1,5 +1,5 @@
 # Precedence table. Lower rank = higher precedence. Default order set by the project owner (2026-10-15):
-# assumptions > temporal go-live compromises ("d-you current") > CIR implementing acts > ETSI > standards.
+# assumptions > temporal go-live compromises ("d-you") > CIR implementing acts > ETSI > standards.
 layers:
   - id: assumption
     rank: -1
@@ -10,6 +10,9 @@ layers:
     description: >-
       Working assumptions of the project owner: how an unclear or defective rule is read. Highest precedence while they
       stand; each one can be confirmed into another layer, where it then replaces the literal reading of its target.
+  # Domain model: this is the wallet solution layer, i.e. what one national wallet solution implements and the
+  # go-live compromises it runs on. Today it holds one solution, d-you (the lens button keeps that name); more
+  # solutions will follow (see the "Compare wallets" placeholder). The id stays "golive".
   - id: golive
     rank: 0
     label: Go-live compromise

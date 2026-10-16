@@ -367,7 +367,7 @@ function Stratum({
 }
 
 const RESOLVE_TARGETS: { layer: string; label: string }[] = [
-  { layer: 'golive', label: 'd-you current' },
+  { layer: 'golive', label: 'd-you' },
   { layer: 'cir', label: 'CIR' },
   { layer: 'etsi', label: 'ETSI' },
   { layer: 'haip', label: 'HAIP' },
