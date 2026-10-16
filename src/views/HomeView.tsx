@@ -1,23 +1,11 @@
-import { LayerBadges, LevelChip, SpecName } from '../components/bits'
 import { buildOpenApi } from '../model/openapi'
 import { stringify } from 'yaml'
 import { href } from '../lib/router'
-import { ds, effective, layersTouching, locatorText, rolesOf, stackOf, subjectById, useViewCtx } from '../lib/store'
-
-/** Worked examples from the proposal, linked so a reader can check the resolution against the sources. */
-const HIGHLIGHTS: { subject: string; text: string }[] = [
-  { subject: 'vci.token-request.oauth-client-attestation', text: 'WIA on the token request: OpenID4VCI permits it, HAIP recommends the format, ETSI and the CIR require it for both grants.' },
-  { subject: 'vci.metadata.issuer_info.registration_cert', text: 'Registration certificate in issuer_info: ETSI says “may contain”, the CIR rewords it to “shall contain”.' },
-  { subject: 'vci.refresh-token', text: 'Refresh tokens: HAIP recommends them, ETSI (which ranks higher) only permits them.' },
-  { subject: 'vp.authorization-response.encryption', text: 'Response encryption in OpenID4VP: the CIR voids the ETSI requirement, but HAIP still requires encryption.' },
-  { subject: 'vp.request-object.verifier_info.registration_cert', text: 'verifier_info: the CIR drops the ETSI “if the RP has one” condition.' },
-  { subject: 'vp.wallet.validate-registration-cert', text: 'Wallets validate RP registration certificates only from 11 August 2028.' },
-]
+import { ds, useViewCtx } from '../lib/store'
 
 export function HomeView() {
   const vc = useViewCtx()
   const flows = ds.flows.filter((f) => f.role === vc.view)
-  const highlights = HIGHLIGHTS.filter((h) => (vc.view === 'issuer' ? h.subject.startsWith('vci.') : h.subject.startsWith('vp.')))
 
   function download() {
     const doc = buildOpenApi(ds, { view: vc.view, asOf: vc.asOf, layers: vc.layers, linkBase: window.location.href.split('#')[0] })
@@ -53,43 +41,6 @@ export function HomeView() {
           ))}
         </ul>
       )}
-
-      <h2 className="section">Where the layers disagree</h2>
-      <table className="data">
-        <thead>
-          <tr>
-            <th style={{ width: '38%' }}>Subject</th>
-            <th>Effective rule</th>
-            <th>What happened</th>
-          </tr>
-        </thead>
-        <tbody>
-          {highlights.map((h) => {
-            const stack = stackOf(h.subject)
-            const role = rolesOf(stack, vc.view)[0] ?? 'wallet'
-            const r = effective(h.subject, role, vc)
-            return (
-              <tr key={h.subject}>
-                <td>
-                  <a href={href(['subject', h.subject])}>{subjectById.get(h.subject)?.title}</a>
-                  <div>
-                    <LayerBadges layers={layersTouching([h.subject])} />
-                  </div>
-                </td>
-                <td>
-                  <LevelChip level={r.level} />{' '}
-                  {r.decidedBy[0] && (
-                    <span className="meta">
-                      <SpecName specId={r.decidedBy[0].spec} /> {locatorText(r.decidedBy[0])}
-                    </span>
-                  )}
-                </td>
-                <td>{h.text}</td>
-              </tr>
-            )
-          })}
-        </tbody>
-      </table>
 
       <h2 className="section">OpenAPI</h2>
       <p className="lede">

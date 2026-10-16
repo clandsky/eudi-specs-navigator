@@ -18,6 +18,7 @@ import {
   layerById,
   layersTouching,
   locatorText,
+  onSide,
   rolesOf,
   specById,
   stackOf,
@@ -79,12 +80,22 @@ export function AssertionPage({ assertionId }: { assertionId: string }) {
 // Specs -----------------------------------------------------------------------------------------------------------
 
 export function SpecsIndex() {
+  const vc = useViewCtx()
+  const side = vc.view === 'issuer' ? 'issuer' : 'verifier'
+  // A spec is listed when it has statements on this side, or none at all yet (an empty authored layer).
+  const all = (specId: string) => ds.assertions.filter((a) => a.spec === specId)
+  const here = (specId: string) => all(specId).filter((a) => onSide(a.subject, vc.view))
+  const listed = ds.specs.filter((s) => here(s.id).length > 0 || all(s.id).length === 0)
+  const hidden = ds.specs.length - listed.length
   return (
     <div className="page">
       <h1>Specs</h1>
-      <p className="lede">Every source the stacks cite, by precedence layer, with the version each quote was checked against.</p>
+      <p className="lede">
+        Every source the {side} stacks cite, by precedence layer, with the version each quote was checked against.
+        {hidden > 0 && ` ${hidden} more ${hidden === 1 ? 'is' : 'are'} cited only on the ${side === 'issuer' ? 'verifier' : 'issuer'} side.`}
+      </p>
       {ds.layers.map((l) => {
-        const specs = ds.specs.filter((s) => s.layer === l.id)
+        const specs = listed.filter((s) => s.layer === l.id)
         if (specs.length === 0) return null
         return (
           <section key={l.id}>
@@ -95,14 +106,14 @@ export function SpecsIndex() {
             <table className="data">
               <tbody>
                 {specs.map((s) => {
-                  const n = ds.assertions.filter((a) => a.spec === s.id).length
+                  const n = here(s.id).length
                   return (
                     <tr key={s.id}>
                       <td style={{ width: '46%' }}>
                         <a href={href(['spec', s.id])}>{s.title}</a>
                       </td>
                       <td>{s.version}</td>
-                      <td className="meta">{n} statements</td>
+                      <td className="meta">{statements(n)}</td>
                     </tr>
                   )
                 })}
@@ -115,10 +126,16 @@ export function SpecsIndex() {
   )
 }
 
+const statements = (n: number) => `${n} ${n === 1 ? 'statement' : 'statements'}`
+
 export function SpecPage({ specId }: { specId: string }) {
+  const vc = useViewCtx()
   const spec = specById.get(specId)
   if (!spec) return <div className="page">Unknown spec “{specId}”.</div>
-  const items = ds.assertions.filter((a) => a.spec === specId)
+  const everything = ds.assertions.filter((a) => a.spec === specId)
+  const items = everything.filter((a) => onSide(a.subject, vc.view))
+  const other = vc.view === 'issuer' ? 'verifier' : 'issuer'
+  const elsewhere = everything.length - items.length
   const groups = new Map<string, Assertion[]>()
   for (const a of items) {
     const key = a.locator.section ? `§${a.locator.section}` : (a.locator.at ?? 'Other').replace(/,.*$/, '')
@@ -143,6 +160,13 @@ export function SpecPage({ specId }: { specId: string }) {
         )}
         {spec.source.local && <>. Local copy: {spec.source.local}</>}
       </p>
+      {elsewhere > 0 && (
+        <p className="meta">
+          {items.length === 0
+            ? `No statements on the ${vc.view} side; ${statements(elsewhere)} on the ${other} side. Switch the side at the top to see them.`
+            : `Showing ${statements(items.length)} on the ${vc.view} side; ${elsewhere} more on the ${other} side.`}
+        </p>
+      )}
       {specId === 'cir-2026-1731' && (
         <p>
           <a className="btn" href={href(['spec', specId, 'adaptations'])} style={{ textDecoration: 'none' }}>
@@ -184,12 +208,15 @@ const EFFECT: Record<string, string> = { voids: 'Void', adapts: 'Reworded', repl
 
 export function AdaptationsPage() {
   const vc = useViewCtx()
-  const rows = ds.assertions.filter((a) => a.spec === 'cir-2026-1731' && ['voids', 'adapts', 'replaces'].includes(a.relation))
+  const rows = ds.assertions.filter(
+    (a) => a.spec === 'cir-2026-1731' && ['voids', 'adapts', 'replaces'].includes(a.relation) && onSide(a.subject, vc.view),
+  )
   return (
     <div className="page" style={{ maxWidth: 1240 }}>
       <h1>How CIR (EU) 2026/1731 adapts the ETSI profiles</h1>
       <p className="lede">
-        Annex XI applies ETSI TS 119 472-3 and Annex XII applies TS 119 472-2 with adaptations. The ETSI text applies
+        {vc.view === 'issuer' ? 'Issuer side: Annex XI applies ETSI TS 119 472-3' : 'Verifier side: Annex XII applies ETSI TS 119 472-2'} with
+        adaptations. The ETSI text applies
         unchanged everywhere else. The last column is the rule that results once every layer is applied, which is not
         always what the adaptation alone suggests.
       </p>
@@ -260,6 +287,63 @@ export function AdaptationsPage() {
 
 // Review ------------------------------------------------------------------------------------------------------------
 
+/** Worked examples from the proposal (shown on the review page for the current side), linked so a reader can check the resolution against the sources. */
+const HIGHLIGHTS: { subject: string; text: string }[] = [
+  { subject: 'vci.token-request.oauth-client-attestation', text: 'WIA on the token request: OpenID4VCI permits it, HAIP recommends the format, ETSI and the CIR require it for both grants.' },
+  { subject: 'vci.metadata.issuer_info.registration_cert', text: 'Registration certificate in issuer_info: ETSI says “may contain”, the CIR rewords it to “shall contain”.' },
+  { subject: 'vci.refresh-token', text: 'Refresh tokens: HAIP recommends them, ETSI (which ranks higher) only permits them.' },
+  { subject: 'vp.authorization-response.encryption', text: 'Response encryption in OpenID4VP: the CIR voids the ETSI requirement, but HAIP still requires encryption.' },
+  { subject: 'vp.request-object.verifier_info.registration_cert', text: 'verifier_info: the CIR drops the ETSI “if the RP has one” condition.' },
+  { subject: 'vp.wallet.validate-registration-cert', text: 'Wallets validate RP registration certificates only from 11 August 2028.' },
+]
+
+function LayersDisagree() {
+  const vc = useViewCtx()
+  const highlights = HIGHLIGHTS.filter((h) => onSide(h.subject, vc.view))
+  return (
+    <>
+      <h2 className="section">Where the layers disagree ({highlights.length})</h2>
+      <p className="meta">Worked examples where a higher layer changes what a lower one says, for the {vc.view} side.</p>
+      <table className="data">
+        <thead>
+          <tr>
+            <th style={{ width: '38%' }}>Subject</th>
+            <th>Effective rule</th>
+            <th>What happened</th>
+          </tr>
+        </thead>
+        <tbody>
+          {highlights.map((h) => {
+            const stack = stackOf(h.subject)
+            const role = rolesOf(stack, vc.view)[0] ?? 'wallet'
+            const r = effective(h.subject, role, vc)
+            return (
+              <tr key={h.subject}>
+                <td>
+                  <a href={href(['subject', h.subject])}>{subjectById.get(h.subject)?.title}</a>
+                  <div>
+                    <LayerBadges layers={layersTouching([h.subject])} />
+                  </div>
+                </td>
+                <td>
+                  <LevelChip level={r.level} />{' '}
+                  {r.decidedBy[0] && (
+                    <span className="meta">
+                      <SpecName specId={r.decidedBy[0].spec} /> {locatorText(r.decidedBy[0])}
+                    </span>
+                  )}
+                </td>
+                <td>{h.text}</td>
+              </tr>
+            )
+          })}
+        </tbody>
+      </table>
+
+    </>
+  )
+}
+
 export function ReviewPage() {
   const vc = useViewCtx()
   const results = useMemo(() => {
@@ -299,7 +383,8 @@ export function ReviewPage() {
     <div className="page">
       <h1>Contradictions and gaps</h1>
       <p className="lede">
-        Everything a human has to decide or confirm: statements flagged for review, contradictions between layers, places
+        Everything a human has to decide or confirm, starting with where the layers disagree for the current side:
+        statements flagged for review, contradictions between layers, places
         where a binding spec is silent, rules nobody decides, and conformance requirements not yet cross-referenced.
       </p>
       <Counts
@@ -314,6 +399,8 @@ export function ReviewPage() {
           ['c2bo not linked', c2boOpen.length],
         ]}
       />
+
+      <LayersDisagree />
 
       <h2 className="section">Needs review ({review.length})</h2>
       <AssertionTable items={review} reason />

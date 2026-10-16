@@ -219,7 +219,7 @@ export function OverruleEditor({ subjectId, kind = 'golive', entry, onClose }: P
             required
             readOnly={!!entry}
             defaultValue={entry?.id ?? `${assume ? 'assumption' : 'golive'}/${slug}-${today()}`}
-            pattern="[A-Za-z0-9][A-Za-z0-9._/\-]*"
+            pattern="[A-Za-z0-9][A-Za-z0-9._\/\-]*"
           />
         </label>
         <label>

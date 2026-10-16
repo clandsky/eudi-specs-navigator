@@ -96,6 +96,18 @@ export function layersForStage(stage: number): Set<LayerId> {
 
 export type View = 'issuer' | 'verifier'
 
+/** Side a subject belongs to, from its top ancestor: vci → issuer, vp → verifier, common → both. */
+const SIDE_OF_ROOT: Record<string, View> = { vci: 'issuer', vp: 'verifier' }
+export function sideOf(subjectId: string): View | 'both' {
+  let s = subjectById.get(subjectId)
+  while (s?.parent) s = subjectById.get(s.parent)
+  return SIDE_OF_ROOT[s?.id ?? subjectId.split('.')[0]!] ?? 'both'
+}
+export const onSide = (subjectId: string, view: View) => {
+  const side = sideOf(subjectId)
+  return side === 'both' || side === view
+}
+
 export interface ViewCtx {
   view: View
   asOf: string
