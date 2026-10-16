@@ -9,11 +9,14 @@
 //   /__assumptions/delete  POST {id} removes an open assumption from its file
 //   /__assumptions/resolve  POST {id, layer} moves an assumption into data/assertions/resolved/<layer>.yaml as a
 //                 resolved interpretation of that layer (spec resolved-<layer>)
-// The static build has no server: the overrule editor keeps local drafts there and the example editor is read-only.
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
+//   /__subjects/description  POST {id, description} sets (or, when empty, removes) a subject's description in its
+//                 data/subjects file
+// The static build has no server: the overrule editor keeps local drafts there, the example editor and the
+// description are read-only.
+import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import type { Plugin } from 'vite'
-import { isMap, parse, parseDocument, stringify } from 'yaml'
+import { isMap, isSeq, parse, parseDocument, Scalar, stringify, type YAMLMap } from 'yaml'
 import { buildExamples, ensureTestPki } from './scripts/lib/build-examples.ts'
 import { DATA, ROOT, loadDataset } from './scripts/lib/data.ts'
 import { removeEntry, replaceEntry } from './scripts/lib/yaml-edit.ts'
@@ -32,6 +35,7 @@ export function editorPlugin(): Plugin {
       server.middlewares.use('/__assumptions/add', (req, res) => handleAddAssumption(req, res))
       server.middlewares.use('/__assumptions/delete', (req, res) => handleDeleteAssumption(req, res))
       server.middlewares.use('/__authored/update', (req, res) => handleUpdateAuthored(req, res))
+      server.middlewares.use('/__subjects/description', (req, res) => handleDescription(req, res))
       server.middlewares.use('/__overrules', (req, res) => {
         const send = (status: number, body: unknown) => {
           res.statusCode = status
@@ -268,6 +272,40 @@ async function handleResolve(req: Req, res: Res) {
     writeFileSync(dstPath, `${existing.trimEnd()}\n${stringify([resolved], { lineWidth: 120 })}`)
     writeFileSync(srcPath, src.toString({ lineWidth: 120 }))
     sendJson(res, 200, { id: resolved.id, file: dstPath.slice(ROOT.length + 1) })
+  } catch (e) {
+    sendJson(res, 500, { error: [(e as Error).message] })
+  }
+}
+
+const SUBJECTS = join(DATA, 'subjects')
+
+function yamlFiles(dir: string): string[] {
+  return readdirSync(dir, { withFileTypes: true }).flatMap((e) =>
+    e.isDirectory() ? yamlFiles(join(dir, e.name)) : e.name.endsWith('.yaml') ? [join(dir, e.name)] : [],
+  )
+}
+
+async function handleDescription(req: Req, res: Res) {
+  try {
+    if (req.method !== 'POST') return sendJson(res, 405, { error: ['POST only'] })
+    const { id, description } = JSON.parse(await readBody(req)) as { id: string; description: string }
+    const text = String(description ?? '').replace(/\s+/g, ' ').trim()
+    for (const path of yamlFiles(SUBJECTS)) {
+      const doc = parseDocument(readFileSync(path, 'utf8'))
+      if (!isSeq(doc.contents)) continue
+      const item = doc.contents.items.find((it) => isMap(it) && String(it.get('id')) === id)
+      if (!isMap(item)) continue
+      const map = item as unknown as YAMLMap<string, unknown>
+      if (text) {
+        // Double quotes like the hand-written descriptions; the flow map stays on one line (lineWidth 0).
+        const node = new Scalar(text)
+        node.type = Scalar.QUOTE_DOUBLE
+        map.set('description', node)
+      } else map.delete('description')
+      writeFileSync(path, doc.toString({ lineWidth: 0 }))
+      return sendJson(res, 200, { file: path.slice(ROOT.length + 1) })
+    }
+    sendJson(res, 404, { error: [`unknown subject ${id}`] })
   } catch (e) {
     sendJson(res, 500, { error: [(e as Error).message] })
   }

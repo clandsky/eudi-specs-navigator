@@ -1,50 +1,50 @@
-- { id: vci.wia, kind: object, parent: vci, title: Wallet Instance Attestation (client attestation JWT) }
-- { id: vci.wia.typ, kind: field, parent: vci.wia, title: typ, location: jwt-header }
-- { id: vci.wia.x5c, kind: field, parent: vci.wia, title: x5c (JOSE header), location: jwt-header }
-- { id: vci.wia.iss, kind: field, parent: vci.wia, title: iss, location: jwt-payload }
-- { id: vci.wia.sub, kind: field, parent: vci.wia, title: sub, location: jwt-payload }
-- { id: vci.wia.exp, kind: field, parent: vci.wia, title: exp, location: jwt-payload }
-- { id: vci.wia.cnf, kind: field, parent: vci.wia, title: cnf.jwk, location: jwt-payload }
-- { id: vci.wia.wallet_name, kind: field, parent: vci.wia, title: wallet_name, location: jwt-payload }
-- { id: vci.wia.wallet_link, kind: field, parent: vci.wia, title: wallet_link, location: jwt-payload }
-- { id: vci.wia.wallet_version, kind: field, parent: vci.wia, title: wallet_version, location: jwt-payload }
-- { id: vci.wia.wallet_solution_certification_information, kind: field, parent: vci.wia, title: wallet_solution_certification_information, location: jwt-payload }
-- { id: vci.wia.client_status, kind: field, parent: vci.wia, title: client_status, location: jwt-payload }
+- { id: vci.wia, kind: object, parent: vci, title: Wallet Instance Attestation (client attestation JWT), description: "Wallet Instance Attestation: JWT signed by the Wallet Provider that authenticates the Wallet instance as OAuth client." }
+- { id: vci.wia.typ, kind: field, parent: vci.wia, title: typ, location: jwt-header, description: "Marks the JWT as an OAuth client attestation (oauth-client-attestation+jwt)." }
+- { id: vci.wia.x5c, kind: field, parent: vci.wia, title: x5c (JOSE header), location: jwt-header, description: "Certificate chain of the Wallet Provider key that signs the WIA." }
+- { id: vci.wia.iss, kind: field, parent: vci.wia, title: iss, location: jwt-payload, description: "The Wallet Provider that issued the attestation." }
+- { id: vci.wia.sub, kind: field, parent: vci.wia, title: sub, location: jwt-payload, description: "The Wallet's client_id; must match the client_id in the request." }
+- { id: vci.wia.exp, kind: field, parent: vci.wia, title: exp, location: jwt-payload, description: "Expiry of the WIA." }
+- { id: vci.wia.cnf, kind: field, parent: vci.wia, title: cnf.jwk, location: jwt-payload, description: "Public key of the Wallet instance; the client attestation PoP is signed with the matching private key." }
+- { id: vci.wia.wallet_name, kind: field, parent: vci.wia, title: wallet_name, location: jwt-payload, description: "Human-readable name of the Wallet solution." }
+- { id: vci.wia.wallet_link, kind: field, parent: vci.wia, title: wallet_link, location: jwt-payload, description: "URL with further information about the Wallet and the Wallet Provider." }
+- { id: vci.wia.wallet_version, kind: field, parent: vci.wia, title: wallet_version, location: jwt-payload, description: "Version of the Wallet solution." }
+- { id: vci.wia.wallet_solution_certification_information, kind: field, parent: vci.wia, title: wallet_solution_certification_information, location: jwt-payload, description: "Information about the conformity assessment body that certified the Wallet solution." }
+- { id: vci.wia.client_status, kind: field, parent: vci.wia, title: client_status, location: jwt-payload, description: "Revocation status of the Wallet instance: a status list reference and how long it is maintained." }
 - { id: vci.wia.verification, kind: behaviour, parent: vci.wia, title: Authorization server verifies the WIA }
 - { id: vci.wia.lifetime, kind: behaviour, parent: vci.wia, title: WIA lifetime and reuse }
-- { id: vci.wia-pop, kind: object, parent: vci, title: Client Attestation PoP JWT }
-- { id: vci.wia-pop.typ, kind: field, parent: vci.wia-pop, title: typ, location: jwt-header }
-- { id: vci.wia-pop.aud, kind: field, parent: vci.wia-pop, title: aud, location: jwt-payload }
-- { id: vci.wia-pop.jti, kind: field, parent: vci.wia-pop, title: jti, location: jwt-payload }
-- { id: vci.wia-pop.challenge, kind: field, parent: vci.wia-pop, title: challenge, location: jwt-payload }
-- { id: vci.ka, kind: object, parent: vci, title: Key attestation (key-attestation+jwt) }
-- { id: vci.ka.typ, kind: field, parent: vci.ka, title: typ, location: jwt-header }
-- { id: vci.ka.x5c, kind: field, parent: vci.ka, title: x5c (JOSE header), location: jwt-header }
-- { id: vci.ka.attested_keys, kind: field, parent: vci.ka, title: attested_keys, location: jwt-payload }
-- { id: vci.ka.exp, kind: field, parent: vci.ka, title: exp, location: jwt-payload }
-- { id: vci.ka.key_storage, kind: field, parent: vci.ka, title: key_storage / user_authentication, location: jwt-payload }
-- { id: vci.ka.certification, kind: field, parent: vci.ka, title: certification, location: jwt-payload }
-- { id: vci.ka.key_storage_status, kind: field, parent: vci.ka, title: key_storage_status, location: jwt-payload }
+- { id: vci.wia-pop, kind: object, parent: vci, title: Client Attestation PoP JWT, description: "JWT signed with the Wallet instance key from the WIA, proving possession for one request." }
+- { id: vci.wia-pop.typ, kind: field, parent: vci.wia-pop, title: typ, location: jwt-header, description: "Marks the JWT as a client attestation PoP (oauth-client-attestation-pop+jwt)." }
+- { id: vci.wia-pop.aud, kind: field, parent: vci.wia-pop, title: aud, location: jwt-payload, description: "The authorization server the PoP is meant for." }
+- { id: vci.wia-pop.jti, kind: field, parent: vci.wia-pop, title: jti, location: jwt-payload, description: "Unique identifier of the PoP, used to detect replay." }
+- { id: vci.wia-pop.challenge, kind: field, parent: vci.wia-pop, title: challenge, location: jwt-payload, description: "Challenge from the authorization server, showing the PoP is fresh." }
+- { id: vci.ka, kind: object, parent: vci, title: Key attestation (key-attestation+jwt), description: "JWT from the Wallet Provider listing the Wallet's keys and stating how they are stored and protected." }
+- { id: vci.ka.typ, kind: field, parent: vci.ka, title: typ, location: jwt-header, description: "Marks the JWT as a key attestation (key-attestation+jwt)." }
+- { id: vci.ka.x5c, kind: field, parent: vci.ka, title: x5c (JOSE header), location: jwt-header, description: "Certificate chain of the Wallet Provider key that signs the key attestation." }
+- { id: vci.ka.attested_keys, kind: field, parent: vci.ka, title: attested_keys, location: jwt-payload, description: "The public keys the attestation covers; credentials get bound to these." }
+- { id: vci.ka.exp, kind: field, parent: vci.ka, title: exp, location: jwt-payload, description: "Expiry of the key attestation." }
+- { id: vci.ka.key_storage, kind: field, parent: vci.ka, title: key_storage / user_authentication, location: jwt-payload, description: "Attack potential resistance of the key storage and of the user authentication protecting the keys." }
+- { id: vci.ka.certification, kind: field, parent: vci.ka, title: certification, location: jwt-payload, description: "URL with information about the certification of the key storage." }
+- { id: vci.ka.key_storage_status, kind: field, parent: vci.ka, title: key_storage_status, location: jwt-payload, description: "Revocation status of the key storage: a status list reference and how long it is maintained." }
 - { id: vci.ka.verification, kind: behaviour, parent: vci.ka, title: Credential issuer verifies the key attestation }
-- { id: vci.dpop-proof, kind: object, parent: vci, title: DPoP proof JWT }
-- { id: vci.dpop-proof.typ, kind: field, parent: vci.dpop-proof, title: typ, location: jwt-header }
-- { id: vci.wia.certification-members, kind: field, parent: vci.wia.wallet_solution_certification_information, title: Members of wallet_solution_certification_information, location: jwt-payload }
-- { id: vci.wia.client_status.status, kind: field, parent: vci.wia.client_status, title: client_status.status, location: jwt-payload }
-- { id: vci.wia.client_status.exp, kind: field, parent: vci.wia.client_status, title: client_status.exp, location: jwt-payload }
-- { id: vci.wia-pop.iss, kind: field, parent: vci.wia-pop, title: iss, location: jwt-payload }
-- { id: vci.wia-pop.iat, kind: field, parent: vci.wia-pop, title: iat, location: jwt-payload }
-- { id: vci.ka.nonce, kind: field, parent: vci.ka, title: nonce (in the key attestation), location: jwt-payload }
-- { id: vci.ka.key_storage_status.status, kind: field, parent: vci.ka.key_storage_status, title: key_storage_status.status, location: jwt-payload }
-- { id: vci.ka.key_storage_status.exp, kind: field, parent: vci.ka.key_storage_status, title: key_storage_status.exp, location: jwt-payload }
-- { id: vci.dpop-proof.jwk, kind: field, parent: vci.dpop-proof, title: jwk (JOSE header), location: jwt-header }
-- { id: vci.dpop-proof.jti, kind: field, parent: vci.dpop-proof, title: jti, location: jwt-payload }
-- { id: vci.dpop-proof.htm, kind: field, parent: vci.dpop-proof, title: htm, location: jwt-payload }
-- { id: vci.dpop-proof.htu, kind: field, parent: vci.dpop-proof, title: htu, location: jwt-payload }
-- { id: vci.dpop-proof.iat, kind: field, parent: vci.dpop-proof, title: iat, location: jwt-payload }
-- { id: vci.dpop-proof.ath, kind: field, parent: vci.dpop-proof, title: ath, location: jwt-payload }
+- { id: vci.dpop-proof, kind: object, parent: vci, title: DPoP proof JWT, description: "JWT signed with the Wallet's DPoP key for one HTTP request, binding tokens to that key." }
+- { id: vci.dpop-proof.typ, kind: field, parent: vci.dpop-proof, title: typ, location: jwt-header, description: "Marks the JWT as a DPoP proof (dpop+jwt)." }
+- { id: vci.wia.certification-members, kind: field, parent: vci.wia.wallet_solution_certification_information, title: Members of wallet_solution_certification_information, location: jwt-payload, description: "The individual members describing the certification of the Wallet solution." }
+- { id: vci.wia.client_status.status, kind: field, parent: vci.wia.client_status, title: client_status.status, location: jwt-payload, description: "Status list reference for the Wallet instance's revocation status." }
+- { id: vci.wia.client_status.exp, kind: field, parent: vci.wia.client_status, title: client_status.exp, location: jwt-payload, description: "Until when the Wallet Provider keeps maintaining that status entry." }
+- { id: vci.wia-pop.iss, kind: field, parent: vci.wia-pop, title: iss, location: jwt-payload, description: "The Wallet's client_id." }
+- { id: vci.wia-pop.iat, kind: field, parent: vci.wia-pop, title: iat, location: jwt-payload, description: "Time the PoP was created." }
+- { id: vci.ka.nonce, kind: field, parent: vci.ka, title: nonce (in the key attestation), location: jwt-payload, description: "The issuer's c_nonce, when the key attestation itself serves as fresh proof." }
+- { id: vci.ka.key_storage_status.status, kind: field, parent: vci.ka.key_storage_status, title: key_storage_status.status, location: jwt-payload, description: "Status list reference for the key storage's revocation status." }
+- { id: vci.ka.key_storage_status.exp, kind: field, parent: vci.ka.key_storage_status, title: key_storage_status.exp, location: jwt-payload, description: "Until when the Wallet Provider keeps maintaining that status entry." }
+- { id: vci.dpop-proof.jwk, kind: field, parent: vci.dpop-proof, title: jwk (JOSE header), location: jwt-header, description: "The DPoP public key; the access token gets bound to it." }
+- { id: vci.dpop-proof.jti, kind: field, parent: vci.dpop-proof, title: jti, location: jwt-payload, description: "Unique identifier of the proof, used to detect replay." }
+- { id: vci.dpop-proof.htm, kind: field, parent: vci.dpop-proof, title: htm, location: jwt-payload, description: "HTTP method of the request the proof belongs to." }
+- { id: vci.dpop-proof.htu, kind: field, parent: vci.dpop-proof, title: htu, location: jwt-payload, description: "HTTP URL (without query and fragment) of the request the proof belongs to." }
+- { id: vci.dpop-proof.iat, kind: field, parent: vci.dpop-proof, title: iat, location: jwt-payload, description: "Time the proof was created." }
+- { id: vci.dpop-proof.ath, kind: field, parent: vci.dpop-proof, title: ath, location: jwt-payload, description: "Hash of the access token, binding the proof to it at resource endpoints." }
 - { id: vci.ka-request, kind: step, parent: vci.ka, title: Wallet obtains a key attestation bound to the c_nonce }
-- { id: vci.dpop-proof.nonce, kind: field, parent: vci.dpop-proof, title: nonce (from DPoP-Nonce), location: jwt-payload }
+- { id: vci.dpop-proof.nonce, kind: field, parent: vci.dpop-proof, title: nonce (from DPoP-Nonce), location: jwt-payload, description: "Server-provided nonce from the DPoP-Nonce header, showing the proof is fresh." }
 - { id: vci.user-authentication, kind: step, parent: vci, title: Authorization server authenticates the user and gathers consent }
-- { id: vci.as-metadata.challenge_endpoint, kind: metadata-param, parent: vci.as-metadata, title: challenge_endpoint (not offered in this example), location: json }
-- { id: vci.notification-request.dpop, kind: field, parent: vci.notification-request, title: DPoP proof, location: header }
-- { id: vci.token-response.pragma, kind: field, parent: vci.token-response, title: "Pragma: no-cache", location: header }
+- { id: vci.as-metadata.challenge_endpoint, kind: metadata-param, parent: vci.as-metadata, title: challenge_endpoint (not offered in this example), location: json, description: "URL where clients fetch a fresh challenge for the client attestation PoP." }
+- { id: vci.notification-request.dpop, kind: field, parent: vci.notification-request, title: DPoP proof, location: header, description: "DPoP proof for the notification request." }
+- { id: vci.token-response.pragma, kind: field, parent: vci.token-response, title: "Pragma: no-cache", location: header, description: "Legacy HTTP/1.0 header that also disables caching of the token response." }

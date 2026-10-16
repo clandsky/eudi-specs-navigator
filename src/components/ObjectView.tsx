@@ -175,9 +175,12 @@ export function ObjectView({ exampleId, sender, selected, onSelect, variant = {}
         <label className="meta" style={{ display: 'inline-flex', gap: 5, alignItems: 'center' }}>
           <input type="checkbox" checked={raw} onChange={(e) => setRaw(e.target.checked)} /> Encoded values
         </label>
-        <button className="btn" style={{ padding: '2px 8px' }} onClick={() => setEditing(true)}>
-          Edit body
-        </button>
+        {/* Editing writes example files through the dev server; the static build has nothing to write to. */}
+        {import.meta.env.DEV && (
+          <button className="btn" style={{ padding: '2px 8px' }} onClick={() => setEditing(true)}>
+            Edit body
+          </button>
+        )}
       </div>
       {ex.note && <p className="meta" style={{ marginTop: -4 }}>{ex.note}</p>}
       {ex.assumptions.length > 0 && (
@@ -269,7 +272,7 @@ export function ObjectView({ exampleId, sender, selected, onSelect, variant = {}
         </div>
       ))}
       <p className="meta">Signed with test keys from data/test-keys. The decoded views are derived from the encoded values.</p>
-      <ExampleEditor exampleId={editing ? exampleId : null} onClose={() => setEditing(false)} />
+      {import.meta.env.DEV && <ExampleEditor exampleId={editing ? exampleId : null} onClose={() => setEditing(false)} />}
     </div>
   )
 }

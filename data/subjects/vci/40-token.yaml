@@ -1,15 +1,15 @@
 - { id: vci.token-request, kind: message, parent: vci, title: Token Request, endpoint: { method: POST, path: /token, server: as } }
-- { id: vci.token-request.oauth-client-attestation, kind: field, parent: vci.token-request, title: "OAuth-Client-Attestation (WIA)", location: header }
-- { id: vci.token-request.oauth-client-attestation-pop, kind: field, parent: vci.token-request, title: OAuth-Client-Attestation-PoP, location: header }
-- { id: vci.token-request.dpop, kind: field, parent: vci.token-request, title: DPoP proof, location: header }
-- { id: vci.token-request.grant_type, kind: field, parent: vci.token-request, title: grant_type, location: form }
-- { id: vci.token-request.code, kind: field, parent: vci.token-request, title: code, location: form }
-- { id: vci.token-request.code_verifier, kind: field, parent: vci.token-request, title: code_verifier, location: form }
+- { id: vci.token-request.oauth-client-attestation, kind: field, parent: vci.token-request, title: "OAuth-Client-Attestation (WIA)", location: header, description: "The Wallet Instance Attestation, authenticating the Wallet at the token endpoint." }
+- { id: vci.token-request.oauth-client-attestation-pop, kind: field, parent: vci.token-request, title: OAuth-Client-Attestation-PoP, location: header, description: "Proof of possession of the WIA key for this token request." }
+- { id: vci.token-request.dpop, kind: field, parent: vci.token-request, title: DPoP proof, location: header, description: "DPoP proof JWT; binds the access token to be issued to the Wallet's DPoP key." }
+- { id: vci.token-request.grant_type, kind: field, parent: vci.token-request, title: grant_type, location: form, description: "Which grant the Wallet redeems: authorization_code or the pre-authorized code grant." }
+- { id: vci.token-request.code, kind: field, parent: vci.token-request, title: code, location: form, description: "The authorization code received in the authorization response." }
+- { id: vci.token-request.code_verifier, kind: field, parent: vci.token-request, title: code_verifier, location: form, description: "PKCE secret whose hash was sent as code_challenge; proves the Wallet started the flow." }
 - { id: vci.token-response, kind: message, parent: vci, title: Token Response }
-- { id: vci.token-response.token_type, kind: field, parent: vci.token-response, title: token_type, location: json }
-- { id: vci.token-response.refresh_token, kind: field, parent: vci.token-response, title: refresh_token, location: json }
-- { id: vci.token-response.credential_identifiers, kind: field, parent: vci.token-response, title: "authorization_details[].credential_identifiers", location: json }
-- { id: vci.token-request.redirect_uri, kind: field, parent: vci.token-request, title: redirect_uri, location: form }
-- { id: vci.token-response.access_token, kind: field, parent: vci.token-response, title: access_token, location: json }
-- { id: vci.token-response.expires_in, kind: field, parent: vci.token-response, title: expires_in, location: json }
-- { id: vci.token-response.cache-control, kind: field, parent: vci.token-response, title: "Cache-Control: no-store", location: header }
+- { id: vci.token-response.token_type, kind: field, parent: vci.token-response, title: token_type, location: json, description: "How the access token is used; DPoP means it is bound to the Wallet's DPoP key." }
+- { id: vci.token-response.refresh_token, kind: field, parent: vci.token-response, title: refresh_token, location: json, description: "Token the Wallet can use later to get a new access token, e.g. to refresh credentials, without user interaction." }
+- { id: vci.token-response.credential_identifiers, kind: field, parent: vci.token-response, title: "authorization_details[].credential_identifiers", location: json, description: "Identifiers of the specific credential datasets the access token covers; the Wallet may name them in the Credential Request." }
+- { id: vci.token-request.redirect_uri, kind: field, parent: vci.token-request, title: redirect_uri, location: form, description: "Same redirect_uri as in the authorization request." }
+- { id: vci.token-response.access_token, kind: field, parent: vci.token-response, title: access_token, location: json, description: "Token the Wallet presents at the Credential Endpoint." }
+- { id: vci.token-response.expires_in, kind: field, parent: vci.token-response, title: expires_in, location: json, description: "Lifetime of the access token in seconds." }
+- { id: vci.token-response.cache-control, kind: field, parent: vci.token-response, title: "Cache-Control: no-store", location: header, description: "Keeps the token response out of any cache." }

@@ -12,3 +12,6 @@ sources/*.txt
 
 # Third-party source corpus: kept locally only, never committed (not ours, partly not redistributable)
 /eIDAS + all references/
+
+# Claude Code project instructions: kept locally only
+/CLAUDE.md

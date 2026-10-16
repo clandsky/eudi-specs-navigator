@@ -1,34 +1,34 @@
 # Generic building blocks shared by all examples (HTTP, JOSE, JWT, JWK, status list, SD-JWT). Mapped by data/fieldmap.yaml.
 - { id: common, kind: flow, title: Shared building blocks }
-- { id: http.content-type, kind: field, parent: common, title: Content-Type header, location: header }
-- { id: http.content-length, kind: field, parent: common, title: Content-Length header, location: header }
-- { id: http.location, kind: field, parent: common, title: Location header, location: header }
-- { id: http.cache-control, kind: field, parent: common, title: Cache-Control header, location: header }
-- { id: http.authorization-dpop, kind: field, parent: common, title: "Authorization: DPoP <access token>", location: header }
-- { id: jose.alg, kind: field, parent: common, title: alg (JOSE header), location: jwt-header }
-- { id: jose.typ, kind: field, parent: common, title: typ (JOSE header), location: jwt-header }
-- { id: jose.x5c, kind: field, parent: common, title: x5c (JOSE header), location: jwt-header }
-- { id: jose.jwk, kind: field, parent: common, title: jwk (JOSE header), location: jwt-header }
-- { id: jwt.iss, kind: field, parent: common, title: iss claim, location: jwt-payload }
-- { id: jwt.iat, kind: field, parent: common, title: iat claim, location: jwt-payload }
-- { id: jwt.exp, kind: field, parent: common, title: exp claim, location: jwt-payload }
-- { id: jwt.jti, kind: field, parent: common, title: jti claim, location: jwt-payload }
-- { id: jwt.cnf, kind: field, parent: common, title: cnf claim, location: jwt-payload }
-- { id: jwt.cnf.jwk, kind: field, parent: jwt.cnf, title: cnf.jwk, location: jwt-payload }
-- { id: jwk.kty, kind: field, parent: common, title: kty (JWK), location: json }
-- { id: jwk.crv, kind: field, parent: common, title: crv (EC JWK), location: json }
-- { id: jwk.x, kind: field, parent: common, title: x (EC JWK), location: json }
-- { id: jwk.y, kind: field, parent: common, title: y (EC JWK), location: json }
-- { id: tsl.status, kind: field, parent: common, title: status claim (Token Status List reference), location: jwt-payload }
-- { id: tsl.status_list, kind: field, parent: tsl.status, title: status.status_list, location: jwt-payload }
-- { id: tsl.idx, kind: field, parent: tsl.status_list, title: status_list.idx, location: jwt-payload }
-- { id: tsl.uri, kind: field, parent: tsl.status_list, title: status_list.uri, location: jwt-payload }
-- { id: sdjwt._sd, kind: field, parent: common, title: _sd (disclosure digests), location: jwt-payload }
-- { id: sdjwt._sd_alg, kind: field, parent: common, title: _sd_alg, location: jwt-payload }
-- { id: sdjwtvc, kind: object, parent: common, title: SD-JWT VC (issuer-signed JWT) }
-- { id: sdjwtvc.typ, kind: field, parent: sdjwtvc, title: typ = dc+sd-jwt, location: jwt-header }
-- { id: sdjwtvc.vct, kind: field, parent: sdjwtvc, title: vct, location: jwt-payload }
-- { id: sdjwtvc.iss, kind: field, parent: sdjwtvc, title: iss, location: jwt-payload }
-- { id: sdjwtvc.exp, kind: field, parent: sdjwtvc, title: exp, location: jwt-payload }
-- { id: sdjwtvc.cnf, kind: field, parent: sdjwtvc, title: cnf, location: jwt-payload }
-- { id: http.accept, kind: field, parent: common, title: Accept header, location: header }
+- { id: http.content-type, kind: field, parent: common, title: Content-Type header, location: header, description: "Media type of the HTTP body, e.g. application/json, application/x-www-form-urlencoded or application/jwt." }
+- { id: http.content-length, kind: field, parent: common, title: Content-Length header, location: header, description: "Size of the HTTP body in bytes." }
+- { id: http.location, kind: field, parent: common, title: Location header, location: header, description: "URL the client is sent to or where a created resource lives." }
+- { id: http.cache-control, kind: field, parent: common, title: Cache-Control header, location: header, description: "Caching directives; responses carrying tokens or nonces use no-store so intermediaries keep no copy." }
+- { id: http.authorization-dpop, kind: field, parent: common, title: "Authorization: DPoP <access token>", location: header, description: "Presents a DPoP-bound access token; the server checks it together with the DPoP proof header." }
+- { id: jose.alg, kind: field, parent: common, title: alg (JOSE header), location: jwt-header, description: "Algorithm the JWS is signed with (or the JWE key is managed with), e.g. ES256." }
+- { id: jose.typ, kind: field, parent: common, title: typ (JOSE header), location: jwt-header, description: "Media type of the whole JWT, used to tell token types apart and prevent cross-use." }
+- { id: jose.x5c, kind: field, parent: common, title: x5c (JOSE header), location: jwt-header, description: "X.509 certificate chain of the signing key, leaf first, each certificate base64 DER encoded." }
+- { id: jose.jwk, kind: field, parent: common, title: jwk (JOSE header), location: jwt-header, description: "Public key that verifies the signature, embedded as a JWK." }
+- { id: jwt.iss, kind: field, parent: common, title: iss claim, location: jwt-payload, description: "Issuer of the JWT: who created and signed it." }
+- { id: jwt.iat, kind: field, parent: common, title: iat claim, location: jwt-payload, description: "Time the JWT was issued, in seconds since the epoch." }
+- { id: jwt.exp, kind: field, parent: common, title: exp claim, location: jwt-payload, description: "Expiry time of the JWT, in seconds since the epoch; the JWT is not accepted after it." }
+- { id: jwt.jti, kind: field, parent: common, title: jti claim, location: jwt-payload, description: "Unique identifier of the JWT, used to detect replay." }
+- { id: jwt.cnf, kind: field, parent: common, title: cnf claim, location: jwt-payload, description: "Confirmation claim: binds the JWT to a key the holder must prove possession of." }
+- { id: jwt.cnf.jwk, kind: field, parent: jwt.cnf, title: cnf.jwk, location: jwt-payload, description: "The holder's public key, as a JWK, that the JWT is bound to." }
+- { id: jwk.kty, kind: field, parent: common, title: kty (JWK), location: json, description: "Key type of the JWK, e.g. EC for elliptic curve keys." }
+- { id: jwk.crv, kind: field, parent: common, title: crv (EC JWK), location: json, description: "Elliptic curve of the key, e.g. P-256." }
+- { id: jwk.x, kind: field, parent: common, title: x (EC JWK), location: json, description: "x coordinate of the EC public key, base64url encoded." }
+- { id: jwk.y, kind: field, parent: common, title: y (EC JWK), location: json, description: "y coordinate of the EC public key, base64url encoded." }
+- { id: tsl.status, kind: field, parent: common, title: status claim (Token Status List reference), location: jwt-payload, description: "Points to the entry in a Token Status List that tells whether this token is still valid." }
+- { id: tsl.status_list, kind: field, parent: tsl.status, title: status.status_list, location: jwt-payload, description: "Reference to a status list: which list (uri) and which position in it (idx)." }
+- { id: tsl.idx, kind: field, parent: tsl.status_list, title: status_list.idx, location: jwt-payload, description: "Index of this token's entry in the status list." }
+- { id: tsl.uri, kind: field, parent: tsl.status_list, title: status_list.uri, location: jwt-payload, description: "URL where the Status List Token can be fetched." }
+- { id: sdjwt._sd, kind: field, parent: common, title: _sd (disclosure digests), location: jwt-payload, description: "Digests of the selectively disclosable claims; each Disclosure the holder reveals must hash to one of them." }
+- { id: sdjwt._sd_alg, kind: field, parent: common, title: _sd_alg, location: jwt-payload, description: "Hash algorithm used for the _sd digests, e.g. sha-256." }
+- { id: sdjwtvc, kind: object, parent: common, title: SD-JWT VC (issuer-signed JWT), description: "Issuer-signed part of an SD-JWT VC: the credential with its claims hidden behind digests until disclosed." }
+- { id: sdjwtvc.typ, kind: field, parent: sdjwtvc, title: typ = dc+sd-jwt, location: jwt-header, description: "Marks the JWT as an SD-JWT Verifiable Credential." }
+- { id: sdjwtvc.vct, kind: field, parent: sdjwtvc, title: vct, location: jwt-payload, description: "Verifiable Credential Type: identifies the type of credential, e.g. the PID type." }
+- { id: sdjwtvc.iss, kind: field, parent: sdjwtvc, title: iss, location: jwt-payload, description: "Identifier of the credential issuer that signed the SD-JWT VC." }
+- { id: sdjwtvc.exp, kind: field, parent: sdjwtvc, title: exp, location: jwt-payload, description: "Expiry time of the credential." }
+- { id: sdjwtvc.cnf, kind: field, parent: sdjwtvc, title: cnf, location: jwt-payload, description: "Holder key the credential is bound to; the holder proves possession with a Key Binding JWT." }
+- { id: http.accept, kind: field, parent: common, title: Accept header, location: header, description: "Media types the client is willing to receive in the response." }

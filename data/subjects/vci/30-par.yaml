@@ -1,20 +1,20 @@
 - { id: vci.par-request, kind: message, parent: vci, title: Pushed Authorization Request, endpoint: { method: POST, path: /par, server: as } }
-- { id: vci.par-request.oauth-client-attestation, kind: field, parent: vci.par-request, title: "OAuth-Client-Attestation (WIA)", location: header }
-- { id: vci.par-request.oauth-client-attestation-pop, kind: field, parent: vci.par-request, title: OAuth-Client-Attestation-PoP, location: header }
-- { id: vci.par-request.client_id, kind: field, parent: vci.par-request, title: client_id, location: form }
-- { id: vci.par-request.scope, kind: field, parent: vci.par-request, title: scope, location: form }
-- { id: vci.par-request.code_challenge, kind: field, parent: vci.par-request, title: code_challenge / code_challenge_method, location: form }
-- { id: vci.par-request.issuer_state, kind: field, parent: vci.par-request, title: issuer_state, location: form }
+- { id: vci.par-request.oauth-client-attestation, kind: field, parent: vci.par-request, title: "OAuth-Client-Attestation (WIA)", location: header, description: "The Wallet Instance Attestation: a JWT from the Wallet Provider that authenticates the Wallet as OAuth client." }
+- { id: vci.par-request.oauth-client-attestation-pop, kind: field, parent: vci.par-request, title: OAuth-Client-Attestation-PoP, location: header, description: "Short-lived JWT signed with the key in the WIA, proving the Wallet holds that key." }
+- { id: vci.par-request.client_id, kind: field, parent: vci.par-request, title: client_id, location: form, description: "The Wallet's OAuth client identifier; matches sub in the WIA." }
+- { id: vci.par-request.scope, kind: field, parent: vci.par-request, title: scope, location: form, description: "Which credential the Wallet asks to be authorised for, as an OAuth scope." }
+- { id: vci.par-request.code_challenge, kind: field, parent: vci.par-request, title: code_challenge / code_challenge_method, location: form, description: "PKCE: hash of a secret code verifier, so only this Wallet can later redeem the authorization code." }
+- { id: vci.par-request.issuer_state, kind: field, parent: vci.par-request, title: issuer_state, location: form, description: "Value copied from the Credential Offer, linking this request to the offer." }
 - { id: vci.par-response, kind: message, parent: vci, title: PAR response (201) }
-- { id: vci.par-response.request_uri, kind: field, parent: vci.par-response, title: request_uri, location: json }
+- { id: vci.par-response.request_uri, kind: field, parent: vci.par-response, title: request_uri, location: json, description: "Reference to the pushed request; the Wallet puts it into the browser redirect instead of the full request." }
 - { id: vci.authorization-request, kind: message, parent: vci, title: Authorization Request (front channel), endpoint: { method: GET, path: /authorize, server: as } }
-- { id: vci.authorization-request.request_uri, kind: field, parent: vci.authorization-request, title: request_uri, location: query }
+- { id: vci.authorization-request.request_uri, kind: field, parent: vci.authorization-request, title: request_uri, location: query, description: "Reference returned by PAR that stands for the pushed authorization request." }
 - { id: vci.authorization-response, kind: message, parent: vci, title: Authorization Response (redirect) }
-- { id: vci.authorization-response.code, kind: field, parent: vci.authorization-response, title: code, location: query }
-- { id: vci.authorization-response.iss, kind: field, parent: vci.authorization-response, title: iss, location: query }
-- { id: vci.par-request.response_type, kind: field, parent: vci.par-request, title: response_type, location: form }
-- { id: vci.par-request.redirect_uri, kind: field, parent: vci.par-request, title: redirect_uri, location: form }
-- { id: vci.par-request.state, kind: field, parent: vci.par-request, title: state, location: form }
-- { id: vci.par-response.expires_in, kind: field, parent: vci.par-response, title: expires_in, location: json }
-- { id: vci.authorization-request.client_id, kind: field, parent: vci.authorization-request, title: client_id, location: query }
-- { id: vci.authorization-response.state, kind: field, parent: vci.authorization-response, title: state, location: query }
+- { id: vci.authorization-response.code, kind: field, parent: vci.authorization-response, title: code, location: query, description: "Short-lived, single-use authorization code the Wallet exchanges for an access token." }
+- { id: vci.authorization-response.iss, kind: field, parent: vci.authorization-response, title: iss, location: query, description: "Identifier of the authorization server that issued the code, to detect mix-up attacks." }
+- { id: vci.par-request.response_type, kind: field, parent: vci.par-request, title: response_type, location: form, description: "Asks for an authorization code (value code)." }
+- { id: vci.par-request.redirect_uri, kind: field, parent: vci.par-request, title: redirect_uri, location: form, description: "Where the authorization server sends the user back with the code." }
+- { id: vci.par-request.state, kind: field, parent: vci.par-request, title: state, location: form, description: "Random value the Wallet checks on return to tie the response to its own request (CSRF protection)." }
+- { id: vci.par-response.expires_in, kind: field, parent: vci.par-response, title: expires_in, location: json, description: "Seconds until the request_uri expires." }
+- { id: vci.authorization-request.client_id, kind: field, parent: vci.authorization-request, title: client_id, location: query, description: "The Wallet's client identifier, repeated so the server can match the pushed request." }
+- { id: vci.authorization-response.state, kind: field, parent: vci.authorization-response, title: state, location: query, description: "Echo of the state the Wallet sent; the Wallet checks it matches." }

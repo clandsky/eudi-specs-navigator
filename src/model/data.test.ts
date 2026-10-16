@@ -38,6 +38,12 @@ describe('examples', () => {
       void stackOf
     })
 
+    it(`${e.id}: every entry has a short description`, () => {
+      const byId = new Map(ds.subjects.map((s) => [s.id, s]))
+      const ids = new Set(entryPointers(view).map((p) => annotationFor(p, e.annotations, ds.fieldmap)!))
+      expect([...ids].filter((id) => !byId.get(id)?.description), 'subjects without a description').toEqual([])
+    })
+
     it(`${e.id}: every JWT verifies with its test key and decodes to its inputs`, async () => {
       for (const [name, spec] of Object.entries(e.jwts)) {
         const compact = enc.jwts[name]!

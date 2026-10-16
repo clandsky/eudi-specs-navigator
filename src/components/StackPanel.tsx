@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useState, type FormEvent } from 'react'
 import { levelLabel, timeline, type EffectiveRule } from '../model/resolve'
 import type { Assertion, Relation, Role } from '../model/schema'
 import { href } from '../lib/router'
@@ -84,6 +84,7 @@ export function StackPanel({ subjectId, variant = {}, onAddOverrule, onEditEntry
           {subject.endpoint ? `, ${subject.endpoint.method} ${subject.endpoint.path}` : ''}
         </div>
         <h2 style={{ margin: '2px 0 4px', fontSize: compact ? 16 : 20, letterSpacing: '-0.01em' }}>{subject.title}</h2>
+        <Description key={subjectId} subjectId={subjectId} text={subject.description} />
         <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
           <code className="meta">{subject.id}</code>
           <LayerBadges layers={layersTouching([subjectId])} />
@@ -96,7 +97,6 @@ export function StackPanel({ subjectId, variant = {}, onAddOverrule, onEditEntry
             Link
           </a>
         </div>
-        {subject.description && <p className="lede">{subject.description}</p>}
       </header>
 
       <EffectiveBox rules={rules} vc={vc} subjectId={subjectId} variant={variant} allRoles={allRoles} />
@@ -143,6 +143,69 @@ export function StackPanel({ subjectId, variant = {}, onAddOverrule, onEditEntry
         </>
       )}
     </div>
+  )
+}
+
+/** The subject's short description. The dev server writes edits back into data/subjects; the static build only shows it. */
+function Description({ subjectId, text }: { subjectId: string; text?: string }) {
+  const [draft, setDraft] = useState<string | null>(null)
+  const [state, setState] = useState<'idle' | 'saving' | 'saved'>('idle')
+  const [error, setError] = useState<string | null>(null)
+  const lede = { margin: '0 0 8px' }
+
+  if (!import.meta.env.DEV) return text ? <p className="lede" style={lede}>{text}</p> : null
+
+  async function save(e: FormEvent) {
+    e.preventDefault()
+    setState('saving')
+    setError(null)
+    const res = await fetch('/__subjects/description', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: subjectId, description: draft }),
+    })
+    const body = await res.json().catch(() => ({ error: [res.statusText] }))
+    if (!res.ok) {
+      setError([body.error].flat().join('; '))
+      setState('idle')
+      return
+    }
+    // The dataset plugin reloads the page once the YAML file changes.
+    setState('saved')
+  }
+
+  if (draft === null)
+    return (
+      <div style={{ display: 'flex', gap: 8, alignItems: 'baseline', ...lede }}>
+        {text ? <p className="lede" style={{ margin: 0 }}>{text}</p> : <span className="meta">No description yet.</span>}
+        <button className="btn" style={{ padding: '0 6px', flex: 'none' }} onClick={() => setDraft(text ?? '')}>
+          {text ? 'Edit' : 'Add description'}
+        </button>
+      </div>
+    )
+
+  return (
+    <form onSubmit={save} style={{ display: 'grid', gap: 6, ...lede }}>
+      <textarea
+        className="field-input"
+        rows={3}
+        value={draft}
+        autoFocus
+        onChange={(e) => setDraft(e.target.value)}
+        onKeyDown={(e) => e.key === 'Escape' && setDraft(null)}
+        aria-label="Short description of the field"
+      />
+      <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+        <button type="submit" className="btn btn-primary" disabled={state !== 'idle'}>
+          {state === 'saving' ? 'Saving…' : state === 'saved' ? 'Saved, reloading…' : 'Save'}
+        </button>
+        <button type="button" className="btn" onClick={() => setDraft(null)}>
+          Cancel
+        </button>
+        <span className="meta">One plain-language sentence; written into data/subjects.</span>
+      </div>
+      {error && <span className="meta" style={{ color: 'var(--redline)' }}>{error}</span>}
+    </form>
   )
 }
 
