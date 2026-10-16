@@ -26,6 +26,19 @@ function Content() {
       return <ReviewPage />
     case 'endpoints':
       return <EndpointsPage />
+    // Placeholders: comparing national wallet solutions, and an RSS feed of changes. No content or logic yet.
+    case 'compare':
+      return (
+        <div className="page">
+          <h1>Compare wallets</h1>
+        </div>
+      )
+    case 'rss':
+      return (
+        <div className="page">
+          <h1>RSS</h1>
+        </div>
+      )
     default:
       return (
         <div className="page">

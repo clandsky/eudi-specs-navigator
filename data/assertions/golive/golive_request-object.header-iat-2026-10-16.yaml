@@ -1,4 +1,4 @@
-# Go-live compromise (d-you current), recorded from the curated d-you verifier Request Object.
+# Go-live compromise (d-you), recorded from the curated d-you verifier Request Object.
 - id: golive/request-object.header-iat-2026-10-16
   subject: vp.request-object.header-iat
   spec: golive-compromises
