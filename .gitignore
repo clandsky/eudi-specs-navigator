@@ -10,5 +10,5 @@ playwright-report/
 # Converted spec texts: ETSI texts must not be redistributed
 sources/*.txt
 
-# Source corpus PDFs (200 MB, partly not redistributable); indexes and .md files stay tracked
-eIDAS + all references/**/*.pdf
+# Third-party source corpus: kept locally only, never committed (not ours, partly not redistributable)
+/eIDAS + all references/
