@@ -28,7 +28,6 @@ export function FlowView({ flowId }: { flowId: string }) {
       <section aria-label="Sequence diagram">
         <div className="pane-head">
           <h2>{flow.title}</h2>
-          <p>{flow.summary}</p>
         </div>
         <div className="pane-body">
           <SequenceDiagram flow={flow} selected={step.id} onSelect={(id) => setParams({ step: id, field: null, subject: null })} />

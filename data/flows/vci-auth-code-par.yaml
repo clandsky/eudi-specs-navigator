@@ -1,6 +1,7 @@
 id: vci-auth-code-par
 title: Issuance — authorization code flow with PAR
 role: issuer
+order: 1
 subject: vci.flow.auth-code-par
 variant: { grant: authorization_code, device: same }
 summary: >-

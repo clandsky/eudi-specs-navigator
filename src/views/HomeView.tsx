@@ -5,7 +5,7 @@ import { ds, useViewCtx } from '../lib/store'
 
 export function HomeView() {
   const vc = useViewCtx()
-  const flows = ds.flows.filter((f) => f.role === vc.view)
+  const flows = ds.flows.filter((f) => f.role === vc.view).sort((a, b) => a.order - b.order)
 
   function download() {
     const doc = buildOpenApi(ds, { view: vc.view, asOf: vc.asOf, layers: vc.layers, linkBase: window.location.href.split('#')[0] })
@@ -33,10 +33,9 @@ export function HomeView() {
               <a href={href(['flow', f.id])} style={{ fontWeight: 600, fontSize: 15 }}>
                 {f.title}
               </a>
-              <p style={{ margin: '4px 0 6px', color: 'var(--ink-2)' }}>{f.summary}</p>
-              <span className="meta">
-                {f.steps.length} steps, {f.participants.map((p) => p.label).join(', ')}
-              </span>
+              <div className="meta" style={{ marginTop: 4 }}>
+                {f.steps.filter((s) => !s.parent).length} steps, {f.participants.map((p) => p.label).join(', ')}
+              </div>
             </li>
           ))}
         </ul>

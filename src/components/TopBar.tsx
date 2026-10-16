@@ -34,7 +34,7 @@ export function TopBar() {
   const section = path[0] ?? ''
   // A flow belongs to one side; switching sides from a flow goes back to the flow selection of the other side.
   const pickSide = (v: 'issuer' | 'verifier') => {
-    const role = v === 'issuer' ? null : v
+    const role = v === 'verifier' ? null : v
     if (section === 'flow' && v !== vc.view) navigate(href([], { role }))
     else setParams({ role })
   }
@@ -55,7 +55,7 @@ export function TopBar() {
         specs-navigator
       </a>
       <div className="segmented" role="group" aria-label="Side of the ecosystem">
-        {(['issuer', 'verifier'] as const).map((v) => (
+        {(['verifier', 'issuer'] as const).map((v) => (
           <button key={v} aria-pressed={vc.view === v} onClick={() => pickSide(v)}>
             {v === 'issuer' ? 'Issuer' : 'Verifier'}
           </button>

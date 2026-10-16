@@ -121,8 +121,10 @@ export function today(): string {
 }
 
 export function useViewCtx(): ViewCtx {
-  const { params } = useRoute()
-  const view: View = params.get('role') === 'verifier' ? 'verifier' : 'issuer'
+  const { path, params } = useRoute()
+  // Verifier is the default side; a flow always shows the side it belongs to, whatever the link says.
+  const flowSide = path[0] === 'flow' && path[1] ? flowById.get(path[1])?.role : undefined
+  const view: View = flowSide ?? (params.get('role') === 'issuer' ? 'issuer' : 'verifier')
   const asOf = /^\d{4}-\d{2}-\d{2}$/.test(params.get('asOf') ?? '') ? params.get('asOf')! : today()
   const lens = params.get('lens')
   const idx = LENS_STAGES.findIndex((s) => s.id === lens)

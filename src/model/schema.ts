@@ -126,6 +126,8 @@ export const Flow = z.object({
     .object({ grant: Grant.optional(), device: Device.optional(), transport: Transport.optional() })
     .default({}),
   summary: z.string(),
+  /** Position in the flow list of its side (lower first). */
+  order: z.number().int().default(99),
   participants: z.array(Participant).min(2),
   steps: z.array(Step).min(1),
 })

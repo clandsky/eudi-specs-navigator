@@ -1,6 +1,7 @@
 id: vp-redirect-same
 title: Presentation — OpenID4VP redirect, same device
 role: verifier
+order: 1
 subject: vp.flow.redirect-same
 variant: { transport: redirect, device: same }
 summary: >-

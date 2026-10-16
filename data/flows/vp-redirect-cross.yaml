@@ -1,6 +1,7 @@
 id: vp-redirect-cross
 title: Presentation — OpenID4VP redirect, cross device
 role: verifier
+order: 3
 subject: vp.flow.redirect-cross
 variant: { transport: redirect, device: cross }
 summary: >-
