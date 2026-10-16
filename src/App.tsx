@@ -54,6 +54,11 @@ function Content() {
 export function App() {
   return (
     <div className="shell">
+      <div className="proto-banner" role="note">
+        <strong>Technical prototype.</strong> The project is in its technical prototyping phase: the content is not yet
+        fully quality assured and is under review. It is not a source of truth; check every rule against the cited
+        specification.
+      </div>
       <TopBar />
       <LensBar />
       <main className="main">

@@ -135,8 +135,16 @@ code,
 /* Shell ----------------------------------------------------------------------------------------------------------- */
 .shell {
   display: grid;
-  grid-template-rows: auto auto 1fr;
+  grid-template-rows: auto auto auto 1fr;
   height: 100%;
+}
+.proto-banner {
+  padding: 6px 20px;
+  background: var(--warn-bg);
+  color: var(--warn);
+  border-bottom: 1px solid color-mix(in srgb, var(--warn) 35%, transparent);
+  font-size: 13px;
+  text-align: center;
 }
 .topbar {
   display: flex;
