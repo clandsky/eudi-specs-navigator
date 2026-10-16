@@ -1,6 +1,7 @@
 id: vp-dc-api
 title: Presentation — OpenID4VP over the Digital Credentials API
 role: verifier
+order: 2
 subject: vp.flow.dc-api
 variant: { transport: dc-api }
 summary: >-
