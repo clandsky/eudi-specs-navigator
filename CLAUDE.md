@@ -72,7 +72,8 @@ never invent one.
   fields live in `data/subjects/common.yaml`; JWT names (`wia`, `ka`, `pop`, `dpop`, `proof`, `ro`, `resp`, `pid`,
   `pid-kb`) are mapped globally, so reuse those names in new examples.
 - UI: `src/lib/router.ts` (hash routes; `role`, `asOf`, `lens`, `de` are sticky query params so links reproduce a view),
-  `src/lib/store.ts` (indexes, view context, lens stages), `src/diagram/SequenceDiagram.tsx` (own SVG renderer;
+  `src/lib/store.ts` (indexes, view context, lens stages; `sideOf` puts a subject on the issuer or verifier side by its
+  top ancestor, which the Specs pages, the CIR adaptations and the review page's "layers disagree" list filter by), `src/diagram/SequenceDiagram.tsx` (own SVG renderer;
   Mermaid cannot click messages), `src/components/{ObjectView,StackPanel,OverruleEditor}.tsx`, `src/views/`.
 - Layer lens: Base → + HAIP → + ETSI → + CIR → + d-you (the go-live layer) → + Assumptions. The German
   implementation layer switches on from the d-you stage; there is no separate toggle.
