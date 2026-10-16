@@ -84,6 +84,11 @@ export function StackPanel({ subjectId, variant = {}, onAddOverrule, onEditEntry
           {subject.endpoint ? `, ${subject.endpoint.method} ${subject.endpoint.path}` : ''}
         </div>
         <h2 style={{ margin: '2px 0 4px', fontSize: compact ? 16 : 20, letterSpacing: '-0.01em' }}>{subject.title}</h2>
+        {subject.description && (
+          <p className="lede" style={{ margin: '0 0 8px' }}>
+            {subject.description}
+          </p>
+        )}
         <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
           <code className="meta">{subject.id}</code>
           <LayerBadges layers={layersTouching([subjectId])} />
@@ -96,7 +101,6 @@ export function StackPanel({ subjectId, variant = {}, onAddOverrule, onEditEntry
             Link
           </a>
         </div>
-        {subject.description && <p className="lede">{subject.description}</p>}
       </header>
 
       <EffectiveBox rules={rules} vc={vc} subjectId={subjectId} variant={variant} allRoles={allRoles} />

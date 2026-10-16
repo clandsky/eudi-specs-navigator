@@ -1,9 +1,9 @@
 - { id: vci.offer, kind: message, parent: vci, title: Credential Offer, location: uri }
-- { id: vci.offer.scheme, kind: value, parent: vci.offer, title: URL scheme that invokes the Wallet, location: uri }
-- { id: vci.offer.credential_offer_uri, kind: field, parent: vci.offer, title: credential_offer_uri, location: query }
-- { id: vci.offer.credential_offer, kind: field, parent: vci.offer, title: credential_offer (by value), location: query }
-- { id: vci.offer.credential_issuer, kind: field, parent: vci.offer, title: credential_issuer, location: json }
-- { id: vci.offer.credential_configuration_ids, kind: field, parent: vci.offer, title: credential_configuration_ids, location: json }
-- { id: vci.offer.grants, kind: field, parent: vci.offer, title: grants, location: json }
-- { id: vci.offer.grants.authorization_code, kind: value, parent: vci.offer.grants, title: "grants.authorization_code", location: json }
-- { id: vci.offer.issuer_state, kind: field, parent: vci.offer.grants.authorization_code, title: issuer_state, location: json }
+- { id: vci.offer.scheme, kind: value, parent: vci.offer, title: URL scheme that invokes the Wallet, location: uri, description: "Custom URL scheme that makes the device open a Wallet with the Credential Offer." }
+- { id: vci.offer.credential_offer_uri, kind: field, parent: vci.offer, title: credential_offer_uri, location: query, description: "URL where the Wallet fetches the Credential Offer, instead of receiving it inline." }
+- { id: vci.offer.credential_offer, kind: field, parent: vci.offer, title: credential_offer (by value), location: query, description: "The Credential Offer itself, passed by value as URL-encoded JSON." }
+- { id: vci.offer.credential_issuer, kind: field, parent: vci.offer, title: credential_issuer, location: json, description: "Identifier (URL) of the Credential Issuer; the Wallet uses it to fetch the issuer metadata." }
+- { id: vci.offer.credential_configuration_ids, kind: field, parent: vci.offer, title: credential_configuration_ids, location: json, description: "Which credentials are offered, as keys into credential_configurations_supported in the issuer metadata." }
+- { id: vci.offer.grants, kind: field, parent: vci.offer, title: grants, location: json, description: "Grant types the Wallet can use to obtain an access token for this offer, with their parameters." }
+- { id: vci.offer.grants.authorization_code, kind: value, parent: vci.offer.grants, title: "grants.authorization_code", location: json, description: "Parameters for starting issuance with the authorization code flow." }
+- { id: vci.offer.issuer_state, kind: field, parent: vci.offer.grants.authorization_code, title: issuer_state, location: json, description: "Opaque value the Wallet passes back in the authorization request so the issuer can link it to this offer." }
