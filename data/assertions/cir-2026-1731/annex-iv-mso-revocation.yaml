@@ -1,0 +1,555 @@
+# CIR (EU) 2026/1731 Annex IV, adaptation (6): clause 6.2.10.1 of ETSI TS 119 472-1 (ISO mdoc), revocation of the
+# Mobile Security Object. Two mechanisms: a Token Status List (status_list, draft-ietf-oauth-status-list-20) and an
+# identifier list (identifier_list), which the CIR builds on the Token Status List and lets deviate from it
+# (EAA-6.2.10.1-09). EAA-6.2.10.1-02.3.2 only cross-references the identifier list requirements and is not recorded.
+# EAA-6.2.10.1-14 to -16 sit in the same clause but concern the WIA and the key attestation.
+
+# Status structure in the MSO
+- id: cir/annex-iv/EAA-6.2.10.1-01
+  subject: vp.mdoc.mso.status
+  spec: cir-2026-1731
+  locator: { req: EAA-6.2.10.1-01, at: "Annex IV, adaptation (6), clause 6.2.10.1" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ issuer ], format: [ mdoc ] }
+  condition: When the attestation uses the status list (EAA-6.2.10.1-02.2) or identifier list (-02.3) mechanism.
+  quote: >-
+    EAA-6.2.10.1-01: When an electronic attestation of attributes compliant with ISO/IEC mdoc uses the attestation status
+    list mechanism as set out in EAA-6.2.10.1-02.2 or the attestation revocation list mechanism as set out in
+    EAA-6.2.10.1-02.3, its Mobile Security Object (MSO) shall contain the status structure, as specified in
+    EAA-6.2.10.1-17, which contains MSO revocation information.
+  note: HAIP §5.3.1 leaves the MSO revocation mechanism optional; the CIR makes the status structure mandatory once a
+    mechanism is used, and EAA-6.2.10.1-02 makes a mechanism mandatory for the PID, QEAA and PuB-EAA.
+  verified: source-checked
+- id: cir/annex-iv/EAA-6.2.10.1-01-note
+  subject: vp.mdoc.mso.status
+  spec: cir-2026-1731
+  locator: { req: EAA-6.2.10.1-01, at: "Annex IV, adaptation (6), clause 6.2.10.1, NOTE" }
+  relation: profiles
+  level: info
+  applies_to: { format: [ mdoc ] }
+  quote: >-
+    The status structure contains a reference to an MSO revocation list. … The status structure contains all the
+    information necessary for the wallet-relying party to determine whether the MSO revocation list is authentic.
+  verified: source-checked
+- id: cir/annex-iv/EAA-6.2.10.1-02
+  subject: vp.mdoc.mso.status
+  spec: cir-2026-1731
+  locator: { req: EAA-6.2.10.1-02, at: "Annex IV, adaptation (6), clause 6.2.10.1" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ issuer ], format: [ mdoc ] }
+  condition: >-
+    For the PID, qualified EAA and EAA provided by or on behalf of a public sector body responsible for an authentic
+    source, unless short-lived (EAA-6.2.10.1-02.1).
+  quote: >-
+    EAA-6.2.10.1-02: The provider of person identification data, the provider of qualified electronic attestations of
+    attributes or the provider of electronic attestations of attributes provided by or on behalf of a public sector body
+    responsible for an authentic source shall use one of the following methods for revocation
+  note: The methods are a status list (-02.2) and an identifier list (-02.3); -02.1 exempts short-lived attestations.
+  verified: source-checked
+- id: cir/annex-iv/EAA-6.2.10.1-02.1
+  subject: vp.mdoc.mso.status
+  spec: cir-2026-1731
+  locator: { req: EAA-6.2.10.1-02.1, at: "Annex IV, adaptation (6), clause 6.2.10.1" }
+  relation: profiles
+  level: info
+  applies_to: { role: [ issuer ], format: [ mdoc ] }
+  condition: Short-lived attestations, valid for 24 hours or less.
+  quote: >-
+    EAA-6.2.10.1-02.1: Where they issue short-lived electronic attestations of attributes having a validity period of
+    equal to or less than 24 hours, then revocation shall not be required.
+  note: An exemption from EAA-6.2.10.1-02, not a level of its own.
+  verified: source-checked
+- id: cir/annex-iv/EAA-6.2.10.1-03
+  subject: vp.mdoc.mso.status
+  spec: cir-2026-1731
+  locator: { req: EAA-6.2.10.1-03, at: "Annex IV, adaptation (6), clause 6.2.10.1" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ issuer ], format: [ mdoc ] }
+  condition: For the PID, qualified EAA and EAA provided by or on behalf of a public sector body responsible for an
+    authentic source.
+  quote: >-
+    EAA-6.2.10.1-03: When a status element is used for person identification data, … the status 'revoked' shall be
+    exclusively used.
+  note: No suspension. -03.1 (status list) and -03.2 (identifier list) spell this out per mechanism.
+  verified: source-checked
+- id: cir/annex-iv/EAA-6.2.10.1-04
+  subject: vp.mdoc.mso.status
+  spec: cir-2026-1731
+  locator: { req: EAA-6.2.10.1-04, at: "Annex IV, adaptation (6), clause 6.2.10.1" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ issuer ], format: [ mdoc ] }
+  quote: "EAA-6.2.10.1-04: Where an MSO is revoked, the MSO shall be permanently revoked."
+  verified: source-checked
+- id: cir/annex-iv/EAA-6.2.10.1-17
+  subject: vp.mdoc.mso.status
+  spec: cir-2026-1731
+  locator: { req: EAA-6.2.10.1-17, at: "Annex IV, adaptation (6), clause 6.2.10.1" }
+  relation: extends
+  level: shall
+  applies_to: { role: [ issuer ], format: [ mdoc ] }
+  quote: >-
+    EAA-6.2.10.1-17: The status structure in the MSO shall be a CBOR structure with the following CDDL: Status = { ?
+    'identifier_list' : IdentifierListInfo, ? 'status_list' : StatusListInfo,
+  note: Adds identifier_list next to the status_list of the Token Status List Status structure (§6.3).
+  verified: source-checked
+
+# identifier_list (attestation revocation list mechanism)
+- id: cir/annex-iv/EAA-6.2.10.1-02.3
+  subject: vp.mdoc.mso.status.identifier_list
+  spec: cir-2026-1731
+  locator: { req: EAA-6.2.10.1-02.3, at: "Annex IV, adaptation (6), clause 6.2.10.1" }
+  relation: extends
+  level: info
+  applies_to: { format: [ mdoc ] }
+  quote: >-
+    EAA-6.2.10.1-02.3: Use an attestation revocation list mechanism to encode the revocation information as an
+    identifier list. … EAA-6.2.10.1-02.3.1: The identifier list mechanism revokes an MSO based on whether the
+    issuer-defined identifier in the MSO is present on the identifier list.
+  note: The Token Status List has no identifier list; the CIR adds this mechanism.
+  verified: source-checked
+- id: cir/annex-iv/EAA-6.2.10.1-01.1
+  subject: vp.mdoc.mso.status.identifier_list
+  spec: cir-2026-1731
+  locator: { req: EAA-6.2.10.1-01.1, at: "Annex IV, adaptation (6), clause 6.2.10.1" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ issuer ], format: [ mdoc ] }
+  condition: When the identifier list mechanism is used.
+  quote: >-
+    EAA-6.2.10.1-01.1: When implementing the identifier list mechanism, the status element shall contain the
+    identifier_list element as set out in EAA-6.2.10.1-11.
+  verified: source-checked
+- id: cir/annex-iv/EAA-6.2.10.1-11.1
+  subject: vp.mdoc.mso.status.identifier_list
+  spec: cir-2026-1731
+  locator: { req: EAA-6.2.10.1-11.1, at: "Annex IV, adaptation (6), clause 6.2.10.1" }
+  relation: extends
+  level: shall
+  applies_to: { role: [ issuer ], format: [ mdoc ] }
+  quote: >-
+    EAA-6.2.10.1-11.1: The identifier_list element is a CBOR structure with the following CDDL: IdentifierListInfo = {
+    'id': Identifier , 'uri': URI, ? 'certificate': Certificate
+  note: Identifier = bstr (EAA-6.2.10.1-10), URI = tstr, Certificate = bstr.
+  verified: source-checked
+- id: cir/annex-iv/EAA-6.2.10.1-11.2
+  subject: vp.mdoc.mso.status.identifier_list
+  spec: cir-2026-1731
+  locator: { req: EAA-6.2.10.1-11.2, at: "Annex IV, adaptation (6), clause 6.2.10.1" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ issuer ], format: [ mdoc ] }
+  quote: >-
+    To prevent the identifier from being used as a correlation across presentations, it shall be unique per MSO.
+  note: "The source prefixes this with a stray second label: \"EAA-6.2.10.1-11.2: REV-11.2:\"."
+  verified: source-checked
+- id: cir/annex-iv/EAA-6.2.10.1-05.1
+  subject: vp.mdoc.mso.status.identifier_list
+  spec: cir-2026-1731
+  locator: { req: EAA-6.2.10.1-05.1, at: "Annex IV, adaptation (6), clause 6.2.10.1" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ verifier ], format: [ mdoc ] }
+  condition: Where the Verifier needs to verify the revocation status of the PID or an EAA.
+  quote: >-
+    EAA-6.2.10.1-05.1: Where a wallet-relying party needs to be able to verify the revocation status of person
+    identification data or electronic attestations of attributes, it shall support both the attestation status list
+    mechanism and the attestation revocation list mechanism set out in EAA-6.2.10.1-02.
+  note: Recorded here because the identifier list is the mechanism a Token Status List implementation lacks.
+  verified: source-checked
+- id: cir/annex-iv/EAA-6.2.10.1-10.1
+  subject: vp.mdoc.mso.status.identifier_list
+  spec: cir-2026-1731
+  locator: { req: EAA-6.2.10.1-10.1, at: "Annex IV, adaptation (6), clause 6.2.10.1" }
+  relation: profiles
+  level: info
+  applies_to: { format: [ mdoc ] }
+  quote: >-
+    EAA-6.2.10.1-10.1: Where the identifier in the IdentifierList is present the MSO that contains the identifier in
+    the status element is revoked.
+  verified: source-checked
+
+# certificate element in status_list / identifier_list
+- id: cir/annex-iv/EAA-6.2.10.1-06
+  subject: vp.mdoc.mso.status.certificate
+  spec: cir-2026-1731
+  locator: { req: EAA-6.2.10.1-06, at: "Annex IV, adaptation (6), clause 6.2.10.1" }
+  relation: extends
+  level: may
+  applies_to: { role: [ issuer ], format: [ mdoc ] }
+  quote: "EAA-6.2.10.1-06: The identifier_list and status_list in the MSO may contain the certificate element."
+  note: The Token Status List StatusListInfo has no certificate; EAA-6.2.10.1-13.1 adds it.
+  verified: source-checked
+- id: cir/annex-iv/EAA-6.2.10.1-06.1.1
+  subject: vp.mdoc.mso.status.certificate
+  spec: cir-2026-1731
+  locator: { req: EAA-6.2.10.1-06.1.1, at: "Annex IV, adaptation (6), clause 6.2.10.1" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ verifier ], format: [ mdoc ] }
+  condition: Where the certificate element is present and the Verifier checks the revocation status.
+  quote: >-
+    EAA-6.2.10.1-06.1.1: The wallet-relying party instance shall use that certificate as a trust anchor for the
+    verification of the x5chain element in the MSO revocation list structure.
+  verified: source-checked
+
+# status_list (attestation status list mechanism, Token Status List)
+- id: cir/annex-iv/EAA-6.2.10.1-02.2
+  subject: tsl.status_list
+  spec: cir-2026-1731
+  locator: { req: EAA-6.2.10.1-02.2, at: "Annex IV, adaptation (6), clause 6.2.10.1" }
+  relation: profiles
+  level: info
+  applies_to: { format: [ mdoc ] }
+  quote: >-
+    EAA-6.2.10.1-02.2: Use an attestation status list mechanism to encode the revocation information as a status list.
+    … EAA-6.2.10.1-02.2.2: The status list mechanism is specified in the token status list
+    (draft-ietf-oauth-status-list-20) specification.
+  verified: source-checked
+- id: cir/annex-iv/EAA-6.2.10.1-01.2
+  subject: tsl.status_list
+  spec: cir-2026-1731
+  locator: { req: EAA-6.2.10.1-01.2, at: "Annex IV, adaptation (6), clause 6.2.10.1" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ issuer ], format: [ mdoc ] }
+  condition: When the status list mechanism is used.
+  quote: >-
+    EAA-6.2.10.1-01.2: When implementing the status list mechanism, the status element shall contain the status_list
+    element as set out in EAA-6.2.10.1-13.
+  verified: source-checked
+- id: cir/annex-iv/EAA-6.2.10.1-13.1
+  subject: tsl.status_list
+  spec: cir-2026-1731
+  locator: { req: EAA-6.2.10.1-13.1, at: "Annex IV, adaptation (6), clause 6.2.10.1" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ issuer ], format: [ mdoc ] }
+  quote: >-
+    EAA-6.2.10.1-13.1: The status_list element shall follow the requirements for the StatusListInfo structure as
+    specified in the token status list specification and the optional certificate element defined in EAA-6.2.10.1-06
+    shall be added.
+  note: "StatusListInfo is the CBOR form of status_list (Token Status List §6.3): idx and uri, here plus certificate."
+  verified: source-checked
+- id: cir/annex-iv/EAA-6.2.10.1-02.2.1
+  subject: tsl.idx
+  spec: cir-2026-1731
+  locator: { req: EAA-6.2.10.1-02.2.1, at: "Annex IV, adaptation (6), clause 6.2.10.1" }
+  relation: profiles
+  level: info
+  applies_to: { format: [ mdoc ] }
+  quote: >-
+    EAA-6.2.10.1-02.2.1: The status list mechanism revokes an MSO based on whether the bit of the issuer-defined bit
+    position in the MSO is set to true in the status list.
+  verified: source-checked
+- id: cir/annex-iv/EAA-6.2.10.1-03.1
+  subject: tsl.idx
+  spec: cir-2026-1731
+  locator: { req: EAA-6.2.10.1-03.1, at: "Annex IV, adaptation (6), clause 6.2.10.1" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ issuer ], format: [ mdoc ] }
+  condition: For the PID, qualified EAA and EAA provided by or on behalf of a public sector body responsible for an
+    authentic source.
+  quote: >-
+    EAA-6.2.10.1-03.1: For a status list this implies that only values 'valid' and 'invalid', as specified in the token
+    status list specification shall be used.
+  note: Restricts the Token Status List status types (§7.1) to 0x00 VALID and 0x01 INVALID; no SUSPENDED.
+  verified: source-checked
+- id: cir/annex-iv/EAA-6.2.10.1-13.2
+  subject: tsl.uri
+  spec: cir-2026-1731
+  locator: { req: EAA-6.2.10.1-13.2, at: "Annex IV, adaptation (6), clause 6.2.10.1" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ issuer ], format: [ mdoc ] }
+  quote: >-
+    EAA-6.2.10.1-13.2: To prevent the status index from being a correlation across presentations, the combination of
+    status index and URI shall be unique per MSO.
+  verified: source-checked
+
+# The MSO revocation list (the CWT the uri points to)
+- id: cir/annex-iv/EAA-6.2.10.1-01-note-revocation-list
+  subject: vp.mdoc.revocation-list
+  spec: cir-2026-1731
+  locator: { req: EAA-6.2.10.1-01, at: "Annex IV, adaptation (6), clause 6.2.10.1, NOTE" }
+  relation: profiles
+  level: info
+  applies_to: { format: [ mdoc ] }
+  quote: >-
+    The MSO revocation list is a COSE_Sign1 structure that indicates whether a particular MSO is revoked or not.
+  verified: source-checked
+- id: cir/annex-iv/EAA-6.2.10.1-07
+  subject: vp.mdoc.revocation-list
+  spec: cir-2026-1731
+  locator: { req: EAA-6.2.10.1-07, at: "Annex IV, adaptation (6), clause 6.2.10.1" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ issuer ], format: [ mdoc ] }
+  quote: >-
+    EAA-6.2.10.1-07: An MSO revocation list shall be implemented in accordance with the token status list
+    specification as a status list token in CWT format.
+  note: Fixes the CWT format of Token Status List §5.2 (not the JWT format of §5.1), for both mechanisms.
+  verified: source-checked
+- id: cir/annex-iv/EAA-6.2.10.1-08-alg
+  subject: vp.mdoc.revocation-list
+  spec: cir-2026-1731
+  locator: { req: EAA-6.2.10.1-08, at: "Annex IV, adaptation (6), clause 6.2.10.1" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ issuer ], format: [ mdoc ] }
+  quote: >-
+    the CWT shall be a COSE_Sign1 object using one of the following signature algorithms for calculating the
+    signature: (a) 'ES256' (ECDSA with curve NIST P-256 and SHA-256); … (f) 'ESB512' (ECDSA with curve brainpoolP512r1
+    and SHA-512);
+  note: >-
+    Narrows Token Status List §5.2, which also allows COSE_Mac0. Allowed: ES256, ES384, ES512, ESB256, ESB384, ESB512.
+    The other points of EAA-6.2.10.1-08 are optional: the ttl claim and aggregation_uri may be present, and the
+    signing certificate may carry the Token Status List extended key usage (§10), which the provider is not to mark
+    critical.
+  verified: source-checked
+- id: cir/annex-iv/EAA-6.2.10.1-09-type
+  subject: vp.mdoc.revocation-list.type
+  spec: cir-2026-1731
+  locator: { req: EAA-6.2.10.1-09, at: "Annex IV, adaptation (6), clause 6.2.10.1" }
+  relation: deviates
+  target: tsl-20/5.2/type
+  level: shall
+  applies_to: { role: [ issuer ], format: [ mdoc ] }
+  condition: When the identifier list mechanism is used.
+  quote: >-
+    EAA-6.2.10.1-09: In deviation to the requirements of the token status list specification, for the identifier list
+    mechanism the following requirements apply: — the value of the type claim shall be 'application/identifierlist+cwt';
+  note: A status list keeps application/statuslist+cwt; only the identifier list departs from Token Status List §5.2.
+  verified: source-checked
+- id: cir/annex-iv/EAA-6.2.10.1-10.3
+  subject: vp.mdoc.revocation-list.type
+  spec: cir-2026-1731
+  locator: { req: EAA-6.2.10.1-10.3, at: "Annex IV, adaptation (6), clause 6.2.10.1" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ issuer ], format: [ mdoc ] }
+  condition: When the identifier list mechanism is used.
+  quote: >-
+    EAA-6.2.10.1-10.3: The identifier list content-type shall be 'application/identifierlist+cwt' set out in the
+    requirements specified in section 8.2 of token status list specification.
+  note: Token Status List §8.2 is the HTTP Status List Response, so this is also the Content-Type the list is served with.
+  verified: source-checked
+- id: cir/annex-iv/EAA-6.2.10.1-09-claim
+  subject: vp.mdoc.revocation-list.list
+  spec: cir-2026-1731
+  locator: { req: EAA-6.2.10.1-09, at: "Annex IV, adaptation (6), clause 6.2.10.1" }
+  relation: deviates
+  target: tsl-20/5.2/status-list
+  level: shall-not
+  applies_to: { role: [ issuer ], format: [ mdoc ] }
+  condition: When the identifier list mechanism is used.
+  quote: >-
+    EAA-6.2.10.1-09: In deviation to the requirements of the token status list specification, … the StatusList claim
+    shall not be present in the CWT claims set;
+  verified: source-checked
+- id: cir/annex-iv/EAA-6.2.10.1-09-identifierlist
+  subject: vp.mdoc.revocation-list.list
+  spec: cir-2026-1731
+  locator: { req: EAA-6.2.10.1-09, at: "Annex IV, adaptation (6), clause 6.2.10.1" }
+  relation: extends
+  level: shall
+  applies_to: { role: [ issuer ], format: [ mdoc ] }
+  condition: When the identifier list mechanism is used.
+  quote: >-
+    the IdentifierList structure defined in EAA-6.2.10.1-11 shall be present as a claim in the CWT claims set using the
+    key 65530.
+  verified: needs-review
+  review:
+    reason: >-
+      The IdentifierList structure is defined in EAA-6.2.10.1-10; EAA-6.2.10.1-11 defines IdentifierListInfo, the
+      identifier_list element in the MSO. Read as a slip for -10. Moot for d-you, which uses no identifier list
+      (golive/mdoc.no-identifier-list.EAA-6.2.10.1-09-identifierlist-2026-10-20).
+- id: cir/annex-iv/EAA-6.2.10.1-10
+  subject: vp.mdoc.revocation-list.list
+  spec: cir-2026-1731
+  locator: { req: EAA-6.2.10.1-10, at: "Annex IV, adaptation (6), clause 6.2.10.1" }
+  relation: extends
+  level: shall
+  applies_to: { role: [ issuer ], format: [ mdoc ] }
+  condition: When the identifier list mechanism is used.
+  quote: >-
+    EAA-6.2.10.1-10: The IdentifierList structure shall be a CBOR structure with the following CDDL: IdentifierList = {
+    'identifiers': { * Identifier => IdentifierInfo }, ? 'aggregation_uri': Aggregation_uri
+  note: Identifier = bstr, IdentifierInfo = { tstr/int => RFU }; aggregation_uri as in Token Status List §9.2 (-10.2).
+  verified: source-checked
+- id: cir/annex-iv/EAA-6.2.10.1-12.1
+  subject: vp.mdoc.revocation-list.list
+  spec: cir-2026-1731
+  locator: { req: EAA-6.2.10.1-12.1, at: "Annex IV, adaptation (6), clause 6.2.10.1" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ issuer ], format: [ mdoc ] }
+  condition: When the status list mechanism is used.
+  quote: "EAA-6.2.10.1-12.1: The bits element in the StatusList structure shall be set to 1."
+  note: Token Status List §4.3 allows 1, 2, 4 or 8 bits per entry; one bit is enough for VALID / INVALID (-03.1).
+  verified: source-checked
+- id: cir/annex-iv/EAA-6.2.10.1-03.2
+  subject: vp.mdoc.revocation-list.list
+  spec: cir-2026-1731
+  locator: { req: EAA-6.2.10.1-03.2, at: "Annex IV, adaptation (6), clause 6.2.10.1" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ issuer ], format: [ mdoc ] }
+  condition: >-
+    When the identifier list mechanism is used for the PID, qualified EAA or EAA provided by or on behalf of a public
+    sector body responsible for an authentic source.
+  quote: >-
+    EAA-6.2.10.1-03.2: For the identifier list, only revoked MSOs, as opposed to temporarily suspended MSOs, shall be
+    put in the identifier list.
+  verified: source-checked
+- id: cir/annex-iv/EAA-6.2.10.1-08-exp
+  subject: vp.mdoc.revocation-list.exp
+  spec: cir-2026-1731
+  locator: { req: EAA-6.2.10.1-08, at: "Annex IV, adaptation (6), clause 6.2.10.1" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ issuer ], format: [ mdoc ] }
+  quote: >-
+    EAA-6.2.10.1-08: For the MSO revocation list for the identifier list and status list mechanism, the following
+    requirements apply: — the exp claim shall be present.
+  note: Token Status List §5.2 only recommends exp.
+  verified: source-checked
+- id: cir/annex-iv/EAA-6.2.10.1-08-x5chain
+  subject: vp.mdoc.revocation-list.x5chain
+  spec: cir-2026-1731
+  locator: { req: EAA-6.2.10.1-08, at: "Annex IV, adaptation (6), clause 6.2.10.1" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ issuer ], format: [ mdoc ] }
+  quote: >-
+    the CWT shall contain the x5chain in the protected header that contains the certificate or chain of certificates
+    to verify the signature of the MSO revocation list.
+  note: Token Status List §11.3 leaves key resolution open (x5chain, x5t or kid); the CIR fixes x5chain.
+  verified: source-checked
+- id: cir/annex-iv/EAA-6.2.10.1-06.1
+  subject: vp.mdoc.revocation-list.x5chain
+  spec: cir-2026-1731
+  locator: { req: EAA-6.2.10.1-06.1, at: "Annex IV, adaptation (6), clause 6.2.10.1" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ issuer ], format: [ mdoc ] }
+  condition: Where the MSO's status reference carries the certificate element.
+  quote: >-
+    EAA-6.2.10.1-06.1: Where the certificate element is present, it shall contain a certificate containing the public
+    key that signed or sealed the top-level certificate in the x5chain element in the MSO revocation list structure.
+  note: Phrased about the certificate element; recorded here because it fixes what the x5chain chains up to.
+  verified: source-checked
+- id: cir/annex-iv/EAA-6.2.10.1-06.2
+  subject: vp.mdoc.revocation-list.x5chain
+  spec: cir-2026-1731
+  locator: { req: EAA-6.2.10.1-06.2, at: "Annex IV, adaptation (6), clause 6.2.10.1" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ issuer ], format: [ mdoc ] }
+  condition: Where the MSO's status reference has no certificate element.
+  quote: >-
+    EAA-6.2.10.1-06.2: Where the certificate element is not present, the top-level certificate in the x5chain element
+    in the MSO revocation list structure shall be signed or sealed by the certificate used to sign the certificate in
+    the x5chain element of the MSO.
+  verified: source-checked
+- id: cir/annex-iv/EAA-6.2.10.1-06.2.1
+  subject: vp.mdoc.revocation-list.x5chain
+  spec: cir-2026-1731
+  locator: { req: EAA-6.2.10.1-06.2.1, at: "Annex IV, adaptation (6), clause 6.2.10.1" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ verifier ], format: [ mdoc ] }
+  condition: Where the MSO's status reference has no certificate element and the Verifier checks the revocation status.
+  quote: >-
+    EAA-6.2.10.1-06.2.1: The wallet-relying party instance shall use that certificate as a trust anchor for the
+    verification of the x5chain element in the MSO revocation list structure.
+  note: '"That certificate" is the one that signed the certificate in the MSO''s x5chain, i.e. the issuing CA.'
+  verified: source-checked
+
+# Verifier
+- id: cir/annex-iv/EAA-6.2.10.1-05
+  subject: vp.verifier.check-status
+  spec: cir-2026-1731
+  locator: { req: EAA-6.2.10.1-05, at: "Annex IV, adaptation (6), clause 6.2.10.1" }
+  relation: profiles
+  level: may
+  applies_to: { role: [ verifier ], format: [ mdoc ] }
+  quote: >-
+    EAA-6.2.10.1-05: Verification of the MSO revocation list is optional for the wallet-relying party and where
+    applicable, verification shall comply with the verification requirements specified in the token status list
+    specification and the status structure specification set out in in EAA-6.2.10.1-01.
+  note: If the Verifier checks, Token Status List §8.3 applies. "in in" is in the source.
+  verified: source-checked
+
+# WIA and key attestation (same clause, not about the mdoc)
+- id: cir/annex-iv/EAA-6.2.10.1-14-wia
+  subject: vci.wia.client_status.status
+  spec: cir-2026-1731
+  locator: { req: EAA-6.2.10.1-14, at: "Annex IV, adaptation (6), clause 6.2.10.1" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ wallet-provider ] }
+  quote: >-
+    EAA-6.2.10.1-14: The wallet provider shall use the second (EAA-6.2.10.1-02.2) or the third (EAA-6.2.10.1-02.3) of
+    the methods specified in EAA-6.2.10.1-02 for the revocation of a wallet instance attestation (WIA)
+  verified: needs-review
+  review:
+    reason: &wua-idlist >-
+      The identifier list (-02.3) is specified for a CWT revocation list referenced from an mdoc MSO, but the WIA and
+      the key attestation are JWTs whose status reference Annex Ib C_WIA-1 / C_KA-1 defines as a Token Status List
+      reference (OpenID4VCI Appendix E / D.1). How a JWT attestation would reference an identifier list is not
+      specified. Superseded in the d-you layer by resolved/EAA-6.2.10.1-14-wia-status-list and -ka-status-list.
+- id: cir/annex-iv/EAA-6.2.10.1-14-ka
+  subject: vci.ka.key_storage_status.status
+  spec: cir-2026-1731
+  locator: { req: EAA-6.2.10.1-14, at: "Annex IV, adaptation (6), clause 6.2.10.1" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ wallet-provider ] }
+  quote: >-
+    EAA-6.2.10.1-14: The wallet provider shall use the second (EAA-6.2.10.1-02.2) or the third (EAA-6.2.10.1-02.3) of
+    the methods specified in EAA-6.2.10.1-02 … and for the revocation of a key attestation (KA).
+  verified: needs-review
+  review:
+    reason: *wua-idlist
+- id: cir/annex-iv/EAA-6.2.10.1-15
+  subject: vci.wia.client_status
+  spec: cir-2026-1731
+  locator: { req: EAA-6.2.10.1-15, at: "Annex IV, adaptation (6), clause 6.2.10.1" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ wallet-provider ] }
+  quote: >-
+    EAA-6.2.10.1-15: The wallet provider shall implement the attestation revocation mechanisms specified in
+    EAA-6.2.10.1-02 in their wallet solution.
+  note: Read together with -14 as the WIA and key attestation revocation of the wallet solution.
+  verified: source-checked
+- id: cir/annex-iv/EAA-6.2.10.1-16-wia
+  subject: vci.wia.verification
+  spec: cir-2026-1731
+  locator: { req: EAA-6.2.10.1-16, at: "Annex IV, adaptation (6), clause 6.2.10.1" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ as ] }
+  quote: >-
+    EAA-6.2.10.1-16: The provider of person identification data and the provider of electronic attestations of
+    attributes shall support both the attestation status list mechanism and the attestation revocation list mechanism
+    specified in EAA-6.2.10.1-02 for verifying the revocation status of a wallet instance attestation (WIA)
+  note: The provider's authorization server is the party that verifies the WIA.
+  verified: source-checked
+- id: cir/annex-iv/EAA-6.2.10.1-16-ka
+  subject: vci.ka.verification
+  spec: cir-2026-1731
+  locator: { req: EAA-6.2.10.1-16, at: "Annex IV, adaptation (6), clause 6.2.10.1" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ issuer ] }
+  quote: >-
+    EAA-6.2.10.1-16: The provider of person identification data and the provider of electronic attestations of
+    attributes shall support both the attestation status list mechanism and the attestation revocation list mechanism
+    specified in EAA-6.2.10.1-02 … and of a key attestation (KA).
+  verified: source-checked
