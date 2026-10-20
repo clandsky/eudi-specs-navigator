@@ -3,7 +3,7 @@ title: Presentation — OpenID4VP redirect, same device
 role: verifier
 order: 1
 subject: vp.flow.redirect-same
-variant: { transport: redirect, device: same }
+variant: { transport: redirect, device: same, format: sd-jwt-vc }
 summary: >-
   The user is on the verifier's website on the phone that holds the wallet. The page opens an eu-eaap:// link carrying
   a request_uri; the wallet fetches the signed Request Object, validates it, posts an encrypted response

@@ -19,6 +19,8 @@ export interface EncodedExample {
   plaintexts?: Record<string, { header: Record<string, unknown>; payload: Record<string, unknown> }>
   /** name → full SD-JWT as emitted (issuer JWT ~ disclosures ~ [KB-JWT]); `jwts[name]` holds only the issuer JWT. */
   sdjwts?: Record<string, string>
+  /** name → CBOR item, base64url (an mdoc DeviceResponse and the SessionTranscript it signs), with what it is. */
+  cbor?: Record<string, { label: string; value: string }>
 }
 
 export interface Dataset {

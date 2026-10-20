@@ -1,16 +1,23 @@
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
-import { compactDecrypt, compactVerify, decodeProtectedHeader, importPKCS8, importSPKI } from 'jose'
-import { X509Certificate } from 'node:crypto'
+import { calculateJwkThumbprint, compactDecrypt, compactVerify, decodeProtectedHeader, importPKCS8, importSPKI, type JWK } from 'jose'
+import { X509Certificate, createHash, verify } from 'node:crypto'
 import { describe, expect, it } from 'vitest'
 import { DATA, loadDataset } from '../../scripts/lib/data.ts'
 import { inputHash, substitute } from '../../scripts/lib/examples.ts'
 import { findQuote, normalise, stripFurniture } from '../../scripts/lib/quote.ts'
 import { annotationFor, decodeJwt, entryPointers, lookup, matchPattern, resolves, viewOf } from './pointer'
 import { stepNumber } from './steps'
+import { Tagged, decodeCbor, encodeCbor, fromB64url, fromHex, toHex } from './cbor'
 
 const ds = loadDataset({ requireEncoded: true })
 const KEYS = join(DATA, 'test-keys')
+const sha256 = (b: Uint8Array) => new Uint8Array(createHash('sha256').update(b).digest())
+const cborOf = (b64: string) => decodeCbor(fromB64url(b64))
+const m = (v: unknown) => v as Map<unknown, unknown>
+/** COSE_Sign1 ES256 check (RFC 9052 §4.4): Sig_structure ["Signature1", protected, external_aad, payload], r || s. */
+const coseVerifies = (key: string, prot: Uint8Array, payload: Uint8Array, sig: Uint8Array) =>
+  verify('sha256', encodeCbor(['Signature1', prot, new Uint8Array(), payload]), { key: readFileSync(join(KEYS, `${key}.pub.pem`), 'utf8'), dsaEncoding: 'ieee-p1363' }, sig)
 
 describe('examples', () => {
   for (const e of ds.examples) {
@@ -55,7 +62,7 @@ describe('examples', () => {
         if ('encrypt' in spec) {
           const priv = await importPKCS8(readFileSync(join(KEYS, `${spec.encrypt.key}.key.pem`), 'utf8'), 'ECDH-ES')
           const { plaintext } = await compactDecrypt(compact, priv)
-          const payload = await substitute(spec.payload, async (k, n) => (k === 'sdjwt' ? enc.sdjwts![n]! : enc.jwts[n]!))
+          const payload = await substitute(spec.payload, async (k, n) => (k === 'sdjwt' ? enc.sdjwts![n]! : k === 'mdoc' ? enc.cbor![n]!.value : enc.jwts[n]!))
           expect(JSON.parse(new TextDecoder().decode(plaintext))).toEqual(payload)
           expect(enc.plaintexts?.[name]?.payload).toEqual(payload)
           continue
@@ -78,6 +85,67 @@ describe('examples', () => {
       }
     })
   }
+
+  for (const e of ds.examples.filter((x) => x.mdocs))
+    for (const [name, spec] of Object.entries(e.mdocs!))
+      it(`${e.id}: mdoc "${name}" verifies (issuerAuth, valueDigests, deviceSignature over the SessionTranscript)`, async () => {
+        const enc = ds.encoded[e.id]!
+        const doc = m((m(cborOf(enc.cbor![name]!.value)).get('documents') as unknown[])[0])
+        const issuerSigned = m(doc.get('issuerSigned'))
+        const [prot, unprot, payload, sig] = issuerSigned.get('issuerAuth') as [Uint8Array, Map<number, unknown>, Uint8Array, Uint8Array]
+        expect(coseVerifies(spec.issuer, prot, payload, sig)).toBe(true)
+        const leaf = new X509Certificate(readFileSync(join(KEYS, `${spec.issuer}.cert.pem`)))
+        expect(Buffer.from(unprot.get(33) as Uint8Array).equals(leaf.raw)).toBe(true)
+        if (spec.x5u) expect(toHex((m(decodeCbor(prot)).get(34) as [number, Uint8Array])[1])).toBe(toHex(sha256(leaf.raw)))
+
+        // MSO: one digest per issued element; each presented element hashes (as tag-24 bytes) to its digest.
+        const mso = m(decodeCbor(((decodeCbor(payload) as Tagged).value) as Uint8Array))
+        expect(mso.get('docType')).toBe(spec.docType)
+        expect(doc.get('docType')).toBe(spec.docType)
+        for (const [ns, items] of Object.entries(spec.nameSpaces)) {
+          const digests = m(m(mso.get('valueDigests')).get(ns))
+          expect(digests.size).toBe(items.length)
+          const presented = m(issuerSigned.get('nameSpaces')).get(ns) as Tagged[]
+          expect(presented.length).toBe(items.filter((i) => !i.withheld).length)
+          for (const item of presented) {
+            const decoded = m(decodeCbor(item.value as Uint8Array))
+            expect(toHex(digests.get(decoded.get('digestID')) as Uint8Array)).toBe(toHex(sha256(encodeCbor(item))))
+          }
+        }
+        const deviceKey = m(m(mso.get('deviceKeyInfo')).get('deviceKey'))
+        const jwk = (await importSPKI(readFileSync(join(KEYS, `${spec.device}.pub.pem`), 'utf8'), 'ES256', { extractable: true }).then((k) =>
+          import('jose').then(({ exportJWK }) => exportJWK(k)))) as JWK
+        expect(Buffer.from(deviceKey.get(-2) as Uint8Array).toString('base64url')).toBe(jwk.x)
+        expect(Buffer.from(deviceKey.get(-3) as Uint8Array).toString('base64url')).toBe(jwk.y)
+
+        // deviceSignature: detached payload DeviceAuthenticationBytes over the stored SessionTranscript.
+        const deviceSigned = m(doc.get('deviceSigned'))
+        const [dprot, , dpayload, dsig] = m(deviceSigned.get('deviceAuth')).get('deviceSignature') as [Uint8Array, unknown, null, Uint8Array]
+        expect(dpayload).toBeNull()
+        const transcript = cborOf(enc.cbor![`${name}-session-transcript`]!.value)
+        const deviceAuthentication = encodeCbor(new Tagged(24, encodeCbor(['DeviceAuthentication', transcript, spec.docType, deviceSigned.get('nameSpaces')])))
+        expect(coseVerifies(spec.device, dprot, deviceAuthentication, dsig)).toBe(true)
+      })
+
+  it('the mdoc SessionTranscript is bound to the Request Object of the mdoc flow (OpenID4VP B.2.6.1)', async () => {
+    const ro = viewOf(ds.encoded['vp-mdoc-request-uri-response']!).jwt.ro!.payload as Record<string, any>
+    const enc = ds.encoded['vp-mdoc-response-post']!
+    const encKey = (ro.client_metadata.jwks.keys as JWK[])[0]!
+    const info = [ro.client_id, ro.nonce, fromB64url(await calculateJwkThumbprint(encKey, 'sha256')), ro.response_uri]
+    expect(toHex(encodeCbor(info))).toBe(toHex(fromB64url(enc.cbor!['pid-handover-info']!.value)))
+    expect(cborOf(enc.cbor!['pid-session-transcript']!.value)).toEqual([null, null, ['OpenID4VPHandover', sha256(encodeCbor(info))]])
+    // The response answers this request: same state, the DCQL id as vp_token key, exactly the requested elements.
+    const resp = viewOf(enc).jwt.resp!.payload as Record<string, any>
+    expect(resp.state).toBe(ro.state)
+    const query = ro.dcql_query.credentials[0]
+    expect(Object.keys(resp.vp_token)).toEqual([query.id])
+    const doc = m((m(cborOf(resp.vp_token[query.id][0])).get('documents') as unknown[])[0])
+    const presented = [...m(m(doc.get('issuerSigned')).get('nameSpaces'))].flatMap(([ns, items]) =>
+      (items as Tagged[]).map((i) => [ns, m(decodeCbor(i.value as Uint8Array)).get('elementIdentifier')]),
+    )
+    expect(presented).toEqual(query.claims.map((c: { path: string[] }) => c.path))
+    expect(doc.get('docType')).toBe(query.meta.doctype_value)
+  })
 
   it('x5c chains exclude the trust anchor and each certificate is issued by the next', async () => {
     const wia = ds.encoded['vci-wia']!.jwts.wia!
@@ -103,6 +171,23 @@ describe('examples', () => {
     const k0 = (ka.payload.attested_keys as Record<string, string>[])[0]!
     const { importJWK } = await import('jose')
     await compactVerify(proof.compact, await importJWK({ ...k0, alg: 'ES256' }, 'ES256'))
+  })
+})
+
+describe('cbor', () => {
+  it('reproduces the OpenID4VPHandoverInfo and SessionTranscript examples of OpenID4VP B.2.6.1', () => {
+    const info = ['x509_san_dns:example.com', 'exc7gBkxjx1rdc9udRrveKvSsJIq80avlXeLHhGwqtA', fromHex('4283ec927ae0f208daaa2d026a814f2b22dca52cf85ffa8f3f8626c6bd669047'), 'https://example.com/response']
+    expect(toHex(encodeCbor(info))).toBe(
+      '847818783530395f73616e5f646e733a6578616d706c652e636f6d782b6578633767426b786a7831726463397564527276654b7653734a4971383061766c58654c486847' +
+        '7771744158204283ec927ae0f208daaa2d026a814f2b22dca52cf85ffa8f3f8626c6bd669047781c68747470733a2f2f6578616d706c652e636f6d2f726573706f6e7365',
+    )
+    const transcript = encodeCbor([null, null, ['OpenID4VPHandover', sha256(encodeCbor(info))]])
+    expect(toHex(transcript)).toBe('83f6f682714f70656e494434565048616e646f7665725820048bc053c00442af9b8eed494cefdd9d95240d254b046b11b68013722aad38ac')
+    expect(decodeCbor(transcript)).toEqual([null, null, ['OpenID4VPHandover', fromHex('048bc053c00442af9b8eed494cefdd9d95240d254b046b11b68013722aad38ac')]])
+  })
+  it('round-trips integer, tag and map key types', () => {
+    const v = new Map<unknown, unknown>([[1, -7], [-65537, 'x'], ['k', [true, false, null, new Tagged(1004, '1964-08-12'), new Uint8Array([0, 255])]], [2 ** 40, 0]])
+    expect(decodeCbor(encodeCbor(v))).toEqual(v)
   })
 })
 

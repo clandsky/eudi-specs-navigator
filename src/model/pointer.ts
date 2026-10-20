@@ -1,4 +1,5 @@
 import type { EncodedExample } from './dataset'
+import { cborView } from './mdoc'
 
 /** The uniform document every annotation pointer addresses. Derived only from the encoded example. */
 export interface ViewDocument {
@@ -12,6 +13,8 @@ export interface ViewDocument {
   }
   json?: unknown
   jwt: Record<string, { header: Record<string, unknown>; payload: Record<string, unknown>; compact: string }>
+  /** Decoded CBOR items (mdoc), see src/model/mdoc.ts. */
+  cbor?: Record<string, unknown>
 }
 
 function b64urlDecode(s: string): string {
@@ -77,6 +80,7 @@ export function viewOf(e: EncodedExample): ViewDocument {
     }
   }
   if (e.json !== undefined) view.json = e.json
+  if (e.cbor) view.cbor = Object.fromEntries(Object.entries(e.cbor).map(([name, c]) => [name, cborView(c.value)]))
   return view
 }
 
@@ -183,5 +187,6 @@ export function entryPointers(view: ViewDocument): string[] {
     walk(j.header, `/jwt/${escapeToken(name)}/header`)
     walk(j.payload, `/jwt/${escapeToken(name)}/payload`)
   }
+  for (const [name, c] of Object.entries(view.cbor ?? {})) walk(c, `/cbor/${escapeToken(name)}`)
   return out
 }

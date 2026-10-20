@@ -3,7 +3,7 @@ title: Presentation — OpenID4VP over the Digital Credentials API
 role: verifier
 order: 2
 subject: vp.flow.dc-api
-variant: { transport: dc-api }
+variant: { transport: dc-api, format: sd-jwt-vc }
 summary: >-
   The verifier's page calls navigator.credentials.get() with a signed OpenID4VP request (openid4vp-v1-signed). The
   browser and operating system invoke the wallet, on the same device or across devices via CTAP hybrid with a

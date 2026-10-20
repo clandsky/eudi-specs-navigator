@@ -10,6 +10,12 @@ const layers = new Set<LayerId>(ds.layers.filter((l) => l.id !== 'impl-de' && l.
 const doc = buildOpenApi(ds, { view: 'verifier', asOf: '2026-10-20', layers }) as Json
 const paths = doc.paths as Json
 
+// The Request Object answer of GET /request/{id}: one anyOf branch per flow that fetches it (SD-JWT VC, ISO mdoc).
+const requestObject = (flowId: string) =>
+  (paths['/request/{id}'].get.responses['200'].content['application/oauth-authz-req+jwt'].schema.anyOf as Json[]).find(
+    (b) => b['x-flow'].id === flowId,
+  )!['x-jwt'].payload
+
 describe('verifier OpenAPI export', () => {
   it('serves the Request Object as application/oauth-authz-req+jwt (RFC 9101 §4), from the example Content-Type', () => {
     const content = paths['/request/{id}'].get.responses['200'].content
@@ -33,14 +39,23 @@ describe('verifier OpenAPI export', () => {
   })
 
   it('types claims path pointer items as strings, nulls and non-negative integers (OpenID4VP §7)', () => {
-    const ro = paths['/request/{id}'].get.responses['200'].content['application/oauth-authz-req+jwt'].schema['x-jwt'].payload
+    const ro = requestObject('vp-redirect-same')
     const path = ro.properties.dcql_query.properties.credentials.items.properties.claims.items.properties.path
     expect(path.items).toEqual({ type: ['string', 'null', 'integer'], minimum: 0 })
     expect(path.minItems).toBe(1)
   })
 
+  it('exports the mdoc Request Object as its own branch with the mso_mdoc parameters', () => {
+    const ro = requestObject('vp-redirect-same-mdoc')
+    const query = ro.properties.dcql_query.properties.credentials.items
+    expect(query.properties.meta.properties.doctype_value['x-provenance'].subject).toBe('vp.dcql.doctype_value')
+    const mdoc = ro.properties.client_metadata.properties.vp_formats_supported.properties.mso_mdoc
+    expect(mdoc['x-provenance'].subject).toBe('vp.request-object.client_metadata.vp_formats_supported.mso_mdoc')
+    expect(mdoc.properties.issuerauth_alg_values['x-provenance'].subject).toBe('vp.request-object.client_metadata.issuerauth_alg_values')
+  })
+
   it('annotates jwks key members and the dc+sd-jwt key with their own subjects', () => {
-    const ro = paths['/request/{id}'].get.responses['200'].content['application/oauth-authz-req+jwt'].schema['x-jwt'].payload
+    const ro = requestObject('vp-redirect-same')
     const meta = ro.properties.client_metadata.properties
     const key = meta.jwks.properties.keys.items
     for (const k of ['kid', 'use', 'alg']) expect(key.properties[k]['x-provenance'].subject).toBe(`vp.request-object.client_metadata.jwks.${k}`)
