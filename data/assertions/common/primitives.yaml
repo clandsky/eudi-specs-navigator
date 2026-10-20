@@ -215,6 +215,68 @@
   quote: "uri: REQUIRED. The uri (URI) claim MUST specify a String value that identifies the Status List Token containing
     the status information for the Referenced Token."
   verified: source-checked
+# Token Status List in COSE: the Status structure of an mdoc MSO (§6.3) and the Status List Token in CWT format (§5.2),
+# which the CIR's MSO revocation list builds on (CIR Annex IV, EAA-6.2.10.1).
+- id: tsl-20/6.3/status
+  subject: vp.mdoc.mso.status
+  spec: status-list-20
+  locator: { section: "6.3" }
+  relation: defines
+  level: shall
+  applies_to: { format: [ mdoc ] }
+  condition: When the MSO carries revocation information.
+  quote: >-
+    The Referenced Token MAY be encoded as … an ISO mdoc according to [ISO.mdoc] … The Status CBOR structure is a Map
+    that MUST include at least one data item that refers to a status mechanism.
+  verified: source-checked
+- id: tsl-20/5.2/cwt
+  subject: vp.mdoc.revocation-list
+  spec: status-list-20
+  locator: { section: "5.2" }
+  relation: defines
+  level: shall
+  quote: >-
+    The Status List Token MUST be encoded as a "CBOR Web Token (CWT)" according to [RFC8392]. … The COSE message MUST
+    either be the tagged COSE_Sign1_Tagged (18) or COSE_Mac0_Tagged (17)
+  verified: source-checked
+- id: tsl-20/5.2/type
+  subject: vp.mdoc.revocation-list.type
+  spec: status-list-20
+  locator: { section: "5.2" }
+  relation: defines
+  level: shall
+  quote: "16 (type): REQUIRED. The type of the CWT MUST be application/ statuslist+cwt"
+  verified: source-checked
+- id: tsl-20/5.2/status-list
+  subject: vp.mdoc.revocation-list.list
+  spec: status-list-20
+  locator: { section: "5.2" }
+  relation: defines
+  level: shall
+  quote: >-
+    65533 (status list): REQUIRED. The status list claim MUST specify the Status List conforming to the structure
+    defined in Section 4.3.
+  verified: source-checked
+- id: tsl-20/4.3/bits
+  subject: vp.mdoc.revocation-list.list
+  spec: status-list-20
+  locator: { section: "4.3" }
+  relation: defines
+  level: shall
+  quote: >-
+    bits: REQUIRED. CBOR Unsigned integer (major type 0) that contains the number of bits per Referenced Token in the
+    compressed byte array (lst). The allowed values for bits are 1, 2, 4, and 8.
+  verified: source-checked
+- id: tsl-20/5.2/exp
+  subject: vp.mdoc.revocation-list.exp
+  spec: status-list-20
+  locator: { section: "5.2" }
+  relation: defines
+  level: should
+  quote: >-
+    4 (expiration time): RECOMMENDED. As generally defined in [RFC8392]. The expiration time claim, if present, MUST
+    specify the time at which the Status List Token is considered expired by its issuer.
+  verified: source-checked
 - id: rfc9901/4.2.4.1/_sd
   subject: sdjwt._sd
   spec: rfc-9901
