@@ -92,6 +92,22 @@ export const Subject = z.strictObject({
     .optional(),
   endpoint: z.strictObject({ method: z.enum(['GET', 'POST']), path: z.string(), server: z.enum(['as', 'issuer', 'wallet', 'verifier', 'wallet-provider']) }).optional(),
   description: z.string().optional(),
+  /** For a processing step: the fields it checks, one by one, with the result the check expects. */
+  checks: z
+    .array(
+      z.object({
+        /** Field as the implementer sees it, e.g. "nonce (KB-JWT)". */
+        field: z.string(),
+        expect: z.string(),
+        /** Subject of the field, whose provenance stack opens on click. */
+        subject: slug.optional(),
+        /** Only in flows with this transport (e.g. aud differs between redirect and DC API). */
+        transport: z.array(Transport).optional(),
+        /** Only in flows presenting this credential format (an SD-JWT VC field has no counterpart in an mdoc). */
+        format: z.array(Format).optional(),
+      }),
+    )
+    .default([]),
 })
 export type Subject = z.infer<typeof Subject>
 

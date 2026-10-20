@@ -113,6 +113,8 @@ export function loadDataset(opts: { requireEncoded?: boolean } = {}): Dataset {
 
   for (const s of specs) if (!layerIds.has(s.layer)) problems.push(`${s._file}: unknown layer ${s.layer}`)
   for (const s of subjects) if (s.parent && !subjectIds.has(s.parent)) problems.push(`${s._file}: subject ${s.id} has unknown parent ${s.parent}`)
+  for (const s of subjects)
+    for (const c of s.checks) if (c.subject && !subjectIds.has(c.subject)) problems.push(`${s._file}: subject ${s.id}, check ${c.field}: unknown subject ${c.subject}`)
   for (const a of assertions) {
     const w = `${a._file}: ${a.id}`
     if (!specIds.has(a.spec)) problems.push(`${w}: unknown spec ${a.spec}`)
