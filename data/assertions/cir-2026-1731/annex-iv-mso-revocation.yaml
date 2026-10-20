@@ -366,7 +366,8 @@
   review:
     reason: >-
       The IdentifierList structure is defined in EAA-6.2.10.1-10; EAA-6.2.10.1-11 defines IdentifierListInfo, the
-      identifier_list element in the MSO. Read as a slip for -10.
+      identifier_list element in the MSO. Read as a slip for -10. Superseded in the d-you layer by
+      resolved/EAA-6.2.10.1-09-identifierlist-ref.
 - id: cir/annex-iv/EAA-6.2.10.1-10
   subject: vp.mdoc.revocation-list.list
   spec: cir-2026-1731
@@ -501,7 +502,7 @@
       The identifier list (-02.3) is specified for a CWT revocation list referenced from an mdoc MSO, but the WIA and
       the key attestation are JWTs whose status reference Annex Ib C_WIA-1 / C_KA-1 defines as a Token Status List
       reference (OpenID4VCI Appendix E / D.1). How a JWT attestation would reference an identifier list is not
-      specified.
+      specified. Superseded in the d-you layer by resolved/EAA-6.2.10.1-14-wia-status-list and -ka-status-list.
 - id: cir/annex-iv/EAA-6.2.10.1-14-ka
   subject: vci.ka.key_storage_status.status
   spec: cir-2026-1731

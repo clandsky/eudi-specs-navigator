@@ -16,3 +16,59 @@
   applies_to:
     role:
       - wallet-provider
+- id: resolved/EAA-6.2.10.1-09-identifierlist-ref
+  subject: vp.mdoc.revocation-list.list
+  spec: resolved-golive
+  locator:
+    at: Reading of CIR 2026/1731 Annex IV EAA-6.2.10.1-09
+  relation: adapts
+  level: shall
+  condition: When the identifier list mechanism is used.
+  quote: the IdentifierList structure defined in EAA-6.2.10.1-10 shall be present as a claim in the CWT claims set
+    using the key 65530.
+  target: cir/annex-iv/EAA-6.2.10.1-09-identifierlist
+  note: The reference to EAA-6.2.10.1-11 is read as EAA-6.2.10.1-10, which defines the IdentifierList structure; -11
+    defines IdentifierListInfo, the identifier_list element in the MSO. Superseded in the d-you layer on 2026-10-20.
+  interpretation: true
+  decided_by: project owner (2026-10-20)
+  applies_to:
+    role:
+      - issuer
+    format:
+      - mdoc
+- id: resolved/EAA-6.2.10.1-14-wia-status-list
+  subject: vci.wia.client_status.status
+  spec: resolved-golive
+  locator:
+    at: Reading of CIR 2026/1731 Annex IV EAA-6.2.10.1-14
+  relation: adapts
+  level: shall
+  quote: The wallet provider shall use the attestation status list mechanism (EAA-6.2.10.1-02.2) for the revocation of
+    a wallet instance attestation (WIA).
+  target: cir/annex-iv/EAA-6.2.10.1-14-wia
+  note: The identifier list (-02.3) is specified only for a CWT revocation list referenced from an mdoc MSO; the WIA is
+    a JWT whose status reference C_WIA-1 defines as a Token Status List reference (OpenID4VCI Appendix E). Read as the
+    status list mechanism only. Superseded in the d-you layer on 2026-10-20.
+  interpretation: true
+  decided_by: project owner (2026-10-20)
+  applies_to:
+    role:
+      - wallet-provider
+- id: resolved/EAA-6.2.10.1-14-ka-status-list
+  subject: vci.ka.key_storage_status.status
+  spec: resolved-golive
+  locator:
+    at: Reading of CIR 2026/1731 Annex IV EAA-6.2.10.1-14
+  relation: adapts
+  level: shall
+  quote: The wallet provider shall use the attestation status list mechanism (EAA-6.2.10.1-02.2) for the revocation of
+    a key attestation (KA).
+  target: cir/annex-iv/EAA-6.2.10.1-14-ka
+  note: The identifier list (-02.3) is specified only for a CWT revocation list referenced from an mdoc MSO; the key
+    attestation is a JWT whose status reference C_KA-1 defines as a Token Status List reference (OpenID4VCI Appendix
+    D.1). Read as the status list mechanism only. Superseded in the d-you layer on 2026-10-20.
+  interpretation: true
+  decided_by: project owner (2026-10-20)
+  applies_to:
+    role:
+      - wallet-provider
