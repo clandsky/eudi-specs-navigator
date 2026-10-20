@@ -583,6 +583,31 @@
     verified: source-checked
   }
 - {
+    id: oid4vp/6.1.1/type,
+    subject: vp.dcql.trusted_authorities.type,
+    spec: openid4vp-1.0,
+    locator: { section: "6.1.1" },
+    relation: defines,
+    level: shall,
+    applies_to: { role: [ verifier ] },
+    quote: "Each entry in trusted_authorities MUST be an object with the following properties: type: REQUIRED. A string
+      uniquely identifying the type of information about the issuer trust framework.",
+    verified: source-checked
+  }
+- {
+    id: oid4vp/6.1.1/values,
+    subject: vp.dcql.trusted_authorities.values,
+    spec: openid4vp-1.0,
+    locator: { section: "6.1.1" },
+    relation: defines,
+    level: shall,
+    applies_to: { role: [ verifier ] },
+    quote: "values: REQUIRED. A non-empty array of strings, where each string (value) contains information specific to the
+      used Trusted Authorities Query type that allows the identification of an issuer, a trust framework, or a
+      federation that an issuer belongs to.",
+    verified: source-checked
+  }
+- {
     id: oid4vp/6.1.1.2/etsi_tl,
     subject: vp.dcql.trusted_authorities,
     spec: openid4vp-1.0,

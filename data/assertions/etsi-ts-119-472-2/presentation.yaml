@@ -39,15 +39,15 @@
     parameter shall include it."
   verified: source-checked
 - id: etsi-472-2/OIDFVP-HAIP-COMMON-REQ-RO-14
-  subject: vp.request-object.verifier_info.registration_cert
+  subject: vp.request-object.verifier_info.registration_cert.credential_ids
   spec: etsi-ts-119-472-2
   locator: { req: OIDFVP-HAIP-COMMON-REQ-RO-14, section: "6.3.2.2" }
   relation: profiles
-  level: info
+  level: shall-not
   applies_to: { role: [ verifier ] }
   quote: "OIDFVP-HAIP-COMMON-REQ-RO-14: The element in the verifier_info array enclosing the registration certificate
     shall be a JSON Object which shall not contain the credential_ids member."
-  note: Element format rule; not adapted by the CIR, so it applies unchanged.
+  note: Not adapted by the CIR, so it applies unchanged. Binds only the element carrying the registration certificate.
   verified: source-checked
 - id: etsi-472-2/EAAP-SD-JWT-VC-01
   subject: vp.verifier.verify-kb-jwt

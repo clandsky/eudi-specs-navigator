@@ -4,6 +4,7 @@
 - { id: vp.request-object, kind: object, parent: vp, title: Request Object (JAR), description: "Signed JWT carrying the Verifier's full presentation request: who asks, what for, and where to answer." }
 - { id: vp.request-object.verifier_info, kind: field, parent: vp.request-object, title: verifier_info, location: jwt-payload, description: "Array of attestations about the Verifier, e.g. its registration certificate, shown to the Wallet." }
 - { id: vp.request-object.verifier_info.registration_cert, kind: value, parent: vp.request-object.verifier_info, title: verifier_info element carrying the registration certificate, location: jwt-payload, description: "verifier_info element carrying the relying party's registration certificate." }
+- { id: vp.request-object.verifier_info.registration_cert.credential_ids, kind: field, parent: vp.request-object.verifier_info.registration_cert, title: "credential_ids in the registration certificate element", location: jwt-payload, description: "The OpenID4VP member that limits a verifier_info element to some of the requested Credentials; the element carrying the registration certificate must not have it." }
 - { id: vp.request-object.verifier_info.registrar_dataset, kind: value, parent: vp.request-object.verifier_info, title: verifier_info element carrying RP Registrar-provided data, location: jwt-payload, description: "verifier_info element carrying data the relying party registrar provides about the Verifier." }
 - { id: vp.wallet.validate-registration-cert, kind: behaviour, parent: vp.wallet.process-request, title: Wallet authenticates and validates the RP registration certificate }
 - { id: vp.flow.redirect-same, kind: flow, parent: vp, title: "Presentation: OpenID4VP redirect, same device" }
@@ -43,6 +44,7 @@
 - { id: vp.dcql.credentials, kind: field, parent: vp.dcql, title: dcql_query.credentials, location: jwt-payload, description: "List of requested credentials, each with format, type constraints and claims." }
 - { id: vp.dcql.id, kind: field, parent: vp.dcql.credentials, title: "credentials[].id", location: jwt-payload, description: "Identifier of this credential query; the vp_token returns the matching presentation under the same key." }
 - { id: vp.dcql.format, kind: field, parent: vp.dcql.credentials, title: "credentials[].format", location: jwt-payload, description: "Requested credential format, e.g. dc+sd-jwt." }
+- { id: vp.format-profile, kind: behaviour, parent: vp, title: Credential Format Profile (HAIP §6) for the requested format, description: "The HAIP §6 profile the presentation follows for its credential format: ISO mdocs for mso_mdoc, IETF SD-JWT VCs for dc+sd-jwt." }
 - { id: vp.dcql.meta, kind: field, parent: vp.dcql.credentials, title: "credentials[].meta", location: jwt-payload, description: "Format-specific constraints, such as the accepted credential types." }
 - { id: vp.dcql.vct_values, kind: field, parent: vp.dcql.meta, title: meta.vct_values, location: jwt-payload, description: "Accepted Verifiable Credential Types for an SD-JWT VC." }
 - { id: vp.dcql.claims, kind: field, parent: vp.dcql.credentials, title: "credentials[].claims", location: jwt-payload, description: "Claims the Verifier wants disclosed." }
@@ -67,6 +69,8 @@
 - { id: vp.dc-api.forward, kind: step, parent: vp, title: Verifier frontend forwards the response to its backend (application-specific) }
 - { id: vp.request-object.header-iat, kind: field, parent: vp.request-object, title: iat (JOSE header), location: jwt-header, description: "Issuance time placed in the JWS protected header." }
 - { id: vp.dcql.trusted_authorities, kind: field, parent: vp.dcql.credentials, title: "credentials[].trusted_authorities", location: jwt-payload, description: "Which issuers or trust frameworks the Verifier accepts for this credential." }
+- { id: vp.dcql.trusted_authorities.type, kind: field, parent: vp.dcql.trusted_authorities, title: "trusted_authorities[].type", location: jwt-payload, description: "Kind of trust information in values, e.g. etsi_tl for a Trusted List or aki for an Authority Key Identifier." }
+- { id: vp.dcql.trusted_authorities.values, kind: field, parent: vp.dcql.trusted_authorities, title: "trusted_authorities[].values", location: jwt-payload, description: "Identifiers of the accepted authorities or trust frameworks, read according to type." }
 - { id: vp.authorization-response.enc, kind: field, parent: vp.authorization-response.encryption, title: enc (JWE header), location: jwt-header, description: "Content encryption algorithm of the response JWE, e.g. A128GCM." }
 - { id: vp.authorization-response.kid, kind: field, parent: vp.authorization-response.encryption, title: kid (JWE header), location: jwt-header, description: "Identifies which of the Verifier's encryption keys the response was encrypted to." }
 - { id: vp.wallet.process-request, kind: step, parent: vp, title: Wallet validates the request and asks the user for consent }

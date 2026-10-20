@@ -9,6 +9,21 @@
   applies_to: { format: [ mdoc ] }
   quote: The Credential Format Identifier for Credentials in the mdoc format is mso_mdoc.
   verified: source-checked
+- id: oid4vp/7.2/mdoc-claims-path
+  subject: vp.dcql.path
+  spec: openid4vp-1.0
+  locator: { section: "7.2" }
+  relation: defines
+  level: info
+  applies_to: { role: [ verifier ], format: [ mdoc ] }
+  quote: >-
+    A claims path pointer into an mdoc contains two elements of type string. The first element refers to a namespace and
+    the second element refers to a data element identifier. … If the claims path pointer does not contain exactly two
+    components or one of the components is not a string then abort processing and return an error.
+  note: >-
+    The second sentence is the §7.2.1 processing rule. Together they fix the mdoc path to exactly two strings, which the
+    OpenAPI export emits as the schema of claims[].path for mso_mdoc.
+  verified: source-checked
 - id: oid4vp/B.2.3/doctype_value
   subject: vp.dcql.doctype_value
   spec: openid4vp-1.0
