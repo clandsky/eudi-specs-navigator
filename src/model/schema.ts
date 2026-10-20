@@ -1,5 +1,8 @@
 import { z } from 'zod'
 
+// Authored data objects are strict: an unquoted comma in a YAML flow mapping ("{ title: a, b }") turns into a stray key,
+// which validation then rejects instead of silently cutting the value short.
+
 // Identifiers --------------------------------------------------------------------------------------------------------
 
 export const LayerId = z.enum(['assumption', 'golive', 'cir', 'etsi', 'haip', 'base', 'primitive', 'arf', 'impl-de', 'secondary'])
@@ -19,7 +22,7 @@ const isoDate = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'dates are YYYY-MM-DD')
 
 // Layers -------------------------------------------------------------------------------------------------------------
 
-export const Layer = z.object({
+export const Layer = z.strictObject({
   id: LayerId,
   /** Lower rank = higher precedence. `null` = never decides (secondary sources). */
   rank: z.number().int().nullable(),
@@ -32,11 +35,11 @@ export const Layer = z.object({
   description: z.string(),
 })
 export type Layer = z.infer<typeof Layer>
-export const LayersFile = z.object({ layers: z.array(Layer) })
+export const LayersFile = z.strictObject({ layers: z.array(Layer) })
 
 // Specs --------------------------------------------------------------------------------------------------------------
 
-export const Spec = z.object({
+export const Spec = z.strictObject({
   id: slug,
   title: z.string(),
   short: z.string(),
@@ -78,7 +81,7 @@ export const SubjectKind = z.enum([
 ])
 export type SubjectKind = z.infer<typeof SubjectKind>
 
-export const Subject = z.object({
+export const Subject = z.strictObject({
   id: slug,
   kind: SubjectKind,
   title: z.string(),
@@ -87,20 +90,20 @@ export const Subject = z.object({
   location: z
     .enum(['header', 'query', 'form', 'json', 'jwt-header', 'jwt-payload', 'uri', 'cbor', 'none'])
     .optional(),
-  endpoint: z.object({ method: z.enum(['GET', 'POST']), path: z.string(), server: z.enum(['as', 'issuer', 'wallet', 'verifier', 'wallet-provider']) }).optional(),
+  endpoint: z.strictObject({ method: z.enum(['GET', 'POST']), path: z.string(), server: z.enum(['as', 'issuer', 'wallet', 'verifier', 'wallet-provider']) }).optional(),
   description: z.string().optional(),
 })
 export type Subject = z.infer<typeof Subject>
 
 // Flows --------------------------------------------------------------------------------------------------------------
 
-export const Participant = z.object({
+export const Participant = z.strictObject({
   id: slug,
   label: z.string(),
   role: Role.optional(),
 })
 
-export const Step = z.object({
+export const Step = z.strictObject({
   id: slug,
   from: slug,
   to: slug,
@@ -117,7 +120,7 @@ export const Step = z.object({
 })
 export type Step = z.infer<typeof Step>
 
-export const Flow = z.object({
+export const Flow = z.strictObject({
   id: slug,
   title: z.string(),
   role: z.enum(['issuer', 'verifier']),
@@ -175,7 +178,7 @@ const AppliesTo = z
   })
   .default({})
 
-const AssertionBase = z.object({
+const AssertionBase = z.strictObject({
   id: slug,
   subject: slug,
   spec: slug,
@@ -198,10 +201,10 @@ const AssertionBase = z.object({
   probe: z.string().optional(),
   verified: Verified.default('unverified'),
   target: slug.optional(),
-  window: z.object({ from: isoDate.optional(), until: isoDate.optional() }).optional(),
-  review: z.object({ reason: z.string() }).optional(),
+  window: z.strictObject({ from: isoDate.optional(), until: isoDate.optional() }).optional(),
+  review: z.strictObject({ reason: z.string() }).optional(),
   note: z.string().optional(),
-  xref: z.array(z.object({ source: z.string(), id: z.string() })).default([]),
+  xref: z.array(z.strictObject({ source: z.string(), id: z.string() })).default([]),
   /**
    * A reading of its target within the same layer (an assumption, or an assumption confirmed into that layer). It may
    * neutralise a target of the same rank, which an ordinary adapts/replaces may not.
@@ -236,24 +239,24 @@ const JsonValue: z.ZodType<unknown> = z.lazy(() =>
   z.union([z.string(), z.number(), z.boolean(), z.null(), z.array(JsonValue), z.record(z.string(), JsonValue)]),
 )
 
-export const SignedJwt = z.object({
+export const SignedJwt = z.strictObject({
   header: z.record(z.string(), JsonValue),
   payload: z.record(z.string(), JsonValue),
   /** Test key id under data/test-keys/ that signs this JWT. */
   key: slug,
   /** SD-JWT: selectively disclosable top-level claims. Referenced as "{{sdjwt:name}}". */
-  disclosures: z.array(z.object({ salt: z.string(), name: z.string(), value: JsonValue })).optional(),
+  disclosures: z.array(z.strictObject({ salt: z.string(), name: z.string(), value: JsonValue })).optional(),
   /** SD-JWT presentation: appends a Key Binding JWT (typ kb+jwt, sd_hash computed) signed with this key. */
-  kb: z.object({ key: slug, payload: z.record(z.string(), JsonValue) }).optional(),
+  kb: z.strictObject({ key: slug, payload: z.record(z.string(), JsonValue) }).optional(),
 })
 /** An encrypted JWT (JWE, ECDH-ES to a test key), referenced as "{{jwe:name}}". The plaintext is kept for display. */
-export const EncryptedJwt = z.object({
-  encrypt: z.object({ key: slug, alg: z.enum(['ECDH-ES']).default('ECDH-ES'), enc: z.enum(['A128GCM', 'A256GCM']).default('A128GCM') }),
+export const EncryptedJwt = z.strictObject({
+  encrypt: z.strictObject({ key: slug, alg: z.enum(['ECDH-ES']).default('ECDH-ES'), enc: z.enum(['A128GCM', 'A256GCM']).default('A128GCM') }),
   header: z.record(z.string(), JsonValue).default({}),
   payload: z.record(z.string(), JsonValue),
 })
 /** Reuse the JWT another example already encoded (`<example-id>/<jwt-name>`), so one WIA travels in PAR and token. */
-export const ReusedJwt = z.object({ use: z.string().regex(/^[\w.-]+\/[\w.-]+$/) })
+export const ReusedJwt = z.strictObject({ use: z.string().regex(/^[\w.-]+\/[\w.-]+$/) })
 export const ExampleJwt = z.union([ReusedJwt, EncryptedJwt, SignedJwt])
 export type ExampleJwt = z.infer<typeof ExampleJwt>
 
@@ -262,7 +265,7 @@ export type ExampleJwt = z.infer<typeof ExampleJwt>
  * The build signs the Mobile Security Object (issuerAuth) with `issuer` and the DeviceAuthentication over the
  * SessionTranscript (deviceSignature) with `device`. Element values may be tagged: { $tag: 1004, value: "1964-08-12" }.
  */
-export const MdocSpec = z.object({
+export const MdocSpec = z.strictObject({
   docType: z.string(),
   /** Test key that signs the MSO; its certificate chain goes into x5chain (unprotected header, label 33). */
   issuer: slug,
@@ -270,13 +273,13 @@ export const MdocSpec = z.object({
   device: slug,
   /** Adds x5u (label 35) and x5t (label 34, SHA-256 of the signing certificate) to the protected header. */
   x5u: z.string().url().optional(),
-  validity: z.object({ signed: z.string(), validFrom: z.string(), validUntil: z.string() }),
+  validity: z.strictObject({ signed: z.string(), validFrom: z.string(), validUntil: z.string() }),
   status: z.record(z.string(), JsonValue).optional(),
   /** Issuer-signed data elements per namespace; `withheld` ones are digested in the MSO but not presented. */
   nameSpaces: z.record(
     z.string(),
     z.array(
-      z.object({
+      z.strictObject({
         digestID: z.number().int().nonnegative(),
         /** Salt, hex (ISO/IEC 18013-5 asks for at least 16 bytes). */
         random: z.string().regex(/^([0-9a-f]{2}){16,}$/),
@@ -288,13 +291,13 @@ export const MdocSpec = z.object({
   ),
   /** OpenID4VP Appendix B.2.6: the handover the SessionTranscript carries. jwkThumbprint names the encryption test key. */
   transcript: z.discriminatedUnion('handover', [
-    z.object({ handover: z.literal('OpenID4VPHandover'), clientId: z.string(), nonce: z.string(), jwkThumbprint: slug.nullable(), responseUri: z.string() }),
-    z.object({ handover: z.literal('OpenID4VPDCAPIHandover'), origin: z.string(), nonce: z.string(), jwkThumbprint: slug.nullable() }),
+    z.strictObject({ handover: z.literal('OpenID4VPHandover'), clientId: z.string(), nonce: z.string(), jwkThumbprint: slug.nullable(), responseUri: z.string() }),
+    z.strictObject({ handover: z.literal('OpenID4VPDCAPIHandover'), origin: z.string(), nonce: z.string(), jwkThumbprint: slug.nullable() }),
   ]),
 })
 export type MdocSpec = z.infer<typeof MdocSpec>
 
-export const Example = z.object({
+export const Example = z.strictObject({
   id: slug,
   title: z.string(),
   subject: slug,
@@ -325,7 +328,7 @@ export const Example = z.object({
    */
   assumptions: z
     .array(
-      z.object({
+      z.strictObject({
         date: isoDate,
         decided_by: z.string().optional(),
         note: z.string(),
@@ -339,9 +342,10 @@ export type Example = z.infer<typeof Example>
 
 // Field map -------------------------------------------------------------------------------------------------------
 
-export const FieldMapFile = z.array(z.object({ pattern: z.string().startsWith('/'), subject: slug, note: z.string().optional() }))
+export const FieldMapFile = z.array(z.strictObject({ pattern: z.string().startsWith('/'), subject: slug, note: z.string().optional() }))
 
 // Secondary: c2bo conformance --------------------------------------------------------------------------------------
+// Not strict: parses the external API response, whose extra fields are dropped.
 
 export const C2boSource = z.object({ chain: z.string(), eu: z.boolean(), level: z.enum(['shall', 'should', 'may', 'note']), quote: z.string() })
 export const C2boRequirement = z.object({ id: z.string(), group: z.string(), title: z.string(), note: z.string().optional(), sources: z.array(C2boSource) })

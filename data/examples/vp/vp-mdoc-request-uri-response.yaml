@@ -66,12 +66,12 @@ annotations:
   /jwt/ro/payload/client_metadata: vp.request-object.client_metadata
   /jwt/ro/payload/client_metadata/jwks: vp.request-object.client_metadata.jwks
   /jwt/ro/payload/client_metadata/jwks/keys: vp.request-object.client_metadata.jwks
-  /jwt/ro/payload/client_metadata/jwks/keys/*/kid: vp.request-object.client_metadata.jwks
-  /jwt/ro/payload/client_metadata/jwks/keys/*/use: vp.request-object.client_metadata.jwks
-  /jwt/ro/payload/client_metadata/jwks/keys/*/alg: vp.request-object.client_metadata.jwks
+  /jwt/ro/payload/client_metadata/jwks/keys/*/kid: vp.request-object.client_metadata.jwks.kid
+  /jwt/ro/payload/client_metadata/jwks/keys/*/use: vp.request-object.client_metadata.jwks.use
+  /jwt/ro/payload/client_metadata/jwks/keys/*/alg: vp.request-object.client_metadata.jwks.alg
   /jwt/ro/payload/client_metadata/encrypted_response_enc_values_supported: vp.request-object.client_metadata.enc_values
   /jwt/ro/payload/client_metadata/vp_formats_supported: vp.request-object.client_metadata.vp_formats_supported
-  /jwt/ro/payload/client_metadata/vp_formats_supported/mso_mdoc: vp.request-object.client_metadata.vp_formats_supported
+  /jwt/ro/payload/client_metadata/vp_formats_supported/mso_mdoc: vp.request-object.client_metadata.vp_formats_supported.mso_mdoc
   /jwt/ro/payload/client_metadata/vp_formats_supported/mso_mdoc/issuerauth_alg_values: vp.request-object.client_metadata.issuerauth_alg_values
   /jwt/ro/payload/client_metadata/vp_formats_supported/mso_mdoc/deviceauth_alg_values: vp.request-object.client_metadata.deviceauth_alg_values
   /jwt/ro/payload/verifier_info: vp.request-object.verifier_info

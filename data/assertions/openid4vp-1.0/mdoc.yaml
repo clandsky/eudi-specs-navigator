@@ -53,8 +53,8 @@
     intent_to_retain OPTIONAL. A boolean that is equivalent to IntentToRetain variable defined in Section 8.3.2.1.2.1 of
     [ISO.18013-5].
   verified: source-checked
-- id: oid4vp/B.2.2/vp_formats_supported
-  subject: vp.request-object.client_metadata.vp_formats_supported
+- id: oid4vp/B.2.2/format-key
+  subject: vp.request-object.client_metadata.vp_formats_supported.mso_mdoc
   spec: openid4vp-1.0
   locator: { section: "B.2.2" }
   relation: defines

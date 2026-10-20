@@ -335,3 +335,15 @@
   quote: "using PKCE [RFC7636] with S256 as the code challenge method"
   note: HAIP makes PKCE mandatory, which removes the RFC 7636 condition.
   verified: source-checked
+- id: rfc9101/5.2.3/get
+  subject: vp.request-uri-fetch
+  spec: rfc-9101
+  locator: { section: "5.2.3" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ wallet ] }
+  quote: "Upon receipt of the Request, the authorization server MUST send an HTTP \"GET\" request to the \"request_uri\"
+    to retrieve the referenced Request Object"
+  note: "In OpenID4VP the Wallet is the authorization server of JAR. OpenID4VP §5.1 keeps GET as the default when
+    request_uri_method is absent; post is the §5.10 extension."
+  verified: source-checked

@@ -143,7 +143,7 @@
   }
 - {
     id: etsi-472-2/OIDFVP-HAIP-COMMON-REQ-RO-20,
-    subject: vp.request-object.client_metadata.jwks,
+    subject: vp.request-object.client_metadata.jwks.kid,
     spec: etsi-ts-119-472-2,
     locator: { req: OIDFVP-HAIP-COMMON-REQ-RO-20, section: "6.3.2.2" },
     relation: profiles,
@@ -154,14 +154,39 @@
     verified: source-checked
   }
 - {
+    id: etsi-472-2/OIDFVP-HAIP-COMMON-REQ-RO-20/use,
+    subject: vp.request-object.client_metadata.jwks.use,
+    spec: etsi-ts-119-472-2,
+    locator: { req: OIDFVP-HAIP-COMMON-REQ-RO-20, section: "6.3.2.2" },
+    relation: profiles,
+    level: shall,
+    applies_to: { role: [ verifier ] },
+    quote: "OIDFVP-HAIP-COMMON-REQ-RO-20: The jwks member of the client_metadata parameter shall contain the kid and use
+      parameters for identifying the key and the use of the identified key, respectively.",
+    note: "The use half of RO-20; the kid half is etsi-472-2/OIDFVP-HAIP-COMMON-REQ-RO-20.",
+    verified: source-checked
+  }
+- {
     id: etsi-472-2/OIDFVP-HAIP-COMMON-REQ-RO-21,
-    subject: vp.request-object.client_metadata.jwks,
+    subject: vp.request-object.client_metadata.jwks.kid,
     spec: etsi-ts-119-472-2,
     locator: { req: OIDFVP-HAIP-COMMON-REQ-RO-21, section: "6.3.2.2" },
     relation: profiles,
     level: shall,
     applies_to: { role: [ verifier ] },
     quote: "OIDFVP-HAIP-COMMON-REQ-RO-21: The kid parameters shall univocally identify one key.",
+    verified: source-checked
+  }
+- {
+    id: etsi-472-2/OIDFVP-HAIP-REDIRECTS_RO-01,
+    subject: vp.request-object.x5c,
+    spec: etsi-ts-119-472-2,
+    locator: { req: OIDFVP-HAIP-REDIRECTS_RO-01, section: "6.4.2" },
+    relation: profiles,
+    level: shall,
+    applies_to: { role: [ verifier ], transport: [ redirect ] },
+    quote: "OIDFVP-HAIP-REDIRECTS_RO-01: The JWS Protected Header of the JWS signature on the RO shall incorporate the x5c
+      header parameter.",
     verified: source-checked
   }
 - {

@@ -1,7 +1,7 @@
 - { id: vci, kind: flow, title: Credential issuance (OpenID4VCI) }
 - { id: vci.flow.auth-code-par, kind: flow, parent: vci, title: "Issuance: authorization code flow with PAR, same device" }
 - { id: vci.provisioning, kind: step, parent: vci, title: Wallet Provider equips the Wallet Unit with WIA and key attestations }
-- { id: vci.client-auth, kind: behaviour, parent: vci, title: Client authentication of the Wallet at the OAuth endpoints (PAR, token) }
+- { id: vci.client-auth, kind: behaviour, parent: vci, title: "Client authentication of the Wallet at the OAuth endpoints (PAR, token)" }
 - { id: vci.client-auth.reject-without-wia, kind: behaviour, parent: vci.client-auth, title: Authorization server rejects PAR / token requests without a WIA }
 - { id: vci.grant.authorization_code, kind: behaviour, parent: vci, title: Support of the authorization code flow }
 - { id: vci.dpop, kind: behaviour, parent: vci, title: Sender-constrained access tokens (DPoP) }

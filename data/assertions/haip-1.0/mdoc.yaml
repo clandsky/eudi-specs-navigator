@@ -117,3 +117,12 @@
   probe: validityInfo
   note: HAIP does not profile the mdoc validity period (validityInfo in the MSO).
   verified: source-checked
+- id: haip/5.3.1/format-id
+  subject: vp.request-object.client_metadata.vp_formats_supported.mso_mdoc
+  spec: haip-1.0
+  locator: { section: "5.3.1" }
+  relation: profiles
+  level: shall
+  applies_to: { format: [ mdoc ] }
+  quote: The Credential Format identifier MUST be mso_mdoc.
+  verified: source-checked
