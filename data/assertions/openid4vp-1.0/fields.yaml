@@ -24,6 +24,18 @@
     verified: source-checked
   }
 - {
+    id: oid4vp/5.1/jwks-kid,
+    subject: vp.request-object.client_metadata.jwks.kid,
+    spec: openid4vp-1.0,
+    locator: { section: "5.1" },
+    relation: defines,
+    level: shall,
+    applies_to: { role: [ verifier ] },
+    quote: "Each JWK in the set MUST have a kid (Key ID) parameter that uniquely identifies the key within the context of
+      the request.",
+    verified: source-checked
+  }
+- {
     id: oid4vp/5.1/enc_values,
     subject: vp.request-object.client_metadata.enc_values,
     spec: openid4vp-1.0,
@@ -129,13 +141,25 @@
     verified: source-checked
   }
 - {
-    id: oid4vp/5.10/typ,
+    id: oid4vp/5/typ,
     subject: vp.request-object.typ,
     spec: openid4vp-1.0,
     locator: { section: "5" },
     relation: defines,
     level: shall,
     applies_to: { role: [ verifier ] },
+    quote: "Verifiers MUST include the typ Header Parameter in Request Objects with the value oauth-authz-req+jwt, as
+      defined in [RFC9101].",
+    verified: source-checked
+  }
+- {
+    id: oid4vp/5/typ-wallet,
+    subject: vp.request-object.typ,
+    spec: openid4vp-1.0,
+    locator: { section: "5" },
+    relation: defines,
+    level: shall,
+    applies_to: { role: [ wallet ] },
     quote: "Wallets MUST NOT process Request Objects where the typ Header Parameter is not present or does not have the
       value oauth-authz-req+jwt.",
     verified: source-checked
@@ -209,6 +233,17 @@
     applies_to: { role: [ verifier ] },
     quote: "path: REQUIRED The value MUST be a non-empty array representing a claims path pointer that specifies the path to
       a claim within the Credential, as defined in Section 7.",
+    verified: source-checked
+  }
+- {
+    id: oid4vp/7/claims-path-pointer,
+    subject: vp.dcql.path,
+    spec: openid4vp-1.0,
+    locator: { section: "7" },
+    relation: defines,
+    level: shall,
+    applies_to: { role: [ verifier ] },
+    quote: "A claims path pointer MUST be a non-empty array of strings, nulls and non-negative integers.",
     verified: source-checked
   }
 - {
@@ -488,7 +523,7 @@
   }
 - {
     id: oid4vp/8.3/jwk-alg,
-    subject: vp.request-object.client_metadata.jwks,
+    subject: vp.request-object.client_metadata.jwks.alg,
     spec: openid4vp-1.0,
     locator: { section: "8.3" },
     relation: defines,
@@ -790,6 +825,19 @@
     applies_to: { role: [ verifier ] },
     quote: "An object containing a list of name/value pairs, where the name is a Credential Format Identifier and the value
       defines format-specific parameters that a Verifier supports.",
+    verified: source-checked
+  }
+- {
+    id: oid4vp/B.3.4/format-key,
+    subject: vp.request-object.client_metadata.vp_formats_supported.dc-sd-jwt,
+    spec: openid4vp-1.0,
+    locator: { section: "B.3.4" },
+    relation: defines,
+    level: shall,
+    applies_to: { role: [ verifier ], format: [ sd-jwt-vc ] },
+    quote: "The vp_formats_supported parameter of the Verifier metadata or Wallet metadata MUST have the Credential Format
+      Identifier as a key",
+    note: "The Credential Format Identifier of SD-JWT VC is dc+sd-jwt (B.3.1).",
     verified: source-checked
   }
 - {

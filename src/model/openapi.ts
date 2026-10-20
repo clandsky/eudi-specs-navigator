@@ -18,6 +18,12 @@ export interface OpenApiOptions {
 
 const SERVERS: Record<OpenApiOptions['view'], string[]> = { issuer: ['as', 'issuer'], verifier: ['verifier'] }
 
+// Fields whose type the example values cannot show; these schemas replace the inferred type (provenance stays).
+const FIELD_SCHEMAS: Record<string, Json> = {
+  // A claims path pointer is "a non-empty array of strings, nulls and non-negative integers" (oid4vp/7/claims-path-pointer).
+  'vp.dcql.path': { type: 'array', minItems: 1, items: { type: ['string', 'null', 'integer'], minimum: 0 } },
+}
+
 export function buildOpenApi(ds: Dataset, opts: OpenApiOptions): Json {
   const table = layerTable(ds.layers)
   const specs = new Map(ds.specs.map((s) => [s.id, s]))
@@ -71,6 +77,7 @@ export function buildOpenApi(ds: Dataset, opts: OpenApiOptions): Json {
     } else if (typeof value === 'number') s = { type: Number.isInteger(value) ? 'integer' : 'number', example: value }
     else if (typeof value === 'boolean') s = { type: 'boolean', example: value }
     else s = { type: 'string', ...(typeof value === 'string' && value.length < 200 ? { example: value } : {}) }
+    if (ann && FIELD_SCHEMAS[ann]) s = { ...FIELD_SCHEMAS[ann], example: value }
     if (ann) {
       const { ext, rule } = provenance(ann, role, variant)
       s.description = `${subjects.get(ann)?.title ?? ann}: ${levelLabel(rule.level)} for ${role}${rule.decidedBy[0] ? ` (${rule.decidedBy[0].id})` : ''}.`
@@ -98,34 +105,80 @@ export function buildOpenApi(ds: Dataset, opts: OpenApiOptions): Json {
 
   function bodyContent(http: ViewDocument['http'], enc: EncodedExample, view: ViewDocument, ex: Example, role: Role, variant: Partial<Ctx>, type?: string): Json | undefined {
     if (!http || http.body === undefined) return undefined
+    // The example's own Content-Type names the media type (a Request Object is application/oauth-authz-req+jwt, RFC
+    // 9101 §4, not application/jwt); the body type is only the fallback.
+    const declared = Object.entries(http.headers ?? {}).find(([k]) => k.toLowerCase() === 'content-type')?.[1]
+    const fallback = type === 'jwt' ? 'application/jwt' : type === 'form' ? 'application/x-www-form-urlencoded' : 'application/json'
+    const media = declared?.split(';')[0]?.trim() || fallback
     if (type === 'jwt') {
       const name = jwtNameOf(enc, enc.http?.body?.value)
-      return { 'application/jwt': { schema: { type: 'string', ...(name ? jwtSchema(name, view, ex, role, variant) : {}) } } }
+      return { [media]: { schema: { type: 'string', ...(name ? jwtSchema(name, view, ex, role, variant) : {}) } } }
     }
-    const media = type === 'form' ? 'application/x-www-form-urlencoded' : 'application/json'
     return { [media]: { schema: schemaOf(http.body, '/http/body', ex, role, variant), example: http.body } }
+  }
+
+  // Alternative answers with one status: descriptions joined, headers united, each media type's schema an anyOf whose
+  // branches name their flow and variant.
+  function mergeAnswers(alts: { flowId: string; variant: Partial<Ctx>; entry: Json }[]): Json {
+    const headers: Json = {}
+    const content: Record<string, { anyOf: Json[]; examples: Json }> = {}
+    for (const a of alts) {
+      Object.assign(headers, a.entry.headers ?? {})
+      for (const [media, body] of Object.entries((a.entry.content as Record<string, Json> | undefined) ?? {})) {
+        const c = (content[media] ??= { anyOf: [], examples: {} })
+        c.anyOf.push({ title: a.entry.description, ...(body.schema as Json), 'x-flow': { id: a.flowId, variant: { ...a.variant } } })
+        if ('example' in body) c.examples[a.flowId] = { summary: a.entry.description, value: body.example }
+      }
+    }
+    return {
+      description: alts.map((a) => a.entry.description).join(' / '),
+      ...(Object.keys(headers).length ? { headers } : {}),
+      ...(Object.keys(content).length
+        ? {
+            content: Object.fromEntries(
+              Object.entries(content).map(([media, c]) => [media, { schema: { anyOf: c.anyOf }, ...(Object.keys(c.examples).length ? { examples: c.examples } : {}) }]),
+            ),
+          }
+        : {}),
+    }
+  }
+
+  // The response a flow step gets back: the next non-internal step sent by the server; GET metadata steps carry the
+  // response example themselves.
+  function responseOf(flow: Dataset['flows'][number], subjectId: string) {
+    const idx = flow.steps.findIndex((s) => s.subject === subjectId)
+    // Callers pass only flows that contain the subject.
+    const step = flow.steps[idx]!
+    const next = flow.steps.slice(idx + 1).find((s) => s.kind !== 'internal')
+    const respStep = next && next.from === step.to && (next.kind === 'response' || next.kind === 'redirect') ? next : undefined
+    const reqEx = step.example ? ds.examples.find((e) => e.id === step.example) : undefined
+    const resEx =
+      (reqEx?.kind === 'http-response' ? reqEx : undefined) ?? (respStep?.example ? ds.examples.find((e) => e.id === respStep.example) : undefined)
+    const serverRole = (flow.participants.find((p) => p.id === step.to)?.role ?? 'verifier') as Role
+    return { flow, step, respStep, reqEx, resEx, serverRole, variant: flow.variant as Partial<Ctx> }
   }
 
   const paths: Json = {}
   const viewServers = SERVERS[opts.view]
+  // Lower `order` first, so the request side of an endpoint shared by several flows resolves in the primary variant
+  // (redirect same device before cross device).
+  const flowsByOrder = [...ds.flows].sort((a, b) => a.order - b.order)
   for (const subj of ds.subjects) {
     if (!subj.endpoint || !viewServers.includes(subj.endpoint.server)) continue
-    const flow = ds.flows.find((f) => f.steps.some((s) => s.subject === subj.id))
-    const idx = flow?.steps.findIndex((s) => s.subject === subj.id) ?? -1
-    const step = flow?.steps[idx]
-    // The response is the next step, sent back by the server; GET metadata steps carry the response example themselves.
-    const next = flow?.steps.slice(idx + 1).find((s) => s.kind !== 'internal')
-    const respStep = next && next.from === step?.to && (next.kind === 'response' || next.kind === 'redirect') ? next : undefined
-    const variant: Partial<Ctx> = flow?.variant ?? {}
+    const uses = flowsByOrder.filter((f) => f.steps.some((s) => s.subject === subj.id)).map((f) => responseOf(f, subj.id))
+    const flow = uses[0]?.flow
+    const step = uses[0]?.step
+    const variant: Partial<Ctx> = uses[0]?.variant ?? {}
     const clientRole = (flow?.participants.find((p) => p.id === step?.from)?.role ?? 'wallet') as Role
-    const serverRole = (flow?.participants.find((p) => p.id === step?.to)?.role ?? subj.endpoint.server) as Role
+    const serverRole = uses[0]?.serverRole ?? (subj.endpoint.server as Role)
 
     // Request: either a real request example, or (for GET metadata) only the response example exists.
-    const reqEx = step?.example ? ds.examples.find((e) => e.id === step.example) : undefined
+    const reqEx = uses[0]?.reqEx
     const op: Json = {
       summary: subj.title,
       operationId: subj.id.replace(/[^a-zA-Z0-9]+/g, '_'),
       'x-provenance': provenance(subj.id, reqEx?.kind === 'http-response' ? serverRole : clientRole, variant).ext,
+      ...(flow ? { 'x-flow': { id: flow.id, variant: { ...variant } } } : {}),
       responses: {},
     }
     const reqEnc = reqEx ? ds.encoded[reqEx.id] : undefined
@@ -158,26 +211,37 @@ export function buildOpenApi(ds: Dataset, opts: OpenApiOptions): Json {
       const content = bodyContent(view.http, reqEnc, view, reqEx, clientRole, variant, reqEx.http?.body?.type)
       if (content) op.requestBody = { required: true, content }
     }
-    // Response.
-    const resEx =
-      (reqEx?.kind === 'http-response' ? reqEx : undefined) ?? (respStep?.example ? ds.examples.find((e) => e.id === respStep.example) : undefined)
-    const resEnc = resEx ? ds.encoded[resEx.id] : undefined
-    if (resEx && resEnc) {
+    // Responses: one per distinct response example across the flows that use the endpoint, each resolved in its own
+    // flow's variant (the same-device answer carries redirect_uri, HAIP §5.1; the cross-device one does not). Answers
+    // with the same status are alternatives (anyOf), labelled with their flow.
+    const answers: { status: string; flowId: string; variant: Partial<Ctx>; entry: Json }[] = []
+    const seen = new Set<string>()
+    for (const u of uses) {
+      const resEnc = u.resEx ? ds.encoded[u.resEx.id] : undefined
+      if (!u.resEx || !resEnc) continue
+      if (seen.has(u.resEx.id)) continue
+      seen.add(u.resEx.id)
       const view = viewOf(resEnc)
-      const status = String(view.http?.status ?? 200)
       const headers: Json = {}
       for (const [name] of Object.entries(view.http?.headers ?? {})) {
         if (name.toLowerCase() === 'content-type') continue
-        const sub = annotationFor(`/http/headers/${escapeToken(name)}`, resEx.annotations, ds.fieldmap)
-        headers[name] = { schema: { type: 'string' }, ...(sub ? { 'x-provenance': provenance(sub, serverRole, variant).ext } : {}) }
+        const sub = annotationFor(`/http/headers/${escapeToken(name)}`, u.resEx.annotations, ds.fieldmap)
+        headers[name] = { schema: { type: 'string' }, ...(sub ? { 'x-provenance': provenance(sub, u.serverRole, u.variant).ext } : {}) }
       }
-      const content = bodyContent(view.http, resEnc, view, resEx, serverRole, variant, resEx.http?.body?.type)
-      ;(op.responses as Json)[status] = {
-        description: resEx.title,
-        ...(Object.keys(headers).length ? { headers } : {}),
-        ...(content ? { content } : {}),
-      }
-    } else {
+      const content = bodyContent(view.http, resEnc, view, u.resEx, u.serverRole, u.variant, u.resEx.http?.body?.type)
+      answers.push({
+        status: String(view.http?.status ?? 200),
+        flowId: u.flow.id,
+        variant: u.variant,
+        entry: { description: u.resEx.title, ...(Object.keys(headers).length ? { headers } : {}), ...(content ? { content } : {}) },
+      })
+    }
+    for (const status of [...new Set(answers.map((a) => a.status))]) {
+      const alts = answers.filter((a) => a.status === status)
+      ;(op.responses as Json)[status] = alts.length === 1 ? alts[0]!.entry : mergeAnswers(alts)
+    }
+    if (!answers.length) {
+      const respStep = uses[0]?.respStep
       ;(op.responses as Json)[respStep?.label?.match(/^\d{3}/)?.[0] ?? '200'] = { description: respStep?.label ?? 'Success' }
     }
     if (!op.security) op.security = []
