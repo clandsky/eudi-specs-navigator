@@ -32,6 +32,20 @@
       Void without effect: the CIR removes the ETSI duplicate, but HAIP §5 ("Response encryption MUST be performed") and
       §5.1/§5.2 stay in scope through the adapted Scope clause 1(b). Encryption remains required. Whether the legislator
       intended to relax encryption is not stated.
+- id: cir/annex-xii/OIDFVP-HAIP-GEN-05
+  subject: vp.format-profile
+  spec: cir-2026-1731
+  locator: { req: OIDFVP-HAIP-GEN-05, at: "Annex XII, adaptation (14), clause 6.3.1" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ verifier, wallet ], format: [ sd-jwt-vc ] }
+  quote: >-
+    OIDFVP-HAIP-GEN-05: When the format of the requested attestation complies with [2], Relying Parties and EUDI Wallets
+    shall comply with the 'IETF SD-JWT VCs' profile in [11] Section 6.
+  note: >-
+    [2] is RFC 9901 (SD-JWT), [11] HAIP. The SD-JWT VC counterpart of OIDFVP-HAIP-GEN-04. Imports the profile, not a
+    value: the format identifier dc+sd-jwt comes from HAIP §5.3.2 (haip/5.3.2/dc-sd-jwt).
+  verified: source-checked
 - id: cir/annex-xii/OIDFVP-HAIP-COMMON-REQ-RO-02
   subject: vp.request-object.verifier_info.registrar_dataset
   spec: cir-2026-1731

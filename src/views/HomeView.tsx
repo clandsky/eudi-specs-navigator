@@ -1,5 +1,4 @@
-import { buildOpenApi } from '../model/openapi'
-import { stringify } from 'yaml'
+import { buildOpenApi, openApiYaml } from '../model/openapi'
 import { href } from '../lib/router'
 import { ds, useViewCtx } from '../lib/store'
 
@@ -9,7 +8,7 @@ export function HomeView() {
 
   function download() {
     const doc = buildOpenApi(ds, { view: vc.view, asOf: vc.asOf, layers: vc.layers, linkBase: window.location.href.split('#')[0] })
-    const blob = new Blob([stringify(doc, { lineWidth: 120 })], { type: 'application/yaml' })
+    const blob = new Blob([openApiYaml(doc)], { type: 'application/yaml' })
     const a = document.createElement('a')
     a.href = URL.createObjectURL(blob)
     a.download = `${vc.view}.openapi.yaml`

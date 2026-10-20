@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { loadDataset } from '../../scripts/lib/data.ts'
-import { buildOpenApi } from './openapi'
+import { buildOpenApi, openApiYaml } from './openapi'
 import { Subject, type LayerId } from './schema'
 
 type Json = Record<string, any>
@@ -52,6 +52,46 @@ describe('verifier OpenAPI export', () => {
     const mdoc = ro.properties.client_metadata.properties.vp_formats_supported.properties.mso_mdoc
     expect(mdoc['x-provenance'].subject).toBe('vp.request-object.client_metadata.vp_formats_supported.mso_mdoc')
     expect(mdoc.properties.issuerauth_alg_values['x-provenance'].subject).toBe('vp.request-object.client_metadata.issuerauth_alg_values')
+  })
+
+  it('types an mdoc claims path as exactly two strings (OpenID4VP §7.2, §7.2.1)', () => {
+    const ro = requestObject('vp-redirect-same-mdoc')
+    const path = ro.properties.dcql_query.properties.credentials.items.properties.claims.items.properties.path
+    expect(path).toMatchObject({ type: 'array', minItems: 2, maxItems: 2, items: { type: 'string' } })
+    expect(path['x-provenance'].schemaBasis.assertion).toBe('oid4vp/7.2/mdoc-claims-path')
+  })
+
+  it('writes YAML without anchors or aliases', () => {
+    const yaml = openApiYaml(doc)
+    expect(yaml).not.toMatch(/[&*]a\d+\b/)
+  })
+
+  it('requires type and values in each trusted_authorities entry (OpenID4VP §6.1.1), RO-17 on type', () => {
+    const entry = requestObject('vp-redirect-same-mdoc').properties.dcql_query.properties.credentials.items.properties.trusted_authorities.items
+    expect(entry.required).toEqual(['type', 'values'])
+    expect(entry.properties.type['x-provenance'].decidedBy.map((d: Json) => d.assertion)).toEqual(['etsi-472-2/OIDFVP-HAIP-COMMON-REQ-RO-17'])
+    expect(entry.properties.values['x-provenance'].decidedBy.map((d: Json) => d.assertion)).toEqual(['oid4vp/6.1.1/values'])
+  })
+
+  it('decides credentials[].format by the HAIP format identifier rule of each format', () => {
+    const format = (flowId: string) => requestObject(flowId).properties.dcql_query.properties.credentials.items.properties.format['x-provenance']
+    expect(format('vp-redirect-same-mdoc').decidedBy.map((d: Json) => d.assertion)).toEqual(['haip/5.3.1/mso_mdoc'])
+    expect(format('vp-redirect-same').decidedBy.map((d: Json) => d.assertion)).toEqual(['haip/5.3.2/dc-sd-jwt'])
+  })
+
+  it('cites OpenID4VP §8.2 direct_post on the /response operation', () => {
+    expect(paths['/response'].post['x-provenance'].decidedBy.map((d: Json) => d.assertion)).toEqual(['oid4vp/8.2/direct_post'])
+  })
+
+  it('states the registration certificate element of verifier_info as contains, not per item', () => {
+    for (const flowId of ['vp-redirect-same', 'vp-redirect-same-mdoc']) {
+      const info = requestObject(flowId).properties.verifier_info
+      expect(info.items['x-provenance']).toBeUndefined()
+      expect(info.contains['x-provenance'].subject).toBe('vp.request-object.verifier_info.registration_cert')
+      expect(info.contains.properties.format.const).toBe('registration_cert')
+      expect(info.contains.properties.credential_ids.not).toEqual({})
+      expect(info.contains.properties.credential_ids['x-provenance'].decidedBy[0].assertion).toBe('etsi-472-2/OIDFVP-HAIP-COMMON-REQ-RO-14')
+    }
   })
 
   it('annotates jwks key members and the dc+sd-jwt key with their own subjects', () => {

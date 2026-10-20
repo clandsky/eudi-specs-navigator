@@ -2,8 +2,7 @@
 // as of the build date. The app offers the same export for any date and lens.
 import { mkdirSync, writeFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
-import { stringify } from 'yaml'
-import { buildOpenApi } from '../src/model/openapi.ts'
+import { buildOpenApi, openApiYaml } from '../src/model/openapi.ts'
 import type { LayerId } from '../src/model/schema.ts'
 import { ROOT, loadDataset } from './lib/data.ts'
 
@@ -19,6 +18,6 @@ for (const view of ['issuer', 'verifier'] as const) {
     console.log(`skip   ${view}.openapi.yaml (no ${view} endpoints modelled yet)`)
     continue
   }
-  writeFileSync(join(out, `${view}.openapi.yaml`), stringify(doc, { lineWidth: 120 }))
+  writeFileSync(join(out, `${view}.openapi.yaml`), openApiYaml(doc))
   console.log(`wrote  ${view}.openapi.yaml (${n} paths, as of ${asOf})`)
 }

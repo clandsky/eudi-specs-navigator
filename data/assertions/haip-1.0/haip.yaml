@@ -331,6 +331,15 @@
   applies_to: { format: [ sd-jwt-vc ] }
   quote: "The Credential Format identifier MUST be dc+sd-jwt."
   verified: source-checked
+- id: haip/5.3.2/dc-sd-jwt
+  subject: vp.dcql.format
+  spec: haip-1.0
+  locator: { section: "5.3.2" }
+  relation: profiles
+  level: shall
+  applies_to: { format: [ sd-jwt-vc ] }
+  quote: "The Credential Format identifier MUST be dc+sd-jwt."
+  verified: source-checked
 - id: haip/verifier_info/silent
   subject: vp.request-object.verifier_info.registration_cert
   spec: haip-1.0

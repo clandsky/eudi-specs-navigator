@@ -128,7 +128,7 @@
   }
 - {
     id: etsi-472-2/OIDFVP-HAIP-COMMON-REQ-RO-17,
-    subject: vp.dcql.trusted_authorities,
+    subject: vp.dcql.trusted_authorities.type,
     spec: etsi-ts-119-472-2,
     locator: { req: OIDFVP-HAIP-COMMON-REQ-RO-17, section: "6.3.2.2" },
     relation: profiles,

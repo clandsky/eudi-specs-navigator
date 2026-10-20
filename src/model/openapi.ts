@@ -2,8 +2,9 @@
 // subjects with an `endpoint`; schemas are inferred from the example objects; `required` and `x-provenance` come from
 // the effective rules resolved for the given context. Pure: used by the app (download) and by the build script.
 import type { Dataset, EncodedExample } from './dataset'
+import { stringify } from 'yaml'
 import { annotationFor, escapeToken, viewOf, type ViewDocument } from './pointer'
-import { layerTable, levelLabel, resolve, type Ctx } from './resolve'
+import { layerTable, levelLabel, resolve, type Ctx, type EffectiveRule } from './resolve'
 import type { Example, LayerId, Role } from './schema'
 
 type Json = Record<string, unknown>
@@ -18,10 +19,39 @@ export interface OpenApiOptions {
 
 const SERVERS: Record<OpenApiOptions['view'], string[]> = { issuer: ['as', 'issuer'], verifier: ['verifier'] }
 
-// Fields whose type the example values cannot show; these schemas replace the inferred type (provenance stays).
-const FIELD_SCHEMAS: Record<string, Json> = {
-  // A claims path pointer is "a non-empty array of strings, nulls and non-negative integers" (oid4vp/7/claims-path-pointer).
-  'vp.dcql.path': { type: 'array', minItems: 1, items: { type: ['string', 'null', 'integer'], minimum: 0 } },
+// Fields whose type the example values cannot show; these schemas replace the inferred type (provenance stays). The
+// first entry whose format matches the flow variant applies; `basis` names the assertion the schema follows.
+const FIELD_SCHEMAS: Record<string, { format?: string; basis: string; schema: Json }[]> = {
+  'vp.dcql.path': [
+    // An mdoc claims path pointer "contains two elements of type string" (OpenID4VP §7.2, processing in §7.2.1).
+    { format: 'mdoc', basis: 'oid4vp/7.2/mdoc-claims-path', schema: { type: 'array', minItems: 2, maxItems: 2, items: { type: 'string' } } },
+    // Otherwise "a non-empty array of strings, nulls and non-negative integers" (OpenID4VP §7).
+    { basis: 'oid4vp/7/claims-path-pointer', schema: { type: 'array', minItems: 1, items: { type: ['string', 'null', 'integer'], minimum: 0 } } },
+  ],
+}
+
+// Array elements annotated by index ("/verifier_info/0") stand for "one of the elements": the export states them as
+// `contains`, not as a rule on every item. Members whose value the rule fixes become `const`; `forbidden` members are
+// subjects whose SHALL NOT keeps the member out of that element.
+const ELEMENT_RULES: Record<string, { fixed?: string[]; forbidden?: Record<string, string> }> = {
+  'vp.request-object.verifier_info.registration_cert': {
+    // ETSI RO-15: its format member "shall be: registration_cert"; RO-14: it "shall not contain the credential_ids member".
+    fixed: ['format'],
+    forbidden: { credential_ids: 'vp.request-object.verifier_info.registration_cert.credential_ids' },
+  },
+}
+
+/** A field is required when the effective rule is SHALL without a condition, or when the spec defining the field makes
+ * it REQUIRED and a higher layer only adds a conditional SHALL on top (that profile narrows, it does not lift the
+ * definition). Agreeing profiles do not count: they may bind the content of a field, not its presence. */
+function unconditionalShall(rule: EffectiveRule): boolean {
+  if (rule.level !== 'shall') return false
+  return !rule.decidedBy.some((a) => a.condition) || rule.agreeing.some((a) => a.relation === 'defines' && !a.condition)
+}
+
+/** YAML for an export: plain nodes only, since anchors and aliases do not survive every OpenAPI tool. */
+export function openApiYaml(doc: Json): string {
+  return stringify(doc, { lineWidth: 120, aliasDuplicateObjects: false })
 }
 
 export function buildOpenApi(ds: Dataset, opts: OpenApiOptions): Json {
@@ -57,32 +87,52 @@ export function buildOpenApi(ds: Dataset, opts: OpenApiOptions): Json {
     }
   }
 
-  function schemaOf(value: unknown, ptr: string, ex: Example, role: Role, variant: Partial<Ctx>): Json {
-    const ann = annotationFor(ptr, ex.annotations, ds.fieldmap)
+  function describe(s: Json, subjectId: string, role: Role, variant: Partial<Ctx>) {
+    const { ext, rule } = provenance(subjectId, role, variant)
+    s.description = `${subjects.get(subjectId)?.title ?? subjectId}: ${levelLabel(rule.level)} for ${role}${rule.decidedBy[0] ? ` (${rule.decidedBy[0].id})` : ''}.`
+    s['x-provenance'] = ext
+    if (rule.level === 'shall-not') s['not'] = {}
+    return s
+  }
+
+  // `own: false` leaves out the annotation of the value itself (an array element stated as `contains`).
+  function schemaOf(value: unknown, ptr: string, ex: Example, role: Role, variant: Partial<Ctx>, own = true): Json {
+    const ann = own ? annotationFor(ptr, ex.annotations, ds.fieldmap) : null
     let s: Json
-    if (Array.isArray(value)) s = { type: 'array', ...(value.length ? { items: schemaOf(value[0], `${ptr}/0`, ex, role, variant) } : {}) }
-    else if (value && typeof value === 'object') {
+    if (Array.isArray(value)) {
+      s = { type: 'array' }
+      const element = ex.annotations[`${ptr}/0`]
+      const rules = element ? ELEMENT_RULES[element] : undefined
+      if (value.length) s.items = schemaOf(value[0], `${ptr}/0`, ex, role, variant, !rules)
+      if (rules && value[0] && typeof value[0] === 'object') {
+        const c = schemaOf(value[0], `${ptr}/0`, ex, role, variant)
+        const props = c.properties as Json
+        for (const k of rules.fixed ?? []) if (props[k]) (props[k] as Json).const = (value[0] as Json)[k]
+        for (const [k, subj] of Object.entries(rules.forbidden ?? {})) props[k] = describe({}, subj, role, variant)
+        s.contains = c
+      }
+    } else if (value && typeof value === 'object') {
       const properties: Json = {}
       const required: string[] = []
       for (const [k, v] of Object.entries(value as Json)) {
         const p = `${ptr}/${escapeToken(k)}`
         properties[k] = schemaOf(v, p, ex, role, variant)
         const sub = annotationFor(p, ex.annotations, ds.fieldmap)
-        if (sub) {
-          const { rule } = provenance(sub, role, variant)
-          if (rule.level === 'shall' && !rule.decidedBy.some((a) => a.condition)) required.push(k)
-        }
+        if (sub && unconditionalShall(provenance(sub, role, variant).rule)) required.push(k)
       }
       s = { type: 'object', properties, ...(required.length ? { required } : {}) }
     } else if (typeof value === 'number') s = { type: Number.isInteger(value) ? 'integer' : 'number', example: value }
     else if (typeof value === 'boolean') s = { type: 'boolean', example: value }
     else s = { type: 'string', ...(typeof value === 'string' && value.length < 200 ? { example: value } : {}) }
-    if (ann && FIELD_SCHEMAS[ann]) s = { ...FIELD_SCHEMAS[ann], example: value }
-    if (ann) {
-      const { ext, rule } = provenance(ann, role, variant)
-      s.description = `${subjects.get(ann)?.title ?? ann}: ${levelLabel(rule.level)} for ${role}${rule.decidedBy[0] ? ` (${rule.decidedBy[0].id})` : ''}.`
-      s['x-provenance'] = ext
-      if (rule.level === 'shall-not') s['not'] = {}
+    const field = ann ? FIELD_SCHEMAS[ann]?.find((f) => !f.format || f.format === variant.format) : undefined
+    if (field) s = { ...field.schema, example: value }
+    if (ann) describe(s, ann, role, variant)
+    if (field) {
+      const basis = ds.assertions.find((a) => a.id === field.basis)
+      ;(s['x-provenance'] as Json).schemaBasis = {
+        assertion: field.basis,
+        locator: basis?.locator.req ?? (basis?.locator.section ? `§${basis.locator.section}` : basis?.locator.at),
+      }
     }
     return s
   }
@@ -194,7 +244,7 @@ export function buildOpenApi(ds: Dataset, opts: OpenApiOptions): Json {
         params.push({
           name,
           in: 'header',
-          required: prov?.rule.level === 'shall' && !prov.rule.decidedBy.some((a) => a.condition),
+          required: prov ? unconditionalShall(prov.rule) : false,
           schema: { type: 'string', ...(jwtName ? jwtSchema(jwtName, view, reqEx, clientRole, variant) : {}) },
           ...(prov ? { description: `${subjects.get(sub!)?.title}: ${levelLabel(prov.rule.level)} for ${clientRole}.`, 'x-provenance': prov.ext } : {}),
         })

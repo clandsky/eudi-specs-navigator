@@ -61,7 +61,8 @@ annotations:
   /jwt/ro/payload/client_metadata/jwks/keys/*/use: vp.request-object.client_metadata.jwks.use
   /jwt/ro/payload/client_metadata/jwks/keys/*/alg: vp.request-object.client_metadata.jwks.alg
   /jwt/ro/payload/dcql_query/credentials/*/trusted_authorities: vp.dcql.trusted_authorities
-  /jwt/ro/payload/dcql_query/credentials/*/trusted_authorities/**: vp.dcql.trusted_authorities
+  /jwt/ro/payload/dcql_query/credentials/*/trusted_authorities/*/type: vp.dcql.trusted_authorities.type
+  /jwt/ro/payload/dcql_query/credentials/*/trusted_authorities/*/values: vp.dcql.trusted_authorities.values
   /jwt/ro/payload/client_metadata/encrypted_response_enc_values_supported: vp.request-object.client_metadata.enc_values
   /jwt/ro/payload/verifier_info: vp.request-object.verifier_info
   /jwt/ro/payload/verifier_info/0: vp.request-object.verifier_info.registration_cert

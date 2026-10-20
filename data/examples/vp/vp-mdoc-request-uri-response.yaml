@@ -62,7 +62,8 @@ annotations:
   /jwt/ro/payload/dcql_query/credentials/*/claims/*/path: vp.dcql.path
   /jwt/ro/payload/dcql_query/credentials/*/claims/*/intent_to_retain: vp.dcql.intent_to_retain
   /jwt/ro/payload/dcql_query/credentials/*/trusted_authorities: vp.dcql.trusted_authorities
-  /jwt/ro/payload/dcql_query/credentials/*/trusted_authorities/**: vp.dcql.trusted_authorities
+  /jwt/ro/payload/dcql_query/credentials/*/trusted_authorities/*/type: vp.dcql.trusted_authorities.type
+  /jwt/ro/payload/dcql_query/credentials/*/trusted_authorities/*/values: vp.dcql.trusted_authorities.values
   /jwt/ro/payload/client_metadata: vp.request-object.client_metadata
   /jwt/ro/payload/client_metadata/jwks: vp.request-object.client_metadata.jwks
   /jwt/ro/payload/client_metadata/jwks/keys: vp.request-object.client_metadata.jwks

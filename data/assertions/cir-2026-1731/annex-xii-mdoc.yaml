@@ -1,7 +1,7 @@
 # CIR (EU) 2026/1731 on ISO mdoc: Annex XII (presentation profile, ETSI TS 119 472-2 adapted) and Annex I section 4.1
 # (PID encoding in ISO/IEC-mdoc format).
 - id: cir/annex-xii/OIDFVP-HAIP-GEN-04
-  subject: vp.dcql.format
+  subject: vp.format-profile
   spec: cir-2026-1731
   locator: { req: OIDFVP-HAIP-GEN-04, at: "Annex XII, adaptation (14), clause 6.3.1" }
   relation: profiles
@@ -10,7 +10,9 @@
   quote: >-
     OIDFVP-HAIP-GEN-04: When the format of the requested attestation complies with [10] Relying Parties and EUDI Wallets
     shall comply with the 'ISO mdocs' profile in [11] Section 6.
-  note: "[10] is ISO/IEC 18013-5, [11] HAIP. NOTE 3 of the same clause: this implies OpenID4VP Appendix B.2."
+  note: >-
+    [10] is ISO/IEC 18013-5, [11] HAIP. NOTE 3 of the same clause: this implies OpenID4VP Appendix B.2. Imports the
+    profile, not a value: the format identifier mso_mdoc comes from HAIP §5.3.1 (haip/5.3.1/mso_mdoc).
   verified: source-checked
 - id: cir/annex-xii/OIDFVP-HAIP-GEN-04-note-3
   subject: vp.mdoc

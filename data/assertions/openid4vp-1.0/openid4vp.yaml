@@ -8,6 +8,19 @@
   quote: "This section defines how an Authorization Response containing a VP Token (such as when the Response Type value
     is vp_token or vp_token id_token) can be encrypted at the application level"
   verified: source-checked
+- id: oid4vp/8.2/direct_post
+  subject: vp.response-post
+  spec: openid4vp-1.0
+  locator: { section: "8.2" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ wallet ], transport: [ redirect ] }
+  quote: >-
+    direct_post: In this mode, the Authorization Response is sent to the Verifier using an HTTP POST request to an
+    endpoint controlled by the Verifier. The Authorization Response MUST be encoded in the request body using the format
+    defined by the application/x-www-form-urlencoded HTTP content type.
+  note: direct_post.jwt (§8.3.1) sends the encrypted response through this mode, as the response form parameter.
+  verified: source-checked
 - id: oid4vp/5.1/verifier_info
   subject: vp.request-object.verifier_info
   spec: openid4vp-1.0
