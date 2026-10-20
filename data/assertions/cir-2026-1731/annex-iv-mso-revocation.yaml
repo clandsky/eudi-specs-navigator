@@ -366,8 +366,8 @@
   review:
     reason: >-
       The IdentifierList structure is defined in EAA-6.2.10.1-10; EAA-6.2.10.1-11 defines IdentifierListInfo, the
-      identifier_list element in the MSO. Read as a slip for -10. Superseded in the d-you layer by
-      resolved/EAA-6.2.10.1-09-identifierlist-ref.
+      identifier_list element in the MSO. Read as a slip for -10. Moot for d-you, which uses no identifier list
+      (golive/mdoc.no-identifier-list.EAA-6.2.10.1-09-identifierlist-2026-10-20).
 - id: cir/annex-iv/EAA-6.2.10.1-10
   subject: vp.mdoc.revocation-list.list
   spec: cir-2026-1731

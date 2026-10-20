@@ -1,0 +1,13 @@
+# Go-live compromise (d-you): MSO revocation by Token Status List only, no identifier list.
+- id: golive/mdoc.no-identifier-list.EAA-6.2.10.1-09-type-2026-10-20
+  subject: vp.mdoc.revocation-list.type
+  spec: golive-compromises
+  locator: { at: "d-you MSO revocation (project owner, 2026-10-20)" }
+  relation: voids
+  applies_to: { role: [issuer], format: [mdoc] }
+  target: cir/annex-iv/EAA-6.2.10.1-09-type
+  window: { from: "2026-10-20" }
+  quote: "d-you uses only the Token Status List (status_list) for MSO revocation; it uses no identifier list (EAA-6.2.10.1-02.3)."
+  decided_by: project owner (2026-10-20)
+  reference: d-you MSO revocation, Token Status List only (project owner, 2026-10-20)
+  note: "Its revocation list keeps application/statuslist+cwt (Token Status List §5.2). The identifier list mechanism is not used by d-you, so this identifier list requirement does not apply."
