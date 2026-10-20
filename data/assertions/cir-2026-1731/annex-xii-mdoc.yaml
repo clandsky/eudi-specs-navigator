@@ -1,0 +1,194 @@
+# CIR (EU) 2026/1731 on ISO mdoc: Annex XII (presentation profile, ETSI TS 119 472-2 adapted) and Annex I section 4.1
+# (PID encoding in ISO/IEC-mdoc format).
+- id: cir/annex-xii/OIDFVP-HAIP-GEN-04
+  subject: vp.dcql.format
+  spec: cir-2026-1731
+  locator: { req: OIDFVP-HAIP-GEN-04, at: "Annex XII, adaptation (14), clause 6.3.1" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ verifier, wallet ], format: [ mdoc ] }
+  quote: >-
+    OIDFVP-HAIP-GEN-04: When the format of the requested attestation complies with [10] Relying Parties and EUDI Wallets
+    shall comply with the 'ISO mdocs' profile in [11] Section 6.
+  note: "[10] is ISO/IEC 18013-5, [11] HAIP. NOTE 3 of the same clause: this implies OpenID4VP Appendix B.2."
+  verified: source-checked
+- id: cir/annex-xii/OIDFVP-HAIP-GEN-04-note-3
+  subject: vp.mdoc
+  spec: cir-2026-1731
+  locator: { req: OIDFVP-HAIP-GEN-04, at: "Annex XII, adaptation (14), clause 6.3.1, NOTE 3" }
+  relation: profiles
+  level: info
+  applies_to: { format: [ mdoc ] }
+  quote: >-
+    NOTE 3: For clarity: the 'ISO mdocs profile' in HAIP implies that Relying Parties and EUDI Wallets must comply with
+    the applicable requirements in [7] Annex B.2.
+  note: "[7] is OpenID4VP."
+  verified: source-checked
+- id: cir/annex-xii/EAAP-ISO-IEC-mdoc-01
+  subject: vp.mdoc.device-response.documents
+  spec: cir-2026-1731
+  locator: { req: "EAAP-ISO/IEC-mdoc-01", at: "Annex XII, adaptation (4), clause 4.2" }
+  relation: voids
+  target: etsi-472-2/EAAP-ISO-IEC-mdoc-01
+  quote: "EAAP-ISO/IEC-mdoc-01: void."
+  verified: source-checked
+- id: cir/annex-xii/EAAP-ISO-IEC-mdoc-02
+  subject: vp.mdoc.issuer-signed.namespaces
+  spec: cir-2026-1731
+  locator: { req: "EAAP-ISO/IEC-mdoc-02", at: "Annex XII, adaptation (4), clause 4.2" }
+  relation: voids
+  target: etsi-472-2/EAAP-ISO-IEC-mdoc-02
+  quote: "EAAP-ISO/IEC-mdoc-02: void."
+  note: No replacement; issuerSigned is still defined by ISO/IEC 18013-5 through OpenID4VP Appendix B.2.
+  verified: source-checked
+- id: cir/annex-xii/ISO-IEC-18013-5-RESP-02
+  subject: vp.mdoc.mso.deviceKeyInfo
+  spec: cir-2026-1731
+  locator: { req: "ISO/IEC 18013-5-RESP-02", at: "Annex XII, adaptation (10), clause 5.3.3" }
+  relation: profiles
+  level: shall-not
+  applies_to: { role: [ issuer ], format: [ mdoc ] }
+  quote: >-
+    ISO/IEC 18013-5-RESP-02: The provider of person identification data and electronic attestations of attributes shall
+    not include any data elements in the KeyAuthorizations map in the Mobile Security Object … except for data elements
+    that are provided by the wallet-relying party in the transactional data in the mdoc request
+  verified: needs-review
+  review:
+    reason: >-
+      Scope: the requirement sits in clause 5.3.3 of the ISO/IEC-mdoc profile (ISO/IEC 18013-5 and 18013-7 Annex C), not
+      in the OpenID4VC-HAIP profile this flow uses. It constrains the issued MSO itself, so it is read here as holding
+      for an mdoc presented over OpenID4VP too; the CIR does not say so explicitly.
+- id: cir/annex-xii/ISO-IEC-18013-5-RESP-02-note-2
+  subject: vp.mdoc.device-signed.namespaces
+  spec: cir-2026-1731
+  locator: { req: "ISO/IEC 18013-5-RESP-02", at: "Annex XII, adaptation (10), clause 5.3.3, NOTE 2" }
+  relation: profiles
+  level: info
+  applies_to: { format: [ mdoc ] }
+  quote: >-
+    NOTE 2: As a result, wallet units cannot present any device-signed data elements to wallet-relying parties, except
+    to signing data that the wallet-relying party provided
+  verified: source-checked
+- id: cir/annex-xii/ISO-IEC-18013-SUPPORT-04
+  subject: vp.mdoc.iso-18013-7-api
+  spec: cir-2026-1731
+  locator: { req: ISO/IEC 18013-SUPPORT-04, at: "Annex XII, adaptation (8), clause 5.2" }
+  relation: profiles
+  level: should
+  applies_to: { role: [ verifier ], format: [ mdoc ] }
+  quote: "ISO/IEC 18013-SUPPORT-04: A Relying Party should implement the profile defined in clause 5.4 of the present
+    document."
+  note: Clause 5.4 is the API-mediated mechanism of the ISO/IEC-mdoc profile (ISO/IEC 18013-7 Annex C), an alternative to
+    the OpenID4VP flow drawn here.
+  verified: source-checked
+- id: cir/annex-xii/scope-iso-mdoc-api
+  subject: vp.mdoc.iso-18013-7-api
+  spec: cir-2026-1731
+  locator: { at: "Annex XII, adaptation (1) of clause 1 Scope, point (a)" }
+  relation: profiles
+  level: info
+  applies_to: { format: [ mdoc ] }
+  quote: >-
+    ISO/IEC 18013-5 [10] for non-API mediated transmission mechanism only, and — Annex C of ISO/IEC 18013-7 [16] for
+    API-mediated transmission mechanism. This profile is named ISO/IEC-mdoc profile
+  verified: source-checked
+- id: cir/annex-xii/EAAP-API-GEN-01-mdoc
+  subject: vp.mdoc.iso-18013-7-api
+  spec: cir-2026-1731
+  locator: { req: EAAP-API-GEN-01, at: "Annex XII, adaptation (5), new clause 4.3" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ wallet ] }
+  quote: >-
+    EAAP-API-GEN-01: The EUDI Wallet shall support a mediating API that supports both protocols defined in clause 5.2 of
+    [11] and in Annex C of [16].
+  verified: source-checked
+# Annex I, section 4.1: PID in ISO/IEC-mdoc format.
+- id: cir/annex-i/4.1/doctype
+  subject: vp.mdoc.doctype
+  spec: cir-2026-1731
+  locator: { at: "Annex I, section 4.1" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ issuer ], format: [ mdoc ] }
+  quote: The attestation type for person identification data in ISO/IEC mdoc format shall be 'eu.europa.ec.eudi.pid.1'.
+  verified: source-checked
+- id: cir/annex-i/4.1/doctype-request
+  subject: vp.dcql.doctype_value
+  spec: cir-2026-1731
+  locator: { at: "Annex I, section 4.1" }
+  relation: profiles
+  level: info
+  applies_to: { format: [ mdoc ] }
+  quote: The attestation type for person identification data in ISO/IEC mdoc format shall be 'eu.europa.ec.eudi.pid.1'.
+  note: The doctype_value a Verifier asks for when it wants the PID.
+  verified: source-checked
+- id: cir/annex-i/4.1/namespace
+  subject: vp.mdoc.namespace
+  spec: cir-2026-1731
+  locator: { at: "Annex I, section 4.1" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ issuer ], format: [ mdoc ] }
+  quote: >-
+    The identifier of the namespace for the person identification data attributes set out in this Annex shall be
+    'eu.europa.ec.eudi.pid.1'.
+  verified: source-checked
+- id: cir/annex-i/4.1/domestic-namespace
+  subject: vp.mdoc.namespace
+  spec: cir-2026-1731
+  locator: { at: "Annex I, section 4.1" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ issuer ], format: [ mdoc ] }
+  condition: the PID includes data without a data identifier in the Annex
+  quote: >-
+    these data shall be defined within a domestic person identification data namespace that uses the general format
+    eu.europa.ec.eudi.pid.[ISO 3166-1 alpha-2 country code or the ISO 3166-2 region code]
+  verified: source-checked
+- id: cir/annex-i/4.1/table-6
+  subject: vp.mdoc.item.elementValue
+  spec: cir-2026-1731
+  locator: { at: "Annex I, section 4.1, Table 6" }
+  relation: profiles
+  level: info
+  applies_to: { role: [ issuer ], format: [ mdoc ] }
+  quote: The requirements for encoding person identification data in ISO/IEC-mdoc format are set out in Table 6
+  note: "Table 6 gives each PID data element its CBOR encoding, e.g. family_name tstr, birth_date full-date, sex uint."
+  verified: source-checked
+- id: cir/annex-i/4.1/device-key
+  subject: vp.mdoc.mso.deviceKey
+  spec: cir-2026-1731
+  locator: { at: "Annex I, section 4.1" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ issuer ], format: [ mdoc ] }
+  quote: >-
+    The deviceKey member within the deviceKeyInfo member of the instance of MobileSecurityObject type shall contain a
+    public key. … That public key shall correspond to a private key that is stored in the wallet secure cryptographic
+    device (‘WSCD’) of the wallet user.
+  verified: source-checked
+- id: cir/annex-i/4.1/x5u-x5t
+  subject: cose.x5u
+  spec: cir-2026-1731
+  locator: { at: "Annex I, section 4.1" }
+  relation: extends
+  level: shall
+  applies_to: { role: [ issuer ], format: [ mdoc ] }
+  quote: >-
+    The Protected Header of the CB-AdES digital signature signing a person identification data in ISO/IEC-mdoc format
+    shall contain the x5u and the x5t header parameters, both specified in RFC 9360
+  note: Only for the PID. OpenID4VP and HAIP do not ask for x5u or x5t; ISO/IEC 18013-5 carries the signer certificate in
+    x5chain (unprotected header).
+  verified: source-checked
+- id: cir/annex-i/4.1/x5t
+  subject: cose.x5t
+  spec: cir-2026-1731
+  locator: { at: "Annex I, section 4.1" }
+  relation: extends
+  level: shall
+  applies_to: { role: [ issuer ], format: [ mdoc ] }
+  quote: >-
+    shall contain the x5u and the x5t header parameters, both specified in RFC 9360 … The digest algorithm used in the
+    x5t header parameter shall be SHA-256.
+  verified: source-checked

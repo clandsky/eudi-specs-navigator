@@ -1,0 +1,44 @@
+id: vp-redirect-same-mdoc
+title: Presentation — OpenID4VP redirect, same device, ISO mdoc
+role: verifier
+order: 4
+subject: vp.flow.redirect-same-mdoc
+variant: { transport: redirect, device: same, format: mdoc }
+summary: >-
+  The same-device redirect flow, asking for the PID in ISO mdoc format (mso_mdoc, OpenID4VP Appendix B.2) instead of
+  SD-JWT VC. The DCQL query names the doctype and addresses data elements as [namespace, element]. The vp_token
+  carries a base64url CBOR DeviceResponse: issuer-signed data elements whose digests are signed in the Mobile Security
+  Object, and a device signature over the SessionTranscript. There is no Key Binding JWT; the SessionTranscript binds
+  the presentation to client_id, nonce, response_uri and the response encryption key (OpenID4VPHandover), so the
+  Verifier rebuilds it from its own request. Under the CIR (Annex XII OIDFVP-HAIP-GEN-04) relying parties and wallets
+  follow the HAIP ISO mdoc profile for this format.
+participants:
+  - { id: verifier, label: Verifier, role: verifier }
+  - { id: wallet, label: Wallet Unit, role: wallet }
+steps:
+  - { id: prepare, from: verifier, to: verifier, kind: internal, label: prepare transaction, subject: vp.verifier.prepare-request }
+  - { id: prepare-nonce, parent: prepare, from: verifier, to: verifier, kind: internal, label: generate nonce, subject: vp.verifier.generate-nonce }
+  - { id: prepare-enc-key, parent: prepare, from: verifier, to: verifier, kind: internal, label: ephemeral encryption key, subject: vp.verifier.ephemeral-enc-key, note: "Its JWK thumbprint goes into the SessionTranscript (OpenID4VP B.2.6.1), so keep it with the transaction." }
+  - { id: prepare-sign, parent: prepare, from: verifier, to: verifier, kind: internal, label: sign Request Object, subject: vp.verifier.sign-request-object }
+  - { id: invoke, from: verifier, to: wallet, kind: redirect, label: "open eu-eaap:// link", subject: vp.authorization-request, example: vp-authorization-request, tags: [client_id, request_uri] }
+  - { id: fetch, from: wallet, to: verifier, kind: request, label: GET request_uri, subject: vp.request-uri-fetch, example: vp-request-uri-get }
+  - { id: request-object, from: verifier, to: wallet, kind: response, label: signed Request Object, subject: vp.request-object, example: vp-mdoc-request-uri-response, tags: [mso_mdoc, doctype_value] }
+  - { id: process, from: wallet, to: wallet, kind: internal, label: "validate request, user consent", subject: vp.wallet.process-request }
+  - { id: process-signature, parent: process, from: wallet, to: wallet, kind: internal, label: verify signature + access cert, subject: vp.wallet.verify-request-signature }
+  - { id: process-registration, parent: process, from: wallet, to: wallet, kind: internal, label: validate registration cert, subject: vp.wallet.validate-registration-cert }
+  - { id: process-overasking, parent: process, from: wallet, to: wallet, kind: internal, label: over-asking check, subject: vp.wallet.overasking }
+  - { id: process-device-auth, parent: process, from: wallet, to: wallet, kind: internal, label: sign SessionTranscript (deviceSignature), subject: vp.wallet.mdoc.device-auth, note: "The Wallet builds the OpenID4VPHandover from client_id, nonce, the JWK thumbprint of the encryption key and response_uri, and signs the DeviceAuthentication with the mdoc's device key." }
+  - { id: process-encrypt, parent: process, from: wallet, to: wallet, kind: internal, label: encrypt the response, subject: vp.authorization-response.encryption }
+  - { id: response, from: wallet, to: verifier, kind: request, label: POST response_uri (direct_post.jwt), subject: vp.response-post, example: vp-mdoc-response-post, tags: [JWE, DeviceResponse] }
+  - { id: validate, from: verifier, to: verifier, kind: internal, label: validate response, subject: vp.verifier.validate-response, note: "OpenID4VP §8.6: the Verifier validates the VP Token itself and rejects it if any check fails." }
+  - { id: validate-decrypt, parent: validate, from: verifier, to: verifier, kind: internal, label: decrypt JWE, subject: vp.verifier.decrypt-response }
+  - { id: validate-state, parent: validate, from: verifier, to: verifier, kind: internal, label: match state, subject: vp.verifier.check-state }
+  - { id: validate-vp-token, parent: validate, from: verifier, to: verifier, kind: internal, label: vp_token vs DCQL, subject: vp.verifier.check-vp-token }
+  - { id: validate-issuer, parent: validate, from: verifier, to: verifier, kind: internal, label: issuerAuth signature + x5chain, subject: vp.verifier.verify-issuer-signature }
+  - { id: validate-digests, parent: validate, from: verifier, to: verifier, kind: internal, label: data elements vs valueDigests, subject: vp.verifier.mdoc.verify-digests }
+  - { id: validate-device-auth, parent: validate, from: verifier, to: verifier, kind: internal, label: deviceSignature over SessionTranscript, subject: vp.verifier.mdoc.verify-device-auth, note: "Rebuild the SessionTranscript from the values of this transaction's request; a mismatch means the response belongs to another request." }
+  - { id: validate-validity, parent: validate, from: verifier, to: verifier, kind: internal, label: validityInfo, subject: vp.verifier.check-validity }
+  - { id: validate-status, parent: validate, from: verifier, to: verifier, kind: internal, label: status (MSO), subject: vp.verifier.check-status }
+  - { id: ack, from: verifier, to: wallet, kind: response, label: 200 redirect_uri, subject: vp.response-ack, example: vp-response-ack-same, tags: [response_code] }
+  - { id: redirect-back, from: wallet, to: verifier, kind: redirect, label: open redirect_uri, subject: vp.redirect-back }
+  - { id: result, from: verifier, to: verifier, kind: internal, label: frontend fetches result (response_code), subject: vp.result-fetch, note: "Application-specific (OpenID4VP §13.3 reference design): only the session that receives the redirect can fetch the response." }

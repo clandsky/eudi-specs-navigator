@@ -49,7 +49,7 @@
   locator: { section: "6.1.1" }
   relation: profiles
   level: shall
-  applies_to: { role: [ verifier ] }
+  applies_to: { role: [ verifier ], format: [ sd-jwt-vc ] }
   quote: >-
     This specification mandates the support for X.509 certificate-based key resolution to validate the issuer signature
     of an SD-JWT VC. This MUST be supported by all entities (Issuer, Wallet, Verifier).

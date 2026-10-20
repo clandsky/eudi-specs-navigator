@@ -1,0 +1,119 @@
+# HAIP 1.0: the ISO mdoc parts of the OpenID4VP profile (§5, §5.3.1, §6, §7, §8).
+- id: haip/5/formats
+  subject: vp.mdoc
+  spec: haip-1.0
+  locator: { section: "5" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ wallet, verifier ] }
+  quote: >-
+    The Wallet and Verifier MUST support at least one of the following Credential Format Profiles defined in Section 6:
+    IETF SD-JWT VC or ISO mdoc. Ecosystems SHOULD clearly indicate which of these formats, IETF SD-JWT VC, ISO mdoc, or
+    both, are required to be supported.
+  verified: source-checked
+- id: haip/6/mdoc-profile
+  subject: vp.mdoc
+  spec: haip-1.0
+  locator: { section: "6" }
+  relation: profiles
+  level: info
+  applies_to: { format: [ mdoc ] }
+  quote: "ISO mdocs: [OIDF.OID4VCI] - Appendix A.2 [OIDF.OID4VP] - Appendix B.2"
+  verified: source-checked
+- id: haip/5.3.1/mso_mdoc
+  subject: vp.dcql.format
+  spec: haip-1.0
+  locator: { section: "5.3.1" }
+  relation: profiles
+  level: shall
+  applies_to: { format: [ mdoc ] }
+  quote: The Credential Format identifier MUST be mso_mdoc.
+  verified: source-checked
+- id: haip/5.3.1/separate-device-response
+  subject: vp.mdoc.device-response.documents
+  spec: haip-1.0
+  locator: { section: "5.3.1" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ wallet ], format: [ mdoc ] }
+  quote: >-
+    When multiple ISO mdocs are being returned, each ISO mdoc MUST be returned in a separate DeviceResponse (as defined
+    in 8.3.2.1.2.2 of [ISO.18013-5]), each matching to a respective DCQL query. Therefore, the resulting vp_token
+    contains multiple DeviceResponse instances.
+  verified: source-checked
+- id: haip/5.3.1/mso-revocation
+  subject: vp.mdoc.mso.status
+  spec: haip-1.0
+  locator: { section: "5.3.1" }
+  relation: profiles
+  level: may
+  applies_to: { role: [ issuer ], format: [ mdoc ] }
+  quote: >-
+    The Credential Issuer MAY include the MSO revocation mechanism in the issued mdoc. When doing so, it MUST use one of
+    the mechanisms defined in ISO/IEC 18013-5 ([ISO.18013-5.second.edition]).
+  verified: source-checked
+- id: haip/5.3.1/mso-revocation-check
+  subject: vp.verifier.check-status
+  spec: haip-1.0
+  locator: { section: "5.3.1" }
+  relation: profiles
+  level: info
+  applies_to: { role: [ verifier ], format: [ mdoc ] }
+  quote: The Credential Issuer MAY include the MSO revocation mechanism in the issued mdoc.
+  note: Whether the Verifier checks it is its policy (OpenID4VP §8.6, revocation checks "if applicable").
+  verified: source-checked
+- id: haip/7/es256-devicesignature
+  subject: vp.verifier.mdoc.verify-device-auth
+  spec: haip-1.0
+  locator: { section: "7" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ verifier ], format: [ mdoc ] }
+  quote: >-
+    Issuers, Verifiers, and Wallets MUST, at a minimum, support ECDSA with P-256 and SHA-256 (JOSE algorithm identifier
+    ES256; COSE algorithm identifier -7 or -9, as applicable) for the purpose of validating the following: … the
+    signature of the Verifiable Presentation, e.g., KB-JWT of an SD-JWT VC, or deviceSignature CBOR structure in case of
+    ISO mdocs.
+  verified: source-checked
+- id: haip/7/es256-cose-alg
+  subject: cose.alg
+  spec: haip-1.0
+  locator: { section: "7" }
+  relation: profiles
+  level: shall
+  applies_to: { format: [ mdoc ] }
+  quote: >-
+    Issuers, Verifiers, and Wallets MUST, at a minimum, support ECDSA with P-256 and SHA-256 (JOSE algorithm identifier
+    ES256; COSE algorithm identifier -7 or -9, as applicable)
+  verified: source-checked
+- id: haip/8/sha256-verify
+  subject: vp.verifier.mdoc.verify-digests
+  spec: haip-1.0
+  locator: { section: "8" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ verifier ], format: [ mdoc ] }
+  quote: >-
+    The hash algorithm SHA-256 MUST be supported by all the entities to generate and validate the digests in the IETF
+    SD-JWT VC and ISO mdoc.
+  verified: source-checked
+- id: haip/8/sha256-mso
+  subject: vp.mdoc.mso.digestAlgorithm
+  spec: haip-1.0
+  locator: { section: "8" }
+  relation: profiles
+  level: shall
+  applies_to: { format: [ mdoc ] }
+  quote: >-
+    The hash algorithm SHA-256 MUST be supported by all the entities to generate and validate the digests in the IETF
+    SD-JWT VC and ISO mdoc.
+  verified: source-checked
+- id: haip/silent/mdoc-validity
+  subject: vp.verifier.check-validity
+  spec: haip-1.0
+  locator: { at: "whole document" }
+  relation: silent
+  applies_to: { role: [ verifier ], format: [ mdoc ] }
+  probe: validityInfo
+  note: HAIP does not profile the mdoc validity period (validityInfo in the MSO).
+  verified: source-checked

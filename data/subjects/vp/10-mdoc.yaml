@@ -1,0 +1,55 @@
+# ISO mdoc presentations over OpenID4VP (credential format mso_mdoc, OpenID4VP Appendix B.2). CBOR structures follow
+# ISO/IEC 18013-5 (not in the corpus); their entries are addressed under /cbor/<name>/ in the examples.
+- { id: vp.flow.redirect-same-mdoc, kind: flow, parent: vp, title: "Presentation: OpenID4VP redirect, same device, ISO mdoc" }
+# Request side
+- { id: vp.dcql.doctype_value, kind: field, parent: vp.dcql.meta, title: meta.doctype_value, location: jwt-payload, description: "Accepted mdoc document type (doctype), e.g. eu.europa.ec.eudi.pid.1 for the PID." }
+- { id: vp.dcql.intent_to_retain, kind: field, parent: vp.dcql.claims, title: "claims[].intent_to_retain (mdoc)", location: jwt-payload, description: "Tells the Wallet whether the Verifier intends to keep the data element after the transaction (IntentToRetain of ISO/IEC 18013-5)." }
+- { id: vp.request-object.client_metadata.issuerauth_alg_values, kind: field, parent: vp.request-object.client_metadata.vp_formats_supported, title: "vp_formats_supported[mso_mdoc].issuerauth_alg_values", location: jwt-payload, description: "COSE algorithms the Verifier accepts for the issuer's signature over the Mobile Security Object (-7 = ES256)." }
+- { id: vp.request-object.client_metadata.deviceauth_alg_values, kind: field, parent: vp.request-object.client_metadata.vp_formats_supported, title: "vp_formats_supported[mso_mdoc].deviceauth_alg_values", location: jwt-payload, description: "COSE algorithms the Verifier accepts for the device signature or MAC over the SessionTranscript." }
+# DeviceResponse
+- { id: vp.mdoc, kind: object, parent: vp, title: ISO mdoc presentation (mso_mdoc), description: "A presentation in ISO/IEC 18013-5 format: CBOR structures signed with COSE instead of JWTs." }
+- { id: vp.mdoc.device-response, kind: object, parent: vp.mdoc, title: DeviceResponse, location: cbor, description: "CBOR structure the Wallet returns, base64url encoded as the vp_token value: the presented documents and a status code." }
+- { id: vp.mdoc.device-response.version, kind: field, parent: vp.mdoc.device-response, title: DeviceResponse version, location: cbor, description: "Version of the DeviceResponse structure, \"1.0\"." }
+- { id: vp.mdoc.device-response.documents, kind: field, parent: vp.mdoc.device-response, title: documents, location: cbor, description: "The presented documents; each one carries its docType, the issuer-signed part and the device-signed part." }
+- { id: vp.mdoc.device-response.status, kind: field, parent: vp.mdoc.device-response, title: DeviceResponse status, location: cbor, description: "Status code of the whole response; 0 means OK." }
+- { id: vp.mdoc.doctype, kind: field, parent: vp.mdoc, title: docType, location: cbor, description: "Document type of the mdoc; the CIR fixes eu.europa.ec.eudi.pid.1 for the PID. It appears in the document and in the signed MSO, which must agree." }
+- { id: vp.mdoc.issuer-signed, kind: field, parent: vp.mdoc.device-response.documents, title: issuerSigned, location: cbor, description: "Issuer-signed part of a document: the disclosed data elements and the issuer's signature (issuerAuth) over their digests." }
+- { id: vp.mdoc.issuer-signed.namespaces, kind: field, parent: vp.mdoc.issuer-signed, title: issuerSigned.nameSpaces, location: cbor, description: "Disclosed data elements, grouped by namespace; each element travels as IssuerSignedItemBytes (CBOR tag 24)." }
+- { id: vp.mdoc.namespace, kind: field, parent: vp.mdoc, title: namespace, location: cbor, description: "Namespace of a group of data elements; the PID attributes of the CIR use eu.europa.ec.eudi.pid.1." }
+- { id: vp.mdoc.item, kind: field, parent: vp.mdoc.issuer-signed.namespaces, title: IssuerSignedItem, location: cbor, description: "One disclosed data element with its salt and digest ID; the digest of its tag-24 bytes must be in the MSO." }
+- { id: vp.mdoc.item.digestID, kind: field, parent: vp.mdoc.item, title: digestID, location: cbor, description: "Points to this element's digest in the MSO valueDigests of the same namespace." }
+- { id: vp.mdoc.item.random, kind: field, parent: vp.mdoc.item, title: random (salt), location: cbor, description: "Random salt that makes the digest unguessable, so withheld elements cannot be found by trying values." }
+- { id: vp.mdoc.item.elementIdentifier, kind: field, parent: vp.mdoc.item, title: elementIdentifier, location: cbor, description: "Name of the data element, e.g. family_name; DCQL addresses it as the second path component." }
+- { id: vp.mdoc.item.elementValue, kind: field, parent: vp.mdoc.item, title: elementValue, location: cbor, description: "Value of the data element in its CBOR type, e.g. tstr, or full-date (tag 1004) for birth_date." }
+- { id: vp.mdoc.issuer-auth, kind: field, parent: vp.mdoc.issuer-signed, title: issuerAuth (COSE_Sign1), location: cbor, description: "The issuer's COSE_Sign1 over the Mobile Security Object: [protected header, unprotected header, MSO, signature]." }
+# Mobile Security Object
+- { id: vp.mdoc.mso, kind: object, parent: vp.mdoc.issuer-auth, title: Mobile Security Object (MSO), location: cbor, description: "Signed payload of issuerAuth: digests of all issued data elements, the device key, the docType and the validity period." }
+- { id: vp.mdoc.mso.version, kind: field, parent: vp.mdoc.mso, title: MSO version, location: cbor, description: "Version of the Mobile Security Object structure, \"1.0\"." }
+- { id: vp.mdoc.mso.digestAlgorithm, kind: field, parent: vp.mdoc.mso, title: digestAlgorithm, location: cbor, description: "Hash algorithm of the valueDigests, e.g. SHA-256." }
+- { id: vp.mdoc.mso.valueDigests, kind: field, parent: vp.mdoc.mso, title: valueDigests, location: cbor, description: "Per namespace, digest ID → digest of each issued data element, presented or not." }
+- { id: vp.mdoc.mso.digest, kind: field, parent: vp.mdoc.mso.valueDigests, title: digest of one data element, location: cbor, description: "Hash of one IssuerSignedItemBytes; keyed by its digestID." }
+- { id: vp.mdoc.mso.deviceKeyInfo, kind: field, parent: vp.mdoc.mso, title: deviceKeyInfo, location: cbor, description: "The device key the mdoc is bound to, and optionally which data elements that key may sign (keyAuthorizations)." }
+- { id: vp.mdoc.mso.deviceKey, kind: field, parent: vp.mdoc.mso.deviceKeyInfo, title: deviceKey (COSE_Key), location: cbor, description: "Public key of the Wallet's device key as a COSE_Key; it verifies the deviceSignature." }
+- { id: vp.mdoc.mso.validityInfo, kind: field, parent: vp.mdoc.mso, title: validityInfo, location: cbor, description: "When the MSO was signed and the period it is valid in (tdate values)." }
+- { id: vp.mdoc.mso.signed, kind: field, parent: vp.mdoc.mso.validityInfo, title: validityInfo.signed, location: cbor, description: "Time the issuer signed the MSO." }
+- { id: vp.mdoc.mso.validFrom, kind: field, parent: vp.mdoc.mso.validityInfo, title: validityInfo.validFrom, location: cbor, description: "Start of the validity period; the Verifier rejects the mdoc before it." }
+- { id: vp.mdoc.mso.validUntil, kind: field, parent: vp.mdoc.mso.validityInfo, title: validityInfo.validUntil, location: cbor, description: "End of the validity period; the Verifier rejects the mdoc after it." }
+- { id: vp.mdoc.mso.status, kind: field, parent: vp.mdoc.mso, title: MSO status (revocation), location: cbor, description: "Revocation information in the MSO, here a Token Status List reference (ISO/IEC 18013-5 second edition)." }
+# Device-signed part
+- { id: vp.mdoc.device-signed, kind: field, parent: vp.mdoc.device-response.documents, title: deviceSigned, location: cbor, description: "Wallet-signed part of a document: device-signed data elements (usually none) and the device authentication." }
+- { id: vp.mdoc.device-signed.namespaces, kind: field, parent: vp.mdoc.device-signed, title: deviceSigned.nameSpaces, location: cbor, description: "Data elements signed by the device key instead of the issuer; an empty map (tag 24) here." }
+- { id: vp.mdoc.device-auth, kind: field, parent: vp.mdoc.device-signed, title: deviceAuth, location: cbor, description: "Proof that the Wallet holds the device key: a deviceSignature (COSE_Sign1) or a deviceMac." }
+- { id: vp.mdoc.device-signature, kind: field, parent: vp.mdoc.device-auth, title: deviceSignature (COSE_Sign1), location: cbor, description: "COSE_Sign1 by the device key over DeviceAuthenticationBytes; the payload is detached (null) and rebuilt by the Verifier." }
+# SessionTranscript
+- { id: vp.mdoc.session-transcript, kind: object, parent: vp.mdoc, title: SessionTranscript, location: cbor, description: "[DeviceEngagementBytes, EReaderKeyBytes, Handover]: what the deviceSignature binds the presentation to. Over OpenID4VP the first two are null." }
+- { id: vp.mdoc.handover, kind: field, parent: vp.mdoc.session-transcript, title: OpenID4VPHandover, location: cbor, description: "[\"OpenID4VPHandover\", SHA-256 of the CBOR-encoded OpenID4VPHandoverInfo]." }
+- { id: vp.mdoc.handover-info, kind: object, parent: vp.mdoc.handover, title: OpenID4VPHandoverInfo, location: cbor, description: "[client_id, nonce, JWK thumbprint, response_uri] from the signed Request Object; its CBOR encoding is hashed into the handover." }
+- { id: vp.mdoc.handover-info.client_id, kind: field, parent: vp.mdoc.handover-info, title: handover clientId, location: cbor, description: "client_id of the request, including the Client Identifier Prefix (x509_hash:)." }
+- { id: vp.mdoc.handover-info.nonce, kind: field, parent: vp.mdoc.handover-info, title: handover nonce, location: cbor, description: "nonce of the request; binds the presentation to this transaction." }
+- { id: vp.mdoc.handover-info.jwk_thumbprint, kind: field, parent: vp.mdoc.handover-info, title: handover jwkThumbprint, location: cbor, description: "RFC 7638 SHA-256 thumbprint of the Verifier's response encryption key, as a byte string; null if the response is not encrypted." }
+- { id: vp.mdoc.handover-info.response_uri, kind: field, parent: vp.mdoc.handover-info, title: handover responseUri, location: cbor, description: "response_uri (or redirect_uri) of the request." }
+# Processing
+- { id: vp.wallet.mdoc.device-auth, kind: behaviour, parent: vp.wallet.process-request, title: Wallet signs the DeviceAuthentication over the SessionTranscript (mdoc) }
+- { id: vp.verifier.mdoc.verify-digests, kind: behaviour, parent: vp.verifier.validate-response, title: Verifier checks each presented data element against the MSO valueDigests }
+- { id: vp.verifier.mdoc.verify-device-auth, kind: behaviour, parent: vp.verifier.validate-response, title: Verifier rebuilds the SessionTranscript and verifies the deviceSignature }
+- { id: vp.mdoc.iso-18013-7-api, kind: behaviour, parent: vp.mdoc, title: "ISO/IEC 18013-7 Annex C over the Digital Credentials API (the CIR's ISO/IEC-mdoc profile)", description: "The other way to request an mdoc online: an ISO DeviceRequest through the Digital Credentials API instead of OpenID4VP. Not drawn as a flow (ISO/IEC 18013-7 is not in the corpus)." }

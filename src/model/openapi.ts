@@ -110,7 +110,9 @@ export function buildOpenApi(ds: Dataset, opts: OpenApiOptions): Json {
   const viewServers = SERVERS[opts.view]
   for (const subj of ds.subjects) {
     if (!subj.endpoint || !viewServers.includes(subj.endpoint.server)) continue
-    const flow = ds.flows.find((f) => f.steps.some((s) => s.subject === subj.id))
+    // Several flows share an endpoint (the SD-JWT and mdoc redirect flows post to the same response_uri): take the
+    // first one in flow order.
+    const flow = [...ds.flows].sort((a, b) => a.order - b.order).find((f) => f.steps.some((s) => s.subject === subj.id))
     const idx = flow?.steps.findIndex((s) => s.subject === subj.id) ?? -1
     const step = flow?.steps[idx]
     // The response is the next step, sent back by the server; GET metadata steps carry the response example themselves.

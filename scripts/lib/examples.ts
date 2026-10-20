@@ -8,6 +8,8 @@
 //   "{{b64url:text}}"  base64url of a text (inline only)
 //   { $jwk: key, …}    public JWK of a test key, merged with the other members (kid, use, alg)
 //   "{{jwe:name}}"    compact JWE (ECDH-ES) of example.jwts[name]; the plaintext is stored for display
+//   "{{mdoc:name}}"   base64url ISO/IEC 18013-5 DeviceResponse of example.mdocs[name] (see mdoc.ts); the CBOR items
+//                     (DeviceResponse, SessionTranscript, handover info) are stored for display
 // Signatures (ES256) are randomised, so encoded examples are committed and only rebuilt when the inputs change.
 import { createHash } from 'node:crypto'
 import { existsSync, readFileSync } from 'node:fs'
@@ -16,6 +18,7 @@ import { CompactEncrypt, CompactSign, exportJWK, importPKCS8, importSPKI, type J
 import type { EncodedExample } from '../../src/model/dataset.ts'
 import type { Example } from '../../src/model/schema.ts'
 import { DATA } from './data.ts'
+import { buildMdoc } from './mdoc.ts'
 
 export const KEYS = join(DATA, 'test-keys')
 
@@ -29,7 +32,7 @@ export function s256(text: string): string {
 
 /** Hash of what gets encoded and signed; titles, notes and annotations can change without re-signing. */
 export function inputHash(e: Example): string {
-  return createHash('sha256').update(JSON.stringify({ http: e.http, json: e.json, jwts: e.jwts })).digest('hex').slice(0, 16)
+  return createHash('sha256').update(JSON.stringify({ http: e.http, json: e.json, jwts: e.jwts, mdocs: e.mdocs })).digest('hex').slice(0, 16)
 }
 
 /** Certificate chain files: <key>.cert.pem, issued by the key named in <key>.issuer (absent = trust anchor). */
@@ -64,9 +67,11 @@ async function privateKey(key: string) {
   return importPKCS8(readFileSync(join(KEYS, `${key}.key.pem`), 'utf8'), 'ES256')
 }
 
-const PLACEHOLDER = /^\{\{(jwt|sdjwt|jwe|jwk|x5c|x509hash|s256):(.+)\}\}$/
+const PLACEHOLDER = /^\{\{(jwt|sdjwt|jwe|mdoc|jwk|x5c|x509hash|s256):(.+)\}\}$/
 
-export async function substitute(value: unknown, encodedJwt: (kind: 'jwt' | 'sdjwt' | 'jwe', name: string) => Promise<string>): Promise<unknown> {
+export type EncodedKind = 'jwt' | 'sdjwt' | 'jwe' | 'mdoc'
+
+export async function substitute(value: unknown, encodedJwt: (kind: EncodedKind, name: string) => Promise<string>): Promise<unknown> {
   if (typeof value === 'string') {
     const m = PLACEHOLDER.exec(value)
     if (!m) {
@@ -80,7 +85,7 @@ export async function substitute(value: unknown, encodedJwt: (kind: 'jwt' | 'sdj
       )
     }
     const [, kind, arg] = m as unknown as [string, string, string]
-    if (kind === 'jwt' || kind === 'sdjwt' || kind === 'jwe') return encodedJwt(kind, arg)
+    if (kind === 'jwt' || kind === 'sdjwt' || kind === 'jwe' || kind === 'mdoc') return encodedJwt(kind, arg)
     if (kind === 'jwk') {
       // "{{jwk:key#kid}}" adds a kid, e.g. for a JWK Set in client_metadata.
       const [key, kid] = arg.split('#') as [string, string | undefined]
@@ -119,8 +124,22 @@ export async function encodeExample(
   const done = new Map<string, string>()
   const inProgress = new Set<string>()
   const plaintexts: NonNullable<EncodedExample['plaintexts']> = {}
+  const cbor: NonNullable<EncodedExample['cbor']> = {}
 
-  async function encodedJwt(kind: 'jwt' | 'sdjwt' | 'jwe', name: string): Promise<string> {
+  async function encodedMdoc(name: string): Promise<string> {
+    if (cbor[name]) return cbor[name].value
+    const raw = e.mdocs?.[name]
+    if (!raw) throw new Error(`${e.id}: unknown mdoc "${name}"`)
+    const spec = (await substitute(raw, encodedJwt)) as typeof raw
+    const built = await buildMdoc(spec)
+    cbor[name] = { label: 'DeviceResponse', value: b64url(Buffer.from(built.deviceResponse)) }
+    cbor[`${name}-session-transcript`] = { label: 'SessionTranscript (rebuilt by the Verifier)', value: b64url(Buffer.from(built.sessionTranscript)) }
+    cbor[`${name}-handover-info`] = { label: `${spec.transcript.handover}Info (hashed into the handover)`, value: b64url(Buffer.from(built.handoverInfo)) }
+    return cbor[name].value
+  }
+
+  async function encodedJwt(kind: EncodedKind, name: string): Promise<string> {
+    if (kind === 'mdoc') return encodedMdoc(name)
     const cacheKey = `${kind}:${name}`
     if (done.has(cacheKey)) return done.get(cacheKey)!
     const spec = e.jwts[name]
@@ -178,6 +197,7 @@ export async function encodeExample(
   for (const [name, spec] of Object.entries(e.jwts))
     if (![`jwt:${name}`, `sdjwt:${name}`, `jwe:${name}`].some((k) => done.has(k)))
       await encodedJwt('encrypt' in spec ? 'jwe' : 'disclosures' in spec && spec.disclosures ? 'sdjwt' : 'jwt', name)
+  for (const name of Object.keys(e.mdocs ?? {})) await encodedMdoc(name)
   const jwts: Record<string, string> = {}
   const sdjwts: Record<string, string> = {}
   for (const [k, v] of done) {
@@ -194,6 +214,7 @@ export async function encodeExample(
     jwts,
     ...(Object.keys(plaintexts).length ? { plaintexts } : {}),
     ...(Object.keys(sdjwts).length ? { sdjwts } : {}),
+    ...(Object.keys(cbor).length ? { cbor } : {}),
     inputHash: inputHash(e),
   }
 }

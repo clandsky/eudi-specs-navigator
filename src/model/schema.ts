@@ -123,7 +123,7 @@ export const Flow = z.object({
   role: z.enum(['issuer', 'verifier']),
   subject: slug,
   variant: z
-    .object({ grant: Grant.optional(), device: Device.optional(), transport: Transport.optional() })
+    .object({ grant: Grant.optional(), device: Device.optional(), transport: Transport.optional(), format: Format.optional() })
     .default({}),
   summary: z.string(),
   /** Position in the flow list of its side (lower first). */
@@ -257,6 +257,43 @@ export const ReusedJwt = z.object({ use: z.string().regex(/^[\w.-]+\/[\w.-]+$/) 
 export const ExampleJwt = z.union([ReusedJwt, EncryptedJwt, SignedJwt])
 export type ExampleJwt = z.infer<typeof ExampleJwt>
 
+/**
+ * An ISO/IEC 18013-5 DeviceResponse with one document, referenced as "{{mdoc:name}}" (base64url, as in a vp_token).
+ * The build signs the Mobile Security Object (issuerAuth) with `issuer` and the DeviceAuthentication over the
+ * SessionTranscript (deviceSignature) with `device`. Element values may be tagged: { $tag: 1004, value: "1964-08-12" }.
+ */
+export const MdocSpec = z.object({
+  docType: z.string(),
+  /** Test key that signs the MSO; its certificate chain goes into x5chain (unprotected header, label 33). */
+  issuer: slug,
+  /** Device key (deviceKeyInfo.deviceKey) that signs the DeviceAuthentication. */
+  device: slug,
+  /** Adds x5u (label 35) and x5t (label 34, SHA-256 of the signing certificate) to the protected header. */
+  x5u: z.string().url().optional(),
+  validity: z.object({ signed: z.string(), validFrom: z.string(), validUntil: z.string() }),
+  status: z.record(z.string(), JsonValue).optional(),
+  /** Issuer-signed data elements per namespace; `withheld` ones are digested in the MSO but not presented. */
+  nameSpaces: z.record(
+    z.string(),
+    z.array(
+      z.object({
+        digestID: z.number().int().nonnegative(),
+        /** Salt, hex (ISO/IEC 18013-5 asks for at least 16 bytes). */
+        random: z.string().regex(/^([0-9a-f]{2}){16,}$/),
+        elementIdentifier: z.string(),
+        elementValue: JsonValue,
+        withheld: z.boolean().optional(),
+      }),
+    ),
+  ),
+  /** OpenID4VP Appendix B.2.6: the handover the SessionTranscript carries. jwkThumbprint names the encryption test key. */
+  transcript: z.discriminatedUnion('handover', [
+    z.object({ handover: z.literal('OpenID4VPHandover'), clientId: z.string(), nonce: z.string(), jwkThumbprint: slug.nullable(), responseUri: z.string() }),
+    z.object({ handover: z.literal('OpenID4VPDCAPIHandover'), origin: z.string(), nonce: z.string(), jwkThumbprint: slug.nullable() }),
+  ]),
+})
+export type MdocSpec = z.infer<typeof MdocSpec>
+
 export const Example = z.object({
   id: slug,
   title: z.string(),
@@ -277,6 +314,8 @@ export const Example = z.object({
   json: JsonValue.optional(),
   /** JWTs referenced as "{{jwt:name}}" anywhere in http, json or other JWTs. */
   jwts: z.record(z.string(), ExampleJwt).default({}),
+  /** mdoc DeviceResponses referenced as "{{mdoc:name}}". Optional (no default) so other examples keep their input hash. */
+  mdocs: z.record(z.string(), MdocSpec).optional(),
   /** JSON pointer into the view document → subject id. */
   annotations: z.record(z.string(), slug).default({}),
   note: z.string().optional(),

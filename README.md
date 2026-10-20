@@ -22,7 +22,8 @@ override it, and the effective rule as of a date**.
 - **OpenAPI export** for the issuer and the verifier side.
 
 Flows in v1: issuance with authorization code + PAR, pre-authorized code; presentation via redirect (same device and
-cross device) and the Digital Credentials API.
+cross device) and the Digital Credentials API, and the same-device redirect with an ISO mdoc PID (a CBOR
+DeviceResponse, decoded field by field).
 
 ## Precedence
 

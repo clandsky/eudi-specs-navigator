@@ -1,0 +1,295 @@
+# OpenID4VP 1.0: ISO mdoc presentations (Appendix B.2, §7.2) — request parameters, the DeviceResponse in the vp_token
+# and the SessionTranscript with the OpenID4VP handover. ISO/IEC 18013-5 itself is not in the corpus.
+- id: oid4vp/B.2/mso_mdoc
+  subject: vp.dcql.format
+  spec: openid4vp-1.0
+  locator: { section: "B.2" }
+  relation: defines
+  level: info
+  applies_to: { format: [ mdoc ] }
+  quote: The Credential Format Identifier for Credentials in the mdoc format is mso_mdoc.
+  verified: source-checked
+- id: oid4vp/B.2.3/doctype_value
+  subject: vp.dcql.doctype_value
+  spec: openid4vp-1.0
+  locator: { section: "B.2.3" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ verifier ], format: [ mdoc ] }
+  quote: >-
+    doctype_value: REQUIRED. String that specifies an allowed value for the doctype of the requested Verifiable
+    Credential. It MUST be a valid doctype identifier as defined in [ISO.18013-5].
+  verified: source-checked
+- id: oid4vp/7.2/mdoc-path
+  subject: vp.dcql.path
+  spec: openid4vp-1.0
+  locator: { section: "7.2" }
+  relation: defines
+  level: info
+  applies_to: { format: [ mdoc ] }
+  quote: >-
+    A claims path pointer into an mdoc contains two elements of type string. The first element refers to a namespace and
+    the second element refers to a data element identifier.
+  verified: source-checked
+- id: oid4vp/7.2.1/mdoc-path-processing
+  subject: vp.dcql.path
+  spec: openid4vp-1.0
+  locator: { section: "7.2.1" }
+  relation: defines
+  level: info
+  applies_to: { format: [ mdoc ] }
+  quote: >-
+    If the claims path pointer does not contain exactly two components or one of the components is not a string then
+    abort processing and return an error.
+  verified: source-checked
+- id: oid4vp/B.2.4/intent_to_retain
+  subject: vp.dcql.intent_to_retain
+  spec: openid4vp-1.0
+  locator: { section: "B.2.4" }
+  relation: defines
+  level: may
+  applies_to: { role: [ verifier ], format: [ mdoc ] }
+  quote: >-
+    intent_to_retain OPTIONAL. A boolean that is equivalent to IntentToRetain variable defined in Section 8.3.2.1.2.1 of
+    [ISO.18013-5].
+  verified: source-checked
+- id: oid4vp/B.2.2/vp_formats_supported
+  subject: vp.request-object.client_metadata.vp_formats_supported
+  spec: openid4vp-1.0
+  locator: { section: "B.2.2" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ verifier ], format: [ mdoc ] }
+  quote: >-
+    The vp_formats_supported parameter of the Verifier metadata or Wallet metadata MUST have the Credential Format
+    Identifier as a key, and the value MUST be an object consisting of the following name/value pairs
+  verified: source-checked
+- id: oid4vp/B.2.2/issuerauth_alg_values
+  subject: vp.request-object.client_metadata.issuerauth_alg_values
+  spec: openid4vp-1.0
+  locator: { section: "B.2.2" }
+  relation: defines
+  level: may
+  applies_to: { role: [ verifier ], format: [ mdoc ] }
+  quote: >-
+    issuerauth_alg_values: OPTIONAL. A non-empty array containing cryptographic algorithm identifiers. The Credential
+    MUST be considered to fulfill the requirement(s) expressed in this parameter if one of the following is true: 1) The
+    value in the array matches the 'alg' value in the IssuerAuth COSE header.
+  verified: source-checked
+- id: oid4vp/B.2.2/deviceauth_alg_values
+  subject: vp.request-object.client_metadata.deviceauth_alg_values
+  spec: openid4vp-1.0
+  locator: { section: "B.2.2" }
+  relation: defines
+  level: may
+  applies_to: { role: [ verifier ], format: [ mdoc ] }
+  quote: >-
+    deviceauth_alg_values: OPTIONAL. A non-empty array containing cryptographic algorithm identifiers. The Credential
+    MUST be considered to fulfill the requirement(s) expressed in this parameter if one of the following is true: 1) The
+    value in the array matches the 'alg' value in the DeviceSignature or DeviceMac COSE header.
+  verified: source-checked
+- id: oid4vp/B.2.5/vp_token
+  subject: vp.vp_token
+  spec: openid4vp-1.0
+  locator: { section: "B.2.5" }
+  relation: defines
+  level: info
+  applies_to: { format: [ mdoc ] }
+  quote: >-
+    The VP Token contains the base64url-encoded DeviceResponse CBOR structure as defined in ISO/IEC 18013-5
+    [ISO.18013-5] or ISO/IEC 23220-4 [ISO.23220-4].
+  verified: source-checked
+- id: oid4vp/B.2.5/device-response
+  subject: vp.mdoc.device-response
+  spec: openid4vp-1.0
+  locator: { section: "B.2.5" }
+  relation: defines
+  level: info
+  applies_to: { format: [ mdoc ] }
+  quote: >-
+    The VP Token contains the base64url-encoded DeviceResponse CBOR structure as defined in ISO/IEC 18013-5
+    [ISO.18013-5] or ISO/IEC 23220-4 [ISO.23220-4]. Essentially, the DeviceResponse CBOR structure contains a signature
+    or MAC over the SessionTranscript CBOR structure including the OpenID4VP-specific Handover CBOR structure.
+  verified: source-checked
+- id: oid4vp/B.2.5/device-auth
+  subject: vp.wallet.mdoc.device-auth
+  spec: openid4vp-1.0
+  locator: { section: "B.2.5" }
+  relation: defines
+  level: info
+  applies_to: { role: [ wallet ], format: [ mdoc ] }
+  quote: >-
+    Essentially, the DeviceResponse CBOR structure contains a signature or MAC over the SessionTranscript CBOR structure
+    including the OpenID4VP-specific Handover CBOR structure.
+  verified: source-checked
+- id: oid4vp/B.2.5/device-signature
+  subject: vp.mdoc.device-signature
+  spec: openid4vp-1.0
+  locator: { section: "B.2.5" }
+  relation: defines
+  level: info
+  applies_to: { format: [ mdoc ] }
+  quote: >-
+    Essentially, the DeviceResponse CBOR structure contains a signature or MAC over the SessionTranscript CBOR structure
+    including the OpenID4VP-specific Handover CBOR structure.
+  verified: source-checked
+- id: oid4vp/B.2.6.1/session-transcript
+  subject: vp.mdoc.session-transcript
+  spec: openid4vp-1.0
+  locator: { section: "B.2.6.1" }
+  relation: defines
+  level: shall
+  applies_to: { format: [ mdoc ], transport: [ redirect ] }
+  quote: >-
+    If the presentation request is invoked using redirects, the SessionTranscript CBOR structure as defined in Section
+    9.1.5.1 in [ISO.18013-5] MUST be used with the following changes: DeviceEngagementBytes MUST be null.
+    EReaderKeyBytes MUST be null. Handover MUST be the OpenID4VPHandover CBOR structure as defined below.
+  verified: source-checked
+- id: oid4vp/B.2.6.2/session-transcript
+  subject: vp.mdoc.session-transcript
+  spec: openid4vp-1.0
+  locator: { section: "B.2.6.2" }
+  relation: defines
+  level: shall
+  applies_to: { format: [ mdoc ], transport: [ dc-api ] }
+  quote: >-
+    If the presentation request is invoked using the Digital Credentials API, the SessionTranscript CBOR structure as
+    defined in Section 9.1.5.1 in [ISO.18013-5] MUST be used with the following changes: … Handover MUST be the
+    OpenID4VPDCAPIHandover CBOR structure as defined below.
+  verified: source-checked
+- id: oid4vp/B.2.6.1/handover
+  subject: vp.mdoc.handover
+  spec: openid4vp-1.0
+  locator: { section: "B.2.6.1" }
+  relation: defines
+  level: shall
+  applies_to: { format: [ mdoc ], transport: [ redirect ] }
+  quote: >-
+    The first element MUST be the string OpenID4VPHandover. This serves as a unique identifier for the handover
+    structure to prevent misinterpretation or confusion. The second element MUST be a Byte String which contains the
+    sha-256 hash of the bytes of OpenID4VPHandoverInfo when encoded as CBOR.
+  verified: source-checked
+- id: oid4vp/B.2.6.1/handover-values
+  subject: vp.mdoc.handover-info
+  spec: openid4vp-1.0
+  locator: { section: "B.2.6.1" }
+  relation: defines
+  level: shall
+  applies_to: { format: [ mdoc ], transport: [ redirect ] }
+  quote: >-
+    Unless otherwise stated, the values of client_id, nonce, redirect_uri, and response_uri request parameters
+    referenced above MUST be obtained from the Authorization Request query parameters if the request is unsigned, or
+    from the signed Request Object if the request is signed.
+  verified: source-checked
+- id: oid4vp/B.2.6.1/client_id
+  subject: vp.mdoc.handover-info.client_id
+  spec: openid4vp-1.0
+  locator: { section: "B.2.6.1" }
+  relation: defines
+  level: shall
+  applies_to: { format: [ mdoc ], transport: [ redirect ] }
+  quote: >-
+    The first element MUST be the client_id request parameter. If applicable, this includes the Client Identifier Prefix.
+  verified: source-checked
+- id: oid4vp/B.2.6.1/nonce
+  subject: vp.mdoc.handover-info.nonce
+  spec: openid4vp-1.0
+  locator: { section: "B.2.6.1" }
+  relation: defines
+  level: shall
+  applies_to: { format: [ mdoc ], transport: [ redirect ] }
+  quote: The second element MUST be the value of the nonce request parameter.
+  verified: source-checked
+- id: oid4vp/B.2.6.1/jwk-thumbprint
+  subject: vp.mdoc.handover-info.jwk_thumbprint
+  spec: openid4vp-1.0
+  locator: { section: "B.2.6.1" }
+  relation: defines
+  level: shall
+  applies_to: { format: [ mdoc ], transport: [ redirect ] }
+  quote: >-
+    If the response is encrypted, e.g., using direct_post.jwt, the third element MUST be the JWK SHA-256 Thumbprint as
+    defined in [RFC7638], encoded as a Byte String, of the Verifier's public key used to encrypt the response.
+    Otherwise, the third element MUST be null.
+  verified: source-checked
+- id: oid4vp/B.2.6.1/response_uri
+  subject: vp.mdoc.handover-info.response_uri
+  spec: openid4vp-1.0
+  locator: { section: "B.2.6.1" }
+  relation: defines
+  level: shall
+  applies_to: { format: [ mdoc ], transport: [ redirect ] }
+  quote: >-
+    The fourth element MUST be either the redirect_uri or response_uri request parameter, depending on which is present,
+    as determined by the Response Mode.
+  verified: source-checked
+- id: oid4vp/B.2.6.2/thumbprint-why
+  subject: vp.mdoc.handover-info.jwk_thumbprint
+  spec: openid4vp-1.0
+  locator: { section: "B.2.6.2" }
+  relation: defines
+  level: info
+  applies_to: { format: [ mdoc ] }
+  quote: >-
+    including the JWK Thumbprint in the SessionTranscript allows the Verifier to detect whether the response was re-
+    encrypted by a third party, potentially leading to the leakage of sensitive information.
+  note: The redirect clause B.2.6.1 points to this explanation in B.2.6.2.
+  verified: source-checked
+- id: oid4vp/14.1.2/binding-mdoc
+  subject: vp.verifier.mdoc.verify-device-auth
+  spec: openid4vp-1.0
+  locator: { section: "14.1.2" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ verifier ], format: [ mdoc ] }
+  quote: >-
+    The Verifier MUST validate every individual Verifiable Presentation in an Authorization Response and ensure that it
+    is linked to the values of the client_id and the nonce parameter it had used for the respective Authorization
+    Request.
+  note: For an mdoc this link is the SessionTranscript the deviceSignature covers (OpenID4VP B.2.5, B.2.6).
+  verified: source-checked
+- id: oid4vp/8.6/holder-binding-mdoc
+  subject: vp.verifier.mdoc.verify-device-auth
+  spec: openid4vp-1.0
+  locator: { section: "8.6" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ verifier ], format: [ mdoc ] }
+  quote: >-
+    For Verifiable Presentations, validate the Holder Binding, including the checks required to prevent replay described
+    in Section 14.1.
+  verified: source-checked
+- id: oid4vp/8.6/integrity-mdoc
+  subject: vp.verifier.mdoc.verify-digests
+  spec: openid4vp-1.0
+  locator: { section: "8.6" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ verifier ], format: [ mdoc ] }
+  quote: Validate the integrity and authenticity of the Presentation and Credential.
+  note: For an mdoc, integrity of the presented data elements means each one hashes to its digest in the signed MSO.
+  verified: source-checked
+- id: oid4vp/B.2.1/device-signed-transaction-data
+  subject: vp.mdoc.device-signed.namespaces
+  spec: openid4vp-1.0
+  locator: { section: "B.2.1" }
+  relation: defines
+  level: info
+  applies_to: { format: [ mdoc ] }
+  quote: >-
+    Some document types support some transaction data (Section 8.4) to be protected using mdoc authentication, as part
+    of the DeviceSigned data structure [ISO.18013-5]. In those cases, the specifications of these document types include
+    which transaction data types are supported, and the issuer includes the relevant data elements in the
+    KeyAuthorizations.
+  verified: source-checked
+- id: oid4vp/silent/mdoc-validity
+  subject: vp.verifier.check-validity
+  spec: openid4vp-1.0
+  locator: { at: "whole document" }
+  relation: silent
+  applies_to: { role: [ verifier ], format: [ mdoc ] }
+  probe: validityInfo
+  note: >-
+    OpenID4VP leaves the mdoc validity checks to ISO/IEC 18013-5 (validityInfo validFrom/validUntil in the MSO), which
+    is not in the corpus. HAIP, ETSI TS 119 472-2 and the CIR do not mention validityInfo either.
+  verified: source-checked

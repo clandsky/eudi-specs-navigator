@@ -1,0 +1,38 @@
+# ETSI TS 119 472-2 V1.2.1 clause 4.2: ISO/IEC-mdoc EAAPs (the DeviceResponse content, whichever protocol carries it).
+# The CIR voids EAAP-ISO/IEC-mdoc-01 and -02 (Annex XII adaptation (4)); -03 stays.
+- id: etsi-472-2/EAAP-ISO-IEC-mdoc-01
+  subject: vp.mdoc.device-response.documents
+  spec: etsi-ts-119-472-2
+  locator: { req: "EAAP-ISO/IEC-mdoc-01", section: "4.2" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ wallet ], format: [ mdoc ] }
+  quote: >-
+    EAAP-ISO/IEC-mdoc-01: Each element in the documents member of an instance of type DeviceResponse as defined in
+    clause 10.3.3 of ISO/IEC 18013-5 [10] shall be an ISO/IEC-mdoc EAAP if the mentioned element does not contain the
+    errors member.
+  verified: source-checked
+- id: etsi-472-2/EAAP-ISO-IEC-mdoc-02
+  subject: vp.mdoc.issuer-signed.namespaces
+  spec: etsi-ts-119-472-2
+  locator: { req: "EAAP-ISO/IEC-mdoc-02", section: "4.2" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ wallet ], format: [ mdoc ] }
+  quote: >-
+    EAAP-ISO/IEC-mdoc-02: The issuerSigned member of the DeviceResponse message shall contain all the disclosed
+    attributes to be presented that have been signed by the EAA/PID Provider.
+  verified: source-checked
+- id: etsi-472-2/EAAP-ISO-IEC-mdoc-03
+  subject: vp.mdoc.device-signed.namespaces
+  spec: etsi-ts-119-472-2
+  locator: { req: "EAAP-ISO/IEC-mdoc-03", section: "4.2" }
+  relation: profiles
+  level: may
+  applies_to: { role: [ wallet ], format: [ mdoc ] }
+  quote: >-
+    EAAP-ISO/IEC-mdoc-03: The deviceSigned member of the DeviceResponse message may contain attributes not present in
+    the issuerSigned member if and only if their inclusion has been explicitly authorized by the EAA/PID Provider.
+  note: Not voided by the CIR, but its ISO/IEC 18013-5-RESP-02 lets providers authorise only transactional data, so in
+    practice there are no device-signed attributes.
+  verified: source-checked

@@ -42,6 +42,8 @@ export function ObjectView({ exampleId, sender, selected, onSelect, variant = {}
 
   const jwtNames = new Map<string, string>()
   for (const [name, compact] of Object.entries(enc.jwts)) jwtNames.set(compact, name)
+  const cborNames = new Map<string, { name: string; label: string }>()
+  for (const [name, c] of Object.entries(enc.cbor ?? {})) cborNames.set(c.value, { name, label: c.label })
 
   const stageLayer = LENS_STAGES[vc.stage]!.id
   const ann = ex.annotations
@@ -117,7 +119,8 @@ export function ObjectView({ exampleId, sender, selected, onSelect, variant = {}
               <Fragment key={k}>
                 {pad}
                 {'  '}
-                <FieldKey ptr={p}>{`"${k}"`}</FieldKey>
+                {/* CBOR integer map keys (COSE labels) are shown unquoted, as in CBOR diagnostic notation. */}
+                <FieldKey ptr={p}>{ptr.startsWith('/cbor/') && /^-?\d+$/.test(k) ? k : `"${k}"`}</FieldKey>
                 {': '}
                 <Value v={val} ptr={p} indent={indent + 1} />
                 {i < entries.length - 1 ? ',' : ''}
@@ -147,6 +150,21 @@ export function ObjectView({ exampleId, sender, selected, onSelect, variant = {}
           </span>
         )
       }
+      const cborItem = cborNames.get(v)
+      if (cborItem && !raw)
+        return (
+          <span className="jwt" title={v}>
+            "{v.slice(0, 18)}…" <span className="meta">({cborItem.label} “{cborItem.name}”, CBOR decoded below)</span>
+          </span>
+        )
+      // CBOR byte strings in diagnostic notation: certificates, signatures and digests are long.
+      if (!raw && v.length > 72 && /^h'[0-9a-f]+'$/.test(v))
+        return (
+          <span className="s" title={v}>
+            {v.slice(0, 34)}…' <span className="meta">({(v.length - 3) / 2} bytes)</span>
+          </span>
+        )
+      if (/^h'[0-9a-f]*'$/.test(v)) return <span className="s">{v}</span>
       if (!raw && v.length > 96 && /^[A-Za-z0-9+/=_-]+$/.test(v))
         return (
           <span className="s" title={v}>
@@ -269,6 +287,15 @@ export function ObjectView({ exampleId, sender, selected, onSelect, variant = {}
           <div className="meta" style={{ padding: '0 12px' }}>Payload</div>
           <Tree v={j.payload} ptr={`/jwt/${escapeToken(name)}/payload`} />
           {raw && <div className="code jwt" style={{ borderTop: '1px solid var(--rule)' }}>{j.compact}</div>}
+        </div>
+      ))}
+      {Object.entries(view.cbor ?? {}).map(([name, v]) => (
+        <div className="obj-block" key={name}>
+          <header>
+            CBOR “{name}” <span className="sub">{enc.cbor![name]!.label}</span>
+          </header>
+          <Tree v={v} ptr={`/cbor/${escapeToken(name)}`} />
+          {raw && <div className="code jwt" style={{ borderTop: '1px solid var(--rule)' }}>{enc.cbor![name]!.value}</div>}
         </div>
       ))}
       <p className="meta">Signed with test keys from data/test-keys. The decoded views are derived from the encoded values.</p>
