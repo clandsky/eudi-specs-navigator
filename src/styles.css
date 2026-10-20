@@ -243,6 +243,10 @@ code,
   border-color: var(--ink);
   color: var(--sheet);
 }
+.btn-danger {
+  color: var(--redline);
+  border-color: var(--redline);
+}
 .btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;

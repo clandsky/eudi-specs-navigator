@@ -389,14 +389,14 @@ function Stratum({
       )}
       {a.note && <p className="verdict">{a.note}</p>}
       {layer === 'assumption' && <ResolveControl a={a} />}
-      {((onEdit && specById.get(a.spec)?.authored && a.target) || layer === 'assumption' || draftIds.has(a.id)) && (
+      {((onEdit && specById.get(a.spec)?.authored && a.target) || layer === 'assumption' || a.spec === 'golive-compromises' || draftIds.has(a.id)) && (
         <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginTop: 8, flexWrap: 'wrap' }}>
           {onEdit && specById.get(a.spec)?.authored && a.target && (
             <button className="btn" onClick={() => onEdit(a)}>
               Edit
             </button>
           )}
-          {(layer === 'assumption' || draftIds.has(a.id)) && <DeleteControl a={a} />}
+          {(layer === 'assumption' || a.spec === 'golive-compromises' || draftIds.has(a.id)) && <DeleteControl a={a} />}
         </div>
       )}
       {(a.decided_by || a.reference) && (
@@ -444,19 +444,21 @@ const RESOLVE_TARGETS: { layer: string; label: string }[] = [
 ]
 
 /**
- * "Delete": removes an open assumption from its file after a confirmation (dev server only). A draft saved in this
- * browser (static build) is removed from localStorage instead, whether it is an assumption or a go-live compromise.
+ * "Delete": removes an open assumption or a go-live compromise from its file after a confirmation (dev server only),
+ * e.g. one entered by mistake. A draft saved in this browser (static build) is removed from localStorage instead.
+ * The confirmation is asked in the page: embedded browsers may suppress window.confirm and answer it with false.
  */
 function DeleteControl({ a }: { a: Assertion }) {
-  const [state, setState] = useState<'idle' | 'busy' | 'done' | 'readonly'>('idle')
+  const [state, setState] = useState<'idle' | 'confirm' | 'busy' | 'done' | 'readonly'>('idle')
   const [error, setError] = useState<string | null>(null)
+  const local = draftIds.has(a.id)
+  const assumption = layerOf(a) === 'assumption'
   async function deleteNow() {
-    const local = draftIds.has(a.id)
-    const what = layerOf(a) === 'assumption' ? 'assumption' : 'go-live compromise'
-    if (!window.confirm(`Delete the ${local ? 'local draft of the ' : ''}${what} ${a.id}? The rule it reads applies again as written.`)) return
+    setError(null)
     if (local) {
       if (!writeDrafts(readDrafts().filter((d) => d.id !== a.id))) {
         setError('This browser does not allow saving to local storage.')
+        setState('idle')
         return
       }
       // Drafts are merged into the dataset once at load, so a reload drops it from every view.
@@ -465,9 +467,8 @@ function DeleteControl({ a }: { a: Assertion }) {
       return
     }
     setState('busy')
-    setError(null)
     try {
-      const res = await fetch('/__assumptions/delete', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: a.id }) })
+      const res = await fetch('/__authored/delete', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: a.id }) })
       if (res.status === 404 && !res.headers.get('content-type')?.includes('json')) return setState('readonly')
       const body = await res.json()
       if (!res.ok) {
@@ -480,9 +481,24 @@ function DeleteControl({ a }: { a: Assertion }) {
       setState('readonly')
     }
   }
+  if (state === 'confirm')
+    return (
+      <>
+        <span className="meta">
+          Delete {local ? 'the local draft of ' : ''}this {assumption ? 'assumption' : 'go-live compromise'}?{' '}
+          {assumption ? 'The rule it reads applies again as written.' : 'The rule it changes applies again.'}
+        </span>
+        <button className="btn btn-danger" onClick={deleteNow} autoFocus>
+          Yes, delete
+        </button>
+        <button className="btn" onClick={() => setState('idle')}>
+          Cancel
+        </button>
+      </>
+    )
   return (
     <>
-      <button className="btn" onClick={deleteNow} disabled={state !== 'idle'}>
+      <button className="btn" onClick={() => setState('confirm')} disabled={state !== 'idle'}>
         {state === 'busy' ? 'Deleting…' : 'Delete'}
       </button>
       {state === 'done' && <span className="success">Deleted. The page reloads without it.</span>}
