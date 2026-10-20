@@ -114,11 +114,16 @@
   description: "The vp_token must answer the DCQL query of this transaction, no more and no less (OpenID4VP §8.1, §8.6, §6.4). This is a structural check; the cryptographic checks of each presentation follow."
   checks:
     - { field: vp_token, subject: vp.vp_token, expect: "A JSON object. Each key is the id of a credential query from the request; each value is an array of presentations." }
-    - { field: "vp_token keys", subject: vp.dcql.id, expect: "Only ids that were requested, and every required query (or one option of each required credential_set) is answered, e.g. pid-sd-jwt." }
+    - { format: [sd-jwt-vc], field: "vp_token keys", subject: vp.dcql.id, expect: "Only ids that were requested, and every required query (or one option of each required credential_set) is answered, e.g. pid-sd-jwt." }
+    - { format: [mdoc], field: "vp_token keys", subject: vp.dcql.id, expect: "Only ids that were requested, and every required query (or one option of each required credential_set) is answered, e.g. pid-mdoc." }
     - { field: "presentations per key", expect: "Exactly one, unless the query set multiple: true." }
     - { format: [sd-jwt-vc], field: format, subject: vp.dcql.format, expect: "Matches the query's format. For dc+sd-jwt: an SD-JWT with Disclosures and a Key Binding JWT, separated by ~." }
     - { format: [sd-jwt-vc], field: vct, subject: vp.dcql.vct_values, expect: "The credential's vct is one of the query's meta.vct_values, e.g. urn:eudi:pid:de:1." }
-    - { field: claims, subject: vp.dcql.claims, expect: "Every claim path the query asked for is disclosed (or one claim_sets option is satisfied)." }
+    - { format: [mdoc], field: format, subject: vp.dcql.format, expect: "Matches the query's format mso_mdoc: each presentation is a base64url string that decodes to a CBOR DeviceResponse (OpenID4VP B.2.5), one per mdoc (HAIP §5.3.1)." }
+    - { format: [mdoc], field: DeviceResponse version + status, subject: vp.mdoc.device-response.status, expect: "version \"1.0\" and status 0 (OK); documents holds one document, without an errors entry." }
+    - { format: [mdoc], field: docType, subject: vp.dcql.doctype_value, expect: "The document's docType equals the query's meta.doctype_value, e.g. eu.europa.ec.eudi.pid.1 for the PID (CIR Annex I 4.1)." }
+    - { format: [mdoc], field: issuerSigned.nameSpaces, subject: vp.mdoc.issuer-signed.namespaces, expect: "Holds a data element for every requested [namespace, element] path, e.g. [eu.europa.ec.eudi.pid.1, family_name] (or one claim_sets option is satisfied), and none the query did not ask for." }
+    - { format: [sd-jwt-vc], field: claims, subject: vp.dcql.claims, expect: "Every claim path the query asked for is disclosed (or one claim_sets option is satisfied)." }
 - id: vp.verifier.verify-issuer-signature
   kind: behaviour
   parent: vp.verifier.validate-response
@@ -130,6 +135,12 @@
     - { format: [sd-jwt-vc], field: x5c (JWT header), expect: "The chain validates up to a trust anchor the Verifier trusts for this credential type (e.g. the PID Provider trusted list); every certificate is within its validity period and not revoked." }
     - { format: [sd-jwt-vc], field: signature, expect: "Verifies over the Issuer-signed JWT with the public key of the x5c end-entity certificate." }
     - { format: [sd-jwt-vc], field: iss, subject: sdjwtvc.iss, expect: "Identifies the issuer and is consistent with the end-entity certificate, e.g. https://pid-provider.example.de." }
+    - { format: [mdoc], field: issuerAuth, subject: vp.mdoc.issuer-auth, expect: "A COSE_Sign1 [protected, unprotected, payload, signature] whose payload is the tag-24 encoded Mobile Security Object." }
+    - { format: [mdoc], field: alg (protected header), subject: cose.alg, expect: "An asymmetric algorithm the Verifier accepts, e.g. -7 (ES256); one of vp_formats_supported.mso_mdoc.issuerauth_alg_values when the request set it (OpenID4VP B.2.2)." }
+    - { format: [mdoc], field: x5chain (unprotected header), subject: cose.x5chain, expect: "The chain validates up to a trust anchor the Verifier trusts for this docType (e.g. the PID Provider trusted list); every certificate is within its validity period and not revoked." }
+    - { format: [mdoc], field: x5u + x5t (protected header), subject: cose.x5t, expect: "Present for the PID (CIR Annex I 4.1). x5t is [-16, SHA-256 hash] and equals the thumbprint of the signer certificate, the one in x5chain or fetched from x5u." }
+    - { format: [mdoc], field: signature, expect: "Verifies over the protected header and the MSO (COSE Sig_structure, RFC 9052) with the public key of the signer certificate." }
+    - { format: [mdoc], field: MSO version + docType, subject: vp.mdoc.doctype, expect: "version \"1.0\"; the MSO's docType equals the document's docType." }
 - id: vp.verifier.verify-disclosures
   kind: behaviour
   parent: vp.verifier.validate-response
@@ -165,6 +176,9 @@
     - { format: [sd-jwt-vc], field: exp, subject: sdjwtvc.exp, expect: "Lies in the future: now < exp, allowing a small clock skew." }
     - { format: [sd-jwt-vc], field: nbf, expect: "If present, lies in the past: now ≥ nbf." }
     - { format: [sd-jwt-vc], field: iat, expect: "If present, not in the future." }
+    - { format: [mdoc], field: validityInfo.validFrom, subject: vp.mdoc.mso.validFrom, expect: "Lies in the past: now ≥ validFrom, allowing a small clock skew." }
+    - { format: [mdoc], field: validityInfo.validUntil, subject: vp.mdoc.mso.validUntil, expect: "Lies in the future: now < validUntil, allowing a small clock skew." }
+    - { format: [mdoc], field: validityInfo.signed, subject: vp.mdoc.mso.signed, expect: "Not in the future, and within the validity period of the signer certificate." }
 - id: vp.verifier.check-status
   kind: behaviour
   parent: vp.verifier.validate-response
@@ -174,3 +188,8 @@
     - { format: [sd-jwt-vc], field: status.status_list.uri, subject: tsl.uri, expect: "An https URL. The Verifier fetches the Status List Token from it (or uses a cached copy that has not expired)." }
     - { format: [sd-jwt-vc], field: Status List Token, expect: "typ statuslist+jwt, signature valid and from the issuer (or a party it trusts for status), sub equals the uri, exp not passed." }
     - { format: [sd-jwt-vc], field: status.status_list.idx, subject: tsl.idx, expect: "The entry at idx in the decompressed list (bits per entry as the token's bits says) is 0x00 VALID. 0x01 INVALID: reject. 0x02 SUSPENDED: per policy, usually reject." }
+    - { format: [mdoc], field: MSO status, subject: vp.mdoc.mso.status, expect: "Optional (HAIP §5.3.1). If present, a map with status_list or identifier_list (CIR Annex IV EAA-6.2.10.1-17). Checking it is optional for the relying party; if it checks, it follows the Token Status List rules (EAA-6.2.10.1-05)." }
+    - { format: [mdoc], field: status.status_list.uri, subject: tsl.uri, expect: "A URI. The Verifier fetches the Status List Token in CWT format from it (or uses a cached copy within its ttl)." }
+    - { format: [mdoc], field: Status List Token (CWT), expect: "COSE_Sign1 with type (16) application/statuslist+cwt and x5chain in the protected header; the chain leads to status_list.certificate if present, else to the CA that signed the MSO's x5chain (EAA-6.2.10.1-06). sub (2) equals the uri; exp (4) present and not passed." }
+    - { format: [mdoc], field: status.status_list.idx, subject: tsl.idx, expect: "The entry at idx (1 bit per entry, EAA-6.2.10.1-12.1) is 0 VALID. 1 INVALID: reject. For the PID no other value is used (EAA-6.2.10.1-03.1)." }
+    - { format: [mdoc], field: status.identifier_list, expect: "If the MSO uses an identifier list instead: the CWT at its uri has type application/identifierlist+cwt, and the MSO is revoked if its id is among the identifiers (EAA-6.2.10.1-09, -10.1)." }
