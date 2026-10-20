@@ -51,6 +51,32 @@
 - { id: vp.mdoc.handover-info.response_uri, kind: field, parent: vp.mdoc.handover-info, title: handover responseUri, location: cbor, description: "response_uri (or redirect_uri) of the request." }
 # Processing
 - { id: vp.wallet.mdoc.device-auth, kind: behaviour, parent: vp.wallet.process-request, title: Wallet signs the DeviceAuthentication over the SessionTranscript (mdoc) }
-- { id: vp.verifier.mdoc.verify-digests, kind: behaviour, parent: vp.verifier.validate-response, title: Verifier checks each presented data element against the MSO valueDigests }
-- { id: vp.verifier.mdoc.verify-device-auth, kind: behaviour, parent: vp.verifier.validate-response, title: Verifier rebuilds the SessionTranscript and verifies the deviceSignature }
+- id: vp.verifier.mdoc.verify-digests
+  kind: behaviour
+  parent: vp.verifier.validate-response
+  title: Verifier checks each presented data element against the MSO valueDigests
+  description: "The data elements travel outside the issuer's signature; the MSO it signed holds their digests. Each presented element must hash to its digest, so the issuer signature covers it (OpenID4VP §8.6, HAIP §8). Digests without a presented element are the elements the Wallet withheld."
+  checks:
+    - { field: MSO digestAlgorithm, subject: vp.mdoc.mso.digestAlgorithm, expect: "A hash algorithm the Verifier accepts, at least SHA-256 (HAIP §8)." }
+    - { field: IssuerSignedItemBytes, subject: vp.mdoc.item, expect: "Each element is a tag-24 byte string decoding to {digestID, random, elementIdentifier, elementValue}." }
+    - { field: digestID, subject: vp.mdoc.item.digestID, expect: "Has an entry in MSO valueDigests under the element's namespace; no two presented elements of a namespace share one." }
+    - { field: MSO valueDigests, subject: vp.mdoc.mso.digest, expect: "The digestAlgorithm hash over the complete IssuerSignedItemBytes (tag 24 included) equals valueDigests[namespace][digestID]. Mismatch: reject." }
+    - { field: elementValue, subject: vp.mdoc.item.elementValue, expect: "Has the CBOR type the namespace defines for elementIdentifier, e.g. full-date (tag 1004) for birth_date (CIR Annex I Table 6)." }
+- id: vp.verifier.mdoc.verify-device-auth
+  kind: behaviour
+  parent: vp.verifier.validate-response
+  title: Verifier rebuilds the SessionTranscript and verifies the deviceSignature
+  description: "The deviceSignature is the mdoc's holder binding: the device key the issuer put into the MSO signs the SessionTranscript, which carries client_id, nonce, the encryption key and response_uri of this request (OpenID4VP B.2.5, B.2.6, §14.1.2). The Verifier rebuilds it from its own Request Object; a presentation made for another request fails here."
+  checks:
+    - { field: SessionTranscript, subject: vp.mdoc.session-transcript, transport: [redirect], expect: "Rebuilt by the Verifier, not read from the response: [null, null, OpenID4VPHandover] (OpenID4VP B.2.6.1)." }
+    - { field: OpenID4VPHandover, subject: vp.mdoc.handover, transport: [redirect], expect: "[\"OpenID4VPHandover\", SHA-256 over the CBOR-encoded OpenID4VPHandoverInfo]." }
+    - { field: handover clientId, subject: vp.mdoc.handover-info.client_id, transport: [redirect], expect: "client_id of this transaction's Request Object, prefix included, e.g. x509_hash:<hash of the access certificate>." }
+    - { field: handover nonce, subject: vp.mdoc.handover-info.nonce, transport: [redirect], expect: "nonce of this transaction's Request Object." }
+    - { field: handover jwkThumbprint, subject: vp.mdoc.handover-info.jwk_thumbprint, transport: [redirect], expect: "RFC 7638 SHA-256 thumbprint of this transaction's ephemeral encryption key, as a byte string. Another key means the response was re-encrypted (OpenID4VP B.2.6.2)." }
+    - { field: handover responseUri, subject: vp.mdoc.handover-info.response_uri, transport: [redirect], expect: "response_uri of this transaction's Request Object." }
+    - { field: deviceAuth, subject: vp.mdoc.device-auth, expect: "Holds a deviceSignature (OpenID4VP B.2.5 also allows a MAC)." }
+    - { field: alg (deviceSignature header), subject: cose.alg, expect: "At least -7 (ES256) supported (HAIP §7); one of vp_formats_supported.mso_mdoc.deviceauth_alg_values when the request set it (OpenID4VP B.2.2)." }
+    - { field: deviceSignature, subject: vp.mdoc.device-signature, expect: "Payload null (detached). Verifies over DeviceAuthenticationBytes, i.e. tag 24 over [\"DeviceAuthentication\", SessionTranscript, docType, DeviceNameSpacesBytes], with the MSO deviceKey." }
+    - { field: MSO deviceKey, subject: vp.mdoc.mso.deviceKey, expect: "The COSE_Key under deviceKeyInfo of the MSO the issuer signed; its private key sits in the Wallet's WSCD (CIR Annex I 4.1)." }
+    - { field: deviceSigned.nameSpaces, subject: vp.mdoc.device-signed.namespaces, expect: "An empty map: under the CIR a Wallet presents no device-signed data elements, except data the Verifier sent as transaction data (ISO/IEC 18013-5-RESP-02 NOTE 2)." }
 - { id: vp.mdoc.iso-18013-7-api, kind: behaviour, parent: vp.mdoc, title: "ISO/IEC 18013-7 Annex C over the Digital Credentials API (the CIR's ISO/IEC-mdoc profile)", description: "The other way to request an mdoc online: an ISO DeviceRequest through the Digital Credentials API instead of OpenID4VP. Not drawn as a flow (ISO/IEC 18013-7 is not in the corpus)." }
