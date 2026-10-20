@@ -6,14 +6,15 @@
 //   /__assumptions/add  POST one assumption → appended to data/assertions/assumptions/assumptions.yaml
 //   /__authored/update  POST {id, entry} replaces an authored entry (assumption, resolved reading, go-live compromise)
 //                 in the file it lives in; id, subject and spec stay as they are
-//   /__assumptions/delete  POST {id} removes an open assumption from its file
+//   /__authored/delete  POST {id} removes an open assumption or a go-live compromise from its file; a go-live file
+//                 left without entries is deleted
 //   /__assumptions/resolve  POST {id, layer} moves an assumption into data/assertions/resolved/<layer>.yaml as a
 //                 resolved interpretation of that layer (spec resolved-<layer>)
 //   /__subjects/description  POST {id, description} sets (or, when empty, removes) a subject's description in its
 //                 data/subjects file
 // The static build has no server: the overrule editor keeps local drafts there, the example editor and the
 // description are read-only.
-import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdirSync, readFileSync, readdirSync, unlinkSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import type { Plugin } from 'vite'
 import { isMap, isSeq, parse, parseDocument, Scalar, stringify, type YAMLMap } from 'yaml'
@@ -33,7 +34,7 @@ export function editorPlugin(): Plugin {
       server.middlewares.use('/__examples', (req, res) => handleExamples(req, res))
       server.middlewares.use('/__assumptions/resolve', (req, res) => handleResolve(req, res))
       server.middlewares.use('/__assumptions/add', (req, res) => handleAddAssumption(req, res))
-      server.middlewares.use('/__assumptions/delete', (req, res) => handleDeleteAssumption(req, res))
+      server.middlewares.use('/__authored/delete', (req, res) => handleDeleteAuthored(req, res))
       server.middlewares.use('/__authored/update', (req, res) => handleUpdateAuthored(req, res))
       server.middlewares.use('/__subjects/description', (req, res) => handleDescription(req, res))
       server.middlewares.use('/__overrules', (req, res) => {
@@ -221,16 +222,24 @@ async function handleUpdateAuthored(req: Req, res: Res) {
 
 const RESOLVABLE = ['golive', 'cir', 'etsi', 'haip', 'base'] as const
 
-async function handleDeleteAssumption(req: Req, res: Res) {
+/** Authored entries the Delete button may remove; resolved readings are kept as the record of a decision. */
+const DELETABLE = ['assumptions', 'golive-compromises']
+
+async function handleDeleteAuthored(req: Req, res: Res) {
   try {
     if (req.method !== 'POST') return sendJson(res, 405, { error: ['POST only'] })
     const { id } = JSON.parse(await readBody(req)) as { id: string }
-    const a = loadDataset().assertions.find((x) => x.id === id)
-    if (!a || a.spec !== 'assumptions') return sendJson(res, 404, { error: ['not an open assumption'] })
+    const ds = loadDataset()
+    const a = ds.assertions.find((x) => x.id === id)
+    if (!a || !DELETABLE.includes(a.spec)) return sendJson(res, 404, { error: ['not an open assumption or go-live compromise'] })
+    const users = ds.assertions.filter((x) => x.target === id).map((x) => x.id)
+    if (users.length) return sendJson(res, 409, { error: [`still the target of ${users.join(', ')}`] })
     const path = join(ROOT, a.file)
     const doc = parseDocument(readFileSync(path, 'utf8'))
-    if (!removeEntry(doc, id)) return sendJson(res, 500, { error: ['assumption not found in its file'] })
-    writeFileSync(path, doc.toString({ lineWidth: 120 }))
+    if (!removeEntry(doc, id)) return sendJson(res, 500, { error: ['entry not found in its file'] })
+    // The editor writes one file per go-live compromise; an empty one would only keep its header comment.
+    if (a.spec === 'golive-compromises' && isSeq(doc.contents) && doc.contents.items.length === 0) unlinkSync(path)
+    else writeFileSync(path, doc.toString({ lineWidth: 120 }))
     sendJson(res, 200, { id, file: a.file })
   } catch (e) {
     sendJson(res, 500, { error: [(e as Error).message] })

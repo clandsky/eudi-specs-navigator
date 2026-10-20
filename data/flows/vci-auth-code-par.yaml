@@ -29,7 +29,7 @@ steps:
   - { id: par, from: wallet, to: as, kind: request, label: POST /par, subject: vci.par-request, example: vci-par-request, tags: [WIA + PoP, PKCE] }
   - { id: par-response, from: as, to: wallet, kind: response, label: "201 request_uri", subject: vci.par-response, example: vci-par-response }
   - { id: authorize, from: wallet, to: as, kind: redirect, label: GET /authorize (via browser), subject: vci.authorization-request, example: vci-authorization-request, tags: [client_id, request_uri] }
-  - { id: user-auth, from: as, to: as, kind: internal, label: authenticate user, consent, subject: vci.user-authentication, note: Front channel through the user agent (OpenID4VCI §3.4). }
+  - { id: user-auth, from: as, to: as, kind: internal, label: "authenticate user, consent", subject: vci.user-authentication, note: Front channel through the user agent (OpenID4VCI §3.4). }
   - { id: authz-response, from: as, to: wallet, kind: redirect, label: "302 code, iss", subject: vci.authorization-response, example: vci-authorization-response }
   - { id: token, from: wallet, to: as, kind: request, label: POST /token, subject: vci.token-request, example: vci-token-request, tags: [WIA + PoP, DPoP] }
   - { id: token-response, from: as, to: wallet, kind: response, label: DPoP access token, subject: vci.token-response, example: vci-token-response }

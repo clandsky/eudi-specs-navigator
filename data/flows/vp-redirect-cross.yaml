@@ -3,7 +3,7 @@ title: Presentation — OpenID4VP redirect, cross device
 role: verifier
 order: 3
 subject: vp.flow.redirect-cross
-variant: { transport: redirect, device: cross }
+variant: { transport: redirect, device: cross, format: sd-jwt-vc }
 summary: >-
   The verifier's website runs on a desktop; the user scans a QR code with the wallet on the phone. There is no redirect
   back, so the browser session cannot be bound to the response (session fixation, OpenID4VP §14.2). The CIR position:

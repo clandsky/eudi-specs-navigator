@@ -1,0 +1,63 @@
+id: vp-mdoc-response-post
+title: Encrypted Authorization Response (direct_post.jwt) with an ISO mdoc DeviceResponse
+note: >-
+  The vp_token value is the base64url DeviceResponse; the CBOR blocks below decode it. Four of the seven issued PID
+  data elements are withheld: their digests sit in valueDigests, the elements do not travel. The SessionTranscript is
+  not part of the response; the Verifier rebuilds it from its own Request Object and checks the deviceSignature
+  against it. The issuer's protected header carries x5u and x5t as the CIR requires for the PID; the URL is an example.
+subject: vp.response-post
+kind: http-request
+http:
+  method: POST
+  url: https://verifier.example.eu/response
+  headers: { Content-Type: application/x-www-form-urlencoded }
+  body: { type: form, value: { response: "{{jwe:resp}}" } }
+jwts:
+  resp:
+    encrypt: { key: verifier-enc, alg: ECDH-ES, enc: A256GCM }
+    header: { kid: enc-1 }
+    payload:
+      vp_token: { pid-mdoc: ["{{mdoc:pid}}"] }
+      state: st-7Hc2-mdoc
+mdocs:
+  pid:
+    docType: eu.europa.ec.eudi.pid.1
+    issuer: pid-issuer
+    device: wallet-key-1
+    x5u: https://pid-provider.example.eu/certs/pid-signer.pem
+    validity: { signed: "2026-10-01T08:00:00Z", validFrom: "2026-10-01T08:00:00Z", validUntil: "2026-12-30T08:00:00Z" }
+    status: { status_list: { idx: 2049, uri: "https://pid-provider.example.eu/status/pid/7" } }
+    nameSpaces:
+      eu.europa.ec.eudi.pid.1:
+        - { digestID: 12, random: a16310783ecac4823f72d5038a675f3b, elementIdentifier: family_name, elementValue: MUSTERMANN }
+        - { digestID: 4, random: 679a1af2c7f3615b170de29b6ec7bd1a, elementIdentifier: given_name, elementValue: ERIKA }
+        - { digestID: 31, random: 42cba5d81e91075c1b5f1a5765284cc8, elementIdentifier: birth_date, elementValue: { $tag: 1004, value: "1964-08-12" } }
+        - { digestID: 7, random: d1ba16354af86100297dfb13aafc9cdf, elementIdentifier: nationality, elementValue: [DE], withheld: true }
+        - { digestID: 20, random: 40ba2ba290586b802968e65535c5fe01, elementIdentifier: issuing_authority, elementValue: DE, withheld: true }
+        - { digestID: 9, random: b038fe99ecc74e87e476c9b18c2c2595, elementIdentifier: issuing_country, elementValue: DE, withheld: true }
+        - { digestID: 15, random: 0248b46aec7f996822889bb96b04006e, elementIdentifier: expiry_date, elementValue: { $tag: 1004, value: "2026-12-30" }, withheld: true }
+    transcript:
+      handover: OpenID4VPHandover
+      clientId: "{{x509hash:verifier-access}}"
+      nonce: n-Mz4qL8vT2wXa
+      jwkThumbprint: verifier-enc
+      responseUri: https://verifier.example.eu/response
+annotations:
+  /http/body/response: vp.response-post.response
+  /jwt/resp/header/alg: vp.authorization-response.encryption
+  /jwt/resp/header/enc: vp.authorization-response.enc
+  /jwt/resp/header/kid: vp.authorization-response.kid
+  /jwt/resp/header/epk: vp.authorization-response.encryption
+  /jwt/resp/header/epk/*: vp.authorization-response.encryption
+  /jwt/resp/payload/vp_token: vp.vp_token
+  /jwt/resp/payload/vp_token/*: vp.dcql.id
+  /jwt/resp/payload/state: vp.request-object.state
+  # Positions inside CBOR arrays (COSE_Sign1, SessionTranscript, handover info) have no key; they are annotated here.
+  /cbor/pid/documents/0/issuerSigned/issuerAuth/2: vp.mdoc.mso
+  /cbor/pid-session-transcript/0: vp.mdoc.session-transcript
+  /cbor/pid-session-transcript/1: vp.mdoc.session-transcript
+  /cbor/pid-session-transcript/2: vp.mdoc.handover
+  /cbor/pid-handover-info/0: vp.mdoc.handover-info.client_id
+  /cbor/pid-handover-info/1: vp.mdoc.handover-info.nonce
+  /cbor/pid-handover-info/2: vp.mdoc.handover-info.jwk_thumbprint
+  /cbor/pid-handover-info/3: vp.mdoc.handover-info.response_uri

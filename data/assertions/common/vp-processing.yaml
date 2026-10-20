@@ -5,7 +5,7 @@
   locator: { section: "7.1" }
   relation: defines
   level: shall
-  applies_to: { role: [ verifier ] }
+  applies_to: { role: [ verifier ], format: [ sd-jwt-vc ] }
   quote: >-
     The "none" algorithm MUST NOT be accepted. … Validate the signature over the Issuer-signed JWT per Section 5.2 of
     [RFC7515]. … Validate the Issuer and that the signing key belongs to this Issuer.
@@ -16,7 +16,7 @@
   locator: { section: "3.4" }
   relation: profiles
   level: shall
-  applies_to: { role: [ verifier ] }
+  applies_to: { role: [ verifier ], format: [ sd-jwt-vc ] }
   quote: >-
     MUST be satisfied by determining and validating the public verification key used to verify the Issuer-signed JWT,
     employing an Issuer Signature Mechanism (defined in Section 3.5) that is permitted for the Issuer according to
@@ -28,7 +28,7 @@
   locator: { section: "3.5" }
   relation: defines
   level: info
-  applies_to: { role: [ verifier ] }
+  applies_to: { role: [ verifier ], format: [ sd-jwt-vc ] }
   quote: >-
     When the protected header of the Issuer-signed JWT contains the x5c parameter, the recipient uses the public key
     from the end-entity certificate of the certificates from that x5c parameter and validates the X.509 certificate
@@ -41,7 +41,7 @@
   locator: { section: "3.5" }
   relation: profiles
   level: shall
-  applies_to: { role: [ verifier ] }
+  applies_to: { role: [ verifier ], format: [ sd-jwt-vc ] }
   quote: >-
     If a recipient cannot validate that the public verification key corresponds the Issuer of the Issuer-signed JWT
     using a permitted Issuer Signature Mechanism, the SD-JWT VC MUST be rejected.
@@ -99,7 +99,7 @@
   locator: { section: "7.1" }
   relation: defines
   level: shall
-  applies_to: { role: [ verifier ] }
+  applies_to: { role: [ verifier ], format: [ sd-jwt-vc ] }
   quote: >-
     Check that the SD-JWT is valid using claims such as nbf, exp, and aud in the processed payload, if present. If a
     required validity-controlling claim is missing (see Section 9.7), the SD-JWT MUST be rejected.
@@ -110,6 +110,7 @@
   locator: { section: "4.1.4" }
   relation: defines
   level: shall
+  applies_to: { format: [ sd-jwt-vc ] }
   quote: >-
     The "exp" (expiration time) claim identifies the expiration time on or after which the JWT MUST NOT be accepted for
     processing.
@@ -120,7 +121,7 @@
   locator: { section: "3.4" }
   relation: profiles
   level: should
-  applies_to: { role: [ verifier ] }
+  applies_to: { role: [ verifier ], format: [ sd-jwt-vc ] }
   quote: >-
     If status is present in the verified payload of the SD-JWT, the status SHOULD be checked. It depends on the Verifier
     policy to reject or accept a presentation of a SD-JWT VC based on the status of the Verifiable Credential.

@@ -15,8 +15,10 @@ interface Props {
 }
 
 function checksOf(flow: Flow, subjectId: string) {
-  const t = flow.variant.transport
-  return (subjectById.get(subjectId)?.checks ?? []).filter((c) => !c.transport || !t || c.transport.includes(t))
+  const { transport: t, format: f } = flow.variant
+  return (subjectById.get(subjectId)?.checks ?? []).filter(
+    (c) => (!c.transport || !t || c.transport.includes(t)) && (!c.format || !f || c.format.includes(f)),
+  )
 }
 
 export function hasChecks(flow: Flow, step: Step): boolean {
@@ -37,7 +39,11 @@ export function CheckList({ flow, step, selected, onSelectSubject, onSelectStep 
               <span className="num">{stepNumber(flow, s)}</span> {s.label}
             </button>
           </h3>
-          <Table flow={flow} subjectId={s.subject} selected={selected} onSelect={onSelectSubject} />
+          {checksOf(flow, s.subject).length > 0 ? (
+            <Table flow={flow} subjectId={s.subject} selected={selected} onSelect={onSelectSubject} />
+          ) : (
+            <p className="meta">No field checks recorded for this format yet. Its rules are in the provenance stack.</p>
+          )}
         </section>
       ))}
     </div>

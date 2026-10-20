@@ -32,3 +32,12 @@
 - { id: sdjwtvc.exp, kind: field, parent: sdjwtvc, title: exp, location: jwt-payload, description: "Expiry time of the credential." }
 - { id: sdjwtvc.cnf, kind: field, parent: sdjwtvc, title: cnf, location: jwt-payload, description: "Holder key the credential is bound to; the holder proves possession with a Key Binding JWT." }
 - { id: http.accept, kind: field, parent: common, title: Accept header, location: header, description: "Media types the client is willing to receive in the response." }
+# COSE (RFC 9052 / RFC 9053 / RFC 9360): headers and keys inside mdoc CBOR structures; integer labels as in CBOR.
+- { id: cose.alg, kind: field, parent: common, title: "alg (COSE header, label 1)", location: cbor, description: "Signature algorithm of the COSE structure; -7 is ECDSA with SHA-256 (ES256)." }
+- { id: cose.x5chain, kind: field, parent: common, title: "x5chain (COSE header, label 33)", location: cbor, description: "X.509 certificate chain of the signing key, leaf first, as DER byte strings (one certificate: a single byte string)." }
+- { id: cose.x5t, kind: field, parent: common, title: "x5t (COSE header, label 34)", location: cbor, description: "Thumbprint of the signing certificate: [hash algorithm, hash]; -16 is SHA-256." }
+- { id: cose.x5u, kind: field, parent: common, title: "x5u (COSE header, label 35)", location: cbor, description: "URI where the signing certificate (chain) can be fetched." }
+- { id: cose-key.kty, kind: field, parent: common, title: "kty (COSE_Key, label 1)", location: cbor, description: "Key type of the COSE_Key; 2 is EC2 (elliptic curve with x and y coordinates)." }
+- { id: cose-key.crv, kind: field, parent: common, title: "crv (COSE_Key, label -1)", location: cbor, description: "Elliptic curve of the key; 1 is P-256." }
+- { id: cose-key.x, kind: field, parent: common, title: "x (COSE_Key, label -2)", location: cbor, description: "x coordinate of the EC public key, as a byte string." }
+- { id: cose-key.y, kind: field, parent: common, title: "y (COSE_Key, label -3)", location: cbor, description: "y coordinate of the EC public key, as a byte string." }
