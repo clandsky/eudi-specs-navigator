@@ -322,6 +322,15 @@
   applies_to: { transport: [ dc-api ] }
   quote: "The Wallet MUST support the Response Mode dc_api.jwt. The Verifier MUST use the Response Mode dc_api.jwt."
   verified: source-checked
+- id: haip/5.3.2/format-id
+  subject: vp.request-object.client_metadata.vp_formats_supported.dc-sd-jwt
+  spec: haip-1.0
+  locator: { section: "5.3.2" }
+  relation: profiles
+  level: shall
+  applies_to: { format: [ sd-jwt-vc ] }
+  quote: "The Credential Format identifier MUST be dc+sd-jwt."
+  verified: source-checked
 - id: haip/verifier_info/silent
   subject: vp.request-object.verifier_info.registration_cert
   spec: haip-1.0
