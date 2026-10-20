@@ -485,6 +485,10 @@ h2.section {
   stroke: var(--rule-strong);
   stroke-dasharray: 3 4;
 }
+.seq .lifeline-end {
+  stroke: var(--rule-strong);
+  stroke-width: 1.5;
+}
 .seq .actor rect {
   fill: var(--sheet);
   stroke: var(--rule-strong);
@@ -945,4 +949,61 @@ dialog.editor.editor-wide {
   font-size: 12.5px;
   line-height: 1.55;
   tab-size: 2;
+}
+
+/* Checks of a processing step ------------------------------------------------------------------------------------- */
+.checks .lede {
+  margin: 0 0 14px;
+}
+.check-group {
+  margin-top: 22px;
+}
+.check-group h3 {
+  font-size: 14px;
+  margin: 0 0 6px;
+}
+.check-group .num {
+  color: var(--ink-3);
+  font-variant-numeric: tabular-nums;
+  margin-right: 4px;
+}
+.check-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13.5px;
+}
+.check-table th {
+  text-align: left;
+  font-weight: 500;
+  font-size: 12px;
+  color: var(--ink-3);
+  padding: 4px 8px 4px 0;
+  border-bottom: 1px solid var(--rule-strong);
+}
+.check-table td {
+  vertical-align: top;
+  padding: 7px 8px 7px 0;
+  border-bottom: 1px solid var(--rule);
+  color: var(--ink-2);
+}
+.check-table td:first-child {
+  width: 38%;
+  color: var(--ink);
+}
+.check-table tr[data-selected='true'] td {
+  background: var(--sheet-2);
+}
+.linklike {
+  border: 0;
+  background: none;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.linklike:hover code,
+.linklike:hover {
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }

@@ -64,7 +64,8 @@ export function SequenceDiagram({ flow, selected, onSelect }: Props) {
   const rowH = (i: number) => (flow.steps[i]!.parent ? SUB_H : ROW_H)
   const rowY: number[] = []
   flow.steps.forEach((_, i) => rowY.push(i === 0 ? FIRST_ROW : rowY[i - 1]! + rowH(i - 1)))
-  const height = rowY.at(-1)! + rowH(flow.steps.length - 1) + 10
+  // Room below the last row so the selection frame does not touch the legend; the lifelines end with a short cap.
+  const height = rowY.at(-1)! + rowH(flow.steps.length - 1) + 26
   // An activation bar on the lifeline groups a step with its substeps.
   const groups = flow.steps.flatMap((s, i) => {
     let last = i
@@ -89,7 +90,8 @@ export function SequenceDiagram({ flow, selected, onSelect }: Props) {
           const x = xOf(p.id)
           return (
             <g key={p.id} className="actor">
-              <line className="lifeline" x1={x} x2={x} y1={TOP + HEAD_H} y2={height - 6} />
+              <line className="lifeline" x1={x} x2={x} y1={TOP + HEAD_H} y2={height - 10} />
+              <line className="lifeline-end" x1={x - 8} x2={x + 8} y1={height - 10} y2={height - 10} />
               <rect x={x - 66} y={TOP} width={132} height={HEAD_H} rx={6} />
               <text x={x} y={TOP + HEAD_H / 2 + 4.5} textAnchor="middle">
                 {p.label}

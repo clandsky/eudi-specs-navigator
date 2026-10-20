@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { LayerBadges, LayerName } from '../components/bits'
+import { CheckList, hasChecks } from '../components/CheckList'
 import { ObjectView } from '../components/ObjectView'
 import { OverruleEditor, type EntryKind } from '../components/OverruleEditor'
 import { StackPanel } from '../components/StackPanel'
@@ -50,6 +51,14 @@ export function FlowView({ flowId }: { flowId: string }) {
               variant={flow.variant}
               onSelect={(ptr, sub) => setParams({ field: ptr, subject: sub })}
             />
+          ) : hasChecks(flow, step) ? (
+            <CheckList
+              flow={flow}
+              step={step}
+              selected={subjectId}
+              onSelectSubject={(sub) => setParams({ field: null, subject: sub === step.subject ? null : sub })}
+              onSelectStep={(id) => setParams({ step: id, field: null, subject: null })}
+            />
           ) : (
             <p className="empty" style={{ padding: 0 }}>This step carries no message body. Its rules are shown on the right.</p>
           )}
@@ -59,9 +68,9 @@ export function FlowView({ flowId }: { flowId: string }) {
         <div className="pane-head">
           <h2>Provenance</h2>
           <p>
-            {field ? (
+            {field || subjectId !== step.subject ? (
               <>
-                Field <code>{field}</code>.{' '}
+                Field <code>{field ?? subjectById.get(subjectId)?.title ?? subjectId}</code>.{' '}
                 <button className="btn" style={{ padding: '0 6px' }} onClick={() => setParams({ field: null, subject: null })}>
                   Show the step
                 </button>

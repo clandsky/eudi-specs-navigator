@@ -77,12 +77,96 @@
 - { id: vp.verifier.ephemeral-enc-key, kind: behaviour, parent: vp.verifier.prepare-request, title: Verifier generates an ephemeral response encryption key }
 - { id: vp.verifier.sign-request-object, kind: behaviour, parent: vp.verifier.prepare-request, title: Verifier signs the Request Object with the RP access certificate key }
 - { id: vp.wallet.verify-request-signature, kind: behaviour, parent: vp.wallet.process-request, title: Wallet verifies the Request Object signature and the access certificate }
-- { id: vp.verifier.validate-response, kind: step, parent: vp, title: Verifier decrypts and validates the Authorization Response }
-- { id: vp.verifier.decrypt-response, kind: behaviour, parent: vp.verifier.validate-response, title: Verifier decrypts the JWE with the ephemeral private key }
-- { id: vp.verifier.check-state, kind: behaviour, parent: vp.verifier.validate-response, title: Verifier matches state to a recent Authorization Request }
-- { id: vp.verifier.check-vp-token, kind: behaviour, parent: vp.verifier.validate-response, title: Verifier checks the vp_token structure against the DCQL query }
-- { id: vp.verifier.verify-issuer-signature, kind: behaviour, parent: vp.verifier.validate-response, title: Verifier verifies the issuer signature and the x5c chain }
-- { id: vp.verifier.verify-disclosures, kind: behaviour, parent: vp.verifier.validate-response, title: Verifier matches the Disclosures against the _sd digests }
-- { id: vp.verifier.verify-kb-jwt, kind: behaviour, parent: vp.verifier.validate-response, title: Verifier verifies the Key Binding JWT (cnf key, nonce, aud, iat, sd_hash) }
-- { id: vp.verifier.check-validity, kind: behaviour, parent: vp.verifier.validate-response, title: Verifier checks exp and other validity claims }
-- { id: vp.verifier.check-status, kind: behaviour, parent: vp.verifier.validate-response, title: Verifier checks the status list entry }
+- id: vp.verifier.validate-response
+  kind: step
+  parent: vp
+  title: Verifier decrypts and validates the Authorization Response
+  description: "The Verifier takes the response apart from the outside in: the JWE envelope, the binding to its own transaction, the vp_token against the DCQL query, then each credential (issuer signature, Disclosures, Key Binding JWT, validity, status). Every check runs on the Verifier itself and any failure rejects the whole response (OpenID4VP §8.6, §14.9). Below, each check lists the fields it looks at and the result each one must have."
+- id: vp.verifier.decrypt-response
+  kind: behaviour
+  parent: vp.verifier.validate-response
+  title: Verifier decrypts the JWE with the ephemeral private key
+  description: "The response parameter is an unsigned, encrypted JWT (OpenID4VP §8.3). The Verifier looks up the ephemeral key pair it generated for this transaction, runs the ECDH-ES key agreement with the Wallet's epk and decrypts. Nothing inside is trusted before this step succeeds."
+  checks:
+    - { field: alg (JWE header), subject: vp.authorization-response.encryption, expect: "ECDH-ES, the key agreement the Verifier offered. Any other value: reject." }
+    - { field: enc (JWE header), subject: vp.authorization-response.enc, expect: "A128GCM or A256GCM, and one of the values listed in client_metadata.encrypted_response_enc_values_supported." }
+    - { field: kid (JWE header), subject: vp.authorization-response.kid, expect: "Equals the kid of the ephemeral key in client_metadata.jwks of this transaction. Unknown kid: reject." }
+    - { field: epk (JWE header), subject: vp.authorization-response.encryption, expect: "An EC public key on P-256 that is a valid point on the curve; it is the Wallet's half of the key agreement." }
+    - { field: ciphertext + tag, expect: "Decrypts with the ephemeral private key and the authentication tag verifies. Failure means the response was altered or was not encrypted for this transaction." }
+    - { field: payload, expect: "A JSON object with vp_token (and state where the request carried one). The JWE is not signed, so its content proves nothing yet; the checks below do." }
+- id: vp.verifier.check-state
+  kind: behaviour
+  parent: vp.verifier.validate-response
+  title: Verifier matches state to a recent Authorization Request
+  description: "In the redirect flows anyone can POST to the response_uri. state ties the POST to a transaction the Verifier actually started and is still waiting for (OpenID4VP §14.3.2). Over the Digital Credentials API the browser returns the response to the page that asked, so there is no state."
+  checks:
+    - { field: state, subject: vp.request-object.state, expect: "Present and byte-for-byte equal to the state of an open transaction created by this Verifier." }
+    - { field: transaction age, expect: "The transaction is recent, i.e. inside the Verifier's timeout (a few minutes). Expired: reject." }
+    - { field: transaction status, expect: "No response was accepted for this transaction yet. A second POST with the same state is a replay: reject." }
+- id: vp.verifier.check-vp-token
+  kind: behaviour
+  parent: vp.verifier.validate-response
+  title: Verifier checks the vp_token structure against the DCQL query
+  description: "The vp_token must answer the DCQL query of this transaction, no more and no less (OpenID4VP §8.1, §8.6, §6.4). This is a structural check; the cryptographic checks of each presentation follow."
+  checks:
+    - { field: vp_token, subject: vp.vp_token, expect: "A JSON object. Each key is the id of a credential query from the request; each value is an array of presentations." }
+    - { field: "vp_token keys", subject: vp.dcql.id, expect: "Only ids that were requested, and every required query (or one option of each required credential_set) is answered, e.g. pid-sd-jwt." }
+    - { field: "presentations per key", expect: "Exactly one, unless the query set multiple: true." }
+    - { field: format, subject: vp.dcql.format, expect: "Matches the query's format. For dc+sd-jwt: an SD-JWT with Disclosures and a Key Binding JWT, separated by ~." }
+    - { field: vct, subject: vp.dcql.vct_values, expect: "The credential's vct is one of the query's meta.vct_values, e.g. urn:eudi:pid:de:1." }
+    - { field: claims, subject: vp.dcql.claims, expect: "Every claim path the query asked for is disclosed (or one claim_sets option is satisfied)." }
+- id: vp.verifier.verify-issuer-signature
+  kind: behaviour
+  parent: vp.verifier.validate-response
+  title: Verifier verifies the issuer signature and the x5c chain
+  description: "Proves the credential comes from a trusted issuer and was not changed. With x5c the key comes from the end-entity certificate, the certificate chain is validated, and the issuer is the subject of that certificate (RFC 9901 §7.1, SD-JWT VC §3.5, HAIP §6.1.1)."
+  checks:
+    - { field: typ (JWT header), subject: sdjwtvc.typ, expect: "dc+sd-jwt." }
+    - { field: alg (JWT header), expect: "An asymmetric algorithm the Verifier accepts, at least ES256. none: always reject." }
+    - { field: x5c (JWT header), expect: "The chain validates up to a trust anchor the Verifier trusts for this credential type (e.g. the PID Provider trusted list); every certificate is within its validity period and not revoked." }
+    - { field: signature, expect: "Verifies over the Issuer-signed JWT with the public key of the x5c end-entity certificate." }
+    - { field: iss, subject: sdjwtvc.iss, expect: "Identifies the issuer and is consistent with the end-entity certificate, e.g. https://pid-provider.example.de." }
+- id: vp.verifier.verify-disclosures
+  kind: behaviour
+  parent: vp.verifier.validate-response
+  title: Verifier matches the Disclosures against the _sd digests
+  description: "Each Disclosure carries one selectively disclosed claim. Its digest must appear in the signed payload, so the issuer signature covers the claim even though the claim travels outside the JWT (RFC 9901 §7.1). The result is the processed payload with the disclosed claims put back in place."
+  checks:
+    - { field: _sd_alg, expect: "A hash algorithm the Verifier understands and considers secure; sha-256 when absent." }
+    - { field: each Disclosure, expect: "base64url-decodes to a JSON array [salt, name, value] (or [salt, value] for an array element)." }
+    - { field: digest of each Disclosure, expect: "The hash over the base64url Disclosure string appears in an _sd array (or as {\"...\": digest} in an array) of the payload or of another Disclosure." }
+    - { field: duplicates, expect: "No digest occurs twice, and every Disclosure is referenced. Otherwise: reject." }
+    - { field: claim names, expect: "Not _sd or ..., and not already present in the same object of the payload." }
+- id: vp.verifier.verify-kb-jwt
+  kind: behaviour
+  parent: vp.verifier.validate-response
+  title: Verifier verifies the Key Binding JWT (cnf key, nonce, aud, iat, sd_hash)
+  description: "The Key Binding JWT proves that the holder of the key the issuer bound into the credential presented it, to this Verifier, in this transaction (RFC 9901 §7.3, OpenID4VP §14.1.2). It closes replay: a presentation copied from another transaction fails on nonce or aud."
+  checks:
+    - { field: KB-JWT, subject: vp.kb-jwt, expect: "Present whenever the credential has a cnf key (HAIP §6.1.1.1)." }
+    - { field: typ (KB-JWT header), subject: vp.kb-jwt.typ, expect: "kb+jwt." }
+    - { field: alg (KB-JWT header), expect: "ES256 or another algorithm the Verifier accepts (client_metadata.vp_formats_supported); never none." }
+    - { field: signature, subject: sdjwtvc.cnf, expect: "Verifies with the public key in the credential's cnf.jwk." }
+    - { field: nonce, subject: vp.kb-jwt.nonce, expect: "Equals the nonce of this transaction's Request Object." }
+    - { field: aud, subject: vp.kb-jwt.aud, transport: [redirect], expect: "Equals the client_id of the request, e.g. x509_hash:<hash of the access certificate> (OpenID4VP B.3.6)." }
+    - { field: aud, subject: vp.kb-jwt.aud, transport: [dc-api], expect: "origin: followed by the web origin of the page that called the API, e.g. origin:https://verifier.example.eu (OpenID4VP B.3.6)." }
+    - { field: iat, expect: "Within an acceptable window around now (a few minutes, plus clock skew)." }
+    - { field: sd_hash, subject: vp.kb-jwt.sd_hash, expect: "Equals the base64url hash (_sd_alg) over the Issuer-signed JWT and the presented Disclosures, up to and including the last ~." }
+- id: vp.verifier.check-validity
+  kind: behaviour
+  parent: vp.verifier.validate-response
+  title: Verifier checks exp and other validity claims
+  description: "Checks the time window the issuer set, on the processed payload (RFC 9901 §7.1, RFC 7519 §4.1.4). A validity claim the Verifier's policy requires but the credential lacks rejects the credential."
+  checks:
+    - { field: exp, subject: sdjwtvc.exp, expect: "Lies in the future: now < exp, allowing a small clock skew." }
+    - { field: nbf, expect: "If present, lies in the past: now ≥ nbf." }
+    - { field: iat, expect: "If present, not in the future." }
+- id: vp.verifier.check-status
+  kind: behaviour
+  parent: vp.verifier.validate-response
+  title: Verifier checks the status list entry
+  description: "Asks the issuer's Token Status List whether the credential was revoked or suspended. Only after the credential itself passed the checks above (Token Status List §8.3). What a non-valid status means for the transaction is Verifier policy (SD-JWT VC §3.4)."
+  checks:
+    - { field: status.status_list.uri, subject: tsl.uri, expect: "An https URL. The Verifier fetches the Status List Token from it (or uses a cached copy that has not expired)." }
+    - { field: Status List Token, expect: "typ statuslist+jwt, signature valid and from the issuer (or a party it trusts for status), sub equals the uri, exp not passed." }
+    - { field: status.status_list.idx, subject: tsl.idx, expect: "The entry at idx in the decompressed list (bits per entry as the token's bits says) is 0x00 VALID. 0x01 INVALID: reject. 0x02 SUSPENDED: per policy, usually reject." }
