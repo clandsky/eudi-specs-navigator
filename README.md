@@ -20,6 +20,12 @@ override it, and the effective rule as of a date**.
   how each layer changes the rule.
 - **As-of date**: the effective rule on a given day, and how it changes over time.
 - **OpenAPI export** for the issuer and the verifier side.
+- **Effective API** (`pnpm effective`, local only): like an effective POM, the complete contract of one role with every
+  layer already resolved (d-you go-live compromises and assumptions applied, as of today) and the provenance dropped.
+  [`effective/eaa-provider.api.ts`](effective/eaa-provider.api.ts) and [`effective/verifier.api.ts`](effective/verifier.api.ts)
+  are TypeScript declarations with fixed comment markers (levels per role, conditions, flows, exact rule wording, checks),
+  compact enough for an agent's context; `*.examples.json` beside them hold the decoded example messages. Deterministic,
+  so a git diff of the files is the change log. Not part of the web app; commit and push the files by hand.
 - **Educate**: a learning roadmap of the concepts each role needs, in clusters (general and ecosystem trust, then the
   verifier or issuer path), with questions, reading and links into the flows and specs.
 
