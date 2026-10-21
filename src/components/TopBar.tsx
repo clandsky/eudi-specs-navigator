@@ -88,8 +88,8 @@ export function TopBar() {
         {navItem('educate', 'Educate', ['educate'])}
       </nav>
       <span className="spacer" />
-      <Search />
-      <div className="icon-group" role="group" aria-label="Date, change feed and theme">
+      <div className="icon-group" role="group" aria-label="Search, date, change feed and theme">
+        <Search />
         <AsOfButton />
         <a className="icon-btn" href={href(['rss'])} aria-current={section === 'rss' ? 'page' : undefined} title="Change feed" aria-label="Change feed (RSS)">
           <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true">
