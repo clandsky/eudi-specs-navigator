@@ -1,9 +1,17 @@
+import { useEffect } from 'react'
 import { buildOpenApi, openApiYaml } from '../model/openapi'
 import { href } from '../lib/router'
 import { ds, useViewCtx } from '../lib/store'
+import { EndpointsTable } from './Pages'
 
-export function HomeView() {
+/** `focus` scrolls to a section on arrival; `#/endpoints` (the former endpoints page) lands on the endpoints list. */
+export function HomeView({ focus }: { focus?: 'endpoints' }) {
   const vc = useViewCtx()
+  useEffect(() => {
+    // After the shell's scroll-to-top for a new address, which runs later in the same commit.
+    const frame = requestAnimationFrame(() => focus && document.getElementById(focus)?.scrollIntoView())
+    return () => cancelAnimationFrame(frame)
+  }, [focus])
   const flows = ds.flows.filter((f) => f.role === vc.view).sort((a, b) => a.order - b.order)
 
   function download() {
@@ -40,6 +48,12 @@ export function HomeView() {
         </ul>
       )}
 
+      <h2 className="section" id="endpoints">
+        Endpoints
+      </h2>
+      <p className="lede">The HTTP endpoints this side has to serve, with the layers that shape each one.</p>
+      <EndpointsTable />
+
       <h2 className="section">OpenAPI</h2>
       <p className="lede">
         Download an OpenAPI 3.1 description of the {vc.view === 'issuer' ? 'authorization server and credential issuer' : 'verifier'} endpoints,
@@ -49,7 +63,6 @@ export function HomeView() {
       <button className="btn btn-primary" onClick={download} disabled={!exportable}>
         Download {vc.view}.openapi.yaml
       </button>
-      {!exportable && <p className="meta">No verifier endpoints are modelled yet.</p>}
     </div>
   )
 }

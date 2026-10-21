@@ -3,7 +3,7 @@ import { useKeepScrollOnReload, useRoute, useScrollTopOnPath } from './lib/route
 import { EducateView } from './views/EducateView'
 import { FlowView } from './views/FlowView'
 import { HomeView } from './views/HomeView'
-import { AdaptationsPage, AssertionPage, DyouStatePage, EndpointsPage, ObjectPage, ReviewPage, SpecPage, SpecsIndex, SubjectPage } from './views/Pages'
+import { AdaptationsPage, AssertionPage, ObjectPage, ReviewPage, SpecPage, SpecsIndex, SubjectPage, WalletsView } from './views/Pages'
 
 function Content() {
   const { path } = useRoute()
@@ -26,18 +26,17 @@ function Content() {
     case 'review':
       return <ReviewPage />
     case 'endpoints':
-      return <EndpointsPage />
+      return <HomeView focus="endpoints" />
     case 'educate':
       return <EducateView />
+    case 'wallets':
+      return <WalletsView tab={id} />
+    // Former addresses of the two wallet tabs, kept so old links still work.
     case 'state':
-      return <DyouStatePage />
-    // Placeholders: comparing national wallet solutions, and an RSS feed of changes. No content or logic yet.
+      return <WalletsView tab="d-you" />
     case 'compare':
-      return (
-        <div className="page">
-          <h1>Compare wallets</h1>
-        </div>
-      )
+      return <WalletsView tab="compare" />
+    // Placeholder: an RSS feed of changes. No content or logic yet.
     case 'rss':
       return (
         <div className="page">

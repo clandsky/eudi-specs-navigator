@@ -311,7 +311,7 @@ function windowText(a: Assertion): string {
  * Where d-you deviates from the binding rules: every entry of the wallet solution layer (go-live compromises and
  * resolved readings) for the current side, split by whether its window is open on the as-of date.
  */
-export function DyouStatePage() {
+function DyouStatePage() {
   const vc = useViewCtx()
   const all = ds.assertions.filter((a) => layerOf(a) === 'golive')
   const other = vc.view === 'issuer' ? 'verifier' : 'issuer'
@@ -324,7 +324,7 @@ export function DyouStatePage() {
   const [active, upcoming, ended] = [by('active'), by('upcoming'), by('ended')]
   const readings = mine.filter((a) => a.spec === 'resolved-golive')
   return (
-    <div className="page" style={{ maxWidth: 1240 }}>
+    <>
       <h1>d-you state</h1>
       <p className="lede">
         Where d-you deviates from the binding rules on {formatDate(vc.asOf)}, {vc.view} side: the go-live compromises in
@@ -333,7 +333,7 @@ export function DyouStatePage() {
         {otherCount > 0 && (
           <>
             {' '}
-            <a href={href(['state'], { role: other === 'issuer' ? 'issuer' : null })}>
+            <a href={href(['wallets', 'd-you'], { role: other === 'issuer' ? 'issuer' : null })}>
               {otherCount} more on the {other} side
             </a>
             .
@@ -375,6 +375,33 @@ export function DyouStatePage() {
           <p className="meta">How d-you reads an unclear or defective rule; each replaces the literal reading of its target.</p>
           <DeviationTable items={readings} />
         </>
+      )}
+    </>
+  )
+}
+
+const WALLET_TABS = [
+  { id: 'd-you', label: 'd-you state' },
+  { id: 'compare', label: 'Compare' },
+]
+
+/** The wallet solution layer: one tab per national wallet solution (d-you today), and their comparison. */
+export function WalletsView({ tab = 'd-you' }: { tab?: string }) {
+  const current = WALLET_TABS.some((t) => t.id === tab) ? tab : 'd-you'
+  return (
+    <div className="page" style={{ maxWidth: 1240 }}>
+      <nav className="nav subnav" aria-label="Wallets">
+        {WALLET_TABS.map((t) => (
+          <a key={t.id} href={href(['wallets', t.id])} aria-current={t.id === current ? 'page' : undefined}>
+            {t.label}
+          </a>
+        ))}
+      </nav>
+      {current === 'compare' ? (
+        // Placeholder: comparing national wallet solutions. No content or logic yet.
+        <h1>Compare wallets</h1>
+      ) : (
+        <DyouStatePage />
       )}
     </div>
   )
@@ -708,14 +735,13 @@ function AssertionTable({ items, reason, note }: { items: Assertion[]; reason?: 
 
 const SERVER_LABEL: Record<string, string> = { as: 'Authorization Server', issuer: 'Credential Issuer', verifier: 'Verifier', wallet: 'Wallet', 'wallet-provider': 'Wallet Provider' }
 
-export function EndpointsPage() {
+/** The HTTP endpoints the current side has to serve; shown on the flows page. */
+export function EndpointsTable() {
   const vc = useViewCtx()
   const servers = vc.view === 'issuer' ? ['as', 'issuer'] : ['verifier']
   const eps = ds.subjects.filter((s) => s.endpoint && servers.includes(s.endpoint.server))
   return (
-    <div className="page">
-      <h1>{vc.view === 'issuer' ? 'Issuer' : 'Verifier'} endpoints</h1>
-      <p className="lede">The HTTP endpoints this side has to serve, with the layers that shape each one.</p>
+    <>
       {eps.length === 0 ? (
         <div className="notice">No verifier endpoints are modelled yet; they come with the presentation flows in phase 3.</div>
       ) : (
@@ -758,7 +784,7 @@ export function EndpointsPage() {
           </tbody>
         </table>
       )}
-    </div>
+    </>
   )
 }
 

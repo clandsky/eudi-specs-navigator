@@ -212,6 +212,20 @@ code,
 .nav a:hover {
   color: var(--ink);
 }
+.subnav {
+  margin: -8px 0 20px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--rule);
+}
+a.icon-btn {
+  color: var(--ink-2);
+  text-decoration: none;
+}
+a.icon-btn:hover,
+a.icon-btn[aria-current='page'] {
+  color: var(--ink);
+  background: var(--sheet-2);
+}
 .spacer {
   flex: 1;
 }
@@ -257,7 +271,7 @@ code,
 .lensbar {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 8px 14px;
   padding: 8px 20px;
   border-bottom: 1px solid var(--rule);
   background: var(--paper);
@@ -266,6 +280,15 @@ code,
 .lens-label {
   color: var(--ink-2);
   font-weight: 500;
+}
+.ctx-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  max-width: 100%;
+  padding-left: 14px;
+  border-left: 1px solid var(--rule);
 }
 .lens {
   display: flex;
@@ -281,6 +304,7 @@ code,
   padding: 4px 12px 4px 22px;
   font-weight: 500;
   color: var(--ink-3);
+  white-space: nowrap;
 }
 .lens button:first-child {
   border-left-width: 1px;
@@ -311,7 +335,12 @@ code,
   box-shadow: inset 0 -2px 0 var(--c);
 }
 .lens-hint {
+  flex: 1;
+  min-width: 0;
   color: var(--ink-3);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* Layout ---------------------------------------------------------------------------------------------------------- */
@@ -362,6 +391,11 @@ code,
   }
   .lensbar {
     padding: 8px 16px;
+  }
+  /* Wrapped onto their own lines, the context groups need no divider. */
+  .ctx-group {
+    padding-left: 0;
+    border-left: 0;
   }
   .page {
     padding: 20px 16px 48px;
