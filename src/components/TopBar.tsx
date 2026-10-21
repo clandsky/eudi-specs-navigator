@@ -62,12 +62,12 @@ export function TopBar() {
         ))}
       </div>
       <nav className="nav" aria-label="Sections">
-        {navItem('educate', 'Educate', ['educate'])}
         {navItem('', 'Flows', ['', 'flow', 'object'])}
         {navItem('endpoints', 'Endpoints', ['endpoints'])}
         {navItem('spec', 'Specs', ['spec'])}
         {navItem('review', 'Review', ['review'])}
         {navItem('compare', 'Compare wallets', ['compare'])}
+        {navItem('educate', 'Educate', ['educate'])}
         {navItem('rss', 'RSS', ['rss'])}
       </nav>
       <span className="spacer" />
