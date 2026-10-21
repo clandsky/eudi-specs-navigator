@@ -3,7 +3,7 @@ import { useKeepScrollOnReload, useRoute, useScrollTopOnPath } from './lib/route
 import { EducateView } from './views/EducateView'
 import { FlowView } from './views/FlowView'
 import { HomeView } from './views/HomeView'
-import { AdaptationsPage, AssertionPage, EndpointsPage, ObjectPage, ReviewPage, SpecPage, SpecsIndex, SubjectPage } from './views/Pages'
+import { AdaptationsPage, AssertionPage, DyouStatePage, EndpointsPage, ObjectPage, ReviewPage, SpecPage, SpecsIndex, SubjectPage } from './views/Pages'
 
 function Content() {
   const { path } = useRoute()
@@ -29,6 +29,8 @@ function Content() {
       return <EndpointsPage />
     case 'educate':
       return <EducateView />
+    case 'state':
+      return <DyouStatePage />
     // Placeholders: comparing national wallet solutions, and an RSS feed of changes. No content or logic yet.
     case 'compare':
       return (

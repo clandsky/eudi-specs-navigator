@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { LayerBadges, LayerName, LevelChip, SpecName, StatusTag, cssLayer } from '../components/bits'
+import { LayerBadges, LayerName, LevelChip, SpecName, StatusTag, cssLayer, formatDate } from '../components/bits'
 import { ObjectView as ObjectViewLazy } from '../components/ObjectView'
 import { OverruleEditor, type EntryKind } from '../components/OverruleEditor'
 import { StackPanel } from '../components/StackPanel'
@@ -10,12 +10,16 @@ import { stepNumber } from '../model/steps'
 import { href } from '../lib/router'
 import {
   C2BO_URL,
+  LENS_STAGES,
   ROLE_LABEL,
   VIEW_ROLES,
   assertionById,
+  draftIds,
   ds,
   effective,
   layerById,
+  layerOf,
+  layersForStage,
   layersTouching,
   locatorText,
   onSide,
@@ -282,6 +286,177 @@ export function AdaptationsPage() {
         </tbody>
       </table>
     </div>
+  )
+}
+
+// d-you state -------------------------------------------------------------------------------------------------------
+
+const DEVIATION_EFFECT: Record<string, string> = { ...EFFECT, deviates: 'Deviates' }
+
+type WindowState = 'active' | 'upcoming' | 'ended'
+function windowState(a: Assertion, asOf: string): WindowState {
+  if (a.window?.from && a.window.from > asOf) return 'upcoming'
+  if (a.window?.until && a.window.until < asOf) return 'ended'
+  return 'active'
+}
+
+function windowText(a: Assertion): string {
+  const w = a.window
+  if (!w?.from && !w?.until) return 'No end date'
+  if (w.from && w.until) return `${formatDate(w.from)} to ${formatDate(w.until)}`
+  return w.from ? `From ${formatDate(w.from)}, no end date` : `Until ${formatDate(w.until!)}`
+}
+
+/**
+ * Where d-you deviates from the binding rules: every entry of the wallet solution layer (go-live compromises and
+ * resolved readings) for the current side, split by whether its window is open on the as-of date.
+ */
+export function DyouStatePage() {
+  const vc = useViewCtx()
+  const all = ds.assertions.filter((a) => layerOf(a) === 'golive')
+  const other = vc.view === 'issuer' ? 'verifier' : 'issuer'
+  const otherCount = all.filter((a) => !onSide(a.subject, vc.view)).length
+  const mine = all
+    .filter((a) => onSide(a.subject, vc.view))
+    .sort((x, y) => (y.window?.from ?? '').localeCompare(x.window?.from ?? '') || x.id.localeCompare(y.id))
+  const compromises = mine.filter((a) => a.spec !== 'resolved-golive')
+  const by = (s: WindowState) => compromises.filter((a) => windowState(a, vc.asOf) === s)
+  const [active, upcoming, ended] = [by('active'), by('upcoming'), by('ended')]
+  const readings = mine.filter((a) => a.spec === 'resolved-golive')
+  return (
+    <div className="page" style={{ maxWidth: 1240 }}>
+      <h1>d-you state</h1>
+      <p className="lede">
+        Where d-you deviates from the binding rules on {formatDate(vc.asOf)}, {vc.view} side: the go-live compromises in
+        force, those still to start or already ended, and the readings resolved into the d-you layer. The last column is
+        the rule that results once every layer is applied.
+        {otherCount > 0 && (
+          <>
+            {' '}
+            <a href={href(['state'], { role: other === 'issuer' ? 'issuer' : null })}>
+              {otherCount} more on the {other} side
+            </a>
+            .
+          </>
+        )}
+      </p>
+      <Counts
+        items={[
+          ['In force', active.length],
+          ['Upcoming', upcoming.length],
+          ['Ended', ended.length],
+          ['Resolved readings', readings.length],
+        ]}
+      />
+
+      <h2 className="section">In force ({active.length})</h2>
+      {active.length === 0 ? (
+        <p className="meta">No go-live compromise applies on this date for the {vc.view} side.</p>
+      ) : (
+        <DeviationTable items={active} />
+      )}
+      {upcoming.length > 0 && (
+        <>
+          <h2 className="section">Upcoming ({upcoming.length})</h2>
+          <p className="meta">Agreed, but their window opens after {formatDate(vc.asOf)}.</p>
+          <DeviationTable items={upcoming} />
+        </>
+      )}
+      {ended.length > 0 && (
+        <>
+          <h2 className="section">Ended ({ended.length})</h2>
+          <p className="meta">Their window has closed: the underlying rule applies again.</p>
+          <DeviationTable items={ended} />
+        </>
+      )}
+      {readings.length > 0 && (
+        <>
+          <h2 className="section">Resolved readings ({readings.length})</h2>
+          <p className="meta">How d-you reads an unclear or defective rule; each replaces the literal reading of its target.</p>
+          <DeviationTable items={readings} />
+        </>
+      )}
+    </div>
+  )
+}
+
+function DeviationTable({ items }: { items: Assertion[] }) {
+  const vc = useViewCtx()
+  // The net result is always resolved with every layer on, so the page shows the d-you state whatever the lens says.
+  const allLayers = layersForStage(LENS_STAGES.length - 1)
+  return (
+    <table className="data">
+      <thead>
+        <tr>
+          <th style={{ width: '26%' }}>Binding rule</th>
+          <th style={{ width: '30%' }}>d-you</th>
+          <th>Effect</th>
+          <th style={{ width: '26%' }}>Net result</th>
+        </tr>
+      </thead>
+      <tbody>
+        {items.map((a) => {
+          const t = a.target ? assertionById.get(a.target) : null
+          const role = a.applies_to.role?.[0] ?? rolesOf(stackOf(a.subject), vc.view)[0] ?? (VIEW_ROLES[vc.view][0] as Role)
+          const on = a.applies_to
+          const variant = { grant: on.grant?.[0], format: on.format?.[0], transport: on.transport?.[0], device: on.device?.[0] }
+          const r = effective(a.subject, role, vc, variant, allLayers)
+          return (
+            <tr key={a.id}>
+              <td>
+                {t ? (
+                  <>
+                    <SpecName specId={t.spec} />{' '}
+                    <a className="mono" href={href(['assertion', t.id])}>
+                      {locatorText(t)}
+                    </a>
+                    <p className={`quote ${a.relation === 'voids' ? 'struck' : ''}`}>{t.quote}</p>
+                  </>
+                ) : (
+                  <span className="meta">No target rule</span>
+                )}
+              </td>
+              <td>
+                <a className="mono" href={href(['assertion', a.id])}>
+                  {locatorText(a)}
+                </a>
+                {draftIds.has(a.id) && (
+                  <>
+                    {' '}
+                    <span className="tag status-review">Local draft</span>
+                  </>
+                )}
+                <p className="quote">{a.quote}</p>
+                <div className="meta" style={{ marginTop: 4 }}>
+                  {windowText(a)}
+                  {a.decided_by && <> · decided by {a.decided_by}</>}
+                </div>
+              </td>
+              <td>
+                <strong>{DEVIATION_EFFECT[a.relation] ?? a.relation}</strong>
+                {a.level && a.relation !== 'voids' && (
+                  <div>
+                    {t?.level && <LevelChip level={t.level} />} → <LevelChip level={a.level} />
+                  </div>
+                )}
+              </td>
+              <td>
+                <a href={href(['subject', a.subject])}>{subjectById.get(a.subject)?.title ?? a.subject}</a>
+                <div style={{ marginTop: 4 }}>
+                  <LevelChip level={r.level} /> <span className="meta">{ROLE_LABEL[role]}</span>{' '}
+                  {r.decidedBy[0] && (
+                    <span className="meta">
+                      <SpecName specId={r.decidedBy[0].spec} /> {locatorText(r.decidedBy[0])}
+                    </span>
+                  )}{' '}
+                  <StatusTag rule={r} />
+                </div>
+              </td>
+            </tr>
+          )
+        })}
+      </tbody>
+    </table>
   )
 }
 

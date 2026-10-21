@@ -66,6 +66,7 @@ export function TopBar() {
         {navItem('endpoints', 'Endpoints', ['endpoints'])}
         {navItem('spec', 'Specs', ['spec'])}
         {navItem('review', 'Review', ['review'])}
+        {navItem('state', 'd-you state', ['state'])}
         {navItem('compare', 'Compare wallets', ['compare'])}
         {navItem('educate', 'Educate', ['educate'])}
         {navItem('rss', 'RSS', ['rss'])}
