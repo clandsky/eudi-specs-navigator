@@ -1,7 +1,8 @@
+import * as Popover from '@radix-ui/react-popover'
 import { useEffect, useState } from 'react'
 import { href, navigate, setParams, useRoute } from '../lib/router'
-import { LENS_STAGES, useViewCtx } from '../lib/store'
-import { cssLayer } from './bits'
+import { LENS_STAGES, today, useViewCtx } from '../lib/store'
+import { cssLayer, formatDate } from './bits'
 import { Search } from './Search'
 
 const THEME_KEY = 'specs-navigator.theme'
@@ -25,6 +26,37 @@ function useTheme(): [string, () => void] {
   }, [theme])
   const next = () => setTheme((t) => (t === 'dark' ? 'light' : 'dark'))
   return [theme, next]
+}
+
+/** The date the rules are shown for. Today unless a link or the picker says otherwise; a set date marks the button. */
+function AsOfButton() {
+  const vc = useViewCtx()
+  const isToday = vc.asOf === today()
+  const label = isToday ? `Showing the rules in force today (${formatDate(vc.asOf)})` : `Showing the rules in force on ${formatDate(vc.asOf)}`
+  const setDate = (d: string) => setParams({ asOf: d && d !== today() ? d : null })
+  return (
+    <Popover.Root>
+      <Popover.Trigger className="icon-btn" data-set={!isToday} title={label} aria-label={`${label}. Change the date`}>
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" aria-hidden="true">
+          <rect x="2" y="3" width="12" height="11" rx="1.5" />
+          <path d="M2 6.5h12M5 1.5v3M11 1.5v3" />
+        </svg>
+      </Popover.Trigger>
+      <Popover.Portal>
+        <Popover.Content className="popover" align="end" sideOffset={6}>
+          <label className="lens-label" style={{ display: 'grid', gap: 6 }}>
+            Show the rules as of
+            <input className="field-input" type="date" value={vc.asOf} onChange={(e) => setDate(e.target.value)} />
+          </label>
+          {!isToday && (
+            <Popover.Close className="btn" style={{ marginTop: 10, width: '100%' }} onClick={() => setDate('')}>
+              Back to today
+            </Popover.Close>
+          )}
+        </Popover.Content>
+      </Popover.Portal>
+    </Popover.Root>
+  )
 }
 
 export function TopBar() {
@@ -57,6 +89,7 @@ export function TopBar() {
       </nav>
       <span className="spacer" />
       <Search />
+      <AsOfButton />
       <a className="icon-btn" href={href(['rss'])} aria-current={section === 'rss' ? 'page' : undefined} title="Change feed" aria-label="Change feed (RSS)">
         <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true">
           <path d="M3 7.5a5.5 5.5 0 0 1 5.5 5.5M3 3a10 10 0 0 1 10 10" />

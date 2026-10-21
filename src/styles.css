@@ -217,6 +217,30 @@ code,
   padding-bottom: 8px;
   border-bottom: 1px solid var(--rule);
 }
+.icon-btn[data-set='true'] {
+  position: relative;
+  color: var(--ink);
+  background: var(--sheet-2);
+}
+.icon-btn[data-set='true']::after {
+  content: '';
+  position: absolute;
+  top: -3px;
+  right: -3px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--warn);
+  box-shadow: 0 0 0 2px var(--sheet);
+}
+.popover {
+  z-index: 30;
+  padding: 12px;
+  background: var(--sheet);
+  border: 1px solid var(--rule-strong);
+  border-radius: 8px;
+  box-shadow: 0 12px 32px rgb(0 0 0 / 0.14);
+}
 a.icon-btn {
   color: var(--ink-2);
   text-decoration: none;
