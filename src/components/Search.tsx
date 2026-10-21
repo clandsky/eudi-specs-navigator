@@ -35,14 +35,16 @@ function getIndex(): MiniSearch<Doc> {
     ...ds.specs.map((s) => ({ id: `p:${s.id}`, kind: 'spec' as const, title: s.title, text: `${s.short} ${s.version}`, link: `spec/${s.id}`, meta: s.version })),
     ...ds.flows.map((f) => ({ id: `f:${f.id}`, kind: 'flow' as const, title: f.title, text: f.summary, link: `flow/${f.id}`, meta: 'flow' })),
     ...ds.educate.flatMap((t) =>
-      t.topics.map((x) => ({
-        id: `t:${x.id}`,
-        kind: 'topic' as const,
-        title: x.title,
-        text: `${x.terms.join(' ')} ${x.summary ?? ''}`,
-        link: `educate?topic=${x.id}`,
-        meta: `${t.code}, ${t.title}`,
-      })),
+      t.topics.flatMap((x) =>
+        [x, ...x.subtopics].map((y) => ({
+          id: `t:${y.id}`,
+          kind: 'topic' as const,
+          title: y.title,
+          text: y.summary ?? '',
+          link: `educate?topic=${y.id}`,
+          meta: y === x ? `${t.code}, ${t.title}` : `${t.code}, ${x.title}`,
+        })),
+      ),
     ),
   ]
   index = new MiniSearch<Doc>({

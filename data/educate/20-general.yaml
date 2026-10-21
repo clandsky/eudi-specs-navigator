@@ -23,7 +23,7 @@ topics:
       A credential (attestation) is a set of attributes about the user, signed by its issuer and bound to a key that
       only the user's wallet can use. The user discloses only the attributes a relying party asks for, and the relying
       party checks the issuer's signature and the key binding.
-    terms: [PID, EAA, QEAA, PuB-EAA]
+    subtopics: [PID, EAA, QEAA, PuB-EAA]
     subjects: [sdjwtvc, vp.mdoc]
     links:
       - title: "Credentials | EUDI DE Documentation"
@@ -43,7 +43,7 @@ topics:
     summary: >-
       The triangle of trust: the issuer signs a credential, the holder keeps it in the wallet and decides what to share,
       and the verifier (relying party) checks what it receives. This tool follows the issuer and the verifier side.
-    terms: [Triangle of Trust, Holder, Issuer, Verifier]
+    subtopics: [Triangle of Trust, Holder, Issuer, Verifier]
     flows: [vci-auth-code-par, vp-redirect-same]
   - id: gen-getting-started
     title: Getting started

@@ -11,13 +11,13 @@ topics:
     summary: >-
       The building blocks: JWS signatures and JWK key sets, SD-JWT for selective disclosure, CBOR for mdoc, and the
       OpenID4VP request and response.
-    terms: [JWS, JWKS, OID4VP, SD-JWT, CBOR]
+    subtopics: [JWS, JWKS, OID4VP, SD-JWT, CBOR]
     specs: [rfc-7515, rfc-7517, rfc-9901, openid4vp-1.0]
   - id: rpdev-dcql
     title: DCQL
     summary: >-
-      The Digital Credentials Query Language says which credentials and which claims the verifier wants. The vp_token
-      in the answer is keyed by the ids of the query's credentials.
+      The Digital Credentials Query Language says which credentials and which claims the verifier wants. The vp_token in
+      the answer is keyed by the ids of the query's credentials.
     subjects: [vp.request-object, vp.verifier.check-vp-token]
     links:
       - title: "PID Presentations with OpenID4VP | EUDI DE Documentation"
@@ -43,8 +43,8 @@ topics:
   - id: rpdev-certificate-usage
     title: Certificate Usage
     summary: >-
-      The request object is signed with the access certificate's key and carries its chain. The registration
-      certificate can be passed in the request, so the wallet can check what the relying party registered.
+      The request object is signed with the access certificate's key and carries its chain. The registration certificate
+      can be passed in the request, so the wallet can check what the relying party registered.
     subjects: [vp.verifier.sign-request-object, vp.wallet.validate-registration-cert]
     links:
       - title: "Using Registrar Certificates in Presentation Requests | EUDI DE Documentation"

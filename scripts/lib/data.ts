@@ -106,7 +106,7 @@ export function loadDataset(opts: { requireEncoded?: boolean } = {}): Dataset {
   dupes(assertions.map((s) => s.id), 'assertion', problems)
   dupes(examples.map((s) => s.id), 'example', problems)
   dupes(educate.map((t) => t.id), 'educate track', problems)
-  dupes(educate.flatMap((t) => t.topics.map((x) => x.id)), 'educate topic', problems)
+  dupes(educate.flatMap((t) => t.topics.flatMap((x) => [x.id, ...x.subtopics.map((y) => y.id)])), 'educate topic', problems)
 
   const specIds = new Set(specs.map((s) => s.id))
   const subjectIds = new Set(subjects.map((s) => s.id))
@@ -154,11 +154,11 @@ export function loadDataset(opts: { requireEncoded?: boolean } = {}): Dataset {
   }
 
   const flowIds = new Set(flows.map((f) => f.id))
-  const topicIds = new Set(educate.flatMap((t) => t.topics.map((x) => x.id)))
+  const topicIds = new Set(educate.flatMap((t) => t.topics.flatMap((x) => [x.id, ...x.subtopics.map((y) => y.id)])))
   const trackIds = new Set(educate.map((t) => t.id))
   for (const t of educate) for (const id of t.next) if (!trackIds.has(id) || id === t.id) problems.push(`${t._file}: unknown next cluster ${id}`)
   for (const t of educate)
-    for (const x of t.topics) {
+    for (const x of t.topics.flatMap((x) => [x, ...x.subtopics])) {
       const w = `${t._file}: topic ${x.id}`
       for (const id of x.flows) if (!flowIds.has(id)) problems.push(`${w}: unknown flow ${id}`)
       for (const id of x.subjects) if (!subjectIds.has(id)) problems.push(`${w}: unknown subject ${id}`)

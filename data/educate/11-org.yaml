@@ -16,9 +16,9 @@ topics:
   - id: org-make-or-buy
     title: Make or Buy
     summary: >-
-      Build the issuer or verifier yourself on the open protocols, or buy a product or service that does it. The
-      later clusters show what a self-build has to cover.
-    terms: [Marketplace]
+      Build the issuer or verifier yourself on the open protocols, or buy a product or service that does it. The later
+      clusters show what a self-build has to cover.
+    subtopics: [Marketplace]
     links:
       - title: "Open Source OpenID4VP Verifier Libraries Overview | EUDI DE Documentation"
         url: https://bmi.usercontent.opencode.de/eudi-wallet/developer-guide/resources/os_libraries/
@@ -28,7 +28,7 @@ topics:
     summary: >-
       Know your business: before a relying party or an attestation provider goes live, its identity as an organisation
       is checked and it is registered, which is where its certificates come from.
-    terms: [ELSTER, Onboarding Guide]
+    subtopics: [ELSTER, Onboarding Guide]
     links:
       - title: "Relying Party Technical Integration | EUDI DE Documentation"
         url: https://bmi.usercontent.opencode.de/eudi-wallet/developer-guide/rp/onboarding/rp_highlevel_onboarding/

@@ -9,9 +9,9 @@ topics:
   - id: rulebook-structure
     title: Structure of the rulebook
     summary: >-
-      An attestation rulebook fixes the credential type: its attributes, their encoding per format, the trust anchor
-      for its issuers, and a human-readable description.
-    terms: [Schema Meta Data, Trust Anchor, Human-readable]
+      An attestation rulebook fixes the credential type: its attributes, their encoding per format, the trust anchor for
+      its issuers, and a human-readable description.
+    subtopics: [Schema Meta Data, Trust Anchor, Human-readable]
     links:
       - title: "eudi-doc-attestation-rulebooks-catalog: attestation rulebook template"
         url: https://github.com/eu-digital-identity-wallet/eudi-doc-attestation-rulebooks-catalog/blob/main/template/attestation-rulebook-template.md

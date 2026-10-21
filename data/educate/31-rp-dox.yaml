@@ -9,9 +9,9 @@ topics:
   - id: rpdox-intended-use
     title: Intended Use
     summary: >-
-      A relying party registers what it intends to use the wallet for and which attributes it needs for that. The
-      wallet shows this to the user and can flag requests that go beyond it.
-    terms: [EUDI Check DE, Rulebooks]
+      A relying party registers what it intends to use the wallet for and which attributes it needs for that. The wallet
+      shows this to the user and can flag requests that go beyond it.
+    subtopics: [EUDI Check DE, Rulebooks]
     subjects: [vp.wallet.overasking]
     links:
       - title: "Use Case Example Library | EUDI DE Documentation"

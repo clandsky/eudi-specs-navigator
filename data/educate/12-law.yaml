@@ -9,9 +9,9 @@ topics:
   - id: law-eidas
     title: eIDAS
     summary: >-
-      Regulation (EU) No 910/2014, as amended by Regulation (EU) 2024/1183 (eIDAS 2.0), introduces the European
-      Digital Identity Wallet. It sets the roles (wallet providers, PID providers, attestation providers, relying
-      parties) and what each must do.
+      Regulation (EU) No 910/2014, as amended by Regulation (EU) 2024/1183 (eIDAS 2.0), introduces the European Digital
+      Identity Wallet. It sets the roles (wallet providers, PID providers, attestation providers, relying parties) and
+      what each must do.
     links:
       - title: "Regulation (EU) 2024/1183 (eIDAS 2.0)"
         url: https://eur-lex.europa.eu/eli/reg/2024/1183/oj/eng

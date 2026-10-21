@@ -10,8 +10,8 @@ topics:
   - id: isarch-basics
     title: Basics and standards
     summary: >-
-      An issuer runs an OAuth authorization server and a credential issuer. The wallet gets an access token and then
-      the credential, by OpenID4VCI, profiled by HAIP and ETSI TS 119 472-3.
+      An issuer runs an OAuth authorization server and a credential issuer. The wallet gets an access token and then the
+      credential, by OpenID4VCI, profiled by HAIP and ETSI TS 119 472-3.
     flows: [vci-auth-code-par, vci-pre-auth]
     specs: [openid4vci-1.0, haip-1.0, etsi-ts-119-472-3]
     links:
@@ -24,7 +24,7 @@ topics:
     summary: >-
       Issue, refresh, suspend, revoke, expire. Revocation and suspension go through a status list the issuer keeps
       published; refresh tokens let the wallet fetch fresh credentials without the user starting over.
-    terms: [Key Rotation, Refresh, Token Status List]
+    subtopics: [Key Rotation, Refresh, Token Status List]
     subjects: [vci.refresh-token, vci.notification-request]
     specs: [status-list-20]
     links:
@@ -41,7 +41,7 @@ topics:
     summary: >-
       The issuer binds the credential to a key the wallet proves it holds (key binding), or to a value from another
       credential (claim binding).
-    terms: [Key Binding, Claim Binding]
+    subtopics: [Key Binding, Claim Binding]
     subjects: [vci.proof-jwt, vci.ka, vci.credential-response.one-per-key]
     links:
       - title: "Key Binding | EUDI DE Documentation"
@@ -57,7 +57,7 @@ topics:
     summary: >-
       How reliably the issuer knows who it issues to: low, substantial or high. The authentication mechanism and the
       protocol profile decide which level an issuance reaches.
-    terms: [High, Substantial, Low]
+    subtopics: [High, Substantial, Low]
     specs: [haip-1.0]
     subjects: [vci.preauth.physical-presence]
     links:
@@ -80,7 +80,7 @@ topics:
     summary: >-
       How the issuer authenticates the user before it issues: in the authorization code flow (a login, or a PID
       presentation nested into issuance), beforehand in the pre-authorized code flow, or not at all.
-    terms: [Pre Auth Flow, Auth Code Flow, No Auth, Nested Flow, Interactive Endpoint]
+    subtopics: [Pre Auth Flow, Auth Code Flow, No Auth, Nested Flow, Interactive Endpoint]
     flows: [vci-auth-code-par, vci-pre-auth]
     subjects: [vci.user-authentication, vci.tx-code-delivery]
     links:
@@ -92,14 +92,14 @@ topics:
     questions:
       - q: How is a credential issued or managed with a PID presentation during issuance (nested presentation flow)?
         a: >-
-          The OAuth 2 server requires authentication before it issues the token. It can simply redirect to
-          openid4vp:// instead of a login form.
+          The OAuth 2 server requires authentication before it issues the token. It can simply redirect to openid4vp://
+          instead of a login form.
   - id: isarch-crypto-binding
     title: Cryptographic Binding & Signing
     summary: >-
       The wallet authenticates with its wallet instance attestation (WIA) and proves its keys with key attestations;
       DPoP binds the access token and PKCE the authorization code. The issuer signs each credential with its own key.
-    terms: [WIA, Key Management, DPoP, PKCE]
+    subtopics: [WIA, Key Management, DPoP, PKCE]
     subjects: [vci.wia, vci.ka, vci.dpop, vci.pkce, vci.issuer.sign-credential]
     links:
       - title: "Ecosystem Architecture: Crosscutting Concepts | Blueprint for the EUDI Wallet Ecosystem"
@@ -116,7 +116,7 @@ topics:
   - id: isarch-formats
     title: Formats
     summary: SD-JWT VC and ISO mdoc; the rulebook of the credential type says which ones to issue.
-    terms: [SD-JWT, iso-mdoc]
+    subtopics: [SD-JWT, iso-mdoc]
     subjects: [sdjwtvc]
     specs: [sd-jwt-vc-13]
     links:
@@ -126,7 +126,7 @@ topics:
   - id: isarch-operations
     title: Operations & Governance
     summary: >-
-      Running issuance in production: key rotation, hardening, availability of the endpoints and of the status list,
-      and the security rules for operators (NIS 2, BSI).
-    terms: [NIS 2, BSI, Key Rotation, Sec Hardening, Availability, i.E. Status List]
+      Running issuance in production: key rotation, hardening, availability of the endpoints and of the status list, and
+      the security rules for operators (NIS 2, BSI).
+    subtopics: [NIS 2, BSI, Key Rotation, Sec Hardening, Availability, i.E. Status List]
     specs: [status-list-20]

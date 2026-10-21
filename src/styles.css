@@ -1167,6 +1167,23 @@ dialog.editor.editor-wide {
   border: 1px solid var(--rule);
   color: var(--ink-2);
   white-space: nowrap;
+  text-decoration: none;
+}
+a.term:hover {
+  border-color: var(--rule-strong);
+  color: var(--ink);
+}
+a.term[data-empty='true'] {
+  border-style: dashed;
+}
+a.term[data-done='true'] {
+  border-color: color-mix(in srgb, var(--insert) 60%, transparent);
+  color: var(--insert);
+}
+a.term[aria-current='true'] {
+  border-color: var(--focus);
+  box-shadow: 0 0 0 1px var(--focus);
+  color: var(--ink);
 }
 .fork {
   display: flex;
@@ -1246,4 +1263,93 @@ dialog.editor.editor-wide {
   align-items: center;
   gap: 6px;
   font-weight: 500;
+}
+/* Educate editor (dev server only). */
+.add-topic {
+  margin: 8px 0 0 16px;
+  padding: 2px 10px;
+  font-size: 13px;
+}
+.topic-head-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.topic-edit {
+  display: grid;
+  grid-template-rows: 1fr auto;
+  min-height: 0;
+}
+.topic-edit .topic-body {
+  display: grid;
+  gap: 14px;
+  align-content: start;
+}
+.topic-edit label,
+.edit-group {
+  display: grid;
+  gap: 6px;
+  font-weight: 500;
+}
+.topic-edit textarea {
+  resize: vertical;
+  font-family: var(--font-ui);
+  line-height: 1.5;
+}
+.edit-label {
+  font-weight: 500;
+}
+.edit-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.edit-row .field-input {
+  flex: 1;
+  min-width: 0;
+}
+.edit-link {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr) auto;
+  gap: 6px;
+}
+.term-edit {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding-right: 3px;
+}
+.term-edit button {
+  border: 0;
+  background: none;
+  padding: 0 3px;
+  color: var(--ink-3);
+  line-height: 1;
+}
+.term-edit button:hover {
+  color: var(--redline);
+}
+/* Drag and drop reordering (dev server only): a line where the item will land. */
+.path li[draggable='true'] .node {
+  cursor: grab;
+}
+.path li[data-dragging='true'],
+a.term[data-dragging='true'] {
+  opacity: 0.45;
+}
+.path li[data-drop='before'] {
+  box-shadow: 0 -2px 0 var(--focus);
+}
+.path li[data-drop='after'] {
+  box-shadow: 0 2px 0 var(--focus);
+}
+a.term[draggable='true'] {
+  cursor: grab;
+}
+a.term[data-drop='before'] {
+  box-shadow: -2px 0 0 var(--focus);
+}
+a.term[data-drop='after'] {
+  box-shadow: 2px 0 0 var(--focus);
 }

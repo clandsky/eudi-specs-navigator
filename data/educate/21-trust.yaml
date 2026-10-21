@@ -11,25 +11,25 @@ topics:
     summary: >-
       Transparency to the user (who asks, for what), hardened components, and authentication in both directions: the
       relying party authenticates to the wallet before the wallet presents anything.
-    terms: [Transparency, Sec Hardening, Authentication]
+    subtopics: [Transparency, Sec Hardening, Authentication]
     subjects: [vp.wallet.verify-request-signature]
     questions:
       - q: >-
           Can any service become a verifier for any credential, or can bodies such as BMG, the EU or gematik (by
-          rulebook or similar) set up checks so that, for example, not everyone can request or verify the KVNR (a
-          schema defined by us)?
+          rulebook or similar) set up checks so that, for example, not everyone can request or verify the KVNR (a schema
+          defined by us)?
         a: Anyone can be a verifier.
       - q: How is it ensured that only defined issuers issue certain credentials?
         a: >-
-          It is not: anyone can issue, but such an issuer is not trusted, because it is not on the trust anchor for
-          this credential.
+          It is not: anyone can issue, but such an issuer is not trusted, because it is not on the trust anchor for this
+          credential.
   - id: trust-model
     title: Trust Model
     summary: >-
       Trust comes from lists: the EU list of trusted lists (LoTL) points to the national trusted lists, and lists of
-      trusted entities (LoTE) name wallet providers, PID providers and registrars. A signature counts if its
-      certificate chains to an anchor on the right list.
-    terms: [National Trust List]
+      trusted entities (LoTE) name wallet providers, PID providers and registrars. A signature counts if its certificate
+      chains to an anchor on the right list.
+    subtopics: [National Trust List]
     links:
       - title: "Trust Validation Overview | Blueprint for the EUDI Wallet Ecosystem"
         url: https://bmi.usercontent.opencode.de/eudi-wallet/eidas-2.0-architekturkonzept/content/ecosystem-concepts/trust/trust-validation/
@@ -39,7 +39,7 @@ topics:
         a: The national trust list. At launch only EAA, with their own trust anchor.
   - id: trust-security-requirements
     title: Security Requirements
-    terms: [Device Requirements]
+    subtopics: [Device Requirements]
     links:
       - title: "Security Requirements | Blueprint for the EUDI Wallet Ecosystem"
         url: https://bmi.usercontent.opencode.de/eudi-wallet/eidas-2.0-architekturkonzept/content/ecosystem-concepts/crosscutting-concepts/security-requirements/

@@ -360,24 +360,48 @@ export type Example = z.infer<typeof Example>
 // A learning roadmap of the concepts behind each role, in the spirit of roadmap.sh. Explanations are orientation, not
 // rules: anything normative is linked to the subjects, flows and specs of the dataset, where the provenance lives.
 
-export const EducateTopic = z.strictObject({
-  id: slug,
+/** What a topic and a subtopic both carry. */
+const EducateEntryFields = {
   title: z.string(),
   /** A few sentences in plain words. Absent = not written yet. */
   summary: z.string().optional(),
-  /** Key terms drawn as chips beside the topic. */
-  terms: z.array(z.string()).default([]),
   flows: z.array(slug).default([]),
   subjects: z.array(slug).default([]),
   specs: z.array(slug).default([]),
   /** External reading (the ARF, the legal texts, the protocol specs). */
   links: z.array(z.strictObject({ title: z.string(), url: z.string().url() })).default([]),
-  /** Topics elsewhere on the roadmap that this one builds on or feeds. */
+  /** Topics or subtopics elsewhere on the roadmap that this one builds on or feeds. */
   related: z.array(slug).default([]),
   /** Questions a newcomer asks here, with the project owner's answer where there is one. */
   questions: z.array(z.strictObject({ q: z.string(), a: z.string().optional() })).default([]),
-})
+}
+
+/** A title as an id part: lower case, accents dropped, everything else joined by "-" ("LoA High: haip-vp" → "loa-high-haip-vp"). */
+export function slugify(title: string): string {
+  return title
+    .toLowerCase()
+    .normalize('NFKD')
+    .replace(/\p{M}/gu, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '')
+}
+
+/** Id of a subtopic written without one: the parent's id and the slugged title ("rparch-binding.key-binding"). */
+export function subtopicId(parentId: string, title: string): string {
+  return `${parentId}.${slugify(title) || 'sub'}`
+}
+
+/** A subtopic, drawn as a chip under its topic. Written as a plain title until it has content of its own. */
+export const EducateSubtopic = z.preprocess(
+  (raw) => (typeof raw === 'string' ? { title: raw } : raw),
+  z.strictObject({ id: slug.optional(), ...EducateEntryFields }),
+)
+
+export const EducateTopic = z
+  .strictObject({ id: slug, ...EducateEntryFields, subtopics: z.array(EducateSubtopic).default([]) })
+  .transform((t) => ({ ...t, subtopics: t.subtopics.map((s) => ({ ...s, id: s.id ?? subtopicId(t.id, s.title) })) }))
 export type EducateTopic = z.infer<typeof EducateTopic>
+export type EducateSubtopic = EducateTopic['subtopics'][number]
 
 /** A cluster of the roadmap: a short code ("RP-ARCH"), and the path of topics it walks through. */
 export const EducateTrack = z.strictObject({

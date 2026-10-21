@@ -9,10 +9,13 @@ topics:
   - id: isdev-implementing-oid4vci
     title: Implementing OID4VCI
     summary: >-
-      Offer, metadata, PAR, token, nonce, credential and notification endpoints, and the checks the authorization
-      server and the credential issuer run on each request. The flow pages walk through every step.
+      Offer, metadata, PAR, token, nonce, credential and notification endpoints, and the checks the authorization server
+      and the credential issuer run on each request. The flow pages walk through every step.
     flows: [vci-auth-code-par, vci-pre-auth]
-    subjects: [vci.as.validate-par-request, vci.as.validate-token-request, vci.issuer.validate-credential-request]
+    subjects:
+      - vci.as.validate-par-request
+      - vci.as.validate-token-request
+      - vci.issuer.validate-credential-request
     specs: [openid4vci-1.0, c2bo-conformance]
     links:
       - title: "EAA Issuance with OpenID4VCI | EUDI DE Documentation"

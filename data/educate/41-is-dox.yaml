@@ -16,7 +16,7 @@ topics:
           come with the role (for the different credential types), and who else is involved in the processes?
   - id: isdox-required-auth-loa
     title: Required Authentication and LoA
-    terms: [High, Substantial, Low]
+    subtopics: [High, Substantial, Low]
     related: [isarch-loa, isarch-auth-mechanism]
     questions:
       - q: What does LoA high refer to, and is it exclusive to the PID?
@@ -30,8 +30,8 @@ topics:
   - id: isdox-data-minimisation
     title: Data Minimization
     summary: >-
-      Every attribute in a credential has to be justified. Fewer attributes, and attributes that answer a question
-      (age over 18) instead of the raw value, keep what the user discloses small.
+      Every attribute in a credential has to be justified. Fewer attributes, and attributes that answer a question (age
+      over 18) instead of the raw value, keep what the user discloses small.
     related: [law-gdpr]
   - id: isdox-use-cases
     title: Use Cases and Verifier
@@ -51,7 +51,7 @@ topics:
     summary: >-
       A qualified EAA comes from a qualified trust service provider; a public-sector EAA from a public body that is
       notified. The PID provider is notified too. The status decides which list the issuer's certificate is on.
-    terms: [EAA, QEAA, Pub-EAA]
+    subtopics: [EAA, QEAA, Pub-EAA]
     links:
       - title: "Trust in QEAA and PubEAA Issuance and Presentation | Blueprint for the EUDI Wallet Ecosystem"
         url: https://bmi.usercontent.opencode.de/eudi-wallet/eidas-2.0-architekturkonzept/content/ecosystem-concepts/trust/trust_q_pub_eaa_issuance_presentation/

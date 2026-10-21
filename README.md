@@ -37,7 +37,7 @@ implementation with deviations flagged; it never decides.
 
 ```bash
 pnpm install
-pnpm dev        # dev server; also enables saving go-live compromises, assumptions and example edits
+pnpm dev        # dev server; also enables saving go-live compromises, assumptions, example and Educate edits
 pnpm test
 pnpm validate   # schema + cross-reference check of data/
 pnpm build      # validate + typecheck + static build + OpenAPI files in dist/

@@ -11,14 +11,14 @@ topics:
     summary: >-
       A relying party can use an intermediary that talks to the wallet on its behalf. Under eIDAS 2.0 the intermediary
       counts as a relying party itself, and it must not store data about the content of the transaction.
-    terms: [Legal Kit]
+    subtopics: [Legal Kit]
     links:
       - title: "Regulation (EU) 2024/1183 (eIDAS 2.0)"
         url: https://eur-lex.europa.eu/eli/reg/2024/1183/oj/eng
     related: [law-implementing-acts]
   - id: sp-mass-onboarding
     title: (Mass-) Onboarding
-    terms: [Hub APIs]
+    subtopics: [Hub APIs]
     links:
       - title: "Joining the Ecosystem | EUDI DE Documentation"
         url: https://bmi.usercontent.opencode.de/eudi-wallet/developer-guide/sandbox/onboarding/joining/
