@@ -301,6 +301,10 @@ a.icon-btn[aria-current='page'] {
   background: var(--paper);
   flex-wrap: wrap;
 }
+.lens-label {
+  color: var(--ink-2);
+  font-weight: 500;
+}
 .ctx-group {
   display: inline-flex;
   align-items: center;
