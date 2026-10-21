@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { href, navigate, setParams, useRoute } from '../lib/router'
-import { LENS_STAGES, today, useViewCtx } from '../lib/store'
+import { LENS_STAGES, useViewCtx } from '../lib/store'
 import { cssLayer } from './bits'
 import { Search } from './Search'
 
@@ -70,7 +70,7 @@ export function TopBar() {
   )
 }
 
-/** The view context: which side, which date and which layers the rules are shown for. */
+/** The view context: which side and which layers the rules are shown for. */
 export function LensBar() {
   const { path } = useRoute()
   const vc = useViewCtx()
@@ -93,15 +93,6 @@ export function LensBar() {
           </button>
         ))}
       </div>
-      <label className="ctx-group lens-label">
-        As of
-        <input
-          className="field-input"
-          type="date"
-          value={vc.asOf}
-          onChange={(e) => setParams({ asOf: e.target.value && e.target.value !== today() ? e.target.value : null })}
-        />
-      </label>
       <div className="ctx-group">
         <span className="lens-label" id="lens-label">
           Layer lens
