@@ -24,7 +24,8 @@ function Content() {
       if (!id) return <SpecsIndex />
       return sub === 'adaptations' ? <AdaptationsPage /> : <SpecPage specId={id} />
     case 'review':
-      return <ReviewPage />
+      // A working tool for the local dev server; the production build leaves it out.
+      return import.meta.env.DEV ? <ReviewPage /> : <NotFound />
     case 'endpoints':
       return <HomeView focus="endpoints" />
     case 'educate':
@@ -44,15 +45,19 @@ function Content() {
         </div>
       )
     default:
-      return (
-        <div className="page">
-          <h1>Nothing at this address</h1>
-          <p className="lede">
-            <a href="#/">Go to the flows</a>.
-          </p>
-        </div>
-      )
+      return <NotFound />
   }
+}
+
+function NotFound() {
+  return (
+    <div className="page">
+      <h1>Nothing at this address</h1>
+      <p className="lede">
+        <a href="#/">Go to the flows</a>.
+      </p>
+    </div>
+  )
 }
 
 export function App() {

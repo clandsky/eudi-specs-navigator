@@ -50,7 +50,8 @@ export function TopBar() {
       <nav className="nav" aria-label="Sections">
         {navItem('', 'Flows', ['', 'flow', 'object', 'endpoints'])}
         {navItem('spec', 'Specs', ['spec'])}
-        {navItem('review', 'Review', ['review'])}
+        {/* The review list is a working tool for the local dev server; the production build leaves it out. */}
+        {import.meta.env.DEV && navItem('review', 'Review', ['review'])}
         {navItem('wallets', 'Wallets', ['wallets', 'state', 'compare'])}
         {navItem('educate', 'Educate', ['educate'])}
       </nav>
