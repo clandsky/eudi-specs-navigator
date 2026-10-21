@@ -109,9 +109,11 @@ export function StackPanel({ subjectId, variant = {}, onAddOverrule, onEditEntry
           <button className="btn" onClick={() => onAddOverrule(subjectId, 'golive')}>
             Add go-live compromise
           </button>
-          <button className="btn" onClick={() => onAddOverrule(subjectId, 'assumption')}>
-            Add assumption
-          </button>
+          {layerById.has('assumption') && (
+            <button className="btn" onClick={() => onAddOverrule(subjectId, 'assumption')}>
+              Add assumption
+            </button>
+          )}
         </div>
       )}
 

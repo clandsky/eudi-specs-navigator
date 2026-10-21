@@ -10,6 +10,7 @@ layers:
     description: >-
       Working assumptions of the project owner: how an unclear or defective rule is read. Highest precedence while they
       stand; each one can be confirmed into another layer, where it then replaces the literal reading of its target.
+      Working notes, like comments: only the dev server shows this layer; the static build ends at d-you.
   # Domain model: this is the wallet solution layer, i.e. what one national wallet solution implements and the
   # go-live compromises it runs on. Today it holds one solution, d-you (the lens button keeps that name); more
   # solutions will follow (see the "Compare wallets" placeholder). The id stays "golive".

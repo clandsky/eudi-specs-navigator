@@ -76,15 +76,20 @@ export function layersTouching(subjectIds: string[]): LayerId[] {
 
 // Layer lens ------------------------------------------------------------------------------------------------------
 
-/** Cumulative stages of the lens. Layers without a lens switch (base, primitives, ARF) are always on. */
-export const LENS_STAGES: { id: LayerId; label: string }[] = [
+/**
+ * Cumulative stages of the lens. Layers without a lens switch (base, primitives, ARF) are always on. The static build
+ * has no assumption layer, so there the lens ends at d-you.
+ */
+export const LENS_STAGES: { id: LayerId; label: string }[] = (
+  [
   { id: 'base', label: 'Base protocol' },
   { id: 'haip', label: '+ HAIP' },
   { id: 'etsi', label: '+ ETSI' },
   { id: 'cir', label: '+ CIR' },
   { id: 'golive', label: '+ d-you' },
   { id: 'assumption', label: '+ Assumptions' },
-]
+  ] satisfies { id: LayerId; label: string }[]
+).filter((s) => layerById.has(s.id))
 
 /** The "+ d-you" stage (and every stage above it) also switches on the German implementation layer. */
 export function layersForStage(stage: number): Set<LayerId> {

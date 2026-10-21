@@ -16,8 +16,8 @@ override it, and the effective rule as of a date**.
 - **Sequence diagrams** of the issuance and presentation flows. Every message links to where it is defined and where
   it is overruled.
 - **Example objects** for requests and responses (signed with test keys). Click a field to see its provenance stack.
-- **Layer lens**: Base → + HAIP → + ETSI → + CIR → + go-live compromises → + Assumptions, to see how each layer
-  changes the rule.
+- **Layer lens**: Base → + HAIP → + ETSI → + CIR → + d-you (the wallet solution and its go-live compromises), to see
+  how each layer changes the rule.
 - **As-of date**: the effective rule on a given day, and how it changes over time.
 - **OpenAPI export** for the issuer and the verifier side.
 
@@ -27,9 +27,10 @@ DeviceResponse, decoded field by field).
 
 ## Precedence
 
-Assumptions > go-live compromises > CIR implementing acts > ETSI > HAIP > base protocols > primitives > ARF (lower
-rank wins), encoded in [`data/layers.yaml`](data/layers.yaml). The German implementation layer is shown as an
-implementation with deviations flagged; it never decides.
+Go-live compromises > CIR implementing acts > ETSI > HAIP > base protocols > primitives > ARF (lower rank wins),
+encoded in [`data/layers.yaml`](data/layers.yaml). The German implementation layer is shown as an implementation with
+deviations flagged; it never decides. Above them sits an Assumptions layer: the project owner's working readings of
+unclear rules, kept like comments. It exists only in the dev server and is not part of the static build.
 
 ## Development
 
