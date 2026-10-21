@@ -773,9 +773,12 @@ export function EndpointsTable() {
                   </td>
                   <td>
                     {use.map(({ f, st }) => (
-                      <a key={f.id} href={href(['flow', f.id], { step: st.id })}>
-                        step {stepNumber(f, st)}
-                      </a>
+                      <div key={`${f.id}/${st.id}`}>
+                        <a href={href(['flow', f.id], { step: st.id })} title={f.title}>
+                          step {stepNumber(f, st)}
+                        </a>{' '}
+                        <span className="meta">{f.title.split(' — ').pop()}</span>
+                      </div>
                     ))}
                   </td>
                 </tr>
