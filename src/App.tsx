@@ -65,9 +65,12 @@ export function App() {
   return (
     <div className="shell">
       <div className="proto-banner" role="note">
-        <strong>Technical prototype.</strong> The project is in its technical prototyping phase: the content is not yet
-        fully quality assured and is under review. It is not a source of truth; check every rule against the cited
-        specification.
+        <strong>Technical prototype.</strong>{' '}
+        <span className="banner-long">
+          The project is in its technical prototyping phase: the content is not yet fully quality assured and is under
+          review. It is not a source of truth; check every rule against the cited specification.
+        </span>
+        <span className="banner-short">Not a source of truth.</span>
       </div>
       <TopBar />
       <LensBar />

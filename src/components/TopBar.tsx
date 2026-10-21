@@ -77,7 +77,7 @@ export function TopBar() {
           <span style={{ background: 'var(--l-etsi)' }} />
           <span style={{ background: 'var(--l-base)' }} />
         </span>
-        specs-navigator
+        <span className="brand-name">specs-navigator</span>
       </a>
       <nav className="nav" aria-label="Sections">
         {navItem('', 'Flows', ['', 'flow', 'object', 'endpoints'])}
