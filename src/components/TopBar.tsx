@@ -93,10 +93,7 @@ export function LensBar() {
   const vc = useViewCtx()
   return (
     <div className="lensbar">
-      <span className="lens-label" id="lens-label">
-        Layer lens
-      </span>
-      <div className="lens" role="group" aria-labelledby="lens-label">
+      <div className="lens" role="group" aria-label="Layer lens">
         {LENS_STAGES.map((s, i) => (
           <button
             key={s.id}
