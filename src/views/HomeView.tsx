@@ -1,3 +1,4 @@
+import { compileProfile, profileMarkdown } from '../model/compile'
 import { buildOpenApi, openApiYaml } from '../model/openapi'
 import { href } from '../lib/router'
 import { ds, useViewCtx } from '../lib/store'
@@ -6,14 +7,24 @@ export function HomeView() {
   const vc = useViewCtx()
   const flows = ds.flows.filter((f) => f.role === vc.view).sort((a, b) => a.order - b.order)
 
-  function download() {
-    const doc = buildOpenApi(ds, { view: vc.view, asOf: vc.asOf, layers: vc.layers, linkBase: window.location.href.split('#')[0] })
-    const blob = new Blob([openApiYaml(doc)], { type: 'application/yaml' })
+  const linkBase = window.location.href.split('#')[0]
+  function save(name: string, text: string, type: string) {
     const a = document.createElement('a')
-    a.href = URL.createObjectURL(blob)
-    a.download = `${vc.view}.openapi.yaml`
+    a.href = URL.createObjectURL(new Blob([text], { type }))
+    a.download = name
     a.click()
     URL.revokeObjectURL(a.href)
+  }
+  function download() {
+    const doc = buildOpenApi(ds, { view: vc.view, asOf: vc.asOf, layers: vc.layers, linkBase })
+    save(`${vc.view}.openapi.yaml`, openApiYaml(doc), 'application/yaml')
+  }
+  // The issuer side is the EAA provider's reference, the verifier side the relying party's (VP).
+  const compiledName = vc.view === 'issuer' ? 'eaa' : 'vp'
+  function downloadCompiled(as: 'md' | 'json') {
+    const p = compileProfile(ds, { side: vc.view, asOf: vc.asOf, layers: vc.layers, linkBase })
+    if (as === 'md') save(`${compiledName}.md`, profileMarkdown(p), 'text/markdown')
+    else save(`${compiledName}.json`, `${JSON.stringify(p, null, 2)}\n`, 'application/json')
   }
   const exportable = ds.subjects.some((s) => s.endpoint && (vc.view === 'issuer' ? ['as', 'issuer'] : ['verifier']).includes(s.endpoint.server))
 
@@ -50,6 +61,22 @@ export function HomeView() {
         Download {vc.view}.openapi.yaml
       </button>
       {!exportable && <p className="meta">No verifier endpoints are modelled yet.</p>}
+
+      <h2 className="section">Compiled reference</h2>
+      <p className="lede">
+        The effective rules of every flow on this side in one document, without the provenance stacks: one row per field
+        or obligation with its level per role, the deciding requirement and an example value, plus the validation checks,
+        the rules that change later and the open points. Markdown for a developer guide (tables and Mermaid diagrams,
+        safe for Docusaurus), JSON for tooling. Resolved for the current date and layer lens; every row links back here.
+      </p>
+      <div style={{ display: 'flex', gap: 8 }}>
+        <button className="btn btn-primary" onClick={() => downloadCompiled('md')}>
+          Download {compiledName}.md
+        </button>
+        <button className="btn" onClick={() => downloadCompiled('json')}>
+          Download {compiledName}.json
+        </button>
+      </div>
     </div>
   )
 }

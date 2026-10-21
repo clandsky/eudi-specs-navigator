@@ -20,6 +20,11 @@ override it, and the effective rule as of a date**.
   changes the rule.
 - **As-of date**: the effective rule on a given day, and how it changes over time.
 - **OpenAPI export** for the issuer and the verifier side.
+- **Compiled reference** for developer guides: `eaa.md` / `eaa.json` (EAA issuance, issuer side) and `vp.md` / `vp.json`
+  (VP presentation, verifier side). The effective rules of every flow without the provenance stacks: one row per field
+  or obligation with its level per role, the deciding requirement and an example value, plus Mermaid flow diagrams,
+  validation checks, upcoming changes and open points. Generated from the same data, so it cannot drift; the Markdown is
+  safe for Docusaurus (MDX). Download it in the app for any date and lens, or write it with `pnpm compile <dir>`.
 
 Flows in v1: issuance with authorization code + PAR, pre-authorized code; presentation via redirect (same device and
 cross device) and the Digital Credentials API, and the same-device redirect with an ISO mdoc PID (a CBOR
@@ -38,7 +43,8 @@ pnpm install
 pnpm dev        # dev server; also enables saving go-live compromises, assumptions and example edits
 pnpm test
 pnpm validate   # schema + cross-reference check of data/
-pnpm build      # validate + typecheck + static build + OpenAPI files in dist/
+pnpm build      # validate + typecheck + static build + OpenAPI files and compiled references in dist/
+pnpm compile <dir>   # write eaa.md/.json and vp.md/.json to <dir> (default dist/compiled), e.g. a guide checkout
 ```
 
 Pushes to `main` publish the static build to GitHub Pages. All knowledge lives as YAML under [`data/`](data/); every

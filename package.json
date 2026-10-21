@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "pnpm run validate && tsc --noEmit -p . && vite build && tsx scripts/openapi-build.ts",
+    "build": "pnpm run validate && tsc --noEmit -p . && vite build && tsx scripts/openapi-build.ts && tsx scripts/compile-build.ts",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit -p .",
     "test": "vitest run",
@@ -17,6 +17,7 @@
     "c2bo:import": "tsx scripts/c2bo-import.ts",
     "examples:build": "tsx scripts/examples-build.ts",
     "schema:export": "tsx scripts/schema-export.ts",
+    "compile": "tsx scripts/compile-build.ts",
     "ci": "pnpm validate && pnpm quote-check --ci && pnpm test && pnpm build"
   },
   "dependencies": {
