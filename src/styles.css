@@ -1185,12 +1185,6 @@ a.term[aria-current='true'] {
   box-shadow: 0 0 0 1px var(--focus);
   color: var(--ink);
 }
-.fork {
-  display: flex;
-  align-items: baseline;
-  gap: 14px;
-  flex-wrap: wrap;
-}
 /* Topic panel: slides over the right edge, the roadmap stays in place behind it. */
 .topic-panel {
   position: fixed;

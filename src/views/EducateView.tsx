@@ -2,7 +2,7 @@ import { useEffect, useState, type DragEvent, type FormEvent } from 'react'
 import { SpecName } from '../components/bits'
 import { slugify, type EducateSubtopic, type EducateTopic, type EducateTrack } from '../model/schema'
 import { href, setParams, useRoute } from '../lib/router'
-import { ds, flowById, subjectById, useViewCtx, type View } from '../lib/store'
+import { ds, flowById, subjectById, useViewCtx } from '../lib/store'
 
 // The learning roadmap: clusters of topics, a shared part before the fork and one path per side. Every topic has
 // subtopics, drawn as chips under it, and both open the same panel. The open entry lives in the URL (?topic=), so a
@@ -68,7 +68,6 @@ export function EducateView() {
   const [done, toggleDone] = useDone()
   const open = entryIndex.get(params.get('topic') ?? '')
   const [adding, setAdding] = useState<Track | null>(null)
-  const pick = (v: View) => setParams({ role: v === 'verifier' ? null : v })
   const side = tracksIn(vc.view)
   const all = [...tracksIn('context'), ...tracksIn('general'), ...side].flatMap((t) => t.topics)
   const learned = all.filter((x) => done.has(x.id)).length
@@ -100,16 +99,8 @@ export function EducateView() {
       <h2 className="section">General</h2>
       <div className="clusters clusters-2">{tracksIn('general').map(cluster)}</div>
 
-      <div className="fork">
-        <h2 className="section">Your path</h2>
-        <div className="segmented" role="group" aria-label="Path">
-          {(['verifier', 'issuer'] as const).map((v) => (
-            <button key={v} aria-pressed={vc.view === v} onClick={() => pick(v)}>
-              {v === 'issuer' ? 'Issuer' : 'Verifier'}
-            </button>
-          ))}
-        </div>
-      </div>
+      {/* The side switch in the top bar picks the path. */}
+      <h2 className="section">{vc.view === 'issuer' ? 'Issuer path' : 'Verifier path'}</h2>
       <div className="clusters clusters-2">{side.map(cluster)}</div>
 
       {adding ? (
