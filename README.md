@@ -20,8 +20,8 @@ override it, and the effective rule as of a date**.
   changes the rule.
 - **As-of date**: the effective rule on a given day, and how it changes over time.
 - **OpenAPI export** for the issuer and the verifier side.
-- **Educate**: a learning roadmap of the concepts each role needs, in clusters (law, organisation, general, ecosystem
-  trust, then the verifier or issuer path), with questions, reading and links into the flows and specs.
+- **Educate**: a learning roadmap of the concepts each role needs, in clusters (general and ecosystem trust, then the
+  verifier or issuer path), with questions, reading and links into the flows and specs.
 
 Flows in v1: issuance with authorization code + PAR, pre-authorized code; presentation via redirect (same device and
 cross device) and the Digital Credentials API, and the same-device redirect with an ISO mdoc PID (a CBOR

@@ -69,7 +69,7 @@ export function EducateView() {
   const open = entryIndex.get(params.get('topic') ?? '')
   const [adding, setAdding] = useState<Track | null>(null)
   const side = tracksIn(vc.view)
-  const all = [...tracksIn('context'), ...tracksIn('general'), ...side].flatMap((t) => t.topics)
+  const all = [...tracksIn('general'), ...side].flatMap((t) => t.topics)
   const learned = all.filter((x) => done.has(x.id)).length
   // A link straight to an entry shows it on the roadmap too, not just the panel. One frame later, so the shell's
   // scroll-to-top on navigation has already run.
@@ -84,17 +84,13 @@ export function EducateView() {
     <div className="page educate">
       <h1>Educate</h1>
       <p className="lede">
-        The concepts a role needs, cluster by cluster: first the legal and organisational context and the shared ground,
-        then the path of your side. Open a topic or one of its subtopics for an explanation, questions, reading and the
+        The concepts a role needs, cluster by cluster: first the shared ground, then the path of your side. Open a topic or one of its subtopics for an explanation, questions, reading and the
         places in this navigator where its rules are traced. The explanations are a first draft and only give
         orientation; the cited specifications decide.
       </p>
       <p className="meta">
         {learned} of {all.length} topics on the {vc.view} path marked as understood in this browser.
       </p>
-
-      <h2 className="section">Context</h2>
-      <div className="clusters clusters-3">{tracksIn('context').map(cluster)}</div>
 
       <h2 className="section">General</h2>
       <div className="clusters clusters-2">{tracksIn('general').map(cluster)}</div>

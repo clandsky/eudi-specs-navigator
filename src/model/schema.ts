@@ -408,8 +408,8 @@ export const EducateTrack = z.strictObject({
   id: slug,
   code: z.string(),
   title: z.string(),
-  /** `context` and `general` clusters come before the fork; the others belong to one side of the ecosystem. */
-  group: z.enum(['context', 'general', 'verifier', 'issuer']),
+  /** `general` clusters come before the fork; the others belong to one side of the ecosystem. */
+  group: z.enum(['general', 'verifier', 'issuer']),
   /** Position within its group (lower first). */
   order: z.number().int().default(99),
   summary: z.string().optional(),

@@ -1027,19 +1027,10 @@ dialog.editor.editor-wide {
   gap: 16px;
   align-items: start;
 }
-.clusters-3 {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-}
 .clusters-2 {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
-@media (max-width: 1000px) {
-  .clusters-3 {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
 @media (max-width: 700px) {
-  .clusters-3,
   .clusters-2 {
     grid-template-columns: minmax(0, 1fr);
   }
