@@ -1,0 +1,161 @@
+# OAuth 2.0 RFCs and the attestation-based client authentication draft: how the authorization server, the Credential
+# Issuer and the Wallet process the messages of the issuance flows.
+- id: rfc9126/2.1/authenticate
+  subject: vci.as.validate-par-request
+  spec: rfc-9126
+  locator: { section: "2.1" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ as ] }
+  quote: >-
+    The authorization server MUST process the request as follows: 1. Authenticate the client in the same way as at the
+    token endpoint (Section 2.3 of [RFC6749]).
+  verified: source-checked
+- id: rfc9126/2.1/validate
+  subject: vci.as.check-par-request
+  spec: rfc-9126
+  locator: { section: "2.1" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ as ] }
+  quote: >-
+    Reject the request if the "request_uri" authorization request parameter is provided. 3. Validate the pushed request
+    as it would an authorization request sent to the authorization endpoint.
+  verified: source-checked
+- id: abca-07/9/attester
+  subject: vci.wia.verification
+  spec: attestation-client-auth-07
+  locator: { section: "9" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ as ] }
+  quote: >-
+    The signature of the Client Attestation JWT verifies with the public key of a known and trusted Attester. 6. The key
+    contained in the cnf claim of the Client Attestation JWT is not a private key.
+  verified: source-checked
+- id: abca-07/9/pop
+  subject: vci.wia-pop.verification
+  spec: attestation-client-auth-07
+  locator: { section: "9" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ as ] }
+  quote: >-
+    The signature of the Client Attestation PoP JWT verifies with the public key contained in the cnf claim of the
+    Client Attestation JWT. 8. If the server provided a challenge value to the client, the challenge claim is present in
+    the Client Attestation PoP JWT and matches the server-provided challenge value. 9. The creation time of the Client
+    Attestation PoP JWT as determined by either the iat claim or a server managed timestamp via the challenge claim, is
+    within an acceptable window. 10. The audience claim in the Client Attestation PoP JWT is the issuer identifier URL
+    of the authorization server
+  verified: source-checked
+- id: abca-07/5.2/iss-sub
+  subject: vci.wia-pop.verification
+  spec: attestation-client-auth-07
+  locator: { section: "5.2" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ as ] }
+  quote: >-
+    The value of the iss claim, representing the client_id MUST match the value of the sub claim in the corresponding
+    Client Attestation JWT.
+  verified: source-checked
+- id: abca-07/9/client_id
+  subject: vci.as.check-par-request
+  spec: attestation-client-auth-07
+  locator: { section: "9" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ as ] }
+  quote: >-
+    If a client_id is provided in the request containing the Client Attestation, then this client_id matches the sub
+    claim of the Client Attestation JWT and the iss claim of the Client Attestation PoP JWT.
+  verified: source-checked
+- id: rfc9449/5/token-endpoint
+  subject: vci.as.validate-token-request
+  spec: rfc-9449
+  locator: { section: "5" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ as ] }
+  quote: >-
+    The DPoP HTTP header field MUST contain a valid DPoP proof JWT. If the DPoP proof is invalid, the authorization
+    server issues an error response per Section 5.2 of [RFC6749] with invalid_dpop_proof as the
+  verified: source-checked
+- id: rfc9449/4.3/checks
+  subject: vci.dpop-proof.verification
+  spec: rfc-9449
+  locator: { section: "4.3" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ as, issuer ] }
+  quote: >-
+    To validate a DPoP proof, the receiving server MUST ensure the following: … The typ JOSE Header Parameter has the
+    value dpop+jwt. … The JWT signature verifies with the public key contained in the jwk JOSE Header Parameter. 7. The
+    jwk JOSE Header Parameter does not contain a private key. 8. The htm claim matches the HTTP method of the current
+    request. 9. The htu claim matches the HTTP URI value for the HTTP request in which the JWT was received, ignoring
+    any query and fragment parts. 10. If the server provided a nonce value to the client, the nonce claim matches the
+    server-provided nonce value.
+  verified: source-checked
+- id: rfc9449/4.3/access-token
+  subject: vci.issuer.check-access-token
+  spec: rfc-9449
+  locator: { section: "4.3" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ issuer ] }
+  quote: >-
+    If presented to a protected resource in conjunction with an access token, * ensure that the value of the ath claim
+    equals the hash of that access token, and * confirm that the public key to which the access token is bound matches
+    the public key from the DPoP proof.
+  verified: source-checked
+- id: rfc9449/7.1/resource-server
+  subject: vci.issuer.check-access-token
+  spec: rfc-9449
+  locator: { section: "7.1" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ issuer ] }
+  quote: >-
+    a resource server MUST check that a DPoP proof was also received in the DPoP header field of the HTTP request, check
+    the DPoP proof according to the rules in Section 4.3, and check that the public key of the DPoP proof matches the
+    public key to which the access token is bound per Section 6. The resource server MUST NOT grant access to the
+    resource unless all checks are successful.
+  verified: source-checked
+- id: rfc6749/4.1.3/redeem-code
+  subject: vci.as.check-authorization-code
+  spec: rfc-6749
+  locator: { section: "4.1.3" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ as ], grant: [ authorization_code ] }
+  quote: >-
+    The authorization server MUST: … ensure that the authorization code was issued to the authenticated confidential
+    client, or if the client is public, ensure that the code was issued to "client_id" in the request, o verify that the
+    authorization code is valid, and o ensure that the "redirect_uri" parameter is present if the "redirect_uri"
+    parameter was included in the initial authorization request as described in Section 4.1.1, and if included ensure
+    that their values are identical.
+  verified: source-checked
+- id: rfc7636/4.6/verify
+  subject: vci.as.check-authorization-code
+  spec: rfc-7636
+  locator: { section: "4.6" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ as ], grant: [ authorization_code ] }
+  quote: >-
+    If the values are equal, the token endpoint MUST continue processing as normal (as defined by OAuth 2.0 [RFC6749]).
+    If the values are not equal, an error response indicating "invalid_grant" as described in Section 5.2 of [RFC6749]
+    MUST be returned.
+  verified: source-checked
+- id: rfc9207/2.4/iss
+  subject: vci.wallet.check-authorization-response
+  spec: rfc-9207
+  locator: { section: "2.4" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ wallet ] }
+  quote: >-
+    If the value does not match the expected issuer identifier, clients MUST reject the authorization response and MUST
+    NOT proceed with the authorization grant. … clients that interact with authorization servers supporting OAuth
+    metadata [RFC8414] MUST compare the iss parameter value to the issuer value in the server's metadata document.
+  verified: source-checked

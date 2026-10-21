@@ -1,0 +1,210 @@
+# Processing steps drawn as substeps in the issuance flows: what the authorization server, the Credential Issuer and
+# the Wallet check before they act on a message, field by field.
+
+# Wallet: signed issuer metadata ------------------------------------------------------------------------------------
+- id: vci.wallet.validate-metadata
+  kind: step
+  parent: vci
+  title: Wallet validates the signed Credential Issuer metadata
+  description: "The metadata tells the Wallet where to send the user, the WIA and the keys, so the Wallet trusts it only after checking who signed it. For a PID or EAA Provider the metadata is signed with its access certificate (ETSI TS 119 472-3 ISS-MDATA-4.2.1); a Wallet that cannot establish trust in the signer rejects it (OpenID4VCI §12.2.3)."
+  checks:
+    - { field: "Content-Type", subject: vci.metadata.content-type, expect: "application/jwt: the signed form. Plain JSON from a PID or EAA Provider: reject." }
+    - { field: typ (JWT header), subject: vci.metadata.typ, expect: "openidvci-issuer-metadata+jwt." }
+    - { field: alg (JWT header), expect: "An asymmetric algorithm the Wallet accepts, at least ES256. none or a MAC algorithm: reject." }
+    - { field: x5c (JWT header), subject: vci.metadata.x5c, expect: "Starts with the provider's access certificate; the chain validates up to a trust anchor the Wallet trusts for access certificates, and every certificate is within its validity period and not revoked." }
+    - { field: signature, expect: "Verifies over the JWT with the public key of the access certificate (the first x5c entry)." }
+    - { field: sub, subject: vci.metadata.sub, expect: "Equals the Credential Issuer Identifier from the Credential Offer, e.g. https://eaa.example.eu." }
+    - { field: credential_issuer, subject: vci.metadata.credential_issuer, expect: "Equals the URL the metadata was fetched for (OpenID4VCI §12.2.2). Mismatch: reject." }
+    - { field: iat / exp, subject: vci.metadata.exp, expect: "iat not in the future; if exp is present, it lies in the future." }
+    - { field: credential_configurations_supported, subject: vci.metadata.credential_configurations_supported, expect: "Has an entry for every credential_configuration_id of the offer, e.g. gym_membership_sd_jwt." }
+
+# Authorization server: PAR ------------------------------------------------------------------------------------------
+- id: vci.as.validate-par-request
+  kind: step
+  parent: vci
+  title: Authorization server validates the Pushed Authorization Request
+  description: "Before it stores the request and hands out a request_uri, the authorization server authenticates the Wallet with its Wallet Instance Attestation and the PoP, as it would at the token endpoint, and validates the pushed parameters as it would an authorization request (RFC 9126 §2.1, ETSI TS 119 472-3 clause 4.4.3). Any failure ends the flow with an error response; no request_uri is issued."
+- id: vci.wia.verification
+  kind: behaviour
+  parent: vci.wia
+  title: Authorization server verifies the WIA
+  description: "The Wallet Instance Attestation authenticates the Wallet as OAuth client: the Wallet Provider vouches for this Wallet solution and for the key in cnf. The authorization server checks it at every endpoint that authenticates the client, the PAR and the token endpoint (ETSI TS 119 472-3 AUTH-REQ-PROC-4.4.3, TOKEN-REQ-PROC-4.5.2; CIR TR-WIA-4)."
+  checks:
+    - { field: OAuth-Client-Attestation, subject: vci.wia, expect: "Exactly one such header, holding a single well-formed JWT (attestation-based client auth §6.2)." }
+    - { field: typ (JWT header), subject: vci.wia.typ, expect: "oauth-client-attestation+jwt." }
+    - { field: alg (JWT header), subject: vci.as-metadata.client_attestation_signing_alg_values_supported, expect: "An asymmetric algorithm listed in client_attestation_signing_alg_values_supported, e.g. ES256. none: reject." }
+    - { field: x5c (JWT header), subject: vci.wia.x5c, expect: "The signing certificate, optionally with its chain but without the trust anchor; it leads to a Wallet Provider on the Trusted List of Wallet Providers." }
+    - { field: signature, expect: "Verifies with the public key of the x5c signing certificate, the Wallet Provider's key." }
+    - { field: iss, subject: vci.wia.iss, expect: "Identifies the Wallet Provider that signed the WIA, e.g. https://wallet-provider.example.eu." }
+    - { field: sub, subject: vci.wia.sub, expect: "The Wallet's client_id, shared by all instances of this Wallet solution, e.g. https://wallet-provider.example.eu/wallet-solution/eudi-wallet." }
+    - { field: exp, subject: vci.wia.exp, expect: "Lies in the future, allowing a small clock skew. Expired: reject." }
+    - { field: cnf.jwk, subject: vci.wia.cnf, expect: "A public JWK, not a private key. The PoP must verify with it." }
+    - { field: client_status, subject: vci.wia.client_status.status, expect: "The Wallet Unit's entry in the referenced status list is valid; a revoked Wallet Unit is refused (CIR EAA-6.2.10.1-16)." }
+- id: vci.wia-pop.verification
+  kind: behaviour
+  parent: vci.wia-pop
+  title: Authorization server verifies the Client Attestation PoP
+  description: "The PoP proves that the Wallet sending this request holds the private key the WIA names in cnf, and that the proof was made for this authorization server just now. Without it a copied WIA would authenticate anyone (attestation-based client auth §5.2, §9)."
+  checks:
+    - { field: OAuth-Client-Attestation-PoP, subject: vci.wia-pop, expect: "Exactly one such header, holding a single well-formed JWT." }
+    - { field: typ (JWT header), subject: vci.wia-pop.typ, expect: "oauth-client-attestation-pop+jwt." }
+    - { field: alg (JWT header), subject: vci.as-metadata.client_attestation_pop_signing_alg_values_supported, expect: "An asymmetric algorithm listed in client_attestation_pop_signing_alg_values_supported, e.g. ES256. none: reject." }
+    - { field: signature, subject: vci.wia.cnf, expect: "Verifies with the public key in the WIA's cnf.jwk." }
+    - { field: iss, subject: vci.wia-pop.iss, expect: "Equals the sub of the WIA, i.e. the client_id." }
+    - { field: aud, subject: vci.wia-pop.aud, expect: "The issuer identifier of this authorization server from its metadata, e.g. https://eaa.example.eu." }
+    - { field: iat, subject: vci.wia-pop.iat, expect: "Within an acceptable window around now (a few minutes, plus clock skew)." }
+    - { field: jti, subject: vci.wia-pop.jti, expect: "Not seen before within that window. A repeated jti is a replay: reject." }
+    - { field: challenge, subject: vci.wia-pop.challenge, expect: "Only if the server handed out a challenge: present and equal to it, else use_attestation_challenge. This example offers no challenge endpoint, so freshness rests on iat and jti." }
+- id: vci.as.check-par-request
+  kind: behaviour
+  parent: vci.as.validate-par-request
+  title: Authorization server checks the pushed authorization parameters
+  description: "The pushed parameters are validated as an authorization request would be at the authorization endpoint (RFC 9126 §2.1). The server stores them, in particular code_challenge and redirect_uri, for the token request."
+  checks:
+    - { field: request_uri, expect: "Absent. A PAR request that carries request_uri: reject (RFC 9126 §2.1)." }
+    - { field: client_id, subject: vci.par-request.client_id, expect: "Equals the sub of the WIA (HAIP §4.4.1), e.g. https://wallet-provider.example.eu/wallet-solution/eudi-wallet." }
+    - { field: response_type, subject: vci.par-request.response_type, expect: "code." }
+    - { field: code_challenge / code_challenge_method, subject: vci.par-request.code_challenge, expect: "Both present; the method is S256 (HAIP §4). plain or missing PKCE: reject." }
+    - { field: redirect_uri, subject: vci.par-request.redirect_uri, expect: "A redirect URI the server accepts for this client, e.g. https://wallet.example.eu/cb." }
+    - { field: scope, subject: vci.par-request.scope, expect: "The scope of a credential configuration in the issuer metadata, e.g. gym_membership. Unknown scope: invalid_scope." }
+    - { field: issuer_state, subject: vci.par-request.issuer_state, expect: "If present, the value of a Credential Offer this issuer made that has not expired; it links the request to that offer." }
+
+# Authorization server: token ----------------------------------------------------------------------------------------
+- id: vci.as.validate-token-request
+  kind: step
+  parent: vci
+  title: Authorization server validates the Token Request
+  description: "The token endpoint authenticates the Wallet again with WIA and PoP (ETSI TS 119 472-3 TOKEN-REQ-PROC-4.5.2; CIR TR-WIA-3 does not depend on the grant), checks the DPoP proof whose key the access token will be bound to, and redeems the grant. Only if every check passes does it issue a DPoP-bound access token; a failed check returns an error per RFC 6749 §5.2 (invalid_client, invalid_dpop_proof, invalid_grant)."
+- id: vci.dpop-proof.verification
+  kind: behaviour
+  parent: vci.dpop-proof
+  title: Server verifies the DPoP proof
+  description: "A DPoP proof is a fresh JWT for one HTTP request, signed with the Wallet's DPoP key. At the token endpoint it fixes the key the access token gets bound to; at the Credential and Notification Endpoints it proves that the sender of the token holds that key (RFC 9449 §4.3)."
+  checks:
+    - { field: DPoP header, subject: vci.dpop-proof, expect: "Not more than one DPoP header, holding a single well-formed JWT with all required claims." }
+    - { field: typ (JWT header), subject: vci.dpop-proof.typ, expect: "dpop+jwt." }
+    - { field: alg (JWT header), subject: vci.as-metadata.dpop_signing_alg_values_supported, expect: "An asymmetric algorithm listed in dpop_signing_alg_values_supported, e.g. ES256. none: reject." }
+    - { field: jwk (JWT header), subject: vci.dpop-proof.jwk, expect: "A public JWK, not a private key." }
+    - { field: signature, expect: "Verifies with the key in the jwk header." }
+    - { field: htm, subject: vci.dpop-proof.htm, expect: "The HTTP method of this request: POST." }
+    - { field: htu, subject: vci.dpop-proof.htu, expect: "The URL of the endpoint that received the request, ignoring query and fragment, e.g. https://eaa.example.eu/token at the token endpoint and https://eaa.example.eu/credential at the Credential Endpoint." }
+    - { field: iat, subject: vci.dpop-proof.iat, expect: "Within an acceptable window around now, or the nonce carries a recent server timestamp." }
+    - { field: jti, subject: vci.dpop-proof.jti, expect: "Not seen before within that window. A repeated jti is a replay: reject." }
+    - { field: nonce, subject: vci.dpop-proof.nonce, expect: "If the server handed out a DPoP-Nonce: equals it, else use_dpop_nonce with a fresh one." }
+- id: vci.as.check-authorization-code
+  kind: behaviour
+  parent: vci.as.validate-token-request
+  title: Authorization server redeems the authorization code with PKCE
+  description: "The code stands for the user's authentication and consent at the authorization endpoint. PKCE ties it to the Wallet that started the flow: only that Wallet knows the code_verifier behind the code_challenge it pushed (RFC 6749 §4.1.3, RFC 7636 §4.6)."
+  checks:
+    - { field: grant_type, subject: vci.token-request.grant_type, expect: "authorization_code." }
+    - { field: code, subject: vci.token-request.code, expect: "Issued by this server, not expired, not redeemed before, and issued to the client_id the WIA authenticated. Otherwise: invalid_grant." }
+    - { field: redirect_uri, subject: vci.token-request.redirect_uri, expect: "Present and identical to the redirect_uri of the pushed authorization request, e.g. https://wallet.example.eu/cb." }
+    - { field: code_verifier, subject: vci.token-request.code_verifier, expect: "BASE64URL(SHA-256(code_verifier)) equals the code_challenge of the pushed request. Mismatch: invalid_grant." }
+- id: vci.as.check-pre-authorized-code
+  kind: behaviour
+  parent: vci.as.validate-token-request
+  title: Authorization server redeems the pre-authorized code and the Transaction Code
+  description: "The pre-authorized code stands for an authorisation the issuer already obtained on its own website. It is not bound to a session, so anyone who sees the QR code could replay it; the Transaction Code, sent to the user on a second channel, binds it to the user (OpenID4VCI §3.5, §13.6.1)."
+  checks:
+    - { field: grant_type, subject: vci.token-request.grant_type, expect: "urn:ietf:params:oauth:grant-type:pre-authorized_code." }
+    - { field: pre-authorized_code, subject: vci.token-request.pre-authorized_code, expect: "A code this issuer put into a Credential Offer, not expired and not redeemed before. Otherwise: invalid_grant." }
+    - { field: tx_code, subject: vci.token-request.tx_code, expect: "Present, because the offer carried a tx_code object, and equal to the code sent to the user. Missing: invalid_request; wrong: invalid_grant (OpenID4VCI §6.3)." }
+
+# Credential Issuer: credential request ------------------------------------------------------------------------------
+- id: vci.issuer.validate-credential-request
+  kind: step
+  parent: vci
+  title: Credential Issuer validates the Credential Request
+  description: "The Credential Endpoint is an OAuth protected resource: first the DPoP-bound access token, then what it authorises, then the key attestation and the key proof that name the keys the credentials will be bound to (RFC 9449 §7.1, OpenID4VCI §8.2, ETSI TS 119 472-3 clause 4.6.2.1). Errors use the codes of OpenID4VCI §8.3.1: invalid_token for the token, unknown_credential_configuration, invalid_proof, invalid_nonce for the request."
+- id: vci.issuer.check-access-token
+  kind: behaviour
+  parent: vci.issuer.validate-credential-request
+  title: Credential Issuer checks the DPoP-bound access token
+  description: "A DPoP-bound access token is useless without the private DPoP key: the Credential Issuer checks the token itself, the DPoP proof of this request, and that both name the same key (RFC 9449 §4.3 item 12, §7.1)."
+  checks:
+    - { field: Authorization, subject: vci.credential-request.authorization, expect: "Scheme DPoP followed by an access token this authorization server issued for this Credential Issuer, not expired (expires_in 300 in the example)." }
+    - { field: DPoP, subject: vci.credential-request.dpop, expect: "Present and passes the DPoP proof checks, with htm POST and htu https://eaa.example.eu/credential." }
+    - { field: ath, subject: vci.dpop-proof.ath, expect: "Equals BASE64URL(SHA-256(access token))." }
+    - { field: jwk (DPoP header), subject: vci.dpop-proof.jwk, expect: "Its JWK SHA-256 thumbprint equals the key the access token is bound to (cnf.jkt). Another key: reject." }
+    - { field: nonce (DPoP), subject: vci.nonce-response.dpop-nonce, expect: "Equals the DPoP-Nonce the issuer returned with the Nonce Response." }
+- id: vci.issuer.check-credential-configuration
+  kind: behaviour
+  parent: vci.issuer.validate-credential-request
+  title: Credential Issuer checks what the access token authorises
+  description: "The request names a credential configuration; the access token must cover it. Which identifier the Wallet uses depends on the Token Response (OpenID4VCI §8.2)."
+  checks:
+    - { field: credential_configuration_id, subject: vci.credential-request.credential_configuration_id, expect: "A key of credential_configurations_supported, e.g. gym_membership_sd_jwt, whose scope was granted to this access token (gym_membership). Unknown: unknown_credential_configuration." }
+    - { field: credential_identifier, subject: vci.token-response.credential_identifiers, expect: "Absent here: the Token Response returned no authorization_details. If it had, the request would carry credential_identifier instead and credential_configuration_id would be absent." }
+    - { field: proofs, subject: vci.credential-request.proofs, expect: "Present, because the credential is bound to a key, with exactly one member: jwt or attestation (CRED-REQ-4.6.1.1). Missing: invalid_proof." }
+    - { field: proofs.jwt, subject: vci.credential-request.proofs.jwt, expect: "An array of exactly one key proof JWT (CRED-REQ-4.6.1.2-01)." }
+- id: vci.ka.verification
+  kind: behaviour
+  parent: vci.ka
+  title: Credential issuer verifies the key attestation
+  description: "The key attestation (the WUA) is the Wallet Provider's statement about the keys the credentials will be bound to: which keys, and how well the device protects them. The Credential Issuer only binds credentials to keys the attestation names (CIR TR_KA-5, ETSI TS 119 472-3 CRED-REQ-PROC-4.6.2.1-01)."
+  checks:
+    - { field: key_attestation (proof header), subject: vci.proof-jwt.key_attestation, expect: "Present in the protected header of the key proof (CRED-REQ-4.6.1.2-03)." }
+    - { field: typ (JWT header), subject: vci.ka.typ, expect: "key-attestation+jwt." }
+    - { field: alg (JWT header), expect: "An asymmetric algorithm the issuer accepts, at least ES256. none or a MAC algorithm: reject." }
+    - { field: x5c (JWT header), subject: vci.ka.x5c, expect: "The signing certificate and its chain, without the trust anchor and not self-signed (HAIP §4.5.1); it leads to a Wallet Provider on the Trusted List for Wallet Providers." }
+    - { field: signature, expect: "Verifies with the public key of the x5c signing certificate." }
+    - { field: exp, subject: vci.ka.exp, expect: "Present, since the attestation travels in a jwt proof, and lies in the future." }
+    - { field: attested_keys, subject: vci.ka.attested_keys, expect: "A non-empty array of public JWKs; each one gets its own credential." }
+    - { field: key_storage / user_authentication, subject: vci.ka.key_storage, expect: "Contain the levels the configuration's key_attestations_required asks for, e.g. iso_18045_high." }
+    - { field: key_storage_status, subject: vci.ka.key_storage_status.status, expect: "The key storage's entry in the referenced status list is valid (CIR EAA-6.2.10.1-16)." }
+    - { field: nonce, subject: vci.ka.nonce, expect: "When the key attestation itself is the proof (proof type attestation): equals a valid c_nonce. With the jwt proof type the key proof carries the nonce." }
+- id: vci.proof-jwt.verification
+  kind: behaviour
+  parent: vci.proof-jwt
+  title: Credential Issuer verifies the key proof JWT
+  description: "The key proof shows that the Wallet holds the private key of the first attested key, and that it made the proof for this issuer just now, using a c_nonce from the Nonce Endpoint (OpenID4VCI F.4, ETSI TS 119 472-3 CRED-REQ-PROC-4.6.2.1-02, -03)."
+  checks:
+    - { field: typ (JWT header), subject: vci.proof-jwt.typ, expect: "openid4vci-proof+jwt." }
+    - { field: alg (JWT header), subject: vci.metadata.ccs.proof_signing_alg_values_supported, expect: "One of the configuration's proof_signing_alg_values_supported for jwt, e.g. ES256. none: reject." }
+    - { field: signature, subject: vci.proof-jwt.signing-key, expect: "Verifies with attested_keys[0] of the key attestation in the header." }
+    - { field: aud, subject: vci.proof-jwt.aud, expect: "The Credential Issuer Identifier, e.g. https://eaa.example.eu." }
+    - { field: iat, subject: vci.proof-jwt.iat, expect: "Within an acceptable window around now; a few seconds or minutes in the future may be tolerated (OpenID4VCI §13.8)." }
+    - { field: nonce, subject: vci.proof-jwt.nonce, expect: "A c_nonce this issuer's Nonce Endpoint handed out and still accepts, e.g. wKI4LT17ac15ES9bw8ac4. Missing: invalid_proof; stale or unknown: invalid_nonce." }
+
+# Credential Issuer: issuing ------------------------------------------------------------------------------------------
+- id: vci.issuer.issue-credentials
+  kind: step
+  parent: vci
+  title: Credential Issuer creates and signs the credentials
+  description: "After the request passed every check, the issuer creates one credential per attested key and signs each with its own key. Each credential is an SD-JWT VC with its own holder key and status entry, so two presentations cannot be linked by either."
+- id: vci.credential-response.one-per-key
+  kind: behaviour
+  parent: vci.credential-response
+  title: One credential per attested key
+  description: "With a key attestation the Wallet asks for one credential instance per attested key in a single request (ETSI TS 119 472-3 CRED-REQ-PROC-4.6.2.1-04 to -06)."
+  checks:
+    - { field: credentials, subject: vci.credential-response.credentials, expect: "As many credentials as attested_keys has entries; two in the example." }
+    - { field: cnf.jwk, subject: sdjwtvc.cnf, expect: "Each credential is bound to one of the attested keys, e.g. the first to attested_keys[0], the second to attested_keys[1]." }
+    - { field: distinct keys, expect: "No two credentials are bound to the same public key." }
+    - { field: status.status_list.idx, subject: tsl.idx, expect: "Each credential has its own unique, unpredictable index, even on the same status list, e.g. 1307 and 2918 (HAIP §6.1)." }
+- id: vci.issuer.sign-credential
+  kind: behaviour
+  parent: vci.issuer.issue-credentials
+  title: Credential Issuer builds and signs each SD-JWT VC
+  description: "The Issuer-signed JWT carries the credential type, the holder key and the validity limits; its x5c lets every Wallet and Verifier resolve the issuer's key without further lookups (HAIP §6.1, §6.1.1)."
+  checks:
+    - { field: typ (JWT header), subject: sdjwtvc.typ, expect: "dc+sd-jwt." }
+    - { field: alg (JWT header), subject: vci.metadata.ccs.credential_signing_alg_values_supported, expect: "One of the configuration's credential_signing_alg_values_supported, e.g. ES256." }
+    - { field: x5c (JWT header), subject: jose.x5c, expect: "The issuer's signing certificate with its trust chain, without the trust anchor and not self-signed." }
+    - { field: iss, subject: sdjwtvc.iss, expect: "The Credential Issuer Identifier, e.g. https://eaa.example.eu, consistent with the signing certificate." }
+    - { field: vct, subject: sdjwtvc.vct, expect: "The vct of the requested configuration, e.g. urn:eudi:example:gym-membership:1." }
+    - { field: exp / status, subject: sdjwtvc.exp, expect: "When the issuer limits the validity: exp, a status claim, or both." }
+    - { field: status, subject: tsl.status_list, expect: "If present, a status_list with uri and idx, e.g. https://eaa.example.eu/status/gym/3." }
+    - { field: "credentials[].credential", subject: vci.credential-response.credential, expect: "The SD-JWT in compact serialization: Issuer-signed JWT, then the Disclosures, each followed by ~." }
+
+# Wallet: authorization response --------------------------------------------------------------------------------------
+- id: vci.wallet.check-authorization-response
+  kind: step
+  parent: vci
+  title: Wallet checks state and iss of the authorization response
+  description: "The redirect back to the Wallet can be forged or come from another authorization server (mix-up). The Wallet only redeems the code after state and iss match the request it sent (RFC 9207 §2.4)."
+  checks:
+    - { field: state, subject: vci.authorization-response.state, expect: "Equals the state the Wallet pushed in the PAR request. Mismatch: reject." }
+    - { field: iss, subject: vci.authorization-response.iss, expect: "Equals, by simple string comparison, the issuer in the metadata of the authorization server the request was sent to, e.g. https://eaa.example.eu. Mismatch: reject and do not redeem the code." }
+    - { field: code, subject: vci.authorization-response.code, expect: "Present; redeemed once, at the token endpoint of that same authorization server." }

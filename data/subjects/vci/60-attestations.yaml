@@ -10,7 +10,6 @@
 - { id: vci.wia.wallet_version, kind: field, parent: vci.wia, title: wallet_version, location: jwt-payload, description: "Version of the Wallet solution." }
 - { id: vci.wia.wallet_solution_certification_information, kind: field, parent: vci.wia, title: wallet_solution_certification_information, location: jwt-payload, description: "Information about the conformity assessment body that certified the Wallet solution." }
 - { id: vci.wia.client_status, kind: field, parent: vci.wia, title: client_status, location: jwt-payload, description: "Revocation status of the Wallet instance: a status list reference and how long it is maintained." }
-- { id: vci.wia.verification, kind: behaviour, parent: vci.wia, title: Authorization server verifies the WIA }
 - { id: vci.wia.lifetime, kind: behaviour, parent: vci.wia, title: WIA lifetime and reuse }
 - { id: vci.wia-pop, kind: object, parent: vci, title: Client Attestation PoP JWT, description: "JWT signed with the Wallet instance key from the WIA, proving possession for one request." }
 - { id: vci.wia-pop.typ, kind: field, parent: vci.wia-pop, title: typ, location: jwt-header, description: "Marks the JWT as a client attestation PoP (oauth-client-attestation-pop+jwt)." }
@@ -25,7 +24,6 @@
 - { id: vci.ka.key_storage, kind: field, parent: vci.ka, title: key_storage / user_authentication, location: jwt-payload, description: "Attack potential resistance of the key storage and of the user authentication protecting the keys." }
 - { id: vci.ka.certification, kind: field, parent: vci.ka, title: certification, location: jwt-payload, description: "URL with information about the certification of the key storage." }
 - { id: vci.ka.key_storage_status, kind: field, parent: vci.ka, title: key_storage_status, location: jwt-payload, description: "Revocation status of the key storage: a status list reference and how long it is maintained." }
-- { id: vci.ka.verification, kind: behaviour, parent: vci.ka, title: Credential issuer verifies the key attestation }
 - { id: vci.dpop-proof, kind: object, parent: vci, title: DPoP proof JWT, description: "JWT signed with the Wallet's DPoP key for one HTTP request, binding tokens to that key." }
 - { id: vci.dpop-proof.typ, kind: field, parent: vci.dpop-proof, title: typ, location: jwt-header, description: "Marks the JWT as a DPoP proof (dpop+jwt)." }
 - { id: vci.wia.certification-members, kind: field, parent: vci.wia.wallet_solution_certification_information, title: Members of wallet_solution_certification_information, location: jwt-payload, description: "The individual members describing the certification of the Wallet solution." }
