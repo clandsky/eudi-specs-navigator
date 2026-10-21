@@ -1,5 +1,5 @@
 import * as Popover from '@radix-ui/react-popover'
-import { useSyncExternalStore, type ReactNode } from 'react'
+import { useRef, useSyncExternalStore, type ReactNode } from 'react'
 import { href, navigate, setParams, useRoute } from '../lib/router'
 import { LENS_STAGES, today, useViewCtx } from '../lib/store'
 import { cssLayer, formatDate } from './bits'
@@ -186,6 +186,7 @@ export function TabBar() {
   const section = path[0] ?? ''
   const dateSet = vc.asOf !== today()
   const inMore = section === 'rss' || (REVIEW?.match.includes(section) ?? false)
+  const sheetRef = useRef<HTMLDivElement>(null)
   return (
     <nav className="tabbar" aria-label="Sections">
       {SECTIONS.map((s) => (
@@ -209,7 +210,19 @@ export function TabBar() {
           More
         </Popover.Trigger>
         <Popover.Portal>
-          <Popover.Content className="popover more-sheet" side="top" align="end" sideOffset={8} collisionPadding={12}>
+          <Popover.Content
+            ref={sheetRef}
+            className="popover more-sheet"
+            side="top"
+            align="end"
+            sideOffset={8}
+            collisionPadding={12}
+            // Focus the sheet, not its first field: a focused date field opens the phone's date picker.
+            onOpenAutoFocus={(e) => {
+              e.preventDefault()
+              sheetRef.current?.focus()
+            }}
+          >
             <AsOfField />
             <div className="more-list">
               <Popover.Close asChild>
