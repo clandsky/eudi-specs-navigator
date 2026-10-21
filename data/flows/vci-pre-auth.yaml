@@ -19,14 +19,28 @@ steps:
   - { id: offer-fetch, from: wallet, to: issuer, kind: request, label: GET credential_offer_uri, subject: vci.offer-fetch, example: vci-offer-fetch, tags: [pre-authorized_code, tx_code] }
   - { id: tx-code, from: issuer, to: wallet, kind: internal, label: "Transaction Code (SMS, e-mail)", subject: vci.tx-code-delivery, note: The user types the code into the wallet. }
   - { id: metadata, from: wallet, to: issuer, kind: request, label: GET /.well-known/openid-credential-issuer, subject: vci.metadata, example: vci-issuer-metadata, tags: [signed] }
+  - { id: metadata-validate, from: wallet, to: wallet, kind: internal, label: "validate signed metadata (x5c)", subject: vci.wallet.validate-metadata }
   - { id: as-metadata, from: wallet, to: as, kind: request, label: GET /.well-known/oauth-authorization-server, subject: vci.as-metadata, example: vci-as-metadata }
   - { id: token, from: wallet, to: as, kind: request, label: POST /token (pre-authorized code), subject: vci.token-request, example: vci-token-request-preauth, tags: [WIA + PoP, DPoP, tx_code] }
+  - { id: token-validate, from: as, to: as, kind: internal, label: validate token request, subject: vci.as.validate-token-request }
+  - { id: token-validate-wia, parent: token-validate, from: as, to: as, kind: internal, label: verify WIA, subject: vci.wia.verification }
+  - { id: token-validate-pop, parent: token-validate, from: as, to: as, kind: internal, label: verify WIA PoP, subject: vci.wia-pop.verification }
+  - { id: token-validate-dpop, parent: token-validate, from: as, to: as, kind: internal, label: verify DPoP proof, subject: vci.dpop-proof.verification }
+  - { id: token-validate-preauth, parent: token-validate, from: as, to: as, kind: internal, label: pre-authorized_code + tx_code, subject: vci.as.check-pre-authorized-code }
   - { id: token-response, from: as, to: wallet, kind: response, label: DPoP access token, subject: vci.token-response, example: vci-token-response }
   - { id: nonce, from: wallet, to: issuer, kind: request, label: POST /nonce, subject: vci.nonce-request, example: vci-nonce-request }
   - { id: nonce-response, from: issuer, to: wallet, kind: response, label: c_nonce, subject: vci.nonce-response, example: vci-nonce-response, tags: [DPoP-Nonce] }
   - { id: ka-request, from: wallet, to: wp, kind: request, label: request key attestation (c_nonce), subject: vci.ka-request, note: Wallet-to-Wallet-Provider interface; not standardised by OpenID4VCI. }
   - { id: ka, from: wp, to: wallet, kind: response, label: key attestation, subject: vci.ka-request, example: vci-key-attestation, tags: [nonce, attested_keys] }
   - { id: credential, from: wallet, to: issuer, kind: request, label: POST /credential, subject: vci.credential-request, example: vci-credential-request, tags: [DPoP + nonce, proofs.jwt + KA] }
+  - { id: credential-validate, from: issuer, to: issuer, kind: internal, label: validate credential request, subject: vci.issuer.validate-credential-request }
+  - { id: credential-validate-token, parent: credential-validate, from: issuer, to: issuer, kind: internal, label: "access token + DPoP (ath, jkt)", subject: vci.issuer.check-access-token }
+  - { id: credential-validate-config, parent: credential-validate, from: issuer, to: issuer, kind: internal, label: credential configuration + proofs, subject: vci.issuer.check-credential-configuration }
+  - { id: credential-validate-ka, parent: credential-validate, from: issuer, to: issuer, kind: internal, label: verify key attestation, subject: vci.ka.verification }
+  - { id: credential-validate-proof, parent: credential-validate, from: issuer, to: issuer, kind: internal, label: "verify key proof (nonce, aud)", subject: vci.proof-jwt.verification }
+  - { id: issue, from: issuer, to: issuer, kind: internal, label: create and sign credentials, subject: vci.issuer.issue-credentials }
+  - { id: issue-per-key, parent: issue, from: issuer, to: issuer, kind: internal, label: one credential per attested key, subject: vci.credential-response.one-per-key }
+  - { id: issue-sign, parent: issue, from: issuer, to: issuer, kind: internal, label: sign SD-JWT VC (x5c), subject: vci.issuer.sign-credential }
   - { id: credential-response, from: issuer, to: wallet, kind: response, label: credentials, subject: vci.credential-response, example: vci-credential-response }
   - { id: notification, from: wallet, to: issuer, kind: request, label: POST /notification, subject: vci.notification-request, example: vci-notification-request, tags: [DPoP] }
   - { id: notification-response, from: issuer, to: wallet, kind: response, label: "204", subject: vci.notification-response }

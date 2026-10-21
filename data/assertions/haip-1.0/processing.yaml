@@ -86,3 +86,38 @@
   quote: the status information of the Verifiable Credential or Wallet Attestation.
   note: Part of the HAIP §7 list of what Verifiers must be able to validate with ES256.
   verified: source-checked
+# HAIP 1.0: Credential Issuer processing steps of the issuance flows.
+- id: haip/6.1.1/issuer-x5c
+  subject: vci.issuer.sign-credential
+  spec: haip-1.0
+  locator: { section: "6.1.1" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ issuer ] }
+  quote: >-
+    The SD-JWT VC MUST contain the credential issuer's signing certificate along with a trust chain in the x5c JOSE
+    header parameter as described in section 3.5 of [I-D.ietf-oauth-sd-jwt-vc]. The X.509 certificate of the trust
+    anchor MUST NOT be included in the x5c JOSE header of the SD-JWT VC.
+  verified: source-checked
+- id: haip/6.1/issuer-validity
+  subject: vci.issuer.sign-credential
+  spec: haip-1.0
+  locator: { section: "6.1" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ issuer ] }
+  quote: >-
+    It is RECOMMENDED that Issuers limit the validity period when issuing SD-JWT VC. When doing so, the Issuer MUST use
+    an exp claim, a status claim, or both.
+  verified: source-checked
+- id: haip/6.1/issuer-unique-index
+  subject: vci.credential-response.one-per-key
+  spec: haip-1.0
+  locator: { section: "6.1" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ issuer ] }
+  quote: >-
+    Each Credential MUST have its own unique, unpredictable status list index, even when multiple Credentials reference
+    the same status list URI
+  verified: source-checked

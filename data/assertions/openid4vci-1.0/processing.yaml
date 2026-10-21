@@ -1,0 +1,95 @@
+# OpenID4VCI 1.0: how the Wallet, the authorization server and the Credential Issuer process the issuance messages.
+- id: oid4vci/12.2.3/wallet-trust
+  subject: vci.wallet.validate-metadata
+  spec: openid4vci-1.0
+  locator: { section: "12.2.3" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ wallet ] }
+  quote: >-
+    When requesting signed metadata, the Wallet MUST establish trust in the signer of the metadata. Otherwise, the
+    Wallet MUST reject the signed metadata.
+  verified: source-checked
+- id: oid4vci/6.1/rfc6749
+  subject: vci.as.validate-token-request
+  spec: openid4vci-1.0
+  locator: { section: "6.1" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ as ] }
+  quote: "The requirements specified in Sections 4.1.3 and 3.2.1 of [RFC6749] MUST be followed."
+  verified: source-checked
+- id: oid4vci/3.5/tx-code-verify
+  subject: vci.as.check-pre-authorized-code
+  spec: openid4vci-1.0
+  locator: { section: "3.5" }
+  relation: defines
+  level: info
+  applies_to: { role: [ as ], grant: [ pre-authorized_code ] }
+  quote: >-
+    After the End-User provides the Transaction Code, the Wallet sends the Transaction Code within the Token Request,
+    and the Authorization Server verifies the Transaction Code.
+  verified: source-checked
+- id: oid4vci/6.3/tx-code-errors
+  subject: vci.as.check-pre-authorized-code
+  spec: openid4vci-1.0
+  locator: { section: "6.3" }
+  relation: defines
+  level: info
+  applies_to: { role: [ as ], grant: [ pre-authorized_code ] }
+  quote: >-
+    The Authorization Server expects a Transaction Code in the Pre-Authorized Code Flow but the Client does not provide
+    a Transaction Code. invalid_grant: The Authorization Server expects a Transaction Code in the Pre-Authorized Code
+    Flow but the Client provides the wrong Transaction Code. The End-User provides the wrong Pre-Authorized Code or the
+    Pre-Authorized Code has expired.
+  verified: source-checked
+- id: oid4vci/8.3.1.2/errors
+  subject: vci.issuer.validate-credential-request
+  spec: openid4vci-1.0
+  locator: { section: "8.3.1.2" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ issuer ] }
+  quote: >-
+    For errors related to the Credential Request's payload, such as issues with type, format, proofs, encryption
+    parameters, or if the request is denied, the specific error codes from this section MUST be used instead of the
+    generic invalid_request parameter
+  verified: source-checked
+- id: oid4vci/8.2/configuration-vs-scope
+  subject: vci.issuer.check-credential-configuration
+  spec: openid4vci-1.0
+  locator: { section: "8.2" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ issuer ] }
+  quote: >-
+    credential_configuration_id: REQUIRED if a credential_identifiers parameter was not returned from the Token Response
+    as part of the authorization_details parameter. It MUST NOT be used otherwise. … The corresponding object in the
+    credential_configurations_supported map MUST contain one of the value(s) used in the scope parameter in the
+    Authorization Request.
+  verified: source-checked
+- id: oid4vci/F.4/verify
+  subject: vci.proof-jwt.verification
+  spec: openid4vci-1.0
+  locator: { section: "F.4" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ issuer ] }
+  quote: >-
+    To validate a key proof, the Credential Issuer MUST ensure that: all required claims for that proof type are
+    contained as defined in Appendix F, the key proof is explicitly typed using header parameters as defined for that
+    proof type, … if the server has a Nonce Endpoint, the nonce in the key proof matches the server-provided c_nonce
+    value, the creation time of the JWT, as determined by either the issuance time, or a server managed timestamp via
+    the nonce claim, is within an acceptable window
+  verified: source-checked
+- id: oid4vci/D.1/proof-signed-by-attested-key
+  subject: vci.ka.verification
+  spec: openid4vci-1.0
+  locator: { section: "D.1" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ issuer ] }
+  quote: >-
+    If used with the jwt proof type, the Credential Issuer MUST validate that the JWT used as a proof is signed by a key
+    contained in the attestation in the JOSE Header.
+  verified: source-checked
