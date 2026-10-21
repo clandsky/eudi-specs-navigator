@@ -420,7 +420,7 @@ export function ReviewPage() {
       )}
 
       <h2 className="section">Deviations ({deviations.length})</h2>
-      {deviations.length === 0 ? <p className="meta">No implementation deviations are recorded yet. The German implementation layer arrives in phase 4.</p> : <AssertionTable items={deviations} />}
+      {deviations.length === 0 ? <p className="meta">No implementation deviations are recorded yet.</p> : <AssertionTable items={deviations} />}
 
       <h2 className="section">Binding spec is silent ({silent.length})</h2>
       <AssertionTable items={silent} note />

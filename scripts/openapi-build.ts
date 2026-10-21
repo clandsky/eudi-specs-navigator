@@ -8,7 +8,7 @@ import { ROOT, loadDataset } from './lib/data.ts'
 
 const ds = loadDataset({ requireEncoded: true })
 const asOf = process.env.AS_OF ?? new Date().toISOString().slice(0, 10)
-const layers = new Set<LayerId>(ds.layers.filter((l) => l.id !== 'impl-de' && l.id !== 'secondary').map((l) => l.id))
+const layers = new Set<LayerId>(ds.layers.filter((l) => l.id !== 'secondary').map((l) => l.id))
 const out = resolve(ROOT, process.argv[2] ?? 'dist')
 mkdirSync(out, { recursive: true })
 for (const view of ['issuer', 'verifier'] as const) {

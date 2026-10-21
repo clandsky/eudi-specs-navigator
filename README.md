@@ -30,8 +30,7 @@ DeviceResponse, decoded field by field).
 ## Precedence
 
 Assumptions > go-live compromises > CIR implementing acts > ETSI > HAIP > base protocols > primitives > ARF (lower
-rank wins), encoded in [`data/layers.yaml`](data/layers.yaml). The German implementation layer is shown as an
-implementation with deviations flagged; it never decides.
+rank wins), encoded in [`data/layers.yaml`](data/layers.yaml).
 
 ## Development
 

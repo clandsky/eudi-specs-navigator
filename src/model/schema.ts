@@ -5,7 +5,7 @@ import { z } from 'zod'
 
 // Identifiers --------------------------------------------------------------------------------------------------------
 
-export const LayerId = z.enum(['assumption', 'golive', 'cir', 'etsi', 'haip', 'base', 'primitive', 'arf', 'impl-de', 'secondary'])
+export const LayerId = z.enum(['assumption', 'golive', 'cir', 'etsi', 'haip', 'base', 'primitive', 'arf', 'secondary'])
 export type LayerId = z.infer<typeof LayerId>
 
 /** Roles an assertion can bind. `as` = authorization server, `issuer` = credential issuer. */
