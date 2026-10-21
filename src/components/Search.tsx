@@ -115,7 +115,7 @@ export function Search() {
     return (
       <button
         ref={buttonRef}
-        className="icon-btn"
+        className="icon-btn search-btn"
         onClick={() => {
           setExpanded(true)
           setOpen(true)
