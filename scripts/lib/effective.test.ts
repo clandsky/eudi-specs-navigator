@@ -8,7 +8,7 @@ import { ROOT, loadDataset } from './data.ts'
 import { buildEffectiveApi } from './effective.ts'
 
 const ds = loadDataset({ requireEncoded: true })
-const layers = new Set<LayerId>(ds.layers.filter((l) => l.id !== 'impl-de' && l.id !== 'secondary').map((l) => l.id))
+const layers = new Set<LayerId>(ds.layers.filter((l) => l.id !== 'secondary').map((l) => l.id))
 const asOf = '2026-10-21'
 const eaa = buildEffectiveApi(ds, { side: 'issuer', asOf, layers })
 const vp = buildEffectiveApi(ds, { side: 'verifier', asOf, layers })

@@ -9,8 +9,8 @@ import { ROOT, loadDataset } from './lib/data.ts'
 
 const ds = loadDataset({ requireEncoded: true })
 const asOf = process.env.AS_OF ?? new Date().toISOString().slice(0, 10)
-// d-you: go-live compromises and assumptions apply; the German implementation layer and secondary sources never decide.
-const layers = new Set<LayerId>(ds.layers.filter((l) => l.id !== 'impl-de' && l.id !== 'secondary').map((l) => l.id))
+// d-you: go-live compromises and assumptions apply; secondary sources never decide.
+const layers = new Set<LayerId>(ds.layers.filter((l) => l.id !== 'secondary').map((l) => l.id))
 const out = resolve(ROOT, process.argv[2] ?? 'effective')
 mkdirSync(out, { recursive: true })
 for (const side of ['issuer', 'verifier'] as const) {
