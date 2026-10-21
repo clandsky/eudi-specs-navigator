@@ -1,0 +1,44 @@
+# Cluster LAW: the legal stack, from the EU regulation down to sector rules.
+id: law
+code: LAW
+title: Law
+group: context
+order: 3
+summary: Which legal texts apply, from EU level down to the sector.
+topics:
+  - id: law-eidas
+    title: eIDAS
+    summary: >-
+      Regulation (EU) No 910/2014, as amended by Regulation (EU) 2024/1183 (eIDAS 2.0), introduces the European
+      Digital Identity Wallet. It sets the roles (wallet providers, PID providers, attestation providers, relying
+      parties) and what each must do.
+    links:
+      - title: "Regulation (EU) 2024/1183 (eIDAS 2.0)"
+        url: https://eur-lex.europa.eu/eli/reg/2024/1183/oj/eng
+  - id: law-implementing-acts
+    title: Implementing Acts
+    summary: >-
+      Commission implementing regulations turn eIDAS into technical rules: PID and attestations, integrity and core
+      functions, notifications, protocols and interfaces, relying party registration. CIR (EU) 2026/1731 amends four of
+      them and makes the ETSI issuance and presentation profiles binding.
+    specs: [cir-2026-1731, etsi-ts-119-472-3, etsi-ts-119-472-2]
+  - id: law-gdpr
+    title: GDPR
+    summary: >-
+      Every presentation is a processing of personal data. The wallet's data minimisation (selective disclosure) does
+      not replace the relying party's own lawful basis, purpose limitation and retention rules.
+    links:
+      - title: "Regulation (EU) 2016/679 (GDPR)"
+        url: https://eur-lex.europa.eu/eli/reg/2016/679/oj/eng
+    related: [isdox-data-minimisation]
+  - id: law-national
+    title: National Laws
+    summary: >-
+      Member States add rules of their own, for example who registers relying parties, which bodies may issue public
+      attestations, and how the national PID is provided.
+  - id: law-sector
+    title: Sector Specific Regulations
+    summary: >-
+      Sector law decides what a relying party may or must ask for (for example identification duties in banking or
+      health), which in turn sets the attributes and the level of assurance it needs.
+    related: [rpdox-intended-use]

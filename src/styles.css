@@ -136,6 +136,7 @@ code,
 .shell {
   display: grid;
   grid-template-rows: auto auto auto 1fr;
+  grid-template-columns: minmax(0, 1fr);
   height: 100%;
 }
 .proto-banner {
@@ -148,8 +149,9 @@ code,
 }
 .topbar {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 18px;
+  gap: 8px 18px;
   padding: 10px 20px;
   background: var(--sheet);
   border-bottom: 1px solid var(--rule);
@@ -195,11 +197,13 @@ code,
 }
 .nav {
   display: flex;
+  flex-wrap: wrap;
   gap: 2px;
 }
 .nav a {
   padding: 5px 10px;
   border-radius: 6px;
+  white-space: nowrap;
   text-decoration: none;
   color: var(--ink-2);
   font-weight: 500;
@@ -269,6 +273,8 @@ code,
 .lens {
   display: flex;
   align-items: stretch;
+  max-width: 100%;
+  overflow-x: auto;
 }
 .lens button {
   position: relative;
@@ -1010,4 +1016,234 @@ dialog.editor.editor-wide {
 .linklike:hover {
   text-decoration: underline;
   text-underline-offset: 2px;
+}
+
+/* Educate roadmap ------------------------------------------------------------------------------------------------- */
+.page.educate {
+  max-width: 1320px;
+}
+.clusters {
+  display: grid;
+  gap: 16px;
+  align-items: start;
+}
+.clusters-3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.clusters-2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+@media (max-width: 1000px) {
+  .clusters-3 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 700px) {
+  .clusters-3,
+  .clusters-2 {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+.cluster {
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  background: var(--sheet);
+  padding: 14px 16px 12px;
+  scroll-margin-top: 16px;
+}
+.cluster header {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+.cluster h3 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+}
+.cluster-code {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-3);
+  letter-spacing: 0.02em;
+}
+.cluster-count {
+  margin-left: auto;
+  font-variant-numeric: tabular-nums;
+}
+.cluster-summary {
+  margin: 4px 0 0;
+  color: var(--ink-2);
+}
+.cluster footer {
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px solid var(--rule);
+  color: var(--ink-3);
+  font-size: 13px;
+}
+.cluster-link {
+  color: var(--ink);
+  font-weight: 600;
+}
+/* The path: a quiet spine with one node per topic. */
+.path {
+  list-style: none;
+  margin: 12px 0 0;
+  padding: 0 0 0 16px;
+  position: relative;
+}
+.path::before {
+  content: '';
+  position: absolute;
+  left: 4px;
+  top: 10px;
+  bottom: 10px;
+  border-left: 1px dashed var(--rule-strong);
+}
+.path li {
+  position: relative;
+  padding: 3px 0;
+}
+.path li::before {
+  content: '';
+  position: absolute;
+  left: -16px;
+  top: 13px;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--sheet);
+  border: 1.5px solid var(--rule-strong);
+}
+.path li[data-done='true']::before {
+  background: var(--insert);
+  border-color: var(--insert);
+}
+.node {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 9px;
+  border: 1px solid var(--rule);
+  border-radius: 7px;
+  background: var(--sheet-2);
+  text-decoration: none;
+  font-weight: 500;
+}
+.node:hover {
+  border-color: var(--rule-strong);
+}
+.node[aria-current='true'] {
+  border-color: var(--focus);
+  box-shadow: 0 0 0 1px var(--focus);
+}
+.path li[data-done='true'] .node-title {
+  color: var(--ink-2);
+}
+.node-stub,
+.node-q {
+  margin-left: auto;
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--ink-3);
+  white-space: nowrap;
+}
+.node-q + .node-stub,
+.node-stub + .node-q {
+  margin-left: 0;
+}
+.terms {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin: 5px 0 2px;
+}
+.term {
+  font-size: 11.5px;
+  padding: 0 7px;
+  line-height: 19px;
+  border-radius: 999px;
+  border: 1px solid var(--rule);
+  color: var(--ink-2);
+  white-space: nowrap;
+}
+.fork {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+/* Topic panel: slides over the right edge, the roadmap stays in place behind it. */
+.topic-panel {
+  position: fixed;
+  z-index: 30;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: min(460px, 100vw);
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  background: var(--sheet);
+  border-left: 1px solid var(--rule-strong);
+  box-shadow: -12px 0 32px rgb(0 0 0 / 0.18);
+}
+.topic-head,
+.topic-foot {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+}
+.topic-head {
+  justify-content: space-between;
+  border-bottom: 1px solid var(--rule);
+}
+.topic-foot {
+  border-top: 1px solid var(--rule);
+}
+.topic-body {
+  overflow: auto;
+  padding: 16px 20px 28px;
+}
+.topic-body h2 {
+  margin: 0 0 8px;
+  font-size: 20px;
+  letter-spacing: -0.01em;
+}
+.topic-body h3 {
+  margin: 22px 0 6px;
+  font-size: 13.5px;
+  font-weight: 600;
+}
+.topic-summary {
+  margin: 0 0 10px;
+  font-size: 15px;
+  color: var(--ink);
+}
+.qa {
+  margin: 0;
+  display: grid;
+  gap: 10px;
+}
+.qa dt {
+  font-weight: 500;
+}
+.qa dd {
+  margin: 2px 0 0;
+  padding-left: 10px;
+  border-left: 2px solid var(--rule-strong);
+  color: var(--ink-2);
+}
+.topic-links {
+  margin: 0;
+  padding-left: 18px;
+  display: grid;
+  gap: 4px;
+}
+.done-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 500;
 }

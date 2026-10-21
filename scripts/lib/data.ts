@@ -7,6 +7,7 @@ import type { z } from 'zod'
 import {
   Assertion,
   C2boSnapshot,
+  EducateTrack,
   Example,
   FieldMapFile,
   Flow,
@@ -89,6 +90,7 @@ export function loadDataset(opts: { requireEncoded?: boolean } = {}): Dataset {
   const flows = many(Flow, join(DATA, 'flows'), problems)
   const assertions = many(Assertion, join(DATA, 'assertions'), problems)
   const examples = many(Example, join(DATA, 'examples'), problems)
+  const educate = many(EducateTrack, join(DATA, 'educate'), problems)
 
   const fieldmapPath = join(DATA, 'fieldmap.yaml')
   const fieldmap = existsSync(fieldmapPath) ? (parseWith(FieldMapFile, readYaml(fieldmapPath), 'data/fieldmap.yaml', problems) ?? []) : []
@@ -103,6 +105,8 @@ export function loadDataset(opts: { requireEncoded?: boolean } = {}): Dataset {
   dupes(flows.map((s) => s.id), 'flow', problems)
   dupes(assertions.map((s) => s.id), 'assertion', problems)
   dupes(examples.map((s) => s.id), 'example', problems)
+  dupes(educate.map((t) => t.id), 'educate track', problems)
+  dupes(educate.flatMap((t) => t.topics.map((x) => x.id)), 'educate topic', problems)
 
   const specIds = new Set(specs.map((s) => s.id))
   const subjectIds = new Set(subjects.map((s) => s.id))
@@ -149,6 +153,19 @@ export function loadDataset(opts: { requireEncoded?: boolean } = {}): Dataset {
       if (!subjectIds.has(sub)) problems.push(`${e._file}: annotation ${ptr} → unknown subject ${sub}`)
   }
 
+  const flowIds = new Set(flows.map((f) => f.id))
+  const topicIds = new Set(educate.flatMap((t) => t.topics.map((x) => x.id)))
+  const trackIds = new Set(educate.map((t) => t.id))
+  for (const t of educate) for (const id of t.next) if (!trackIds.has(id) || id === t.id) problems.push(`${t._file}: unknown next cluster ${id}`)
+  for (const t of educate)
+    for (const x of t.topics) {
+      const w = `${t._file}: topic ${x.id}`
+      for (const id of x.flows) if (!flowIds.has(id)) problems.push(`${w}: unknown flow ${id}`)
+      for (const id of x.subjects) if (!subjectIds.has(id)) problems.push(`${w}: unknown subject ${id}`)
+      for (const id of x.specs) if (!specIds.has(id)) problems.push(`${w}: unknown spec ${id}`)
+      for (const id of x.related) if (!topicIds.has(id) || id === x.id) problems.push(`${w}: unknown related topic ${id}`)
+    }
+
   const encoded = loadEncodedExamples()
   if (opts.requireEncoded) for (const e of examples) if (!encoded[e.id]) problems.push(`${e._file}: example ${e.id} not built (run pnpm examples:build)`)
 
@@ -164,6 +181,7 @@ export function loadDataset(opts: { requireEncoded?: boolean } = {}): Dataset {
     encoded,
     fieldmap,
     c2bo,
+    educate: strip(educate),
     builtAt: new Date().toISOString().slice(0, 10),
   }
 }

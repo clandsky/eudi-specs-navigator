@@ -1,0 +1,40 @@
+# Cluster RP-DOX: what a relying party decides and documents before it asks a wallet for anything.
+id: rp-dox
+code: RP-DOX
+title: Verifier decisions and documentation
+group: verifier
+order: 2
+summary: Intended use, risk and assurance, and how they are governed.
+topics:
+  - id: rpdox-intended-use
+    title: Intended Use
+    summary: >-
+      A relying party registers what it intends to use the wallet for and which attributes it needs for that. The
+      wallet shows this to the user and can flag requests that go beyond it.
+    terms: [EUDI Check DE, Rulebooks]
+    subjects: [vp.wallet.overasking]
+    links:
+      - title: "Use Case Example Library | EUDI DE Documentation"
+        url: https://bmi.usercontent.opencode.de/eudi-wallet/developer-guide/sandbox/resources/use_case_examples/
+    related: [rpdox-intended-use-hub]
+  - id: rpdox-risk-analysis
+    title: Riskanalysis
+    summary: >-
+      Which attributes, which binding and which profile the use case needs follows from its risks: what happens if the
+      presenter is not the person, or the data is stale.
+    related: [rparch-binding, rparch-profiles, rpdox-loa]
+  - id: rpdox-loa
+    title: Level of Assurance
+    summary: >-
+      Levels low, substantial and high (CIR (EU) 2015/1502) describe how reliably an identity was established. The PID
+      is issued at level high.
+    related: [isdox-required-auth-loa]
+  - id: rpdox-intended-use-hub
+    title: Intended Use Management in EUDI Hub
+  - id: rpdox-governance-audit
+    title: Governance and Audit
+  - id: rpdox-cross-border
+    title: Across the border
+    summary: >-
+      A relying party registered in one Member State can accept wallets and credentials from every other one; the
+      trusted lists make the foreign issuers checkable.

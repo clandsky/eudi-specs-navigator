@@ -1,0 +1,73 @@
+# Cluster IS-DOX: what an issuer decides and documents before it issues.
+id: is-dox
+code: IS-DOX
+title: Issuer decisions and documentation
+group: issuer
+order: 2
+summary: Attributes and sources, assurance, qualification and governance.
+next: [rulebook]
+topics:
+  - id: isdox-attributes-sources
+    title: Identify Attributes / Authentic Sources
+    summary: Which attributes the credential carries, and which register or authentic source vouches for them.
+    questions:
+      - q: >-
+          Issuer and authentic source: how does the registration of an issuer and its evidence work, which requirements
+          come with the role (for the different credential types), and who else is involved in the processes?
+  - id: isdox-required-auth-loa
+    title: Required Authentication and LoA
+    terms: [High, Substantial, Low]
+    related: [isarch-loa, isarch-auth-mechanism]
+    questions:
+      - q: What does LoA high refer to, and is it exclusive to the PID?
+        a: The level of assurance only refers to means of identification (such as the eID or the PID).
+  - id: isdox-risk-analysis
+    title: Riskanalysis
+    related: [isarch-loa]
+    questions:
+      - q: How often may credentials be issued?
+        a: That's your decision.
+  - id: isdox-data-minimisation
+    title: Data Minimization
+    summary: >-
+      Every attribute in a credential has to be justified. Fewer attributes, and attributes that answer a question
+      (age over 18) instead of the raw value, keep what the user discloses small.
+    related: [law-gdpr]
+  - id: isdox-use-cases
+    title: Use Cases and Verifier
+    summary: Which relying parties will ask for the credential, and what they need from it.
+    links:
+      - title: "Use Case Example Library | EUDI DE Documentation"
+        url: https://bmi.usercontent.opencode.de/eudi-wallet/developer-guide/sandbox/resources/use_case_examples/
+    related: [rpdox-intended-use]
+  - id: isdox-credential-management
+    title: Credential Management
+    links:
+      - title: "Credential Lifecycle & Operations | EUDI DE Documentation"
+        url: https://bmi.usercontent.opencode.de/eudi-wallet/developer-guide/eaa/guide/issuance/eaa_lifecycle/
+    related: [isarch-lifecycle]
+  - id: isdox-qualification
+    title: Qualification / Notification
+    summary: >-
+      A qualified EAA comes from a qualified trust service provider; a public-sector EAA from a public body that is
+      notified. The PID provider is notified too. The status decides which list the issuer's certificate is on.
+    terms: [EAA, QEAA, Pub-EAA]
+    links:
+      - title: "Trust in QEAA and PubEAA Issuance and Presentation | Blueprint for the EUDI Wallet Ecosystem"
+        url: https://bmi.usercontent.opencode.de/eudi-wallet/eidas-2.0-architekturkonzept/content/ecosystem-concepts/trust/trust_q_pub_eaa_issuance_presentation/
+    questions:
+      - q: Which credential types exist (PID, EAA, QEAA, Pub-EAA, a credential combined with the PID)?
+        a: >-
+          All EAA are technically the same; only the certificate is on a different trust list. Q and Pub only indicate
+          how the certificate gets onto that list (certified or notified).
+      - q: Who can become a Pub-EAA provider?
+        a: >-
+          It is notified to the European Commission by its Member State. Before notification, a conformity assessment
+          report from an accredited conformity assessment body (CAB) must exist.
+      - q: Will there be QEAA, and when?
+        a: Yes, once a corresponding certification exists.
+  - id: isdox-governance
+    title: Governance
+  - id: isdox-cross-border
+    title: Across the border
+    summary: The credential is accepted in other Member States when its issuer is on a list they can check.

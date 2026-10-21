@@ -1,0 +1,125 @@
+# Cluster RP-ARCH: the architecture of a relying party (verifier).
+id: rp-arch
+code: RP-ARCH
+title: Verifier architecture
+group: verifier
+order: 1
+summary: What a verifier consists of and which choices shape it.
+next: [rp-dev]
+topics:
+  - id: rparch-basics
+    title: The Basics
+    summary: >-
+      A verifier sends a signed presentation request, the wallet asks the user and answers with the requested
+      attributes, and the verifier checks them. The protocol is OpenID4VP, built on OAuth 2.0; the trust behind it is a
+      PKI.
+    terms: [OpenID4VP, OIDC, oauth 2, PKI, Supported Devices, Ecosystem Sec Req]
+    flows: [vp-redirect-same]
+    specs: [openid4vp-1.0]
+    links:
+      - title: "Ecosystem Architecture: Person Identification Data (PID) | Blueprint for the EUDI Wallet Ecosystem"
+        url: https://bmi.usercontent.opencode.de/eudi-wallet/eidas-2.0-architekturkonzept/content/features/PID/design-decisions/
+      - title: "Relying Party Technical Integration | EUDI DE Documentation"
+        url: https://bmi.usercontent.opencode.de/eudi-wallet/developer-guide/rp/onboarding/rp_highlevel_onboarding/
+      - title: OpenID for Verifiable Presentations 1.0
+        url: https://openid.net/specs/openid-4-verifiable-presentations-1_0.html
+      - title: "German PID Rulebook (PID-DE) | Blueprint for the EUDI Wallet Ecosystem"
+        url: https://bmi.usercontent.opencode.de/eudi-wallet/eidas-2.0-architekturkonzept/content/features/PID/german-pid-rulebook/
+    related: [trust-security-requirements]
+  - id: rparch-consume-credentials
+    title: Consume Credentials
+    summary: >-
+      What a verifier may ask for is defined by the rulebook of each credential type: the PID rulebook for identity
+      data, attestation rulebooks for everything else.
+    terms: [Rulebooks, PID]
+    links:
+      - title: "German PID Reference for Relying Parties | EUDI DE Documentation"
+        url: https://bmi.usercontent.opencode.de/eudi-wallet/developer-guide/resources/pid_reference/
+    related: [rpdox-risk-analysis, rulebook-structure]
+  - id: rparch-binding
+    title: Types of Binding
+    summary: >-
+      Key binding proves the presenter holds the key the credential was issued to. Session binding ties the answer to
+      this one request (nonce, client_id, state). Claim binding links a credential to a value from another credential.
+    terms: [Claim Binding, Session Binding, Key Binding]
+    subjects: [vp.kb-jwt, vp.verifier.verify-kb-jwt, vp.wallet.mdoc.device-auth, vp.verifier.generate-nonce, vp.verifier.check-state]
+    links:
+      - title: "Binding Mechanisms | EUDI DE Documentation"
+        url: https://bmi.usercontent.opencode.de/eudi-wallet/developer-guide/concepts/binding/types_of_credential_binding/
+      - title: "client_id, nonce and state | EUDI DE Documentation"
+        url: https://bmi.usercontent.opencode.de/eudi-wallet/developer-guide/concepts/binding/client_id_nonce_state/
+    related: [rpdox-risk-analysis, isarch-credential-binding]
+  - id: rparch-profiles
+    title: Profiles
+    summary: >-
+      HAIP narrows OpenID4VP to a high-assurance profile, and the ETSI and CIR texts narrow it further. The profile
+      decides how the wallet is invoked: redirect on the same device, a QR code across devices, or the browser's
+      Digital Credentials API. Each has its own session fixation risk and user experience.
+    terms: [Cross-Device, Same-Device, DC-API, Session Fixation, Standard, "LoA High: haip-vp", Impact UX]
+    flows: [vp-redirect-same, vp-redirect-cross, vp-dc-api]
+    subjects: [vp.format-profile, vp.dc-api.support]
+    specs: [haip-1.0, etsi-ts-119-472-2]
+    links:
+      - title: OpenID4VC High Assurance Interoperability Profile 1.0
+        url: https://openid.net/specs/openid4vc-high-assurance-interoperability-profile-1_0-final.html
+    related: [rpdox-risk-analysis]
+  - id: rparch-formats
+    title: Formats
+    summary: >-
+      Two credential formats: SD-JWT VC (JSON, selective disclosure by salted digests) and ISO mdoc (CBOR, defined in
+      ISO/IEC 18013-5 for proximity and used online as well).
+    terms: [SD-JWT, ISO-MDOC, ISO 18013-5, Proximity, Online]
+    subjects: [sdjwtvc, vp.mdoc, vp.mdoc.device-response]
+    flows: [vp-redirect-same-mdoc]
+    specs: [sd-jwt-vc-13, rfc-9901]
+    links:
+      - title: "Anatomy of a Credential | Blueprint for the EUDI Wallet Ecosystem"
+        url: https://bmi.usercontent.opencode.de/eudi-wallet/eidas-2.0-architekturkonzept/content/features/EAA/credential-anatomy/
+  - id: rparch-encryption
+    title: Encryption
+    summary: >-
+      The wallet encrypts its response to a key the verifier publishes for this one request, so the browser or any
+      relay in between cannot read the attributes.
+    subjects: [vp.authorization-response.encryption, vp.verifier.ephemeral-enc-key, vp.verifier.decrypt-response]
+    links:
+      - title: "JSON Web Tokens | Auth0 Docs"
+        url: https://auth0.com/docs/secure/tokens/json-web-tokens
+      - title: "Ecosystem Architecture: Crosscutting Concepts | Blueprint for the EUDI Wallet Ecosystem"
+        url: https://bmi.usercontent.opencode.de/eudi-wallet/eidas-2.0-architekturkonzept/content/ecosystem-concepts/crosscutting-concepts/security-requirements/
+  - id: rparch-keys-certs
+    title: Keys & Certs
+    summary: >-
+      The access certificate authenticates the relying party to the wallet: it signs the request. The registration
+      certificate says what the relying party registered to ask for, which the wallet uses to spot over-asking.
+    subjects: [vp.verifier.sign-request-object, vp.wallet.verify-request-signature, vp.wallet.validate-registration-cert, vp.wallet.overasking]
+    links:
+      - title: "Wallet-Relying Party Authentication | Blueprint for the EUDI Wallet Ecosystem"
+        url: https://bmi.usercontent.opencode.de/eudi-wallet/eidas-2.0-architekturkonzept/content/ecosystem-concepts/trust/wallet-relying-party-authentication/
+      - title: "Access Certificates | EUDI DE Documentation"
+        url: https://bmi.usercontent.opencode.de/eudi-wallet/developer-guide/sandbox/alpha/access-certificates/
+      - title: "Registration Certificates | EUDI DE Documentation"
+        url: https://bmi.usercontent.opencode.de/eudi-wallet/developer-guide/sandbox/alpha/registration-certificates/
+    related: [rpdev-certificate-usage]
+  - id: rparch-building-trust
+    title: Building Trust
+    summary: >-
+      The verifier trusts an issuer's signature when the signing certificate chains to an anchor from the right list,
+      and it checks the credential's status entry to see that it is not revoked.
+    terms: [EU Trust List, LoTL, National Trust List, LoTE, Trustanchor]
+    subjects: [vp.verifier.verify-issuer-signature, vp.verifier.check-status]
+    specs: [status-list-20]
+    related: [trust-model]
+  - id: rparch-qes
+    title: QES
+    summary: The wallet can also create qualified electronic signatures, for example to sign a contract.
+  - id: rparch-online-ops
+    title: Online Verifier Ops
+    summary: Running the verifier endpoints in production.
+    terms: [Endpoint Security, Logging & Monitoring]
+    links:
+      - title: "Logging and Monitoring | EUDI DE Documentation"
+        url: https://bmi.usercontent.opencode.de/eudi-wallet/developer-guide/rp/guide/arch/logging_and_monitoring/
+  - id: rparch-proximity-ops
+    title: Proximity Operations
+    summary: Presentation from device to device (ISO/IEC 18013-5, QR code and BLE or NFC), for example at a counter.
+    terms: [Device Requirements]

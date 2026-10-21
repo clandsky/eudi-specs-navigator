@@ -1,0 +1,54 @@
+# Cluster Ecosystem Trust: why a verifier can rely on what a wallet shows it, and why a wallet can rely on a verifier.
+id: trust
+code: TRUST
+title: Ecosystem Trust
+group: general
+order: 2
+summary: Principles, trust lists and the security baseline.
+topics:
+  - id: trust-core-principles
+    title: Core Principles
+    summary: >-
+      Transparency to the user (who asks, for what), hardened components, and authentication in both directions: the
+      relying party authenticates to the wallet before the wallet presents anything.
+    terms: [Transparency, Sec Hardening, Authentication]
+    subjects: [vp.wallet.verify-request-signature]
+    questions:
+      - q: >-
+          Can any service become a verifier for any credential, or can bodies such as BMG, the EU or gematik (by
+          rulebook or similar) set up checks so that, for example, not everyone can request or verify the KVNR (a
+          schema defined by us)?
+        a: Anyone can be a verifier.
+      - q: How is it ensured that only defined issuers issue certain credentials?
+        a: >-
+          It is not: anyone can issue, but such an issuer is not trusted, because it is not on the trust anchor for
+          this credential.
+  - id: trust-model
+    title: Trust Model
+    summary: >-
+      Trust comes from lists: the EU list of trusted lists (LoTL) points to the national trusted lists, and lists of
+      trusted entities (LoTE) name wallet providers, PID providers and registrars. A signature counts if its
+      certificate chains to an anchor on the right list.
+    terms: [National Trust List]
+    links:
+      - title: "Trust Validation Overview | Blueprint for the EUDI Wallet Ecosystem"
+        url: https://bmi.usercontent.opencode.de/eudi-wallet/eidas-2.0-architekturkonzept/content/ecosystem-concepts/trust/trust-validation/
+    related: [rparch-building-trust]
+    questions:
+      - q: Which trust lists exist (at the wallet launch), and which lists must issuers be on?
+        a: The national trust list. At launch only EAA, with their own trust anchor.
+  - id: trust-security-requirements
+    title: Security Requirements
+    terms: [Device Requirements]
+    links:
+      - title: "Security Requirements | Blueprint for the EUDI Wallet Ecosystem"
+        url: https://bmi.usercontent.opencode.de/eudi-wallet/eidas-2.0-architekturkonzept/content/ecosystem-concepts/crosscutting-concepts/security-requirements/
+      - title: "National EUDI Wallet: Architecture Documentation, 2.5 Mobile Devices"
+        url: https://bmi.usercontent.opencode.de/eudi-wallet/wallet-development-documentation-public/latest/architecture-concept/02-architecture/05-mobile-devices.html
+    questions:
+      - q: Which devices get the wallet?
+        a: Android 14 and iOS 18.
+  - id: trust-governance
+    title: Governance
+    summary: >-
+      Who runs the lists, registers relying parties, supervises providers and handles a compromised wallet or issuer.

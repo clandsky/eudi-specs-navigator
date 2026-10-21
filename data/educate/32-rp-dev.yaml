@@ -1,0 +1,66 @@
+# Cluster RP-DEV: building and testing a verifier.
+id: rp-dev
+code: RP-DEV
+title: Verifier development
+group: verifier
+order: 3
+summary: From the building blocks to a tested OpenID4VP verifier.
+topics:
+  - id: rpdev-basics
+    title: The Basics
+    summary: >-
+      The building blocks: JWS signatures and JWK key sets, SD-JWT for selective disclosure, CBOR for mdoc, and the
+      OpenID4VP request and response.
+    terms: [JWS, JWKS, OID4VP, SD-JWT, CBOR]
+    specs: [rfc-7515, rfc-7517, rfc-9901, openid4vp-1.0]
+  - id: rpdev-dcql
+    title: DCQL
+    summary: >-
+      The Digital Credentials Query Language says which credentials and which claims the verifier wants. The vp_token
+      in the answer is keyed by the ids of the query's credentials.
+    subjects: [vp.request-object, vp.verifier.check-vp-token]
+    links:
+      - title: "PID Presentations with OpenID4VP | EUDI DE Documentation"
+        url: https://bmi.usercontent.opencode.de/eudi-wallet/developer-guide/rp/guide/presentation/pid_presentation/
+      - title: OpenID for Verifiable Presentations 1.0
+        url: https://openid.net/specs/openid-4-verifiable-presentations-1_0.html
+  - id: rpdev-validation-steps
+    title: Validation Steps
+    summary: >-
+      Decrypt the response, match state, check the vp_token against the query, verify the issuer signature and chain,
+      the disclosures, the key binding, validity and status. The flow pages list every check.
+    subjects: [vp.verifier.validate-response]
+    flows: [vp-redirect-same, vp-redirect-same-mdoc]
+    related: [rpdev-implementing-oid4vp]
+  - id: rpdev-implementing-oid4vp
+    title: Implementing OID4VP
+    flows: [vp-redirect-same, vp-redirect-cross, vp-dc-api]
+    links:
+      - title: "PID Presentations with OpenID4VP | EUDI DE Documentation"
+        url: https://bmi.usercontent.opencode.de/eudi-wallet/developer-guide/rp/guide/presentation/pid_presentation/
+      - title: "Using Registrar Certificates in Presentation Requests | EUDI DE Documentation"
+        url: https://bmi.usercontent.opencode.de/eudi-wallet/developer-guide/rp/guide/presentation/registrar_certificate_usage/
+  - id: rpdev-certificate-usage
+    title: Certificate Usage
+    summary: >-
+      The request object is signed with the access certificate's key and carries its chain. The registration
+      certificate can be passed in the request, so the wallet can check what the relying party registered.
+    subjects: [vp.verifier.sign-request-object, vp.wallet.validate-registration-cert]
+    links:
+      - title: "Using Registrar Certificates in Presentation Requests | EUDI DE Documentation"
+        url: https://bmi.usercontent.opencode.de/eudi-wallet/developer-guide/rp/guide/presentation/registrar_certificate_usage/
+    related: [rparch-keys-certs]
+  - id: rpdev-testing
+    title: Testing
+    links:
+      - title: "BMI / EUDI-Wallet / erica · GitLab"
+        url: https://gitlab.opencode.de/bmi/eudi-wallet/erica
+      - title: "Erica: Local Verifier Testing Tool | EUDI DE Documentation"
+        url: https://bmi.usercontent.opencode.de/eudi-wallet/developer-guide/resources/erica/
+  - id: rpdev-tools-resources
+    title: Additional Tools & Resources
+    links:
+      - title: "Open Source OpenID4VP Verifier Libraries Overview | EUDI DE Documentation"
+        url: https://bmi.usercontent.opencode.de/eudi-wallet/developer-guide/resources/os_libraries/
+      - title: "Glossary | EUDI DE Documentation"
+        url: https://bmi.usercontent.opencode.de/eudi-wallet/developer-guide/resources/glossary/

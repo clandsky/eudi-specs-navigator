@@ -356,6 +356,45 @@ export const Example = z.strictObject({
 })
 export type Example = z.infer<typeof Example>
 
+// Educate ----------------------------------------------------------------------------------------------------------
+// A learning roadmap of the concepts behind each role, in the spirit of roadmap.sh. Explanations are orientation, not
+// rules: anything normative is linked to the subjects, flows and specs of the dataset, where the provenance lives.
+
+export const EducateTopic = z.strictObject({
+  id: slug,
+  title: z.string(),
+  /** A few sentences in plain words. Absent = not written yet. */
+  summary: z.string().optional(),
+  /** Key terms drawn as chips beside the topic. */
+  terms: z.array(z.string()).default([]),
+  flows: z.array(slug).default([]),
+  subjects: z.array(slug).default([]),
+  specs: z.array(slug).default([]),
+  /** External reading (the ARF, the legal texts, the protocol specs). */
+  links: z.array(z.strictObject({ title: z.string(), url: z.string().url() })).default([]),
+  /** Topics elsewhere on the roadmap that this one builds on or feeds. */
+  related: z.array(slug).default([]),
+  /** Questions a newcomer asks here, with the project owner's answer where there is one. */
+  questions: z.array(z.strictObject({ q: z.string(), a: z.string().optional() })).default([]),
+})
+export type EducateTopic = z.infer<typeof EducateTopic>
+
+/** A cluster of the roadmap: a short code ("RP-ARCH"), and the path of topics it walks through. */
+export const EducateTrack = z.strictObject({
+  id: slug,
+  code: z.string(),
+  title: z.string(),
+  /** `context` and `general` clusters come before the fork; the others belong to one side of the ecosystem. */
+  group: z.enum(['context', 'general', 'verifier', 'issuer']),
+  /** Position within its group (lower first). */
+  order: z.number().int().default(99),
+  summary: z.string().optional(),
+  /** Clusters this one leads on to. */
+  next: z.array(slug).default([]),
+  topics: z.array(EducateTopic).min(1),
+})
+export type EducateTrack = z.infer<typeof EducateTrack>
+
 // Field map -------------------------------------------------------------------------------------------------------
 
 export const FieldMapFile = z.array(z.strictObject({ pattern: z.string().startsWith('/'), subject: slug, note: z.string().optional() }))

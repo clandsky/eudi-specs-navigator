@@ -62,6 +62,7 @@ export function TopBar() {
         ))}
       </div>
       <nav className="nav" aria-label="Sections">
+        {navItem('educate', 'Educate', ['educate'])}
         {navItem('', 'Flows', ['', 'flow', 'object'])}
         {navItem('endpoints', 'Endpoints', ['endpoints'])}
         {navItem('spec', 'Specs', ['spec'])}

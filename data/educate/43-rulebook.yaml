@@ -1,0 +1,36 @@
+# Cluster RULEBOOK: the rulebook that defines a credential type, reached from IS-ARCH and IS-DOX.
+id: rulebook
+code: RULEBOOK
+title: Rulebook
+group: issuer
+order: 4
+summary: Defining a credential type so that every issuer and verifier reads it the same way.
+topics:
+  - id: rulebook-structure
+    title: Structure of the rulebook
+    summary: >-
+      An attestation rulebook fixes the credential type: its attributes, their encoding per format, the trust anchor
+      for its issuers, and a human-readable description.
+    terms: [Schema Meta Data, Trust Anchor, Human-readable]
+    links:
+      - title: "eudi-doc-attestation-rulebooks-catalog: attestation rulebook template"
+        url: https://github.com/eu-digital-identity-wallet/eudi-doc-attestation-rulebooks-catalog/blob/main/template/attestation-rulebook-template.md
+      - title: "Rulebooks: Adopt or Create | EUDI DE Documentation"
+        url: https://bmi.usercontent.opencode.de/eudi-wallet/developer-guide/eaa/guide/issuance/rulebook/
+    questions:
+      - q: Which aspects of a credential (its profile) does the rulebook define?
+        a: All of them (see above).
+  - id: rulebook-schema
+    title: Schema Definition
+    summary: The attribute names, types and paths, for SD-JWT VC (vct) and for mdoc (doctype and namespaces).
+    related: [isarch-formats]
+  - id: rulebook-hub-catalog
+    title: EUDI Hub & Catalog
+    links:
+      - title: "Collection of EUDI Wallet rulebooks"
+        url: https://github.com/eu-digital-identity-wallet/eudi-doc-attestation-rulebooks-catalog
+  - id: rulebook-reuse
+    title: Standardisation and reuse
+    summary: Adopt an existing rulebook where one fits, so verifiers can accept the credential without custom work.
+  - id: rulebook-schema-provider
+    title: Schema Provider

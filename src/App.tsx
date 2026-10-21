@@ -1,5 +1,6 @@
 import { LensBar, TopBar } from './components/TopBar'
 import { useRoute, useScrollTopOnPath } from './lib/router'
+import { EducateView } from './views/EducateView'
 import { FlowView } from './views/FlowView'
 import { HomeView } from './views/HomeView'
 import { AdaptationsPage, AssertionPage, EndpointsPage, ObjectPage, ReviewPage, SpecPage, SpecsIndex, SubjectPage } from './views/Pages'
@@ -26,6 +27,8 @@ function Content() {
       return <ReviewPage />
     case 'endpoints':
       return <EndpointsPage />
+    case 'educate':
+      return <EducateView />
     // Placeholders: comparing national wallet solutions, and an RSS feed of changes. No content or logic yet.
     case 'compare':
       return (
