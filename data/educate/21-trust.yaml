@@ -31,7 +31,7 @@ topics:
       chains to an anchor on the right list.
     subtopics: [National Trust List]
     links:
-      - title: "Trust Validation Overview | Blueprint for the EUDI Wallet Ecosystem"
+      - title: Trust Validation Overview | Blueprint for the EUDI Wallet Ecosystem
         url: https://bmi.usercontent.opencode.de/eudi-wallet/eidas-2.0-architekturkonzept/content/ecosystem-concepts/trust/trust-validation/
     related: [rparch-building-trust]
     questions:

@@ -1,5 +1,5 @@
 import { LensBar, TopBar } from './components/TopBar'
-import { useRoute, useScrollTopOnPath } from './lib/router'
+import { useKeepScrollOnReload, useRoute, useScrollTopOnPath } from './lib/router'
 import { EducateView } from './views/EducateView'
 import { FlowView } from './views/FlowView'
 import { HomeView } from './views/HomeView'
@@ -55,6 +55,7 @@ function Content() {
 }
 
 export function App() {
+  useKeepScrollOnReload()
   return (
     <div className="shell">
       <div className="proto-banner" role="note">
