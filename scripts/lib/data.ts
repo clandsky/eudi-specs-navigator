@@ -185,3 +185,18 @@ export function loadDataset(opts: { requireEncoded?: boolean } = {}): Dataset {
     builtAt: new Date().toISOString().slice(0, 10),
   }
 }
+
+/**
+ * The dataset as published: without the assumption layer. Assumptions are the project owner's working notes, kept in
+ * the dev server like comments; the static build and its OpenAPI files end at the wallet solution layer (d-you).
+ */
+export function withoutAssumptions(ds: Dataset): Dataset {
+  const specs = new Set(ds.specs.filter((s) => s.layer === 'assumption').map((s) => s.id))
+  return {
+    ...ds,
+    layers: ds.layers.filter((l) => l.id !== 'assumption'),
+    specs: ds.specs.filter((s) => !specs.has(s.id)),
+    assertions: ds.assertions.filter((a) => !specs.has(a.spec)),
+    examples: ds.examples.map((e) => ({ ...e, assumptions: [] })),
+  }
+}
