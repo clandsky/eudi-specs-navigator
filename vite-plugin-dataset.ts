@@ -1,20 +1,26 @@
-// Serves the validated dataset to the app as `virtual:dataset`. In dev, any change under data/ reloads it.
+// Serves the validated dataset to the app as `virtual:dataset`. In dev, any change under data/ reloads it. The static
+// build leaves out the assumption layer (the project owner's working notes, see withoutAssumptions).
 import type { Plugin } from 'vite'
-import { DATA, DataError, loadDataset } from './scripts/lib/data.ts'
+import { DATA, DataError, loadDataset, withoutAssumptions } from './scripts/lib/data.ts'
 
 const ID = 'virtual:dataset'
 const RESOLVED = `\0${ID}`
 
 export function datasetPlugin(): Plugin {
+  let build = false
   return {
     name: 'specs-navigator:dataset',
+    configResolved(config) {
+      build = config.command === 'build'
+    },
     resolveId(id) {
       return id === ID ? RESOLVED : null
     },
     load(id) {
       if (id !== RESOLVED) return null
       try {
-        const ds = loadDataset({ requireEncoded: true })
+        const all = loadDataset({ requireEncoded: true })
+        const ds = build ? withoutAssumptions(all) : all
         return `export default ${JSON.stringify(ds)}`
       } catch (e) {
         if (e instanceof DataError) this.error(e.message)

@@ -843,7 +843,6 @@ table.data .quote {
 .struck {
   text-decoration: line-through;
   text-decoration-color: var(--redline);
-  color: var(--ink-2);
 }
 
 /* Search ---------------------------------------------------------------------------------------------------------- */

@@ -1,12 +1,12 @@
 // Writes dist/issuer.openapi.yaml (and the verifier file once verifier endpoints exist), resolved with all layers on
-// as of the build date. The app offers the same export for any date and lens.
+// as of the build date, without the assumption layer (like the static app). The app offers the same export for any date and lens.
 import { mkdirSync, writeFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
 import { buildOpenApi, openApiYaml } from '../src/model/openapi.ts'
 import type { LayerId } from '../src/model/schema.ts'
-import { ROOT, loadDataset } from './lib/data.ts'
+import { ROOT, loadDataset, withoutAssumptions } from './lib/data.ts'
 
-const ds = loadDataset({ requireEncoded: true })
+const ds = withoutAssumptions(loadDataset({ requireEncoded: true }))
 const asOf = process.env.AS_OF ?? new Date().toISOString().slice(0, 10)
 const layers = new Set<LayerId>(ds.layers.filter((l) => l.id !== 'secondary').map((l) => l.id))
 const out = resolve(ROOT, process.argv[2] ?? 'dist')
