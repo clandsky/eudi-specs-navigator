@@ -1,5 +1,5 @@
 import MiniSearch from 'minisearch'
-import { useMemo, useRef, useState, type KeyboardEvent } from 'react'
+import { useEffect, useMemo, useRef, useState, type KeyboardEvent } from 'react'
 import { href, navigate } from '../lib/router'
 import { ds, locatorText, specById, subjectById } from '../lib/store'
 
@@ -67,12 +67,34 @@ const linkOf = (path: string) => {
 
 const KIND_LABEL: Record<Doc['kind'], string> = { subject: 'Field or message', assertion: 'Requirement', spec: 'Spec', flow: 'Flow', topic: 'Educate' }
 
+/** A lens button that opens the search field in its place; the field folds back when it loses focus. "/" opens it too. */
 export function Search() {
   const [q, setQ] = useState('')
+  const [expanded, setExpanded] = useState(false)
   const [open, setOpen] = useState(false)
   const [sel, setSel] = useState(0)
   const ref = useRef<HTMLInputElement>(null)
+  const buttonRef = useRef<HTMLButtonElement>(null)
   const results = useMemo(() => (q.trim().length < 2 ? [] : getIndex().search(q).slice(0, 14)), [q])
+
+  useEffect(() => {
+    const onSlash = (e: globalThis.KeyboardEvent) => {
+      const t = e.target as HTMLElement
+      if (e.key !== '/' || e.metaKey || e.ctrlKey || e.altKey || t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName)) return
+      e.preventDefault()
+      setExpanded(true)
+      setOpen(true)
+    }
+    window.addEventListener('keydown', onSlash)
+    return () => window.removeEventListener('keydown', onSlash)
+  }, [])
+
+  const collapse = (refocus: boolean) => {
+    setOpen(false)
+    setExpanded(false)
+    // The button only exists again after the next render.
+    if (refocus) requestAnimationFrame(() => buttonRef.current?.focus())
+  }
 
   const onKey = (e: KeyboardEvent) => {
     if (e.key === 'ArrowDown') {
@@ -83,17 +105,36 @@ export function Search() {
       setSel((s) => Math.max(s - 1, 0))
     } else if (e.key === 'Enter' && results[sel]) {
       navigate(linkOf(results[sel]!.link as string))
-      setOpen(false)
-      ref.current?.blur()
+      collapse(false)
     } else if (e.key === 'Escape') {
-      setOpen(false)
+      collapse(true)
     }
   }
+
+  if (!expanded)
+    return (
+      <button
+        ref={buttonRef}
+        className="icon-btn search-btn"
+        onClick={() => {
+          setExpanded(true)
+          setOpen(true)
+        }}
+        title="Search (/)"
+        aria-label="Search fields, parameters, requirement IDs and section titles"
+      >
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true">
+          <circle cx="7" cy="7" r="4.5" />
+          <path d="M10.5 10.5 14 14" />
+        </svg>
+      </button>
+    )
 
   return (
     <div className="search">
       <input
         ref={ref}
+        autoFocus
         className="field-input"
         type="search"
         placeholder="Search fields, parameters, requirement IDs"
@@ -105,7 +146,7 @@ export function Search() {
           setOpen(true)
         }}
         onFocus={() => setOpen(true)}
-        onBlur={() => setTimeout(() => setOpen(false), 150)}
+        onBlur={() => collapse(false)}
         onKeyDown={onKey}
         role="combobox"
         aria-expanded={open && results.length > 0}
@@ -115,7 +156,7 @@ export function Search() {
         <div className="search-results" id="search-results" role="listbox">
           {results.length === 0 && <div className="empty" style={{ padding: 12 }}>Nothing matches “{q}”.</div>}
           {results.map((r, i) => (
-            <a key={r.id} href={linkOf(r.link as string)} role="option" aria-selected={i === sel} onMouseDown={(e) => e.preventDefault()} onClick={() => setOpen(false)}>
+            <a key={r.id} href={linkOf(r.link as string)} role="option" aria-selected={i === sel} onMouseDown={(e) => e.preventDefault()} onClick={() => collapse(false)}>
               <strong>{r.title as string}</strong>
               <span className="meta">
                 {KIND_LABEL[r.kind as Doc['kind']]}: {r.meta as string}

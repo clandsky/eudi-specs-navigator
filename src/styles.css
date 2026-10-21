@@ -132,7 +132,7 @@ code,
 /* Shell ----------------------------------------------------------------------------------------------------------- */
 .shell {
   display: grid;
-  grid-template-rows: auto auto auto 1fr;
+  grid-template-rows: auto auto auto 1fr auto;
   grid-template-columns: minmax(0, 1fr);
   height: 100%;
 }
@@ -269,6 +269,21 @@ a.icon-btn[aria-current='page'] {
   height: 30px;
   display: grid;
   place-items: center;
+}
+/* Icon buttons that sit together, framed like the segmented switch. */
+.icon-group {
+  display: inline-flex;
+  gap: 2px;
+  padding: 2px;
+  border: 1px solid var(--rule-strong);
+  border-radius: 7px;
+  background: var(--sheet);
+}
+.icon-group .icon-btn {
+  border: 0;
+  border-radius: 5px;
+  width: 28px;
+  height: 28px;
 }
 .btn {
   border: 1px solid var(--rule-strong);
@@ -907,8 +922,13 @@ table.data .quote {
 .search {
   position: relative;
 }
+/* Opened from the lens button, the field takes the button's place inside the icon group. */
 .search input {
   width: 260px;
+  height: 28px;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
 }
 .search-results {
   position: absolute;
@@ -962,13 +982,22 @@ table.data .quote {
   }
   .topbar {
     position: relative;
+    flex-wrap: nowrap;
     gap: 8px;
-    padding: 8px 12px 0;
+    padding: 8px 12px;
   }
-  .brand-name,
+  /* The sections and the date, feed and theme buttons move to the tab bar; the search stays up here. */
+  .nav,
   .spacer,
-  .lens-label,
+  .icon-group > :not(.search, .search-btn),
   .lens-hint {
+    display: none;
+  }
+  .icon-group {
+    margin-left: auto;
+  }
+  /* The open field needs the room the name takes. */
+  .topbar:has(.search) .brand-name {
     display: none;
   }
   /* The results open under the whole bar, full width, instead of under the narrow field. */
@@ -977,19 +1006,14 @@ table.data .quote {
     flex: 1;
     min-width: 0;
   }
+  .icon-group:has(.search) {
+    flex: 1;
+    min-width: 0;
+  }
   .search-results {
     left: 12px;
     right: 12px;
     width: auto;
-  }
-  .nav {
-    order: 1;
-    flex: 0 0 100%;
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    margin: 0 -12px;
-    padding: 0 8px 6px;
-    scrollbar-width: none;
   }
   .lensbar {
     flex-wrap: nowrap;
@@ -1009,6 +1033,90 @@ table.data .quote {
   .page {
     padding: 16px 12px 40px;
   }
+}
+
+/* Tab bar: phones only, the sections at the bottom like a native app ------------------------------------------- */
+.tabbar {
+  display: none;
+}
+@media (max-width: 860px) {
+  .tabbar {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    padding: 4px 4px 6px;
+    background: var(--sheet);
+    border-top: 1px solid var(--rule);
+  }
+  .tabbar > a,
+  .tabbar > button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    padding: 4px 0;
+    border: 0;
+    background: transparent;
+    color: var(--ink-2);
+    font: inherit;
+    font-size: 11px;
+    font-weight: 500;
+    text-decoration: none;
+  }
+  .tabbar .tab-icon {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 28px;
+    border-radius: 14px;
+  }
+  .tabbar [aria-current='page'] {
+    color: var(--ink);
+  }
+  .tabbar [aria-current='page'] .tab-icon {
+    background: var(--sheet-2);
+  }
+  /* A date other than today marks More, as it marks the date button on wide screens. */
+  .tabbar [data-set='true'] .tab-icon::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    right: 10px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--warn);
+    box-shadow: 0 0 0 2px var(--sheet);
+  }
+}
+.more-sheet {
+  width: min(280px, calc(100vw - 24px));
+}
+.more-list {
+  display: grid;
+  margin: 12px -12px -12px;
+  padding: 4px 0;
+  border-top: 1px solid var(--rule);
+}
+.more-list a,
+.more-list button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  text-align: left;
+  text-decoration: none;
+}
+.more-list [aria-current='page'] {
+  background: var(--sheet-2);
+}
+.more-glyph {
+  width: 16px;
+  text-align: center;
 }
 
 /* Dialog ---------------------------------------------------------------------------------------------------------- */

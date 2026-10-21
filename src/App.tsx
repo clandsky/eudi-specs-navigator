@@ -1,4 +1,4 @@
-import { LensBar, TopBar } from './components/TopBar'
+import { LensBar, TabBar, TopBar } from './components/TopBar'
 import { useKeepScrollOnReload, useRoute, useScrollTopOnPath } from './lib/router'
 import { EducateView } from './views/EducateView'
 import { FlowView } from './views/FlowView'
@@ -77,6 +77,7 @@ export function App() {
       <main className="main">
         <Content />
       </main>
+      <TabBar />
     </div>
   )
 }
