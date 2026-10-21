@@ -1338,3 +1338,24 @@ a.term[data-drop='before'] {
 a.term[data-drop='after'] {
   box-shadow: 2px 0 0 var(--focus);
 }
+.edit-question {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 6px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--rule);
+}
+.edit-question textarea {
+  grid-column: 1;
+  resize: vertical;
+  font-family: var(--font-ui);
+}
+.edit-question .icon-btn {
+  grid-column: 2;
+  grid-row: 1;
+}
+.ref-picker {
+  display: grid;
+  gap: 4px;
+  font-weight: 400;
+}

@@ -13,8 +13,8 @@
 //   /__subjects/description  POST {id, description} sets (or, when empty, removes) a subject's description in its
 //                 data/subjects file
 //   /__educate    POST {op, track, id, parent?} edits a topic (or, with parent, a subtopic) of the learning roadmap in
-//                 its data/educate file: save {entry} creates it at the end or updates title, summary, links and, for a
-//                 topic, the list of subtopics; delete removes it and every related link to it; move {dir: -1 | 1}
+//                 its data/educate file: save {entry} creates it at the end or updates title, summary, links,
+//                 questions, flows, subjects, specs, related and, for a topic, the list of subtopics; delete removes it and every related link to it; move {dir: -1 | 1}
 //                 swaps it with its neighbour, move {to} puts it at that position. Each edit is rolled back if the dataset no longer validates
 // The static build has no server: the overrule editor keeps local drafts there, the example editor and the
 // description are read-only.
@@ -354,7 +354,23 @@ function locate(doc: Document, id: string, parent?: string): Located | null {
 }
 
 /** Sets the fields the editor owns on a topic or subtopic map; the others (flows, specs, questions …) stay. */
-function applyEntry(doc: Document, map: YAMLMap, entry: { title: string; summary?: string; links?: { title: string; url: string }[] }) {
+/** What the Educate editor sends for a topic or subtopic. Lists left out stay as they are in the file. */
+interface EducateEntryEdit {
+  title: string
+  summary?: string
+  links?: { title: string; url: string }[]
+  questions?: { q: string; a?: string }[]
+  flows?: string[]
+  subjects?: string[]
+  specs?: string[]
+  related?: string[]
+  /** Topics only: existing subtopics by id, new ones by title. */
+  subtopics?: ({ id: string } | { title: string })[]
+}
+
+const REF_LISTS = ['flows', 'subjects', 'specs', 'related'] as const
+
+function applyEntry(doc: Document, map: YAMLMap, entry: EducateEntryEdit) {
   map.set('title', entry.title)
   const summary = entry.summary?.replace(/\s+/g, ' ').trim()
   if (summary) {
@@ -362,8 +378,27 @@ function applyEntry(doc: Document, map: YAMLMap, entry: { title: string; summary
     if (summary.length > 100) node.type = Scalar.BLOCK_FOLDED
     map.set('summary', node)
   } else map.delete('summary')
-  if (entry.links?.length) map.set('links', doc.createNode(entry.links))
-  else map.delete('links')
+  if (entry.links) {
+    if (entry.links.length) map.set('links', doc.createNode(entry.links))
+    else map.delete('links')
+  }
+  if (entry.questions) {
+    const qs = entry.questions
+      .map((x) => ({ q: x.q.replace(/\s+/g, ' ').trim(), a: x.a?.replace(/\s+/g, ' ').trim() }))
+      .filter((x) => x.q)
+      .map((x) => (x.a ? x : { q: x.q }))
+    if (qs.length) map.set('questions', doc.createNode(qs))
+    else map.delete('questions')
+  }
+  for (const k of REF_LISTS) {
+    const ids = entry[k]
+    if (!ids) continue
+    if (ids.length) {
+      const node = doc.createNode([...new Set(ids)]) as YAMLSeq
+      node.flow = true
+      map.set(k, node)
+    } else map.delete(k)
+  }
   map.items.sort((a, b) => ENTRY_ORDER.indexOf(String((a.key as Scalar).value ?? a.key)) - ENTRY_ORDER.indexOf(String((b.key as Scalar).value ?? b.key)))
 }
 
@@ -404,7 +439,7 @@ async function handleEducate(req: Req, res: Res) {
       id: string
       /** Set for a subtopic: the id of its topic. */
       parent?: string
-      entry?: { title: string; summary?: string; links?: { title: string; url: string }[]; subtopics?: ({ id: string } | { title: string })[] }
+      entry?: EducateEntryEdit
       /** move: one step (-1 | 1), or straight to a position in the list (drag and drop). */
       dir?: number
       to?: number
@@ -428,6 +463,14 @@ async function handleEducate(req: Req, res: Res) {
       if (!entry?.title?.trim()) return sendJson(res, 400, { error: ['a title is needed'] })
       const bad = entry.links?.find((l) => !l.title?.trim() || !URL.canParse(l.url))
       if (bad) return sendJson(res, 400, { error: [`a link needs a title and a full URL: ${bad.title || bad.url}`] })
+      const known = {
+        flows: new Set(ds.flows.map((f) => f.id)),
+        subjects: new Set(ds.subjects.map((x) => x.id)),
+        specs: new Set(ds.specs.map((x) => x.id)),
+        related: allIds,
+      }
+      const unknown = REF_LISTS.flatMap((k) => (entry[k] ?? []).filter((id) => !known[k].has(id) || (k === 'related' && id === body.id)).map((id) => `${k}: ${id}`))
+      if (unknown.length) return sendJson(res, 400, { error: unknown.map((u) => `unknown ${u}`) })
       let map: YAMLMap
       if (at.index >= 0) {
         const item = at.seq.items[at.index]

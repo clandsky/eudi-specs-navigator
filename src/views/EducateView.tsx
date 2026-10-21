@@ -416,6 +416,11 @@ function EntryEditor({ track, parent, entry, onClose }: { track: Track; parent?:
   const [title, setTitle] = useState(entry?.title ?? '')
   const [summary, setSummary] = useState(entry?.summary ?? '')
   const [links, setLinks] = useState<{ title: string; url: string }[]>(entry?.links ?? [])
+  const [questions, setQuestions] = useState<{ q: string; a: string }[]>(entry?.questions.map((x) => ({ q: x.q, a: x.a ?? '' })) ?? [])
+  const [flows, setFlows] = useState<string[]>(entry?.flows ?? [])
+  const [subjects, setSubjects] = useState<string[]>(entry?.subjects ?? [])
+  const [specs, setSpecs] = useState<string[]>(entry?.specs ?? [])
+  const [related, setRelated] = useState<string[]>(entry?.related ?? [])
   // Existing subtopics are kept by id (with all their content); new ones are just a title.
   const [subs, setSubs] = useState<({ id: string; title: string } | { title: string })[]>(
     isTopic && entry ? (entry as EducateTopic).subtopics.map((s) => ({ id: s.id, title: s.title })) : [],
@@ -460,6 +465,11 @@ function EntryEditor({ track, parent, entry, onClose }: { track: Track; parent?:
       title: title.trim(),
       summary,
       links: keptLinks,
+      questions: questions.filter((x) => x.q.trim()).map((x) => ({ q: x.q, ...(x.a.trim() ? { a: x.a } : {}) })),
+      flows,
+      subjects,
+      specs,
+      related,
       ...(isTopic ? { subtopics: pending.map((s) => ('id' in s ? { id: s.id } : { title: s.title })) } : {}),
     }
     // A new topic opens after the reload.
@@ -515,7 +525,44 @@ function EntryEditor({ track, parent, entry, onClose }: { track: Track; parent?:
         )}
 
         <div className="edit-group">
-          <span className="edit-label">Links</span>
+          <span className="edit-label">Questions</span>
+          {questions.map((x, i) => (
+            <div key={i} className="edit-question">
+              <textarea
+                className="field-input"
+                rows={2}
+                value={x.q}
+                placeholder="Question"
+                aria-label={`Question ${i + 1}`}
+                onChange={(e) => setQuestions(questions.map((y, j) => (j === i ? { ...y, q: e.target.value } : y)))}
+              />
+              <textarea
+                className="field-input"
+                rows={2}
+                value={x.a}
+                placeholder="Answer (leave empty while it is open)"
+                aria-label={`Answer ${i + 1}`}
+                onChange={(e) => setQuestions(questions.map((y, j) => (j === i ? { ...y, a: e.target.value } : y)))}
+              />
+              <button type="button" className="icon-btn" aria-label={`Remove question ${i + 1}`} onClick={() => setQuestions(questions.filter((_, j) => j !== i))}>
+                ×
+              </button>
+            </div>
+          ))}
+          <button type="button" className="btn" onClick={() => setQuestions([...questions, { q: '', a: '' }])}>
+            Add question
+          </button>
+        </div>
+
+        <div className="edit-group">
+          <span className="edit-label">In this navigator</span>
+          <RefPicker label="Flows" placeholder="Add a flow" options={refOptions().flows} values={flows} onChange={setFlows} />
+          <RefPicker label="Messages, fields and steps" placeholder="Add a field, message or step" options={refOptions().subjects} values={subjects} onChange={setSubjects} />
+          <RefPicker label="Specs" placeholder="Add a spec" options={refOptions().specs} values={specs} onChange={setSpecs} />
+        </div>
+
+        <div className="edit-group">
+          <span className="edit-label">Reading</span>
           {links.map((l, i) => (
             <div key={i} className="edit-link">
               <input
@@ -540,6 +587,16 @@ function EntryEditor({ track, parent, entry, onClose }: { track: Track; parent?:
           <button type="button" className="btn" onClick={() => setLinks([...links, { title: '', url: '' }])}>
             Add link
           </button>
+        </div>
+
+        <div className="edit-group">
+          <RefPicker
+            label="Related"
+            placeholder="Add a topic or subtopic"
+            options={refOptions().related.filter((o) => o.id !== entry?.id)}
+            values={related}
+            onChange={setRelated}
+          />
         </div>
 
         {entry && (
@@ -591,5 +648,97 @@ function EntryEditor({ track, parent, entry, onClose }: { track: Track; parent?:
         </button>
       </div>
     </form>
+  )
+}
+
+interface RefOption {
+  id: string
+  label: string
+}
+
+let refCache: Record<'flows' | 'subjects' | 'specs' | 'related', RefOption[]> | null = null
+/** What the pickers offer, built once: the dataset's flows, subjects and specs, and every topic and subtopic. */
+function refOptions() {
+  refCache ??= {
+    flows: ds.flows.map((f) => ({ id: f.id, label: f.title })),
+    subjects: ds.subjects.map((x) => ({ id: x.id, label: x.title })),
+    specs: ds.specs.map((x) => ({ id: x.id, label: `${x.short}: ${x.title}` })),
+    related: [...entryIndex.values()].map(({ entry, track, parent }) => ({
+      id: entry.id,
+      label: `${entry.title} (${track.code}${parent ? `, ${parent.title}` : ''})`,
+    })),
+  }
+  return refCache
+}
+
+/** A list of references as removable chips, plus a search field that suggests by title or id. */
+function RefPicker({
+  label,
+  placeholder,
+  options,
+  values,
+  onChange,
+}: {
+  label: string
+  placeholder: string
+  options: RefOption[]
+  values: string[]
+  onChange: (ids: string[]) => void
+}) {
+  const [q, setQ] = useState('')
+  const listId = `ref-${label.replace(/\W+/g, '-').toLowerCase()}`
+  const labelOf = (id: string) => options.find((o) => o.id === id)?.label ?? id
+  const pick = (text: string) => {
+    const t = text.trim().toLowerCase()
+    const hit = options.find((o) => o.id.toLowerCase() === t) ?? options.find((o) => o.label.toLowerCase() === t)
+    if (!hit) return false
+    if (!values.includes(hit.id)) onChange([...values, hit.id])
+    setQ('')
+    return true
+  }
+  return (
+    <div className="ref-picker">
+      <span className="meta">{label}</span>
+      {values.length > 0 && (
+        <div className="terms">
+          {values.map((id) => (
+            <span key={id} className="term term-edit" title={id}>
+              {labelOf(id)}
+              <button type="button" aria-label={`Remove ${labelOf(id)}`} onClick={() => onChange(values.filter((x) => x !== id))}>
+                ×
+              </button>
+            </span>
+          ))}
+        </div>
+      )}
+      <input
+        className="field-input"
+        list={listId}
+        value={q}
+        placeholder={placeholder}
+        aria-label={`${label}: ${placeholder}`}
+        onChange={(e) => {
+          // Picking a suggestion replaces the field's text with its id: add it right away. Typing waits for Enter.
+          const kind = (e.nativeEvent as InputEvent).inputType
+          if ((!kind || kind === 'insertReplacementText') && pick(e.target.value)) return
+          setQ(e.target.value)
+        }}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault()
+            pick(q)
+          }
+        }}
+      />
+      <datalist id={listId}>
+        {options
+          .filter((o) => !values.includes(o.id))
+          .map((o) => (
+            <option key={o.id} value={o.id}>
+              {o.label}
+            </option>
+          ))}
+      </datalist>
+    </div>
   )
 }
