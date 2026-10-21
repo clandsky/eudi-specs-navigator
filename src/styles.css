@@ -21,7 +21,6 @@
   --l-base: #667383;
   --l-primitive: #8b93a0;
   --l-arf: #9a6b2f;
-  --l-impl-de: #56702a;
   --l-secondary: #a3abb7;
 
   --redline: #b3261e;
@@ -56,7 +55,6 @@
     --l-base: #9aa7b6;
     --l-primitive: #8b93a0;
     --l-arf: #d6a86a;
-    --l-impl-de: #9cc15e;
     --redline: #ff8a80;
     --insert: #6fd38e;
     --warn: #f0b350;
@@ -83,7 +81,6 @@
   --l-base: #9aa7b6;
   --l-primitive: #8b93a0;
   --l-arf: #d6a86a;
-  --l-impl-de: #9cc15e;
   --redline: #ff8a80;
   --insert: #6fd38e;
   --warn: #f0b350;

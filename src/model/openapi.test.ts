@@ -6,7 +6,7 @@ import { Subject, type LayerId } from './schema'
 type Json = Record<string, any>
 
 const ds = loadDataset({ requireEncoded: true })
-const layers = new Set<LayerId>(ds.layers.filter((l) => l.id !== 'impl-de' && l.id !== 'secondary').map((l) => l.id))
+const layers = new Set<LayerId>(ds.layers.filter((l) => l.id !== 'secondary').map((l) => l.id))
 const doc = buildOpenApi(ds, { view: 'verifier', asOf: '2026-10-20', layers }) as Json
 const paths = doc.paths as Json
 

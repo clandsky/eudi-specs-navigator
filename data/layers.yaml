@@ -65,13 +65,6 @@ layers:
     normative: true
     lens: false
     description: Architecture and Reference Framework and its technical specifications; governs only where higher layers are silent.
-  - id: impl-de
-    rank: 7
-    label: German implementation
-    short: DE
-    normative: false
-    lens: true
-    description: German Wallet Development Documentation and Architekturkonzept. Shown as implementation; deviations are flagged.
   - id: secondary
     rank: null
     label: Secondary source

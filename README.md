@@ -36,9 +36,8 @@ DeviceResponse, decoded field by field).
 ## Precedence
 
 Go-live compromises > CIR implementing acts > ETSI > HAIP > base protocols > primitives > ARF (lower rank wins),
-encoded in [`data/layers.yaml`](data/layers.yaml). The German implementation layer is shown as an implementation with
-deviations flagged; it never decides. Above them sits an Assumptions layer: the project owner's working readings of
-unclear rules, kept like comments. It exists only in the dev server and is not part of the static build.
+encoded in [`data/layers.yaml`](data/layers.yaml). Above them sits an Assumptions layer: the project owner's working
+readings of unclear rules, kept like comments. It exists only in the dev server and is not part of the static build.
 
 ## Development
 

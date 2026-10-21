@@ -7,7 +7,7 @@ import { Assertion, type LayerId } from './schema'
 let ds: Dataset
 let table: LayerTable
 let specLayer: (id: string) => LayerId
-const ALL: ReadonlySet<LayerId> = new Set(['assumption', 'golive', 'cir', 'etsi', 'haip', 'base', 'primitive', 'arf', 'impl-de'])
+const ALL: ReadonlySet<LayerId> = new Set(['assumption', 'golive', 'cir', 'etsi', 'haip', 'base', 'primitive', 'arf'])
 
 beforeAll(() => {
   ds = loadDataset()
