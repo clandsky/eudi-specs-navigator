@@ -67,6 +67,7 @@ export function TopBar() {
         {navItem('spec', 'Specs', ['spec'])}
         {navItem('review', 'Review', ['review'])}
         {navItem('compare', 'Compare wallets', ['compare'])}
+        {navItem('educate', 'Educate', ['educate'])}
         {navItem('rss', 'RSS', ['rss'])}
       </nav>
       <span className="spacer" />

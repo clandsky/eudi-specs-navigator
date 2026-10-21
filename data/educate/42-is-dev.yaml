@@ -1,0 +1,28 @@
+# Cluster IS-DEV: building an issuer.
+id: is-dev
+code: IS-DEV
+title: Issuer development
+group: issuer
+order: 3
+summary: Implementing OpenID4VCI and connecting it to your systems.
+topics:
+  - id: isdev-implementing-oid4vci
+    title: Implementing OID4VCI
+    summary: >-
+      Offer, metadata, PAR, token, nonce, credential and notification endpoints, and the checks the authorization server
+      and the credential issuer run on each request. The flow pages walk through every step.
+    flows: [vci-auth-code-par, vci-pre-auth]
+    subjects:
+      - vci.as.validate-par-request
+      - vci.as.validate-token-request
+      - vci.issuer.validate-credential-request
+    specs: [openid4vci-1.0, c2bo-conformance]
+    links:
+      - title: "EAA Issuance with OpenID4VCI | EUDI DE Documentation"
+        url: https://bmi.usercontent.opencode.de/eudi-wallet/developer-guide/eaa/guide/issuance/eaa_issuance/
+      - title: "Example flow: High-assurance issuance with HAIP | EUDI DE Documentation"
+        url: https://bmi.usercontent.opencode.de/eudi-wallet/developer-guide/eaa/guide/issuance/example_flow_haip/
+      - title: "Issuer Conformance (c2bo)"
+        url: https://conformance.c2bo.net/#requirements
+  - id: isdev-third-party
+    title: 3rd Party Integration

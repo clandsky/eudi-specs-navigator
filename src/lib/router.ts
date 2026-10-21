@@ -56,6 +56,48 @@ export function navigate(to: string) {
   window.location.hash = to.replace(/^#/, '')
 }
 
+const SCROLL_KEY = 'specs-navigator.scroll'
+
+/**
+ * Keeps the reading position when the page reloads at the same address: a save from a dev editor rewrites data/ and
+ * Vite reloads the page, and the browser cannot restore the scroll of `.main` itself. Runs after the views' own
+ * mount scrolling (scroll-to-top, scroll to a linked topic), so the restored position wins.
+ */
+export function useKeepScrollOnReload() {
+  useEffect(() => {
+    const main = document.querySelector('.main')
+    if (!main) return
+    const at = () => window.location.hash.split('?')[0]
+    const save = () => {
+      try {
+        sessionStorage.setItem(SCROLL_KEY, JSON.stringify({ at: at(), top: main.scrollTop }))
+      } catch {
+        /* storage blocked: the page starts at the top */
+      }
+    }
+    let frame = 0
+    try {
+      const saved = JSON.parse(sessionStorage.getItem(SCROLL_KEY) ?? 'null') as { at: string; top: number } | null
+      // Removed only once restored: StrictMode runs this effect twice and the first run's frame is cancelled.
+      frame = requestAnimationFrame(() => {
+        if (saved && saved.at === at()) main.scrollTo({ top: saved.top })
+        try {
+          sessionStorage.removeItem(SCROLL_KEY)
+        } catch {
+          /* ignore */
+        }
+      })
+    } catch {
+      /* nothing to restore */
+    }
+    window.addEventListener('pagehide', save)
+    return () => {
+      cancelAnimationFrame(frame)
+      window.removeEventListener('pagehide', save)
+    }
+  }, [])
+}
+
 export function useScrollTopOnPath(path: string[]) {
   const key = path.join('/')
   useEffect(() => {

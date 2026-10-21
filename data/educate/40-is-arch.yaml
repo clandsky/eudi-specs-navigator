@@ -1,0 +1,132 @@
+# Cluster IS-ARCH: the architecture of an issuer (PID or attestation provider).
+id: is-arch
+code: IS-ARCH
+title: Issuer architecture
+group: issuer
+order: 1
+summary: What an issuer consists of and which choices shape it.
+next: [is-dev, rulebook]
+topics:
+  - id: isarch-basics
+    title: Basics and standards
+    summary: >-
+      An issuer runs an OAuth authorization server and a credential issuer. The wallet gets an access token and then the
+      credential, by OpenID4VCI, profiled by HAIP and ETSI TS 119 472-3.
+    flows: [vci-auth-code-par, vci-pre-auth]
+    specs: [openid4vci-1.0, haip-1.0, etsi-ts-119-472-3]
+    links:
+      - title: OpenID for Verifiable Credential Issuance 1.0
+        url: https://openid.net/specs/openid-4-verifiable-credential-issuance-1_0.html
+      - title: "EAA Provider Onboarding | EUDI DE Documentation"
+        url: https://bmi.usercontent.opencode.de/eudi-wallet/developer-guide/eaa/onboarding/overview/
+  - id: isarch-lifecycle
+    title: Credential Lifecycle
+    summary: >-
+      Issue, refresh, suspend, revoke, expire. Revocation and suspension go through a status list the issuer keeps
+      published; refresh tokens let the wallet fetch fresh credentials without the user starting over.
+    subtopics: [Key Rotation, Refresh, Token Status List]
+    subjects: [vci.refresh-token, vci.notification-request]
+    specs: [status-list-20]
+    links:
+      - title: "Credential Lifecycle & Operations | EUDI DE Documentation"
+        url: https://bmi.usercontent.opencode.de/eudi-wallet/developer-guide/eaa/guide/issuance/eaa_lifecycle/
+    questions:
+      - q: How are credentials updated?
+        a: >-
+          By reissuing with the same credential_id (later); for now with the same VC. Technically with a refresh token
+          (OAuth). Suspended and revoked: Token Status List. Issued and managed as several instances for repeated use:
+          Token Status List.
+  - id: isarch-credential-binding
+    title: Credential Binding
+    summary: >-
+      The issuer binds the credential to a key the wallet proves it holds (key binding), or to a value from another
+      credential (claim binding).
+    subtopics: [Key Binding, Claim Binding]
+    subjects: [vci.proof-jwt, vci.ka, vci.credential-response.one-per-key]
+    links:
+      - title: "Key Binding | EUDI DE Documentation"
+        url: https://bmi.usercontent.opencode.de/eudi-wallet/developer-guide/concepts/binding/key_binding/
+      - title: "Claim Binding | EUDI DE Documentation"
+        url: https://bmi.usercontent.opencode.de/eudi-wallet/developer-guide/concepts/binding/claim_binding/
+    related: [rparch-binding]
+    questions:
+      - q: How do device binding and claim binding differ?
+        a: Device binding is key binding (cryptographic). Claim binding is a copy of a value from another credential.
+  - id: isarch-loa
+    title: Level of Assurance
+    summary: >-
+      How reliably the issuer knows who it issues to: low, substantial or high. The authentication mechanism and the
+      protocol profile decide which level an issuance reaches.
+    subtopics: [High, Substantial, Low]
+    specs: [haip-1.0]
+    subjects: [vci.preauth.physical-presence]
+    links:
+      - title: OpenID4VC High Assurance Interoperability Profile 1.0
+        url: https://openid.net/specs/openid4vc-high-assurance-interoperability-profile-1_0-final.html
+    related: [isdox-risk-analysis, isdox-required-auth-loa]
+    questions:
+      - q: >-
+          Can a QEAA credential type be loaded into the wallet without the PID, through an identification procedure
+          outside the wallet, for example the online ID function?
+        a: Yes, but the pre-authorized code flow means a security downgrade.
+      - q: >-
+          Are there restrictions for the PID during issuance, or for the pre-authorized code flow, with respect to the
+          security level of the wallet?
+        a: >-
+          Not every spec profile reaches every level of assurance. High means HAIP; substantial and low mean the
+          standard profile.
+  - id: isarch-auth-mechanism
+    title: Authentication Mechanism
+    summary: >-
+      How the issuer authenticates the user before it issues: in the authorization code flow (a login, or a PID
+      presentation nested into issuance), beforehand in the pre-authorized code flow, or not at all.
+    subtopics: [Pre Auth Flow, Auth Code Flow, No Auth, Nested Flow, Interactive Endpoint]
+    flows: [vci-auth-code-par, vci-pre-auth]
+    subjects: [vci.user-authentication, vci.tx-code-delivery]
+    links:
+      - title: OpenID for Verifiable Credential Issuance 1.0
+        url: https://openid.net/specs/openid-4-verifiable-credential-issuance-1_0.html
+      - title: "EAA Issuance with OpenID4VCI | Blueprint for the EUDI Wallet Ecosystem"
+        url: https://bmi.usercontent.opencode.de/eudi-wallet/eidas-2.0-architekturkonzept/content/features/EAA/EAA-Issuance-OpenID4VC/
+    related: [rparch-basics]
+    questions:
+      - q: How is a credential issued or managed with a PID presentation during issuance (nested presentation flow)?
+        a: >-
+          The OAuth 2 server requires authentication before it issues the token. It can simply redirect to openid4vp://
+          instead of a login form.
+  - id: isarch-crypto-binding
+    title: Cryptographic Binding & Signing
+    summary: >-
+      The wallet authenticates with its wallet instance attestation (WIA) and proves its keys with key attestations;
+      DPoP binds the access token and PKCE the authorization code. The issuer signs each credential with its own key.
+    subtopics: [WIA, Key Management, DPoP, PKCE]
+    subjects: [vci.wia, vci.ka, vci.dpop, vci.pkce, vci.issuer.sign-credential]
+    links:
+      - title: "Ecosystem Architecture: Crosscutting Concepts | Blueprint for the EUDI Wallet Ecosystem"
+        url: https://bmi.usercontent.opencode.de/eudi-wallet/eidas-2.0-architekturkonzept/content/ecosystem-concepts/crosscutting-concepts/security-requirements/
+    questions:
+      - q: Can the issuer decide whether only a PIN, or biometrics as well, may be used?
+        a: For EAA always device security (device PIN and/or biometrics). The PIN only for the PID.
+      - q: How is it ensured that a credential is only issued into the SPRIND EUDI wallet?
+        a: With the WIA.
+  - id: isarch-encryption
+    title: Encryption
+    summary: The wallet can ask for the credential response to be encrypted to a key it sends with the request.
+    subjects: [vci.crypto.aes-gcm]
+  - id: isarch-formats
+    title: Formats
+    summary: SD-JWT VC and ISO mdoc; the rulebook of the credential type says which ones to issue.
+    subtopics: [SD-JWT, iso-mdoc]
+    subjects: [sdjwtvc]
+    specs: [sd-jwt-vc-13]
+    links:
+      - title: "Anatomy of a Credential | Blueprint for the EUDI Wallet Ecosystem"
+        url: https://bmi.usercontent.opencode.de/eudi-wallet/eidas-2.0-architekturkonzept/content/features/EAA/credential-anatomy/
+    related: [rparch-formats]
+  - id: isarch-operations
+    title: Operations & Governance
+    summary: >-
+      Running issuance in production: key rotation, hardening, availability of the endpoints and of the status list, and
+      the security rules for operators (NIS 2, BSI).
+    subtopics: [NIS 2, BSI, Key Rotation, Sec Hardening, Availability, i.E. Status List]
+    specs: [status-list-20]

@@ -6,7 +6,7 @@ try {
   const n = (xs: unknown[]) => xs.length
   console.log(
     `ok: ${n(ds.specs)} specs, ${n(ds.subjects)} subjects, ${n(ds.flows)} flows, ${n(ds.assertions)} assertions, ` +
-      `${n(ds.examples)} examples${ds.c2bo ? `, c2bo snapshot ${ds.c2bo.retrieved}` : ''}`,
+      `${n(ds.examples)} examples, ${n(ds.educate)} educate clusters${ds.c2bo ? `, c2bo snapshot ${ds.c2bo.retrieved}` : ''}`,
   )
 } catch (e) {
   if (e instanceof DataError) {

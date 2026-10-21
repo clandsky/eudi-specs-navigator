@@ -12,17 +12,21 @@
 //                 resolved interpretation of that layer (spec resolved-<layer>)
 //   /__subjects/description  POST {id, description} sets (or, when empty, removes) a subject's description in its
 //                 data/subjects file
+//   /__educate    POST {op, track, id, parent?} edits a topic (or, with parent, a subtopic) of the learning roadmap in
+//                 its data/educate file: save {entry} creates it at the end or updates title, summary, links,
+//                 questions, flows, subjects, specs, related and, for a topic, the list of subtopics; delete removes it and every related link to it; move {dir: -1 | 1}
+//                 swaps it with its neighbour, move {to} puts it at that position. Each edit is rolled back if the dataset no longer validates
 // The static build has no server: the overrule editor keeps local drafts there, the example editor and the
 // description are read-only.
 import { existsSync, mkdirSync, readFileSync, readdirSync, unlinkSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import type { Plugin } from 'vite'
-import { isMap, isSeq, parse, parseDocument, Scalar, stringify, type YAMLMap } from 'yaml'
+import { isMap, isScalar, isSeq, parse, parseDocument, Scalar, stringify, visit, type Document, type YAMLMap, type YAMLSeq } from 'yaml'
 import { buildExamples, ensureTestPki } from './scripts/lib/build-examples.ts'
-import { DATA, ROOT, loadDataset } from './scripts/lib/data.ts'
+import { DATA, DataError, ROOT, loadDataset } from './scripts/lib/data.ts'
 import { removeEntry, replaceEntry } from './scripts/lib/yaml-edit.ts'
 import { diffInputs } from './src/model/inputs-diff.ts'
-import { Assertion, Example } from './src/model/schema.ts'
+import { Assertion, Example, subtopicId } from './src/model/schema.ts'
 
 const DIR = join(DATA, 'assertions', 'golive')
 
@@ -37,6 +41,7 @@ export function editorPlugin(): Plugin {
       server.middlewares.use('/__authored/delete', (req, res) => handleDeleteAuthored(req, res))
       server.middlewares.use('/__authored/update', (req, res) => handleUpdateAuthored(req, res))
       server.middlewares.use('/__subjects/description', (req, res) => handleDescription(req, res))
+      server.middlewares.use('/__educate', (req, res) => handleEducate(req, res))
       server.middlewares.use('/__overrules', (req, res) => {
         const send = (status: number, body: unknown) => {
           res.statusCode = status
@@ -316,6 +321,222 @@ async function handleDescription(req: Req, res: Res) {
     }
     sendJson(res, 404, { error: [`unknown subject ${id}`] })
   } catch (e) {
+    sendJson(res, 500, { error: [(e as Error).message] })
+  }
+}
+
+const ENTRY_ORDER = ['id', 'title', 'summary', 'subtopics', 'flows', 'subjects', 'specs', 'links', 'related', 'questions']
+
+type Seq = YAMLSeq<unknown>
+type Located = { seq: Seq; index: number }
+
+/** The list under `key`, or null when there is none. */
+function seqOf(node: { get(key: string, keepScalar: true): unknown }, key: string): Seq | null {
+  const v = node.get(key, true)
+  return isSeq(v) ? (v as Seq) : null
+}
+
+/** Id of an item of a topics or subtopics list: its own id, or for a subtopic written as a plain title the derived one. */
+function itemId(item: unknown, parent?: string): string {
+  if (isMap(item)) return item.has('id') ? String(item.get('id')) : subtopicId(parent ?? '', String(item.get('title')))
+  return subtopicId(parent ?? '', String((item as Scalar).value))
+}
+
+function locate(doc: Document, id: string, parent?: string): Located | null {
+  const topics = seqOf(doc, 'topics')
+  if (!topics) return null
+  if (!parent) return { seq: topics, index: topics.items.findIndex((it) => itemId(it) === id) }
+  const owner = topics.items.find((it) => itemId(it) === parent)
+  if (!isMap(owner)) return null
+  if (!seqOf(owner, 'subtopics')) owner.set('subtopics', doc.createNode([]))
+  const seq = seqOf(owner, 'subtopics')!
+  return { seq, index: seq.items.findIndex((it) => itemId(it, parent) === id) }
+}
+
+/** Sets the fields the editor owns on a topic or subtopic map; the others (flows, specs, questions …) stay. */
+/** What the Educate editor sends for a topic or subtopic. Lists left out stay as they are in the file. */
+interface EducateEntryEdit {
+  title: string
+  summary?: string
+  links?: { title: string; url: string }[]
+  questions?: { q: string; a?: string }[]
+  flows?: string[]
+  subjects?: string[]
+  specs?: string[]
+  related?: string[]
+  /** Topics only: existing subtopics by id, new ones by title. */
+  subtopics?: ({ id: string } | { title: string })[]
+}
+
+const REF_LISTS = ['flows', 'subjects', 'specs', 'related'] as const
+
+function applyEntry(doc: Document, map: YAMLMap, entry: EducateEntryEdit) {
+  map.set('title', entry.title)
+  const summary = entry.summary?.replace(/\s+/g, ' ').trim()
+  if (summary) {
+    const node = new Scalar(summary)
+    if (summary.length > 100) node.type = Scalar.BLOCK_FOLDED
+    map.set('summary', node)
+  } else map.delete('summary')
+  if (entry.links) {
+    if (entry.links.length) map.set('links', doc.createNode(entry.links))
+    else map.delete('links')
+  }
+  if (entry.questions) {
+    const qs = entry.questions
+      .map((x) => ({ q: x.q.replace(/\s+/g, ' ').trim(), a: x.a?.replace(/\s+/g, ' ').trim() }))
+      .filter((x) => x.q)
+      .map((x) => (x.a ? x : { q: x.q }))
+    if (qs.length) map.set('questions', doc.createNode(qs))
+    else map.delete('questions')
+  }
+  for (const k of REF_LISTS) {
+    const ids = entry[k]
+    if (!ids) continue
+    if (ids.length) {
+      const node = doc.createNode([...new Set(ids)]) as YAMLSeq
+      node.flow = true
+      map.set(k, node)
+    } else map.delete(k)
+  }
+  map.items.sort((a, b) => ENTRY_ORDER.indexOf(String((a.key as Scalar).value ?? a.key)) - ENTRY_ORDER.indexOf(String((b.key as Scalar).value ?? b.key)))
+}
+
+/** Writes a data/educate file the way it is hand-written: short lists on one line as [a, b], long ones as a block. */
+export function educateYaml(doc: Document): string {
+  visit(doc, {
+    Seq(_, seq) {
+      if (!seq.flow) return
+      const width = seq.items.reduce<number>((n, it) => n + String(isScalar(it) ? it.value : '').length + 2, 0)
+      if (width > 90 || seq.items.some((it) => !isScalar(it))) seq.flow = false
+    },
+  })
+  return doc.toString({ lineWidth: 120, flowCollectionPadding: false })
+}
+
+/** A subtopic with nothing but a title is written as that title, like the hand-written chips. */
+function compactSubtopics(doc: Document, owner: YAMLMap, parent: string) {
+  const seq = seqOf(owner, 'subtopics')
+  if (!seq) return
+  if (seq.items.length === 0) return void owner.delete('subtopics')
+  seq.items = seq.items.map((it) => {
+    if (!isMap(it)) return it
+    const keys = it.items.map((p) => String((p.key as Scalar).value ?? p.key))
+    const title = String(it.get('title'))
+    const onlyTitle = keys.every((k) => k === 'title' || (k === 'id' && String(it.get('id')) === subtopicId(parent, title)))
+    return onlyTitle ? doc.createNode(title) : it
+  })
+  seq.flow = seq.items.every((it) => !isMap(it))
+}
+
+async function handleEducate(req: Req, res: Res) {
+  const written = new Map<string, string>() // path → content before, to roll back when the dataset no longer loads
+  try {
+    if (req.method !== 'POST') return sendJson(res, 405, { error: ['POST only'] })
+    const body = JSON.parse(await readBody(req)) as {
+      op: 'save' | 'delete' | 'move'
+      track: string
+      id: string
+      /** Set for a subtopic: the id of its topic. */
+      parent?: string
+      entry?: EducateEntryEdit
+      /** move: one step (-1 | 1), or straight to a position in the list (drag and drop). */
+      dir?: number
+      to?: number
+    }
+    const ds = loadDataset()
+    const track = ds.educate.find((t) => t.id === body.track)
+    if (!track) return sendJson(res, 404, { error: [`unknown cluster ${body.track}`] })
+    const path = join(ROOT, track.file)
+    const doc = parseDocument(readFileSync(path, 'utf8'))
+    const at = locate(doc, body.id, body.parent)
+    if (!at) return sendJson(res, 404, { error: [`unknown topic ${body.parent ?? body.id}`] })
+    const allIds = new Set(ds.educate.flatMap((t) => t.topics.flatMap((x) => [x.id, ...x.subtopics.map((y) => y.id)])))
+    const removed = new Set<string>()
+    const write = (p: string, d: Document) => {
+      if (!written.has(p)) written.set(p, readFileSync(p, 'utf8'))
+      writeFileSync(p, educateYaml(d))
+    }
+
+    if (body.op === 'save') {
+      const entry = body.entry
+      if (!entry?.title?.trim()) return sendJson(res, 400, { error: ['a title is needed'] })
+      const bad = entry.links?.find((l) => !l.title?.trim() || !URL.canParse(l.url))
+      if (bad) return sendJson(res, 400, { error: [`a link needs a title and a full URL: ${bad.title || bad.url}`] })
+      const known = {
+        flows: new Set(ds.flows.map((f) => f.id)),
+        subjects: new Set(ds.subjects.map((x) => x.id)),
+        specs: new Set(ds.specs.map((x) => x.id)),
+        related: allIds,
+      }
+      const unknown = REF_LISTS.flatMap((k) => (entry[k] ?? []).filter((id) => !known[k].has(id) || (k === 'related' && id === body.id)).map((id) => `${k}: ${id}`))
+      if (unknown.length) return sendJson(res, 400, { error: unknown.map((u) => `unknown ${u}`) })
+      let map: YAMLMap
+      if (at.index >= 0) {
+        const item = at.seq.items[at.index]
+        map = isMap(item) ? item : (doc.createNode({ title: String((item as Scalar).value) }) as YAMLMap)
+        at.seq.items[at.index] = map
+      } else {
+        if (allIds.has(body.id)) return sendJson(res, 409, { error: [`${body.id} already exists`] })
+        map = doc.createNode({}) as YAMLMap
+        at.seq.items.push(map)
+      }
+      // A subtopic keeps the id it was linked by, also when its title changes.
+      if (!map.has('id')) map.set('id', body.id)
+      applyEntry(doc, map, { ...entry, title: entry.title.trim() })
+      if (!body.parent && entry.subtopics) {
+        const old = seqOf(map, 'subtopics')?.items ?? []
+        const next = entry.subtopics.map((s) => ('id' in s ? old.find((it) => itemId(it, body.id) === s.id) : doc.createNode(s.title.trim())))
+        if (next.some((x) => x === undefined)) return sendJson(res, 400, { error: ['unknown subtopic in the list'] })
+        for (const it of old) if (!next.includes(it)) removed.add(itemId(it, body.id))
+        map.set('subtopics', doc.createNode([]))
+        ;seqOf(map, 'subtopics')!.items = next
+        applyEntry(doc, map, { ...entry, title: entry.title.trim() }) // re-sort the keys
+      }
+      if (body.parent) {
+        const owner = seqOf(doc, 'topics')!.items.find((it) => itemId(it) === body.parent) as YAMLMap
+        compactSubtopics(doc, owner, body.parent)
+      } else compactSubtopics(doc, map, body.id)
+    } else if (body.op === 'delete') {
+      if (at.index < 0) return sendJson(res, 404, { error: [`unknown topic ${body.id}`] })
+      if (!body.parent && at.seq.items.length === 1) return sendJson(res, 400, { error: ['a cluster keeps at least one topic'] })
+      const [gone] = at.seq.items.splice(at.index, 1)
+      removed.add(body.id)
+      if (!body.parent && isMap(gone)) for (const it of seqOf(gone, 'subtopics')?.items ?? []) removed.add(itemId(it, body.id))
+      if (body.parent) compactSubtopics(doc, seqOf(doc, 'topics')!.items.find((it) => itemId(it) === body.parent) as YAMLMap, body.parent)
+    } else if (body.op === 'move') {
+      const to = body.to ?? at.index + (body.dir === -1 ? -1 : 1)
+      if (at.index < 0 || !Number.isInteger(to) || to < 0 || to >= at.seq.items.length) return sendJson(res, 400, { error: ['cannot move there'] })
+      const [item] = at.seq.items.splice(at.index, 1)
+      at.seq.items.splice(to, 0, item)
+    } else return sendJson(res, 400, { error: [`unknown op ${String(body.op)}`] })
+    write(path, doc)
+
+    // Other entries may point at what was removed.
+    if (removed.size)
+      for (const t of ds.educate) {
+        if (!t.topics.some((x) => [x, ...x.subtopics].some((y) => y.related.some((r) => removed.has(r))))) continue
+        const p = join(ROOT, t.file)
+        const d = p === path ? doc : parseDocument(readFileSync(p, 'utf8'))
+        const maps = seqOf(d, 'topics')!.items.flatMap((it) => (isMap(it) ? [it, ...(seqOf(it, 'subtopics')?.items.filter(isMap) ?? [])] : []))
+        for (const m of maps) {
+          const rel = seqOf(m, 'related')
+          if (!rel) continue
+          rel.items = rel.items.filter((r) => !removed.has(String((r as Scalar).value)))
+          if (rel.items.length === 0) m.delete('related')
+        }
+        write(p, d)
+      }
+
+    try {
+      loadDataset()
+    } catch (e) {
+      for (const [p, before] of written) writeFileSync(p, before)
+      return sendJson(res, 400, { error: e instanceof DataError ? e.problems : [(e as Error).message] })
+    }
+    sendJson(res, 200, { id: body.id, file: track.file })
+  } catch (e) {
+    for (const [p, before] of written) writeFileSync(p, before)
     sendJson(res, 500, { error: [(e as Error).message] })
   }
 }

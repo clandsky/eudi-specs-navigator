@@ -1,0 +1,53 @@
+# Cluster GENERAL: what the wallet is and who takes part, up to the point where the issuer and verifier paths split.
+id: general
+code: GENERAL
+title: General
+group: general
+order: 1
+summary: The ground every role needs.
+topics:
+  - id: gen-wallet-basics
+    title: EUDI Wallet Basics
+    summary: >-
+      The European Digital Identity Wallet is an app under the user's sole control. It holds the person identification
+      data (PID) and other attestations, presents them to relying parties online and in proximity, and can create
+      qualified electronic signatures.
+    links:
+      - title: "Welcome to the EUDI Wallet Developer Guide | EUDI DE Documentation"
+        url: https://bmi.usercontent.opencode.de/eudi-wallet/developer-guide/introduction/
+      - title: "Architecture and Reference Framework (ARF)"
+        url: https://github.com/eu-digital-identity-wallet/eudi-doc-architecture-and-reference-framework
+  - id: gen-credential
+    title: What is a credential?
+    summary: >-
+      A credential (attestation) is a set of attributes about the user, signed by its issuer and bound to a key that
+      only the user's wallet can use. The user discloses only the attributes a relying party asks for, and the relying
+      party checks the issuer's signature and the key binding.
+    subtopics: [PID, EAA, QEAA, PuB-EAA]
+    subjects: [sdjwtvc, vp.mdoc]
+    links:
+      - title: "Credentials | EUDI DE Documentation"
+        url: https://bmi.usercontent.opencode.de/eudi-wallet/developer-guide/concepts/credentials/
+      - title: "Anatomy of a Credential | Blueprint for the EUDI Wallet Ecosystem"
+        url: https://bmi.usercontent.opencode.de/eudi-wallet/eidas-2.0-architekturkonzept/content/features/EAA/credential-anatomy/
+  - id: gen-ecosystem
+    title: The EUDI Ecosystem
+    summary: >-
+      Around the wallet sit the wallet provider, PID providers, providers of attestations, relying parties, registrars
+      that register them, and the trusted lists that tie everyone's keys to a known entity.
+    links:
+      - title: "What is the ecosystem | Blueprint for the EUDI Wallet Ecosystem"
+        url: https://bmi.usercontent.opencode.de/eudi-wallet/eidas-2.0-architekturkonzept/content/ecosystem-vision-and-fundamentals/what-is-the-ecosystem/
+  - id: gen-roles
+    title: Roles
+    summary: >-
+      The triangle of trust: the issuer signs a credential, the holder keeps it in the wallet and decides what to share,
+      and the verifier (relying party) checks what it receives. This tool follows the issuer and the verifier side.
+    subtopics: [Triangle of Trust, Holder, Issuer, Verifier]
+    flows: [vci-auth-code-par, vp-redirect-same]
+  - id: gen-getting-started
+    title: Getting started
+    summary: >-
+      Pick your side in the top bar. Verifiers continue with RP-ARCH, RP-DOX and RP-DEV; issuers with IS-ARCH, IS-DOX,
+      IS-DEV and the rulebook.
+    related: [rparch-basics, isarch-basics]

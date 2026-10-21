@@ -1,4 +1,4 @@
-import type { Assertion, C2boSnapshot, Example, Flow, Layer, Spec, Subject } from './schema'
+import type { Assertion, C2boSnapshot, EducateTrack, Example, Flow, Layer, Spec, Subject } from './schema'
 
 type WithFile<T> = T & { file: string }
 
@@ -34,5 +34,7 @@ export interface Dataset {
   /** Global JSON-pointer patterns → subject, shared by all examples (data/fieldmap.yaml). */
   fieldmap: { pattern: string; subject: string; note?: string }[]
   c2bo: C2boSnapshot | null
+  /** Learning roadmap (data/educate/). */
+  educate: WithFile<EducateTrack>[]
   builtAt: string
 }

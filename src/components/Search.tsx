@@ -5,7 +5,7 @@ import { ds, locatorText, specById, subjectById } from '../lib/store'
 
 interface Doc {
   id: string
-  kind: 'subject' | 'assertion' | 'spec' | 'flow'
+  kind: 'subject' | 'assertion' | 'spec' | 'flow' | 'topic'
   title: string
   text: string
   link: string
@@ -34,6 +34,18 @@ function getIndex(): MiniSearch<Doc> {
     })),
     ...ds.specs.map((s) => ({ id: `p:${s.id}`, kind: 'spec' as const, title: s.title, text: `${s.short} ${s.version}`, link: `spec/${s.id}`, meta: s.version })),
     ...ds.flows.map((f) => ({ id: `f:${f.id}`, kind: 'flow' as const, title: f.title, text: f.summary, link: `flow/${f.id}`, meta: 'flow' })),
+    ...ds.educate.flatMap((t) =>
+      t.topics.flatMap((x) =>
+        [x, ...x.subtopics].map((y) => ({
+          id: `t:${y.id}`,
+          kind: 'topic' as const,
+          title: y.title,
+          text: y.summary ?? '',
+          link: `educate?topic=${y.id}`,
+          meta: y === x ? `${t.code}, ${t.title}` : `${t.code}, ${x.title}`,
+        })),
+      ),
+    ),
   ]
   index = new MiniSearch<Doc>({
     fields: ['title', 'text'],
@@ -47,11 +59,13 @@ function getIndex(): MiniSearch<Doc> {
 
 /** Links are built at render time so they keep the current role, date and lens. */
 const linkOf = (path: string) => {
+  const topic = /^educate\?topic=(.+)$/.exec(path)?.[1]
+  if (topic) return href(['educate'], { topic })
   const i = path.indexOf('/')
   return href([path.slice(0, i), path.slice(i + 1)])
 }
 
-const KIND_LABEL: Record<Doc['kind'], string> = { subject: 'Field or message', assertion: 'Requirement', spec: 'Spec', flow: 'Flow' }
+const KIND_LABEL: Record<Doc['kind'], string> = { subject: 'Field or message', assertion: 'Requirement', spec: 'Spec', flow: 'Flow', topic: 'Educate' }
 
 export function Search() {
   const [q, setQ] = useState('')
