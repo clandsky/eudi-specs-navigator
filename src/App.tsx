@@ -3,7 +3,7 @@ import { useKeepScrollOnReload, useRoute, useScrollTopOnPath } from './lib/route
 import { EducateView } from './views/EducateView'
 import { FlowView } from './views/FlowView'
 import { HomeView } from './views/HomeView'
-import { AdaptationsPage, AssertionPage, DyouStatePage, EndpointsPage, ObjectPage, ReviewPage, SpecPage, SpecsIndex, SubjectPage } from './views/Pages'
+import { AdaptationsPage, AssertionPage, ObjectPage, ReviewPage, SpecPage, SpecsIndex, SubjectPage, WalletsView } from './views/Pages'
 
 function Content() {
   const { path } = useRoute()
@@ -24,20 +24,20 @@ function Content() {
       if (!id) return <SpecsIndex />
       return sub === 'adaptations' ? <AdaptationsPage /> : <SpecPage specId={id} />
     case 'review':
-      return <ReviewPage />
+      // A working tool for the local dev server; the production build leaves it out.
+      return import.meta.env.DEV ? <ReviewPage /> : <NotFound />
     case 'endpoints':
-      return <EndpointsPage />
+      return <HomeView focus="endpoints" />
     case 'educate':
       return <EducateView />
+    case 'wallets':
+      return <WalletsView tab={id} />
+    // Former addresses of the two wallet tabs, kept so old links still work.
     case 'state':
-      return <DyouStatePage />
-    // Placeholders: comparing national wallet solutions, and an RSS feed of changes. No content or logic yet.
+      return <WalletsView tab="d-you" />
     case 'compare':
-      return (
-        <div className="page">
-          <h1>Compare wallets</h1>
-        </div>
-      )
+      return <WalletsView tab="compare" />
+    // Placeholder: an RSS feed of changes. No content or logic yet.
     case 'rss':
       return (
         <div className="page">
@@ -45,15 +45,19 @@ function Content() {
         </div>
       )
     default:
-      return (
-        <div className="page">
-          <h1>Nothing at this address</h1>
-          <p className="lede">
-            <a href="#/">Go to the flows</a>.
-          </p>
-        </div>
-      )
+      return <NotFound />
   }
+}
+
+function NotFound() {
+  return (
+    <div className="page">
+      <h1>Nothing at this address</h1>
+      <p className="lede">
+        <a href="#/">Go to the flows</a>.
+      </p>
+    </div>
+  )
 }
 
 export function App() {
@@ -61,9 +65,12 @@ export function App() {
   return (
     <div className="shell">
       <div className="proto-banner" role="note">
-        <strong>Technical prototype.</strong> The project is in its technical prototyping phase: the content is not yet
-        fully quality assured and is under review. It is not a source of truth; check every rule against the cited
-        specification.
+        <strong>Technical prototype.</strong>{' '}
+        <span className="banner-long">
+          The project is in its technical prototyping phase: the content is not yet fully quality assured and is under
+          review. It is not a source of truth; check every rule against the cited specification.
+        </span>
+        <span className="banner-short">Not a source of truth.</span>
       </div>
       <TopBar />
       <LensBar />
