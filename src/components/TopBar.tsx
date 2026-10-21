@@ -89,16 +89,18 @@ export function TopBar() {
       </nav>
       <span className="spacer" />
       <Search />
-      <AsOfButton />
-      <a className="icon-btn" href={href(['rss'])} aria-current={section === 'rss' ? 'page' : undefined} title="Change feed" aria-label="Change feed (RSS)">
-        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true">
-          <path d="M3 7.5a5.5 5.5 0 0 1 5.5 5.5M3 3a10 10 0 0 1 10 10" />
-          <circle cx="3.5" cy="12.5" r="1" fill="currentColor" stroke="none" />
-        </svg>
-      </a>
-      <button className="icon-btn" onClick={nextTheme} title={theme === 'dark' ? 'Switch to light' : 'Switch to dark'} aria-label={theme === 'dark' ? 'Switch to the light theme' : 'Switch to the dark theme'}>
-        {theme === 'dark' ? '☀' : '☾'}
-      </button>
+      <div className="icon-group" role="group" aria-label="Date, change feed and theme">
+        <AsOfButton />
+        <a className="icon-btn" href={href(['rss'])} aria-current={section === 'rss' ? 'page' : undefined} title="Change feed" aria-label="Change feed (RSS)">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true">
+            <path d="M3 7.5a5.5 5.5 0 0 1 5.5 5.5M3 3a10 10 0 0 1 10 10" />
+            <circle cx="3.5" cy="12.5" r="1" fill="currentColor" stroke="none" />
+          </svg>
+        </a>
+        <button className="icon-btn" onClick={nextTheme} title={theme === 'dark' ? 'Switch to light' : 'Switch to dark'} aria-label={theme === 'dark' ? 'Switch to the light theme' : 'Switch to the dark theme'}>
+          {theme === 'dark' ? '☀' : '☾'}
+        </button>
+      </div>
     </header>
   )
 }

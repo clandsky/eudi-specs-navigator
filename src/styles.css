@@ -270,6 +270,21 @@ a.icon-btn[aria-current='page'] {
   display: grid;
   place-items: center;
 }
+/* Icon buttons that sit together, framed like the segmented switch. */
+.icon-group {
+  display: inline-flex;
+  gap: 2px;
+  padding: 2px;
+  border: 1px solid var(--rule-strong);
+  border-radius: 7px;
+  background: var(--sheet);
+}
+.icon-group .icon-btn {
+  border: 0;
+  border-radius: 5px;
+  width: 28px;
+  height: 28px;
+}
 .btn {
   border: 1px solid var(--rule-strong);
   background: var(--sheet);
