@@ -39,6 +39,13 @@ function Content() {
       return <WalletsView tab="d-you" />
     case 'compare':
       return <WalletsView tab="compare" />
+    // Placeholder: a place to try things out. No content or logic yet.
+    case 'try':
+      return (
+        <div className="page">
+          <h1>Try</h1>
+        </div>
+      )
     // Placeholder: an RSS feed of changes. No content or logic yet.
     case 'rss':
       return (
