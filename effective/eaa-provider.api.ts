@@ -631,8 +631,8 @@ export interface CredentialRequest {
   }
   body: EncryptedCredentialRequest | { // MUST; Issuer: MUST when the Credential Request carries credential_response_encryption · Credential Request or Response sent as a compact JWE (application/jwt) on top of TLS, encrypted with ECDH-ES. [R31] [R32] [R33]
     credential_configuration_id?: string // only auth-code-par: MUST if no credential_identifiers were returned in the Token Response · Which credential configuration from the issuer metadata the Wallet requests. [R34]
-    proofs?: { // only auth-code-par: MUST where needed during issuance (device-bound PID/EAA, see TR_KA-1) · Proofs of possession of the keys the credentials should be bound to, grouped by proof type. · "Where needed during issuance, a wallet unit shall include a key attestation in the field 'proofs' of a Credential Request to the credential issuer, as specified in OID4VCI, in a proof of either type 'jwt' or type 'attestation'."
-      jwt: ProofJwt[] // only auth-code-par: MUST · Array of key proof JWTs, one per key to be bound. [R35]
+    proofs?: { // only auth-code-par: MAY (until 2028-01-01, then MUST) · Proofs of possession of the keys the credentials should be bound to, grouped by proof type. [R35]
+      jwt: ProofJwt[] // only auth-code-par: MUST · Array of key proof JWTs, one per key to be bound. [R36]
     }
   }
 }
@@ -641,7 +641,7 @@ export type ProofJwt = {
   header: {
     typ: string // MUST · Marks the JWT as a key proof (openid4vci-proof+jwt). · "typ: REQUIRED. MUST be openid4vci-proof+jwt"
     alg: string // MUST [R1]
-    key_attestation: KeyAttestation // only auth-code-par: MUST · Key attestation from the Wallet Provider, vouching for how the proven key is stored and protected. · "The element in the jwt array member shall contain the key_attestation parameter in the Protected Header."
+    key_attestation?: KeyAttestation // only auth-code-par: MAY (until 2028-01-01, then MUST) · Key attestation from the Wallet Provider, vouching for how the proven key is stored and protected. · "The d-you wallet sends the jwt key proof without a key_attestation; the Protected Header carries only alg, typ and jwk."
     jwk?: { // only pre-auth: MAY · Public key that verifies the signature, embedded as a JWK. · "The "jwk" (JSON Web Key) Header Parameter is the public key that corresponds to the key used to digitally sign the JWS."
       kty: string // only pre-auth: MUST [R3]
       crv: string // only pre-auth: MUST [R4]
@@ -670,7 +670,7 @@ export type EncryptedCredentialRequest = {
       kid?: string // MAY [R29]
       use?: string // no rule
     }
-    kid?: string // MUST if the selected public key contains a kid; Issuer: MUST if the selected public key contains a kid · kid of the recipient's public key the JWE was encrypted to. [R36]
+    kid?: string // MUST if the selected public key contains a kid; Issuer: MUST if the selected public key contains a kid · kid of the recipient's public key the JWE was encrypted to. [R37]
     alg: string // MUST [R1]
     enc?: string // no rule · Content encryption algorithm of the JWE, e.g. A128GCM.
     epk?: { // no rule · Ephemeral public key of the sender for the ECDH-ES key agreement.
@@ -693,8 +693,8 @@ export type EncryptedCredentialRequest = {
       }
       enc?: string // MUST when credential_response_encryption is present · Content encryption algorithm for the response, one of the issuer's enc_values_supported, e.g. A128GCM. · "enc: REQUIRED. JWE [RFC7516] enc algorithm [RFC7518] for encrypting Credential Responses."
     }
-    proofs?: { // MAY · "The d-you wallet includes no key attestation in the proofs of the Credential Request; it sends one jwt proof signed with the holder key."
-      jwt: ProofJwt[] // MUST [R35]
+    proofs?: { // MAY (until 2028-01-01, then MUST) [R35]
+      jwt: ProofJwt[] // MUST [R36]
     }
     credential_configuration_id?: string // MUST if no credential_identifiers were returned in the Token Response [R34]
   }
@@ -778,8 +778,8 @@ export interface CredentialResponse {
     "Cache-Control"?: string // only pre-auth: no rule
   }
   body?: EncryptedCredentialResponse | { // MUST when the Credential Request carries credential_response_encryption; Wallet: MUST [R33] [R31] [R32]
-    credentials?: { // only auth-code-par: MAY · Array of issued credentials, one object per credential instance. [R37]
-      credential: IssuedCredential // only auth-code-par: MUST · One issued credential, e.g. an SD-JWT VC with its Disclosures. [R38]
+    credentials?: { // only auth-code-par: MAY · Array of issued credentials, one object per credential instance. [R38]
+      credential: IssuedCredential // only auth-code-par: MUST · One issued credential, e.g. an SD-JWT VC with its Disclosures. [R39]
     }[]
     notification_id?: string // only auth-code-par: MAY · Identifier the Wallet uses to report back about these credentials at the notification endpoint. · "notification_id: OPTIONAL. String identifying one or more Credentials issued in one Credential Response. It MUST be included in the Notification Request as defined in Section 11.1."
   }
@@ -820,7 +820,7 @@ export type IssuedCredential = {
 /** JWE, produced by Issuer. */
 export type EncryptedCredentialResponse = {
   header: {
-    kid?: string // MUST if the selected public key contains a kid; Wallet: MUST if the selected public key contains a kid [R36]
+    kid?: string // MUST if the selected public key contains a kid; Wallet: MUST if the selected public key contains a kid [R37]
     alg: string // MUST [R1]
     enc?: string // no rule
     epk?: { // no rule
@@ -831,8 +831,8 @@ export type EncryptedCredentialResponse = {
     }
   }
   payload: {
-    credentials?: { // MAY [R37]
-      credential: IssuedCredential // MUST [R38]
+    credentials?: { // MAY [R38]
+      credential: IssuedCredential // MUST [R39]
     }[]
   }
 }
@@ -933,7 +933,8 @@ export interface OfferFetch {
 // [R32] "The alg parameter MUST be present. The JWE alg algorithm used MUST be equal to the alg value of the chosen JWK."
 // [R33] "If the Client requested an encrypted response by including the credential_response_encryption object in the request, the Credential Issuer MUST encode the information in the Credential Response as specified by Section 10, using the parameters from the credential_response_encryption object."
 // [R34] "credential_configuration_id: REQUIRED if a credential_identifiers parameter was not returned from the Token Response as part of the authorization_details parameter."
-// [R35] "The jwt JSON array member shall have 1 element."
-// [R36] "If the selected public key contains a kid parameter, the JWE MUST include the same value in the kid JWE Header Parameter (as defined in Section 4.1.6) of the encrypted message."
-// [R37] "credentials: OPTIONAL. Contains an array of one or more issued Credentials. It MUST NOT be used if the transaction_id parameter is present."
-// [R38] "credential: REQUIRED. Contains one issued Credential. The encoding of the Credential depends on the Credential Format and MAY be a string or an object."
+// [R35] "The d-you wallet includes no key attestation in the proofs of the Credential Request; it sends one jwt proof signed with the holder key."
+// [R36] "The jwt JSON array member shall have 1 element."
+// [R37] "If the selected public key contains a kid parameter, the JWE MUST include the same value in the kid JWE Header Parameter (as defined in Section 4.1.6) of the encrypted message."
+// [R38] "credentials: OPTIONAL. Contains an array of one or more issued Credentials. It MUST NOT be used if the transaction_id parameter is present."
+// [R39] "credential: REQUIRED. Contains one issued Credential. The encoding of the Credential depends on the Credential Format and MAY be a string or an object."
