@@ -25,6 +25,7 @@
 - { id: tsl.uri, kind: field, parent: tsl.status_list, title: status_list.uri, location: jwt-payload, description: "URL where the Status List Token can be fetched." }
 - { id: sdjwt._sd, kind: field, parent: common, title: _sd (disclosure digests), location: jwt-payload, description: "Digests of the selectively disclosable claims; each Disclosure the holder reveals must hash to one of them." }
 - { id: sdjwt._sd_alg, kind: field, parent: common, title: _sd_alg, location: jwt-payload, description: "Hash algorithm used for the _sd digests, e.g. sha-256." }
+- { id: sdjwt.disclosure, kind: field, parent: common, title: Disclosure, description: "One selectively disclosable claim, sent after the issuer-signed JWT, separated by ~: the base64url-encoded JSON array [salt, claim name, claim value]. Its digest is listed in _sd." }
 - { id: sdjwtvc, kind: object, parent: common, title: SD-JWT VC (issuer-signed JWT), description: "Issuer-signed part of an SD-JWT VC: the credential with its claims hidden behind digests until disclosed." }
 - { id: sdjwtvc.typ, kind: field, parent: sdjwtvc, title: typ = dc+sd-jwt, location: jwt-header, description: "Marks the JWT as an SD-JWT Verifiable Credential." }
 - { id: sdjwtvc.vct, kind: field, parent: sdjwtvc, title: vct, location: jwt-payload, description: "Verifiable Credential Type: identifies the type of credential, e.g. the PID type." }

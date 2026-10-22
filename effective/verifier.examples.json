@@ -182,7 +182,19 @@
               "lpZ0OQzXhUhSpPib1FNq9qqFd2Mqz1_glub_m9r_yp0"
             ],
             "_sd_alg": "sha-256"
-          }
+          },
+          "disclosures": [
+            [
+              "n7WCBgE874lgmQW-_tIwdw",
+              "given_name",
+              "ERIKA"
+            ],
+            [
+              "Xp_v9sAX6VMkTy7zSA3L9A",
+              "family_name",
+              "MUSTERMANN"
+            ]
+          ]
         },
         "AuthorizationResponse": {
           "header": {
@@ -381,7 +393,24 @@
               "ZmgxyNRwqRHzYCllHNESq_NuKQJ7GvmDtXJA9OhKJbA"
             ],
             "_sd_alg": "sha-256"
-          }
+          },
+          "disclosures": [
+            [
+              "2GLC42sKQveCfGfryNRN9w",
+              "given_name",
+              "Erika"
+            ],
+            [
+              "eluV5Og3gSNII8EYnsxA_A",
+              "family_name",
+              "Mustermann"
+            ],
+            [
+              "6Ij7tM-a5iVPGboS5tmvVA",
+              "birthdate",
+              "1964-08-12"
+            ]
+          ]
         },
         "AuthorizationResponse": {
           "header": {
@@ -584,7 +613,19 @@
               "lpZ0OQzXhUhSpPib1FNq9qqFd2Mqz1_glub_m9r_yp0"
             ],
             "_sd_alg": "sha-256"
-          }
+          },
+          "disclosures": [
+            [
+              "n7WCBgE874lgmQW-_tIwdw",
+              "given_name",
+              "ERIKA"
+            ],
+            [
+              "Xp_v9sAX6VMkTy7zSA3L9A",
+              "family_name",
+              "MUSTERMANN"
+            ]
+          ]
         },
         "AuthorizationResponse": {
           "header": {

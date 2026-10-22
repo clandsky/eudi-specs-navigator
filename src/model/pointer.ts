@@ -12,7 +12,8 @@ export interface ViewDocument {
     body?: unknown
   }
   json?: unknown
-  jwt: Record<string, { header: Record<string, unknown>; payload: Record<string, unknown>; compact: string }>
+  /** `disclosures`: the decoded Disclosures of an SD-JWT, each [salt, claim name, claim value] (RFC 9901 §4.2.1). */
+  jwt: Record<string, { header: Record<string, unknown>; payload: Record<string, unknown>; compact: string; disclosures?: unknown[] }>
   /** Decoded CBOR items (mdoc), see src/model/mdoc.ts. */
   cbor?: Record<string, unknown>
 }
@@ -29,11 +30,6 @@ export function decodeJwt(compact: string): { header: Record<string, unknown>; p
   const [h, p] = compact.split('.')
   if (!h || !p) throw new Error('not a compact JWS')
   return { header: JSON.parse(b64urlDecode(h)), payload: JSON.parse(b64urlDecode(p)) }
-}
-
-/** The Disclosures of an SD-JWT (issuer JWT~d1~d2~…~[KB-JWT]), each decoded to [salt, claim name, value]. */
-export function decodeDisclosures(sdjwt: string): unknown[][] {
-  return sdjwt.split('~').slice(1, -1).map((d) => JSON.parse(b64urlDecode(d)) as unknown[])
 }
 
 function parseQuery(url: string): Record<string, unknown> | undefined {
@@ -57,6 +53,9 @@ export function viewOf(e: EncodedExample): ViewDocument {
   for (const [name, compact] of Object.entries(e.jwts)) {
     const plain = e.plaintexts?.[name]
     jwt[name] = plain ? { header: plain.header, payload: plain.payload, compact } : { ...decodeJwt(compact), compact }
+    // <issuer JWT>~<Disclosure>~…~[<KB-JWT>]: everything between the first and the last ~ is a Disclosure.
+    const sd = e.sdjwts?.[name]?.split('~')
+    if (sd && sd.length > 2) jwt[name]!.disclosures = sd.slice(1, -1).map((d) => JSON.parse(b64urlDecode(d)) as unknown)
   }
   const view: ViewDocument = { jwt }
   if (e.http) {
@@ -191,6 +190,8 @@ export function entryPointers(view: ViewDocument): string[] {
   for (const [name, j] of Object.entries(view.jwt)) {
     walk(j.header, `/jwt/${escapeToken(name)}/header`)
     walk(j.payload, `/jwt/${escapeToken(name)}/payload`)
+    // A Disclosure is a positional array: the entry is the whole Disclosure, not its salt, name and value.
+    j.disclosures?.forEach((_, i) => out.push(`/jwt/${escapeToken(name)}/disclosures/${i}`))
   }
   for (const [name, c] of Object.entries(view.cbor ?? {})) walk(c, `/cbor/${escapeToken(name)}`)
   return out

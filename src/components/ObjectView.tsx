@@ -1,6 +1,6 @@
 import { Fragment, useMemo, useState, type ReactNode } from 'react'
 import { coveredBy } from '../model/inputs-diff'
-import { annotationFor, decodeDisclosures, escapeToken, viewOf } from '../model/pointer'
+import { annotationFor, escapeToken, viewOf } from '../model/pointer'
 import { levelLabel } from '../model/resolve'
 import type { Role } from '../model/schema'
 import {
@@ -286,7 +286,30 @@ export function ObjectView({ exampleId, sender, selected, onSelect, variant = {}
           <Tree v={j.header} ptr={`/jwt/${escapeToken(name)}/header`} />
           <div className="meta" style={{ padding: '0 12px' }}>Payload</div>
           <Tree v={j.payload} ptr={`/jwt/${escapeToken(name)}/payload`} />
-          {enc.sdjwts?.[name] && <Disclosures sdjwt={enc.sdjwts[name]} />}
+          {j.disclosures && (
+            <>
+              <div className="meta" style={{ padding: '0 12px' }}>Disclosures, each [salt, claim name, claim value]</div>
+              <div className="code">
+                {j.disclosures.map((d, i) => {
+                  const p = `/jwt/${escapeToken(name)}/disclosures/${i}`
+                  const els = Array.isArray(d) ? d : [d]
+                  return (
+                    <Fragment key={i}>
+                      <FieldKey ptr={p}>{`[${i}]`}</FieldKey>
+                      {' ['}
+                      {els.map((x, k) => (
+                        <Fragment key={k}>
+                          <Value v={x} ptr={`${p}/${k}`} indent={1} />
+                          {k < els.length - 1 ? ', ' : ''}
+                        </Fragment>
+                      ))}
+                      {']\n'}
+                    </Fragment>
+                  )
+                })}
+              </div>
+            </>
+          )}
           {raw && <div className="code jwt" style={{ borderTop: '1px solid var(--rule)' }}>{j.compact}</div>}
         </div>
       ))}
@@ -302,31 +325,6 @@ export function ObjectView({ exampleId, sender, selected, onSelect, variant = {}
       <p className="meta">Signed with test keys from data/test-keys. The decoded views are derived from the encoded values.</p>
       {import.meta.env.DEV && <ExampleEditor exampleId={editing ? exampleId : null} onClose={() => setEditing(false)} />}
     </div>
-  )
-}
-
-/** The Disclosures that travel with an SD-JWT, decoded: [salt, claim name, value]. */
-function Disclosures({ sdjwt }: { sdjwt: string }) {
-  const items = decodeDisclosures(sdjwt)
-  if (!items.length) return null
-  return (
-    <>
-      <div className="meta" style={{ padding: '0 12px' }}>Disclosures</div>
-      <div className="code">
-        {items.map((d, i) => (
-          <Fragment key={i}>
-            {'['}
-            {d.map((x, j) => (
-              <Fragment key={j}>
-                {j > 0 ? ', ' : ''}
-                <span className={j === 1 ? 'k' : 's'}>{JSON.stringify(x)}</span>
-              </Fragment>
-            ))}
-            {']\n'}
-          </Fragment>
-        ))}
-      </div>
-    </>
   )
 }
 

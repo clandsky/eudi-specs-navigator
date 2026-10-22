@@ -760,13 +760,15 @@ export function EndpointsTable() {
             {eps.map((s) => {
               const parts = [s.id, ...ds.subjects.filter((x) => x.id.startsWith(`${s.id}.`)).map((x) => x.id)]
               const use = ds.flows.flatMap((f) => f.steps.filter((st) => st.subject === s.id).map((st) => ({ f, st })))
+              // The message opens on its step in the sequence diagram, where its example dataset is shown.
+              const shown = use.find(({ st }) => st.example) ?? use[0]
               return (
                 <tr key={s.id}>
                   <td className="mono">{s.endpoint!.method}</td>
                   <td className="mono">{s.endpoint!.path}</td>
                   <td>{SERVER_LABEL[s.endpoint!.server]}</td>
                   <td>
-                    <a href={href(['subject', s.id])}>{s.title}</a>
+                    <a href={shown ? href(['flow', shown.f.id], { step: shown.st.id }) : href(['subject', s.id])}>{s.title}</a>
                   </td>
                   <td>
                     <LayerBadges layers={layersTouching(parts)} />
