@@ -18,3 +18,182 @@
     The key attestation itself is signed by the wallet provider (CIR FR-KA-1); the issuer verifies the signature of the
     'jwt' element under attested_keys[0] (CIR TR_KA-6, ETSI CRED-REQ-4.6.1.2-07). The literal text ("sign ... the key
     attestation") is read as signing the proof that carries it.
+# Decisions taken while building an EAA issuer for the d-you wallet (pre-authorized code flow, 2026-10-22), where the
+# sources were unclear or silent.
+- id: assumption/haip-4.1-scope-preauth
+  subject: vci.metadata.ccs.scope
+  spec: assumptions
+  locator: { at: "Reading of HAIP 1.0 Section 4.1" }
+  relation: adapts
+  interpretation: true
+  level: may
+  applies_to: { role: [ issuer ], grant: [ pre-authorized_code ] }
+  target: haip/4.1/scope
+  quote: >-
+    A credential configuration that is only offered with a pre-authorized code needs no scope: the Wallet never requests
+    it by scope, and the d-you wallet issues without one.
+  decided_by: project owner (2026-10-22)
+  note: >-
+    HAIP states the requirement without a condition. Recorded as the working decision for a pre-authorized-code-only
+    issuer until the spec owners say whether the scope MUST holds for the authorization code flow only.
+- id: assumption/haip-4-batch-omitted
+  subject: vci.metadata.batch_credential_issuance
+  spec: assumptions
+  locator: { at: "Reading of HAIP 1.0 Section 4" }
+  relation: adapts
+  interpretation: true
+  level: may
+  applies_to: { role: [ issuer ] }
+  target: haip/4/batch
+  quote: >-
+    An issuer that does not support batch issuance omits batch_credential_issuance; the MUST is to indicate support by
+    including or omitting the parameter, not to include it.
+  decided_by: project owner (2026-10-22)
+  note: >-
+    The rule text says "by including or omitting"; reading it as a MUST to include contradicts it. The d-you wallet
+    issues without the parameter.
+- id: assumption/tsl-status-non-qualified-eaa
+  subject: tsl.status
+  spec: assumptions
+  locator: { at: "Reading of Token Status List draft 20 Section 6.2" }
+  relation: adapts
+  interpretation: true
+  level: shall
+  applies_to: { role: [ issuer ] }
+  condition: When the token uses a status mechanism (CIR requires one for the PID, a qualified EAA and a public-sector EAA).
+  target: tsl-20/6.2/status
+  quote: >-
+    The status claim is required in a token that uses a status mechanism; a non-qualified EAA that is not provided by or
+    on behalf of a public sector body may be issued without status.
+  decided_by: project owner (2026-10-22)
+  note: >-
+    CIR asks for the status list index only for the PID, qualified EAA and public-sector EAA. Open: whether status is
+    enforced at issuance, at presentation or not at all for such an EAA, and which status list profile applies. The
+    d-you wallet accepted and stored a credential without status.
+- id: assumption/TR_KA-4-no-key-attestations-required
+  subject: vci.metadata.ccs.key_attestations_required
+  spec: assumptions
+  locator: { at: "Reading of CIR 2026/1731 TR_KA-4" }
+  relation: adapts
+  interpretation: true
+  level: may
+  applies_to: { role: [ issuer ], grant: [ pre-authorized_code ] }
+  target: cir/TR_KA-4/key_attestations_required
+  quote: >-
+    While the key attestation profile is not final and the d-you wallet sends no key attestation, an EAA provider offers
+    the jwt proof type without key_attestations_required.
+  decided_by: project owner (2026-10-22)
+  note: >-
+    TR_KA-4 asks for both the jwt and the attestation proof type, each with key_attestations_required. Open: whether
+    key_attestations_required is mandatory for EAA and when the attestation profile becomes binding (like the WIA).
+- id: assumption/REG_CERT-content-eaa-provider
+  subject: vci.metadata.issuer_info.registration_cert
+  spec: assumptions
+  locator: { at: "Reading of CIR 2026/1731 Annex XI ISS-MDATA-REG_CERT-4.2.3-04" }
+  relation: adapts
+  interpretation: true
+  level: shall
+  applies_to: { role: [ issuer ] }
+  target: cir/annex-xi/ISS-MDATA-REG_CERT-4.2.3-04
+  quote: >-
+    The registration certificate of an EAA provider carries the entitlement Service_Provider and lists the issued
+    credential types in provides_attestations (format dc+sd-jwt, vct_values).
+  decided_by: project owner (2026-10-22)
+  note: >-
+    Nothing defines the content for an EAA provider: no EAA-provider entitlement, no rule on provides_attestations or on
+    the relation to the access certificate. The registrar issued it this way and the d-you wallet accepted it; whether
+    the wallet checks provides_attestations against the offered vct is unknown.
+- id: assumption/ISS-MDATA-4.2.1-02-reuse-rp-access-cert
+  subject: vci.metadata.x5c
+  spec: assumptions
+  locator: { at: "Reading of ETSI TS 119 472-3 ISS-MDATA-4.2.1-02" }
+  relation: adapts
+  interpretation: true
+  level: shall
+  applies_to: { role: [ issuer ] }
+  target: etsi-472-3/ISS-MDATA-4.2.1-02
+  quote: >-
+    A relying party that also issues EAAs signs its issuer metadata with its existing access certificate (same
+    organisation identifier); it needs no separate access certificate as issuer.
+  decided_by: project owner (2026-10-22)
+  note: >-
+    Nothing says whether an issuer needs its own access certificate or what its SAN holds. The registrar bound the
+    registration certificate to the same access certificate.
+- id: assumption/haip-6.1.1-own-issuer-ca
+  subject: vci.issuer.sign-credential
+  spec: assumptions
+  locator: { at: "Reading of HAIP 1.0 Section 6.1.1" }
+  relation: adapts
+  interpretation: true
+  level: shall
+  applies_to: { role: [ issuer ] }
+  target: haip/6.1.1/issuer-x5c
+  quote: >-
+    A non-qualified EAA provider signs its SD-JWT VCs with a certificate from its own issuer CA; that CA is the trust
+    anchor, is left out of x5c and is published in the provider's own trust list.
+  decided_by: project owner (2026-10-22)
+  note: >-
+    Nothing says which CA a non-qualified EAA provider uses. The trust list is an ETSI TS 119 602 LoTE (compact JAdES);
+    its LoTEType and ServiceTypeIdentifier for non-qualified EAA providers are not defined anywhere, so scheme-specific
+    URIs were used.
+- id: assumption/sdjwtvc-iss-san-uri
+  subject: sdjwtvc.iss
+  spec: assumptions
+  locator: { at: "Reading of SD-JWT VC draft 13, iss" }
+  relation: adapts
+  interpretation: true
+  level: shall
+  applies_to: { role: [ issuer ] }
+  condition: When iss is present.
+  target: sdjwtvc-13/iss
+  quote: >-
+    iss is the Credential Issuer Identifier (the issuer URL), and the signing certificate carries the same URL as SAN
+    URI; that is what "consistent with the signing certificate" means.
+  decided_by: project owner (2026-10-22)
+  note: >-
+    The issuer check asks for iss consistent with the signing certificate without saying how.
+- id: assumption/sdjwtvc-vct-urn
+  subject: sdjwtvc.vct
+  spec: assumptions
+  locator: { at: "Reading of SD-JWT VC draft 13, vct" }
+  relation: adapts
+  interpretation: true
+  level: shall
+  applies_to: { role: [ issuer ] }
+  target: sdjwtvc-13/vct
+  quote: >-
+    vct may be a URN that is not resolvable; the Wallet takes display data from the issuer metadata, and the type
+    metadata is handed to the registrar.
+  decided_by: project owner (2026-10-22)
+  note: >-
+    Nothing covers the form of vct or where the Wallet gets SD-JWT VC type metadata. The d-you wallet fetched no type
+    metadata from the issuer host.
+- id: assumption/oid4vci-12.2.3-exp-24h
+  subject: vci.metadata.exp
+  spec: assumptions
+  locator: { at: "Reading of OpenID4VCI 1.0 Section 12.2.3" }
+  relation: adapts
+  interpretation: true
+  level: should
+  applies_to: { role: [ issuer ] }
+  target: oid4vci/12.2.3/exp
+  quote: >-
+    Signed issuer metadata carries exp, 24 hours after iat.
+  decided_by: project owner (2026-10-22)
+  note: >-
+    No source gives a lifetime or caching guidance for signed metadata.
+- id: assumption/oid4vci-12.2.4-jwks-object
+  subject: vci.metadata.credential_request_encryption.jwks
+  spec: assumptions
+  locator: { at: "Reading of OpenID4VCI 1.0 Section 12.2.4" }
+  relation: adapts
+  interpretation: true
+  level: shall
+  applies_to: { role: [ issuer ] }
+  target: oid4vci/12.2.4/credential_request_encryption.jwks
+  quote: >-
+    credential_request_encryption.jwks is a JWK Set object with a keys array, not a bare array of keys.
+  decided_by: project owner (2026-10-22)
+  note: >-
+    The definition says JWK Set, while the specification's own example shows a bare array. The d-you wallet works with
+    the object form.

@@ -29,8 +29,11 @@ const ROLE_ORDER: Record<Side, Role[]> = {
 const ROLE: Record<Role, string> = { wallet: 'Wallet', 'wallet-provider': 'WP', as: 'AS', issuer: 'Issuer', verifier: 'Verifier' }
 const LEVEL: Record<Level, string> = { shall: 'MUST', should: 'SHOULD', may: 'MAY', 'should-not': 'SHOULD NOT', 'shall-not': 'MUST NOT', info: 'INFO' }
 
-/** Embedded JWT and CBOR items by their example name: the type they become and the role that produces them. */
-const ITEMS: Record<string, { type: string; producer: Role; what: string }> = {
+/**
+ * Embedded JWT and CBOR items by their example name: the type they become and the role that produces them (`by` names
+ * a producer outside the roles, e.g. the registrar; `producer` then is the role that passes the item on).
+ */
+const ITEMS: Record<string, { type: string; producer: Role; what: string; by?: string }> = {
   wia: { type: 'WalletInstanceAttestation', producer: 'wallet-provider', what: 'JWS' },
   pop: { type: 'ClientAttestationPoP', producer: 'wallet', what: 'JWS' },
   dpop: { type: 'DPoPProof', producer: 'wallet', what: 'JWS' },
@@ -38,6 +41,9 @@ const ITEMS: Record<string, { type: string; producer: Role; what: string }> = {
   proof: { type: 'ProofJwt', producer: 'wallet', what: 'JWS' },
   vc1: { type: 'IssuedCredential', producer: 'issuer', what: 'SD-JWT VC' },
   vc2: { type: 'IssuedCredential', producer: 'issuer', what: 'SD-JWT VC' },
+  creq: { type: 'EncryptedCredentialRequest', producer: 'wallet', what: 'JWE' },
+  cresp: { type: 'EncryptedCredentialResponse', producer: 'issuer', what: 'JWE' },
+  rc: { type: 'RegistrationCertificate', producer: 'issuer', what: 'JWS', by: 'the registrar, served by the Issuer' },
   metadata: { type: 'SignedIssuerMetadata', producer: 'issuer', what: 'JWS' },
   ro: { type: 'RequestObject', producer: 'verifier', what: 'JWS' },
   resp: { type: 'AuthorizationResponse', producer: 'wallet', what: 'JWE' },
@@ -354,7 +360,7 @@ export function buildEffectiveApi(ds: Dataset, opts: EffectiveOptions): Effectiv
   }
   const groups = new Map<string, Group>()
   /** Embedded item type → shape and the flows it travels in; the first group that shows it defines it. */
-  const items = new Map<string, { shape: Shape; producer: Role; what: string; home: string; flows: Set<string> }>()
+  const items = new Map<string, { shape: Shape; producer: Role; what: string; by?: string; home: string; flows: Set<string> }>()
   const exampleRefs: { type: string; flow: string; step: string; example: string }[] = []
   const reached = new Set<string>()
 
@@ -415,12 +421,12 @@ export function buildEffectiveApi(ds: Dataset, opts: EffectiveOptions): Effectiv
       }
     }
   }
-  function addItem(meta: { type: string; producer: Role; what: string }, sh: Shape, home: string, flow: string, g: Group) {
+  function addItem(meta: { type: string; producer: Role; what: string; by?: string }, sh: Shape, home: string, flow: string, g: Group) {
     const have = items.get(meta.type)
     if (have) {
       merge(have.shape, sh)
       have.flows.add(flow)
-    } else items.set(meta.type, { shape: sh, producer: meta.producer, what: meta.what, home, flows: new Set([flow]) })
+    } else items.set(meta.type, { shape: sh, producer: meta.producer, what: meta.what, by: meta.by, home, flows: new Set([flow]) })
     if (!g.items.includes(meta.type)) g.items.push(meta.type)
   }
 
@@ -478,7 +484,7 @@ export function buildEffectiveApi(ds: Dataset, opts: EffectiveOptions): Effectiv
     for (const t of g.items) {
       const it = items.get(t)!
       if (it.home !== g.subject.id) continue
-      L.push(`/** ${it.what}, produced by ${ROLE[it.producer]}. */`)
+      L.push(`/** ${it.what}, produced by ${it.by ?? ROLE[it.producer]}. */`)
       L.push(`export type ${t} = ${typeOf(it.shape, '', it.producer, allFlowIds.filter((f) => it.flows.has(f)))}`)
     }
     const elsewhere = g.items.filter((t) => items.get(t)!.home !== g.subject.id)

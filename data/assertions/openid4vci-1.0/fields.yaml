@@ -229,3 +229,238 @@
   quote: "If the Credential Issuer provided a c_nonce, the nonce claim in the key attestation MUST be set to a
     server-provided c_nonce."
   verified: source-checked
+# Encrypted Credential Requests and Responses (Sections 8.2, 8.3, 10, 12.2.4), display metadata and anonymous
+# pre-authorized access (Section 12.3): fields of the pre-authorized code flow examples recorded from the d-you wallet.
+- id: oid4vci/12.2.4/display
+  subject: vci.metadata.display
+  spec: openid4vci-1.0
+  locator: { section: "12.2.4" }
+  relation: defines
+  level: may
+  applies_to: { role: [ issuer ] }
+  quote: "display: OPTIONAL. A non-empty array of objects, where each object contains display properties of a Credential
+    Issuer for a certain language."
+  verified: source-checked
+- id: oid4vci/12.2.4/credential_metadata.display
+  subject: vci.metadata.ccs.display
+  spec: openid4vci-1.0
+  locator: { section: "12.2.4" }
+  relation: defines
+  level: may
+  applies_to: { role: [ issuer ] }
+  quote: "display: OPTIONAL. A non-empty array of objects, where each object contains the display properties of the
+    supported Credential for a certain language."
+  verified: source-checked
+- id: oid4vci/12.2.4/credential_metadata.claims
+  subject: vci.metadata.ccs.claims
+  spec: openid4vci-1.0
+  locator: { section: "12.2.4" }
+  relation: defines
+  level: may
+  applies_to: { role: [ issuer ] }
+  quote: "claims: OPTIONAL. A non-empty array of claims description objects as defined in Appendix B.2."
+  verified: source-checked
+- id: oid4vci/12.2.4/credential_request_encryption
+  subject: vci.metadata.credential_request_encryption
+  spec: openid4vci-1.0
+  locator: { section: "12.2.4" }
+  relation: defines
+  level: may
+  applies_to: { role: [ issuer ] }
+  quote: "credential_request_encryption: OPTIONAL. Object containing information about whether the Credential Issuer
+    supports encryption of the Credential Request on top of TLS."
+  verified: source-checked
+- id: oid4vci/12.2.4/credential_request_encryption.jwks
+  subject: vci.metadata.credential_request_encryption.jwks
+  spec: openid4vci-1.0
+  locator: { section: "12.2.4" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ issuer ] }
+  condition: When credential_request_encryption is present.
+  quote: "jwks: REQUIRED. A JSON Web Key Set, as defined in [RFC7591], that contains one or more public keys, to be used
+    by the Wallet as an input to a key agreement for encryption of the Credential Request. Each JWK in the set MUST have
+    a kid (Key ID) parameter that uniquely identifies the key."
+  verified: source-checked
+- id: oid4vci/12.2.4/credential_request_encryption.enc_values_supported
+  subject: vci.metadata.credential_request_encryption.enc_values_supported
+  spec: openid4vci-1.0
+  locator: { section: "12.2.4" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ issuer ] }
+  condition: When credential_request_encryption is present.
+  quote: "enc_values_supported: REQUIRED. A non-empty array containing a list of the JWE [RFC7516] encryption algorithms
+    (enc values) [RFC7518] supported by the Credential Endpoint to decode the Credential Request from a JWT [RFC7519]."
+  verified: source-checked
+- id: oid4vci/12.2.4/credential_request_encryption.encryption_required
+  subject: vci.metadata.credential_request_encryption.encryption_required
+  spec: openid4vci-1.0
+  locator: { section: "12.2.4" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ issuer ] }
+  condition: When credential_request_encryption is present.
+  quote: "encryption_required: REQUIRED. Boolean value specifying whether the Credential Issuer requires the additional
+    encryption on top of TLS for the Credential Requests. If the value is true, the Credential Issuer requires
+    encryption for every Credential Request. If the value is false, the Wallet MAY choose whether it encrypts the
+    request or not."
+  verified: source-checked
+- id: oid4vci/12.2.4/credential_response_encryption
+  subject: vci.metadata.credential_response_encryption
+  spec: openid4vci-1.0
+  locator: { section: "12.2.4" }
+  relation: defines
+  level: may
+  applies_to: { role: [ issuer ] }
+  quote: "credential_response_encryption: OPTIONAL. Object containing information about whether the Credential Issuer
+    supports encryption of the Credential Response on top of TLS."
+  verified: source-checked
+- id: oid4vci/12.2.4/credential_response_encryption.alg_values_supported
+  subject: vci.metadata.credential_response_encryption.alg_values_supported
+  spec: openid4vci-1.0
+  locator: { section: "12.2.4" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ issuer ] }
+  condition: When credential_response_encryption is present.
+  quote: "alg_values_supported: REQUIRED. A non-empty array containing a list of the JWE [RFC7516] encryption algorithms
+    (alg values) [RFC7518] supported by the Credential Endpoint to encode the Credential Response in a JWT [RFC7519]."
+  verified: source-checked
+- id: oid4vci/12.2.4/credential_response_encryption.enc_values_supported
+  subject: vci.metadata.credential_response_encryption.enc_values_supported
+  spec: openid4vci-1.0
+  locator: { section: "12.2.4" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ issuer ] }
+  condition: When credential_response_encryption is present.
+  quote: "enc_values_supported: REQUIRED. A non-empty array containing a list of the JWE [RFC7516] encryption algorithms
+    (enc values) [RFC7518] supported by the Credential Endpoint to encode the Credential Response in a JWT [RFC7519]."
+  verified: source-checked
+- id: oid4vci/12.2.4/credential_response_encryption.encryption_required
+  subject: vci.metadata.credential_response_encryption.encryption_required
+  spec: openid4vci-1.0
+  locator: { section: "12.2.4" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ issuer ] }
+  condition: When credential_response_encryption is present.
+  quote: "encryption_required: REQUIRED. Boolean value specifying whether the Credential Issuer requires the additional
+    encryption on top of TLS for the Credential Response. If the value is true, the Credential Issuer requires
+    encryption for every Credential Response and therefore the Wallet MUST provide encryption keys in the Credential
+    Request."
+  verified: source-checked
+- id: oid4vci/8.2/credential_response_encryption
+  subject: vci.credential-request.credential_response_encryption
+  spec: openid4vci-1.0
+  locator: { section: "8.2" }
+  relation: defines
+  level: may
+  applies_to: { role: [ wallet ] }
+  quote: "credential_response_encryption: OPTIONAL. Object containing information for encrypting the Credential Response.
+    If this request element is not present, the corresponding credential response returned is not encrypted."
+  verified: source-checked
+- id: oid4vci/8.2/credential_response_encryption.jwk
+  subject: vci.credential-request.credential_response_encryption.jwk
+  spec: openid4vci-1.0
+  locator: { section: "8.2" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ wallet ] }
+  condition: When credential_response_encryption is present.
+  quote: "jwk: REQUIRED. Object containing a single public key as a JWK used for encrypting the Credential Response."
+  verified: source-checked
+- id: oid4vci/8.2/credential_response_encryption.enc
+  subject: vci.credential-request.credential_response_encryption.enc
+  spec: openid4vci-1.0
+  locator: { section: "8.2" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ wallet ] }
+  condition: When credential_response_encryption is present.
+  quote: "enc: REQUIRED. JWE [RFC7516] enc algorithm [RFC7518] for encrypting Credential Responses."
+  verified: source-checked
+- id: oid4vci/8.2/request-encryption-with-response-key
+  subject: vci.credential-request.credential_response_encryption
+  spec: openid4vci-1.0
+  locator: { section: "8.2" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ wallet ] }
+  condition: When the request carries credential_response_encryption.
+  quote: "Credential Request encryption MUST be used if the credential_response_encryption parameter is included, to
+    prevent it being substituted by an attacker."
+  verified: source-checked
+- id: oid4vci/8.3/encrypted-response
+  subject: vci.credential-encryption
+  spec: openid4vci-1.0
+  locator: { section: "8.3" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ issuer ] }
+  condition: When the Credential Request carries credential_response_encryption.
+  quote: "If the Client requested an encrypted response by including the credential_response_encryption object in the
+    request, the Credential Issuer MUST encode the information in the Credential Response as specified by Section 10,
+    using the parameters from the credential_response_encryption object."
+  verified: source-checked
+- id: oid4vci/10/application-jwt
+  subject: vci.credential-encryption
+  spec: openid4vci-1.0
+  locator: { section: "10" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ wallet, issuer ] }
+  quote: "The contents of the message MUST be encoded as a JWT as described in [RFC7519]. The media type MUST be set to
+    application/jwt."
+  verified: source-checked
+- id: oid4vci/10/alg
+  subject: vci.credential-encryption
+  spec: openid4vci-1.0
+  locator: { section: "10" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ wallet, issuer ] }
+  quote: "The alg parameter MUST be present. The JWE alg algorithm used MUST be equal to the alg value of the chosen JWK."
+  verified: source-checked
+- id: oid4vci/10/kid
+  subject: vci.credential-encryption.kid
+  spec: openid4vci-1.0
+  locator: { section: "10" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ wallet, issuer ] }
+  condition: If the selected public key contains a kid.
+  quote: "If the selected public key contains a kid parameter, the JWE MUST include the same value in the kid JWE Header
+    Parameter (as defined in Section 4.1.6) of the encrypted message."
+  verified: source-checked
+- id: oid4vci/10/enc
+  subject: vci.credential-encryption.enc
+  spec: openid4vci-1.0
+  locator: { section: "10" }
+  relation: defines
+  level: info
+  applies_to: { role: [ wallet, issuer ] }
+  quote: "The JWE enc content encryption algorithm used is obtained based on context."
+  verified: source-checked
+- id: oid4vci/12.3/pre-authorized_grant_anonymous_access_supported
+  subject: vci.as-metadata.pre-authorized_grant_anonymous_access_supported
+  spec: openid4vci-1.0
+  locator: { section: "12.3" }
+  relation: defines
+  level: may
+  applies_to: { role: [ as ] }
+  quote: "pre-authorized_grant_anonymous_access_supported: OPTIONAL. A boolean indicating whether the Credential Issuer
+    accepts a Token Request with a Pre-Authorized Code but without a client_id. The default is false."
+  verified: source-checked
+- id: oid4vci/6.1/preauth-client_id
+  subject: vci.token-request.client_id
+  spec: openid4vci-1.0
+  locator: { section: "6.1" }
+  relation: defines
+  level: may
+  applies_to: { role: [ wallet ], grant: [ pre-authorized_code ] }
+  quote: "For the Pre-Authorized Code Grant Type, authentication of the Client is OPTIONAL, as described in Section 3.2.1
+    of OAuth 2.0 [RFC6749], and, consequently, the client_id parameter is only needed when a form of Client
+    Authentication that relies on this parameter is used."
+  verified: source-checked
