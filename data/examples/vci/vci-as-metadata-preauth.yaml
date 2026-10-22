@@ -1,0 +1,29 @@
+id: vci-as-metadata-preauth
+title: Authorization Server metadata for the pre-authorized code grant only (RFC 8414)
+subject: vci.as-metadata
+kind: http-response
+note: >-
+  Shape recorded from a d-you issuance (IDGo 81, 2026-10-22): the Credential Issuer is its own Authorization Server and
+  supports only the pre-authorized code grant, with anonymous access ("none") at the token endpoint. The Wallet stops
+  before the token request when dpop_signing_alg_values_supported is missing.
+http:
+  status: 200
+  headers: { Content-Type: application/json }
+  body:
+    type: json
+    value:
+      issuer: https://eaa.example.eu
+      token_endpoint: https://eaa.example.eu/openid4vci/token
+      response_types_supported: []
+      grant_types_supported: ["urn:ietf:params:oauth:grant-type:pre-authorized_code"]
+      token_endpoint_auth_methods_supported: [none]
+      pre-authorized_grant_anonymous_access_supported: true
+      dpop_signing_alg_values_supported: [ES256]
+annotations:
+  /http/body/issuer: vci.as-metadata.issuer
+  /http/body/token_endpoint: vci.as-metadata.token_endpoint
+  /http/body/response_types_supported: vci.as-metadata.response_types_supported
+  /http/body/grant_types_supported: vci.as-metadata.grant_types_supported
+  /http/body/token_endpoint_auth_methods_supported: vci.as-metadata.token_endpoint_auth_methods_supported
+  /http/body/pre-authorized_grant_anonymous_access_supported: vci.as-metadata.pre-authorized_grant_anonymous_access_supported
+  /http/body/dpop_signing_alg_values_supported: vci.as-metadata.dpop_signing_alg_values_supported

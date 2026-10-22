@@ -1,0 +1,18 @@
+# Go-live compromise (d-you), recorded from the d-you wallet's traffic of a pre-authorized code issuance.
+- id: golive/metadata.ccs.proof_types_supported-2026-10-22
+  subject: vci.metadata.ccs.proof_types_supported
+  spec: golive-compromises
+  locator: { at: "d-you wallet traffic, pre-authorized code flow (recorded 2026-10-22)" }
+  relation: replaces
+  level: shall
+  applies_to: { role: [issuer], grant: [pre-authorized_code] }
+  target: oid4vci/12.2.4/proof_types_supported
+  window: { from: "2026-10-22" }
+  quote: >-
+    Every credential configuration offered to the d-you wallet includes proof_types_supported; the wallet always binds
+    the credential to a holder key and stops without it (No valid signing algorithms found in credential metadata).
+  decided_by: d-you implementation (recorded issuance, IDGo 81, 2026-10-22)
+  reference: d-you wallet traffic, pre-authorized code flow (recorded 2026-10-22)
+  note: >-
+    Hence also cryptographic_binding_methods_supported and a nonce_endpoint. Non-device-bound EAAs do not work with the
+    wallet.

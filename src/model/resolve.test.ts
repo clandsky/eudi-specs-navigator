@@ -108,7 +108,8 @@ describe('go-live compromises (synthetic fixture, never in data/)', () => {
       verified: 'source-checked',
     })
     const sl = (id: string): LayerId => (id === 'test-golive' ? 'golive' : specLayer(id))
-    const stack = [...stackOf('vci.token-request.oauth-client-attestation'), golive]
+    // Without the recorded d-you entries on this subject, so the fixture is the only go-live statement.
+    const stack = [...stackOf('vci.token-request.oauth-client-attestation').filter((x) => specLayer(x.spec) !== 'golive'), golive]
     const inside = resolve(stack, ctx({}), table, sl)
     expect(inside.level).toBe('may')
     expect(ids(inside.decidedBy)).toEqual(['golive/test-wia-token'])
@@ -148,7 +149,8 @@ describe('other precedence outcomes in the data', () => {
   })
 
   it('issuer_info registration certificate: CIR adapts ETSI may → shall', () => {
-    const r = resolve(stackOf('vci.metadata.issuer_info.registration_cert'), ctx({ role: 'issuer' }), table, specLayer)
+    const noAssumptions = new Set([...ALL].filter((l) => l !== 'assumption'))
+    const r = resolve(stackOf('vci.metadata.issuer_info.registration_cert'), ctx({ role: 'issuer', layers: noAssumptions }), table, specLayer)
     expect(r.level).toBe('shall')
     expect(r.neutralised.map((n) => n.assertion.id)).toEqual(['etsi-472-3/ISS-MDATA-REG_CERT-4.2.3-04'])
   })
@@ -199,5 +201,17 @@ describe('assumptions and resolved interpretations', () => {
     expect(ids(r.decidedBy)).toEqual(['resolved/TR_KA_3.1'])
     expect(r.neutralised.map((n) => [n.assertion.id, n.by.id])).toEqual([['cir/TR_KA_3.1', 'resolved/TR_KA_3.1']])
     expect(r.conflicts).toEqual([])
+  })
+})
+
+describe('recorded d-you issuance (pre-authorized code flow)', () => {
+  it('the WIA on the token request becomes a MAY in the pre-authorized code flow only, ETSI outranked', () => {
+    const stack = stackOf('vci.token-request.oauth-client-attestation')
+    const pre = resolve(stack, ctx({ grant: 'pre-authorized_code', asOf: '2026-10-22' }), table, specLayer)
+    expect(pre.level).toBe('may')
+    expect(ids(pre.decidedBy)).toEqual(['golive/token-request.no-wia-preauth-2026-10-22'])
+    expect(ids(pre.overruled)).toContain('etsi-472-3/TOKEN-REQ-4.5.1-01')
+    const code = resolve(stack, ctx({ grant: 'authorization_code', asOf: '2026-10-22' }), table, specLayer)
+    expect(ids(code.decidedBy)).toEqual(['cir/TR-WIA-3/token'])
   })
 })

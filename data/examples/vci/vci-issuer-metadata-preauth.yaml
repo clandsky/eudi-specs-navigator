@@ -1,0 +1,125 @@
+id: vci-issuer-metadata-preauth
+title: Signed Credential Issuer metadata with request and response encryption (application/jwt)
+subject: vci.metadata
+kind: http-response
+note: >-
+  Shape recorded from a d-you issuance (IDGo 81, 2026-10-22). The Wallet asked with Accept: application/jwt only.
+  credential_response_encryption is required by the Wallet; credential_request_encryption.jwks is a JWK Set object.
+  One configuration, device-bound with the jwt proof type only, no scope, no batch_credential_issuance, no
+  notification_endpoint and no key_attestations_required. The registration certificate in issuer_info is signed by the
+  registrar (test key here).
+http:
+  status: 200
+  headers: { Content-Type: application/jwt }
+  body: { type: jwt, value: "{{jwt:metadata}}" }
+jwts:
+  metadata:
+    key: issuer-access
+    header: { x5c: "{{x5c:issuer-access}}", typ: openidvci-issuer-metadata+jwt, alg: ES256 }
+    payload:
+      sub: https://eaa.example.eu
+      credential_issuer: https://eaa.example.eu
+      credential_response_encryption:
+        alg_values_supported: [ECDH-ES]
+        enc_values_supported: [A128GCM, A256GCM]
+        encryption_required: false
+      display:
+        - { name: Stadt Knuffingen, locale: de-DE }
+      credential_request_encryption:
+        jwks:
+          keys:
+            - { $jwk: issuer-enc, use: enc, kid: e2e6fde3-9c1c-445b-81fb-d6d46c256dcc, alg: ECDH-ES }
+        enc_values_supported: [A128GCM, A256GCM]
+        encryption_required: false
+      issuer_info:
+        - { format: registration_cert, data: "{{jwt:rc}}" }
+      credential_configurations_supported:
+        dog_tag_sd_jwt:
+          format: dc+sd-jwt
+          vct: "urn:knuffingen:dog_tag:1"
+          credential_signing_alg_values_supported: [ES256]
+          cryptographic_binding_methods_supported: [jwk]
+          proof_types_supported:
+            jwt: { proof_signing_alg_values_supported: [ES256] }
+          credential_metadata:
+            display:
+              - { name: Hundemarke, locale: de-DE }
+              - { name: Dog Tag, locale: en-US }
+            claims:
+              - { path: [pet_name], display: [{ name: Name des Hundes, locale: de-DE }, { name: Pet name, locale: en-US }] }
+              - { path: [pet_race], display: [{ name: Rasse, locale: de-DE }, { name: Breed, locale: en-US }] }
+              - { path: [owner_firstname], display: [{ name: Vorname Halter, locale: de-DE }, { name: Owner first name, locale: en-US }] }
+              - { path: [owner_lastname], display: [{ name: Nachname Halter, locale: de-DE }, { name: Owner last name, locale: en-US }] }
+      exp: 1792763196
+      nonce_endpoint: https://eaa.example.eu/openid4vci/nonce
+      iat: 1792676796
+      credential_endpoint: https://eaa.example.eu/openid4vci/credential
+  rc:
+    key: registrar
+    header: { typ: rc-wrp+jwt, iat: 1792668871, x5c: "{{x5c:registrar}}", alg: ES256 }
+    payload:
+      name: Stadt Knuffingen
+      sub_ln: Stadt Knuffingen
+      sub: NTRDE-9BC70F9B649486D5
+      country: DE
+      registry_uri: https://registrar.example.eu/api
+      srv_description: [[{ lang: en, value: Tags. For Dogs. }]]
+      entitlements: ["https://uri.etsi.org/19475/Entitlement/Service_Provider"]
+      privacy_policy: https://eaa.example.eu/privacy
+      support_uri: https://eaa.example.eu/contact
+      supervisory_authority: { email: dpa@example.eu, phone: "+49 228 0000000", uri: https://dpa.example.eu }
+      iat: 1792668871
+      status: { status_list: { idx: 891, uri: https://registrar.example.eu/api/status-management/status-list } }
+      provides_attestations:
+        - { format: dc+sd-jwt, meta: { vct_values: ["urn:knuffingen:dog_tag:1"] } }
+      intermediary: { sub: NTRDE-9BC70F9B649486D5, sname: Stadt Knuffingen }
+      act: { sub: NTRDE-9BC70F9B649486D5 }
+      public_body: false
+      jti: be4c718b-6306-4d90-b197-ed783e7944c2
+annotations:
+  /jwt/metadata/header/typ: vci.metadata.typ
+  /jwt/metadata/header/x5c: vci.metadata.x5c
+  /http/headers/Content-Type: vci.metadata.content-type
+  /jwt/metadata/payload/sub: vci.metadata.sub
+  /jwt/metadata/payload/iat: vci.metadata.iat
+  /jwt/metadata/payload/exp: vci.metadata.exp
+  /jwt/metadata/payload/credential_issuer: vci.metadata.credential_issuer
+  /jwt/metadata/payload/credential_endpoint: vci.metadata.credential_endpoint
+  /jwt/metadata/payload/nonce_endpoint: vci.metadata.nonce_endpoint
+  /jwt/metadata/payload/display: vci.metadata.display
+  /jwt/metadata/payload/display/**: vci.metadata.display
+  /jwt/metadata/payload/credential_request_encryption: vci.metadata.credential_request_encryption
+  /jwt/metadata/payload/credential_request_encryption/jwks: vci.metadata.credential_request_encryption.jwks
+  /jwt/metadata/payload/credential_request_encryption/jwks/**: vci.metadata.credential_request_encryption.jwks
+  /jwt/metadata/payload/credential_request_encryption/enc_values_supported: vci.metadata.credential_request_encryption.enc_values_supported
+  /jwt/metadata/payload/credential_request_encryption/encryption_required: vci.metadata.credential_request_encryption.encryption_required
+  /jwt/metadata/payload/credential_response_encryption: vci.metadata.credential_response_encryption
+  /jwt/metadata/payload/credential_response_encryption/alg_values_supported: vci.metadata.credential_response_encryption.alg_values_supported
+  /jwt/metadata/payload/credential_response_encryption/enc_values_supported: vci.metadata.credential_response_encryption.enc_values_supported
+  /jwt/metadata/payload/credential_response_encryption/encryption_required: vci.metadata.credential_response_encryption.encryption_required
+  /jwt/metadata/payload/issuer_info: vci.metadata.issuer_info
+  /jwt/metadata/payload/issuer_info/0: vci.metadata.issuer_info.registration_cert
+  /jwt/metadata/payload/issuer_info/*/format: vci.metadata.issuer_info.format
+  /jwt/metadata/payload/issuer_info/*/data: vci.metadata.issuer_info.data
+  /jwt/metadata/payload/credential_configurations_supported: vci.metadata.credential_configurations_supported
+  /jwt/metadata/payload/credential_configurations_supported/*: vci.metadata.ccs.id
+  /jwt/metadata/payload/credential_configurations_supported/*/format: vci.metadata.ccs.format
+  /jwt/metadata/payload/credential_configurations_supported/*/vct: vci.metadata.ccs.vct
+  /jwt/metadata/payload/credential_configurations_supported/*/credential_signing_alg_values_supported: vci.metadata.ccs.credential_signing_alg_values_supported
+  /jwt/metadata/payload/credential_configurations_supported/*/cryptographic_binding_methods_supported: vci.metadata.ccs.cryptographic_binding_methods_supported
+  /jwt/metadata/payload/credential_configurations_supported/*/proof_types_supported: vci.metadata.ccs.proof_types_supported
+  /jwt/metadata/payload/credential_configurations_supported/*/proof_types_supported/*: vci.metadata.ccs.proof_type
+  /jwt/metadata/payload/credential_configurations_supported/*/proof_types_supported/*/proof_signing_alg_values_supported: vci.metadata.ccs.proof_signing_alg_values_supported
+  /jwt/metadata/payload/credential_configurations_supported/*/credential_metadata: vci.metadata.ccs.credential_metadata
+  /jwt/metadata/payload/credential_configurations_supported/*/credential_metadata/display: vci.metadata.ccs.display
+  /jwt/metadata/payload/credential_configurations_supported/*/credential_metadata/display/**: vci.metadata.ccs.display
+  /jwt/metadata/payload/credential_configurations_supported/*/credential_metadata/claims: vci.metadata.ccs.claims
+  /jwt/metadata/payload/credential_configurations_supported/*/credential_metadata/claims/**: vci.metadata.ccs.claims
+  /jwt/rc/header/typ: vci.registration-cert
+  /jwt/rc/header/iat: vci.registration-cert
+  /jwt/rc/payload: vci.registration-cert
+  /jwt/rc/payload/*: vci.registration-cert
+  /jwt/rc/payload/**: vci.registration-cert
+  /jwt/rc/payload/entitlements: vci.registration-cert.entitlements
+  /jwt/rc/payload/provides_attestations: vci.registration-cert.provides_attestations
+  /jwt/rc/payload/provides_attestations/**: vci.registration-cert.provides_attestations

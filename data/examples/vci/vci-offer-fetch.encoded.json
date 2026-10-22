@@ -11,21 +11,16 @@
       "value": {
         "credential_issuer": "https://eaa.example.eu",
         "credential_configuration_ids": [
-          "gym_membership_sd_jwt"
+          "dog_tag_sd_jwt"
         ],
         "grants": {
           "urn:ietf:params:oauth:grant-type:pre-authorized_code": {
-            "pre-authorized_code": "oaKazRN8I0IbtZ0C7JuMn5",
-            "tx_code": {
-              "input_mode": "numeric",
-              "length": 6,
-              "description": "Enter the code we sent to your registered phone number"
-            }
+            "pre-authorized_code": "kh_1vkpxLgHqvQwUYhZswmJ0ilAwuTE2kQb3K1nHVGE"
           }
         }
       }
     }
   },
   "jwts": {},
-  "inputHash": "e5900ef9bc95103d"
+  "inputHash": "9190a749f5450d6c"
 }

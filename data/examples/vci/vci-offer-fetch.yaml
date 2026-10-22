@@ -2,6 +2,9 @@ id: vci-offer-fetch
 title: Credential Offer object with the pre-authorized code grant
 subject: vci.offer-fetch
 kind: http-response
+note: >-
+  Shape recorded from a d-you issuance (IDGo 81, 2026-10-22): no tx_code, so the Wallet redeems the pre-authorized code
+  without a Transaction Code.
 http:
   status: 200
   headers: { Content-Type: application/json, Cache-Control: no-store }
@@ -9,18 +12,13 @@ http:
     type: json
     value:
       credential_issuer: https://eaa.example.eu
-      credential_configuration_ids: [gym_membership_sd_jwt]
+      credential_configuration_ids: [dog_tag_sd_jwt]
       grants:
         "urn:ietf:params:oauth:grant-type:pre-authorized_code":
-          pre-authorized_code: oaKazRN8I0IbtZ0C7JuMn5
-          tx_code: { input_mode: numeric, length: 6, description: Enter the code we sent to your registered phone number }
+          pre-authorized_code: kh_1vkpxLgHqvQwUYhZswmJ0ilAwuTE2kQb3K1nHVGE
 annotations:
   /http/body/credential_issuer: vci.offer.credential_issuer
   /http/body/credential_configuration_ids: vci.offer.credential_configuration_ids
   /http/body/grants: vci.offer.grants
   /http/body/grants/urn:ietf:params:oauth:grant-type:pre-authorized_code: vci.offer.grants.pre-authorized_code
   /http/body/grants/*/pre-authorized_code: vci.offer.pre-authorized_code
-  /http/body/grants/*/tx_code: vci.offer.tx_code
-  /http/body/grants/*/tx_code/input_mode: vci.offer.tx_code.input_mode
-  /http/body/grants/*/tx_code/length: vci.offer.tx_code.length
-  /http/body/grants/*/tx_code/description: vci.offer.tx_code.description

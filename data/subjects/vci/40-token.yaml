@@ -13,3 +13,4 @@
 - { id: vci.token-response.access_token, kind: field, parent: vci.token-response, title: access_token, location: json, description: "Token the Wallet presents at the Credential Endpoint." }
 - { id: vci.token-response.expires_in, kind: field, parent: vci.token-response, title: expires_in, location: json, description: "Lifetime of the access token in seconds." }
 - { id: vci.token-response.cache-control, kind: field, parent: vci.token-response, title: "Cache-Control: no-store", location: header, description: "Keeps the token response out of any cache." }
+- { id: vci.token-request.client_id, kind: field, parent: vci.token-request, title: client_id, location: form, description: "Identifier of the Wallet as OAuth client; only needed in the pre-authorized code flow when a client authentication method relies on it." }

@@ -1,0 +1,19 @@
+# Go-live compromise (d-you): issuers do not require key attestations until the end of 2027.
+- id: golive/metadata.ccs.no-key-attestations-required-2026-10-22
+  subject: vci.metadata.ccs.key_attestations_required
+  spec: golive-compromises
+  locator: { at: "d-you launch compromise, no key attestation required (project owner, 2026-10-22)" }
+  relation: replaces
+  level: may
+  applies_to: { role: [issuer] }
+  target: cir/TR_KA-4/key_attestations_required
+  window: { from: "2026-10-22", until: "2027-12-31" }
+  quote: >-
+    Until the end of 2027 a credential issuer does not have to require key attestations: the d-you wallet sends none,
+    so key_attestations_required may be omitted from proof_types_supported.
+  decided_by: project owner (2026-10-22)
+  reference: d-you launch compromise, no key attestation required (project owner, 2026-10-22)
+  note: >-
+    Applies to every issuance flow. Observed in the recorded pre-authorized code issuance (IDGo 81, 2026-10-22): the
+    wallet sends the jwt key proof without key_attestation, and issuance works when the issuer metadata has no
+    key_attestations_required. From 2028 TR_KA-4 applies again.

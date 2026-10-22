@@ -1,0 +1,20 @@
+# Go-live compromise (d-you): the wallet sends no key attestation until the end of 2027.
+- id: golive/proof-jwt.no-key-attestation-2026-10-22
+  subject: vci.proof-jwt.key_attestation
+  spec: golive-compromises
+  locator: { at: "d-you launch compromise, no key attestation required (project owner, 2026-10-22)" }
+  relation: replaces
+  level: may
+  applies_to: { role: [wallet] }
+  target: etsi-472-3/CRED-REQ-4.6.1.2-03
+  window: { from: "2026-10-22", until: "2027-12-31" }
+  quote: >-
+    The d-you wallet sends the jwt key proof without a key_attestation; the Protected Header carries only alg, typ and
+    jwk.
+  decided_by: project owner (2026-10-22)
+  reference: d-you launch compromise, no key attestation required (project owner, 2026-10-22)
+  note: >-
+    Applies to every issuance flow until the end of 2027, together with the issuer-side compromise on
+    key_attestations_required. Observed in the recorded pre-authorized code issuance (IDGo 81, 2026-10-22) against
+    issuer metadata with only the jwt proof type and no key_attestations_required. Whether the wallet adds a key
+    attestation when the issuer requires one was not tested. From 2028 CRED-REQ-4.6.1.2-03 applies again.

@@ -1,0 +1,13 @@
+{
+  "id": "vci-nonce-request-preauth",
+  "http": {
+    "method": "POST",
+    "url": "https://eaa.example.eu/openid4vci/nonce",
+    "headers": {
+      "Content-Type": "application/octet-stream",
+      "Content-Length": "0"
+    }
+  },
+  "jwts": {},
+  "inputHash": "c435c520055544b6"
+}

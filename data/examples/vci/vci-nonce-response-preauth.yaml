@@ -1,0 +1,12 @@
+id: vci-nonce-response-preauth
+title: Nonce Response without DPoP-Nonce
+subject: vci.nonce-response
+kind: http-response
+note: Shape recorded from a d-you issuance (IDGo 81, 2026-10-22); the Wallet did not need a DPoP-Nonce.
+http:
+  status: 200
+  headers: { Cache-Control: no-store, Content-Type: application/json }
+  body: { type: json, value: { c_nonce: lHsPx2DheLM172hYAbi8eMjK3lSXo3cw } }
+annotations:
+  /http/headers/Cache-Control: vci.nonce-response.cache-control
+  /http/body/c_nonce: vci.nonce-response.c_nonce
