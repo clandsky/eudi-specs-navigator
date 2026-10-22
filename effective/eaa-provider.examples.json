@@ -1650,7 +1650,7 @@
           "Content-Type": "application/json"
         },
         "body": {
-          "redirect_uri": "https://eaa.example.eu/openid4vci/authorize/continue?request_uri=urn%3Aietf%3Aparams%3Aoauth%3Arequest_uri%3AzLJBqkvzAeWbpneyPRdQFj9PPKsAzD_x"
+          "redirect_uri": "https://eaa.example.eu/openid4vci/authorize/continue?request_uri=urn%3Aietf%3Aparams%3Aoauth%3Arequest_uri%3AzLJBqkvzAeWbpneyPRdQFj9PPKsAzD_x&response_code=rg9TZrCrJ9gxftXSwPowgA"
         }
       }
     },
@@ -1660,9 +1660,10 @@
       "step": "18",
       "http": {
         "method": "GET",
-        "url": "https://eaa.example.eu/openid4vci/authorize/continue?request_uri=urn:ietf:params:oauth:request_uri:zLJBqkvzAeWbpneyPRdQFj9PPKsAzD_x",
+        "url": "https://eaa.example.eu/openid4vci/authorize/continue?request_uri=urn:ietf:params:oauth:request_uri:zLJBqkvzAeWbpneyPRdQFj9PPKsAzD_x&response_code=rg9TZrCrJ9gxftXSwPowgA",
         "query": {
-          "request_uri": "urn:ietf:params:oauth:request_uri:zLJBqkvzAeWbpneyPRdQFj9PPKsAzD_x"
+          "request_uri": "urn:ietf:params:oauth:request_uri:zLJBqkvzAeWbpneyPRdQFj9PPKsAzD_x",
+          "response_code": "rg9TZrCrJ9gxftXSwPowgA"
         },
         "headers": {}
       }

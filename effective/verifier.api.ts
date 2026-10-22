@@ -499,6 +499,8 @@ export interface ResponseAck {
 
 // ── Wallet opens the redirect_uri in the browser (same device) ── Wallet Unit → Verifier · steps redirect-same 9, redirect-same-mdoc 9
 // rule: Wallet: MUST · "Wallets MUST follow the redirect to redirect_uri."
+// also:
+//   - response_code: no rule · The fresh random value from the redirect_uri; the Verifier checks that it belongs to the posted Authorization Response, so only the browser the Wallet sent back can continue.
 
 // ── Verifier frontend fetches the response with response_code (same device) ── Verifier → Verifier · steps redirect-same 10, redirect-same-mdoc 10
 

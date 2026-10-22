@@ -58,11 +58,13 @@ export function FlowView({ flowId }: { flowId: string }) {
             <p className="meta">
               {recorded ? (
                 <>
-                  <LayerName id="golive">d-you</LayerName> recording. Take d-you out of the lens to see the spec example.
+                  <LayerName id="golive">d-you</LayerName> recording.{' '}
+                  {raw.example ? 'Take d-you out of the lens to see the spec example.' : 'The spec flow has no example for this step.'}
                 </>
               ) : (
                 <>
-                  Spec example. With <LayerName id="golive">d-you</LayerName> in the lens this step shows the recorded d-you message.
+                  {raw.example ? 'Spec example. ' : ''}With <LayerName id="golive">d-you</LayerName> in the lens this step shows the
+                  recorded d-you message.
                 </>
               )}
             </p>

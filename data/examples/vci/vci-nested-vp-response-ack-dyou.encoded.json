@@ -8,10 +8,10 @@
     "body": {
       "type": "json",
       "value": {
-        "redirect_uri": "https://eaa.example.eu/openid4vci/authorize/continue?request_uri=urn%3Aietf%3Aparams%3Aoauth%3Arequest_uri%3AzLJBqkvzAeWbpneyPRdQFj9PPKsAzD_x"
+        "redirect_uri": "https://eaa.example.eu/openid4vci/authorize/continue?request_uri=urn%3Aietf%3Aparams%3Aoauth%3Arequest_uri%3AzLJBqkvzAeWbpneyPRdQFj9PPKsAzD_x&response_code=rg9TZrCrJ9gxftXSwPowgA"
       }
     }
   },
   "jwts": {},
-  "inputHash": "33b63ad3d4268ea3"
+  "inputHash": "2e46d391a829a747"
 }

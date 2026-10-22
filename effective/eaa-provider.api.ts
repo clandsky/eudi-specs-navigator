@@ -1257,6 +1257,7 @@ export interface VpResponseAck {
 export interface VpRedirectBack {
   query: {
     request_uri: string // MUST [R30]
+    response_code?: string // no rule · The fresh random value from the redirect_uri; the Verifier checks that it belongs to the posted Authorization Response, so only the browser the Wallet sent back can continue.
   }
 }
 

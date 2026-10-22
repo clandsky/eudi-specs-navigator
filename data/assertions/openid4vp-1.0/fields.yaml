@@ -889,3 +889,27 @@
       algorithms … supported for a Key Binding JWT (KB-JWT).",
     verified: source-checked
   }
+- {
+    id: oid4vp/13.3/response_code-extract,
+    subject: vp.redirect-back.response_code,
+    spec: openid4vp-1.0,
+    locator: { section: "13.3" },
+    relation: defines,
+    level: info,
+    applies_to: { role: [ verifier ] },
+    quote: "(7) The Wallet sends the user agent to the Verifier (redirect_uri). The Verifier receives the Request and
+      extracts the response_code parameter.",
+    verified: source-checked
+  }
+- {
+    id: oid4vp/13.3/response_code-check,
+    subject: vp.redirect-back.response_code,
+    spec: openid4vp-1.0,
+    locator: { section: "13.3" },
+    relation: defines,
+    level: info,
+    applies_to: { role: [ verifier ] },
+    quote: "If an Authorization Response is found, the Response URI checks whether the response_code was associated with
+      this Authorization Response in step (6).",
+    verified: source-checked
+  }
