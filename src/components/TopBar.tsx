@@ -86,6 +86,12 @@ const SECTIONS: Section[] = [
     match: ['learn', 'educate'],
     icon: <path d="M1.5 6 8 3l6.5 3L8 9zM4.5 7.6V11c1 .9 2.2 1.4 3.5 1.4s2.5-.5 3.5-1.4V7.6M14.5 6v4" />,
   },
+  {
+    to: 'try',
+    label: 'Try',
+    match: ['try'],
+    icon: <path d="M5 3v10l8-5z" />,
+  },
 ]
 
 // The review list is a working tool for the local dev server; the production build leaves it out.

@@ -1042,7 +1042,7 @@ table.data .quote {
 @media (max-width: 860px) {
   .tabbar {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(6, 1fr);
     padding: 4px 4px 6px;
     background: var(--sheet);
     border-top: 1px solid var(--rule);
