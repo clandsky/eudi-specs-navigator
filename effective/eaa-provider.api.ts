@@ -185,7 +185,7 @@ export type SignedIssuerMetadata = {
     credential_endpoint: string // MUST · URL of the Credential Endpoint where the Wallet requests credentials. · "credential_endpoint: REQUIRED. URL of the Credential Issuer's Credential Endpoint, as defined in Section 8.2. This URL MUST use the https scheme"
     nonce_endpoint?: string // MUST if a credential configuration requires key binding · URL where the Wallet fetches a fresh c_nonce for its key proofs. · "If the Issuer supports Credential Configurations that require key binding, as indicated by the presence of cryptographic_binding_methods_supported, the nonce_endpoint MUST be present in the Credential Issuer Metadata."
     notification_endpoint?: string // only auth-code-par: MAY · URL where the Wallet reports what happened to an issued credential (accepted, deleted, failed). · "notification_endpoint: OPTIONAL. URL of the Credential Issuer's Notification Endpoint, as defined in Section 11."
-    batch_credential_issuance?: { // only auth-code-par: MAY · Announces that several credentials can be issued in one request, one per proven key. · "An issuer that does not support batch issuance omits batch_credential_issuance; the MUST is to indicate support by including or omitting the parameter, not to include it."
+    batch_credential_issuance?: { // only auth-code-par: MAY · Announces that several credentials can be issued in one request, one per proven key. Optional: an issuer may offer batch issuance, and one that does not support it simply omits the parameter. · "An issuer that does not support batch issuance omits batch_credential_issuance; the MUST is to indicate support by including or omitting the parameter, not to include it."
       batch_size?: number // only auth-code-par: MUST when batch_credential_issuance is present · Maximum number of key proofs, and so credentials, in one Credential Request. · "batch_size: REQUIRED. Integer value specifying the maximum array size for the proofs parameter in a Credential Request. It MUST be 2 or greater."
     }
     preferred_client_status_period?: number // only auth-code-par: MAY; AS: MAY · How long the issuer would like the remaining status maintenance period in Wallet Instance Attestations to be. · "An authorisation server may communicate its preferences for the remaining status maintenance period in wallet instance attestations by including the 'preferred_client_status_period' metadata parameter in their Credential Issuer metadata endpoint"
@@ -203,14 +203,14 @@ export type SignedIssuerMetadata = {
         proof_types_supported?: { // auth-code-par: MUST where the credential issuer issues device-bound credentials | pre-auth: MUST · Key proof types the Wallet may send for this credential (jwt, attestation) and their requirements. · "Where a credential issuer issues device-bound credentials, it shall indicate in the 'proof_types_supported' parameter in its Issuer Credential Metadata, as specified in Section 12.2.4 OID4VCI, that it supports both the 'jwt' and the 'attestation' proof type for key attestations that shall include the 'key_attestations_required' object." · "Every credential configuration offered to the d-you wallet includes proof_types_supported; the wallet always binds the credential to a holder key and stops without it (No valid signing algorithms found in credential metadata)."
           jwt?: { // no rule · Name of a proof type: jwt (key proof JWT) or attestation (key attestation alone).
             proof_signing_alg_values_supported: string[] // MUST · Algorithms the issuer accepts for signing key proofs of this type. [R16]
-            key_attestations_required?: { // only auth-code-par: MUST where the credential issuer issues device-bound credentials · Signals that key proofs must come with a key attestation, optionally with minimum key storage and user authentication levels. [R17]
+            key_attestations_required?: { // only auth-code-par: MAY (until 2028-01-01, then MUST) · Signals that key proofs must come with a key attestation, optionally with minimum key storage and user authentication levels. [R17]
               key_storage?: string[] // only auth-code-par: MAY · Accepted levels of key storage and user authentication that the key attestation must state. [R18]
               user_authentication?: string[] // only auth-code-par: MAY [R18]
             }
           }
           attestation?: { // only auth-code-par: no rule
             proof_signing_alg_values_supported: string[] // only auth-code-par: MUST [R16]
-            key_attestations_required?: { // only auth-code-par: MUST where the credential issuer issues device-bound credentials [R17]
+            key_attestations_required?: { // only auth-code-par: MAY (until 2028-01-01, then MUST) [R17]
               key_storage?: string[] // only auth-code-par: MAY [R18]
               user_authentication?: string[] // only auth-code-par: MAY [R18]
             }
@@ -915,7 +915,7 @@ export interface OfferFetch {
 // [R14] "The Grant Type authorization_code MUST be supported as defined in Section 4.1.1 in [OIDF.OID4VCI]"
 // [R15] "issuer_state: OPTIONAL. String value created by the Credential Issuer and opaque to the Wallet that is used to bind the subsequent Authorization Request with a context set up during previous process steps."
 // [R16] "proof_signing_alg_values_supported: REQUIRED. A non-empty array of algorithm identifiers that the Issuer supports for this proof type."
-// [R17] "supports both the 'jwt' and the 'attestation' proof type for key attestations that shall include the 'key_attestations_required' object."
+// [R17] "Until the end of 2027 a credential issuer does not have to require key attestations: the d-you wallet sends none, so key_attestations_required may be omitted from proof_types_supported."
 // [R18] "key_storage: OPTIONAL. A non-empty array defining values specified in Appendix D.2 accepted by the Credential Issuer. user_authentication: OPTIONAL. A non-empty array defining values specified in Appendix D.2 accepted by the Credential Issuer."
 // [R19] "display: OPTIONAL. A non-empty array of objects, where each object contains the display properties of the supported Credential for a certain language."
 // [R20] "claims: OPTIONAL. A non-empty array of claims description objects as defined in Appendix B.2."

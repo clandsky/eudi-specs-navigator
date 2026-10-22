@@ -70,22 +70,6 @@
     CIR asks for the status list index only for the PID, qualified EAA and public-sector EAA. Open: whether status is
     enforced at issuance, at presentation or not at all for such an EAA, and which status list profile applies. The
     d-you wallet accepted and stored a credential without status.
-- id: assumption/TR_KA-4-no-key-attestations-required
-  subject: vci.metadata.ccs.key_attestations_required
-  spec: assumptions
-  locator: { at: "Reading of CIR 2026/1731 TR_KA-4" }
-  relation: adapts
-  interpretation: true
-  level: may
-  applies_to: { role: [ issuer ], grant: [ pre-authorized_code ] }
-  target: cir/TR_KA-4/key_attestations_required
-  quote: >-
-    While the key attestation profile is not final and the d-you wallet sends no key attestation, an EAA provider offers
-    the jwt proof type without key_attestations_required.
-  decided_by: project owner (2026-10-22)
-  note: >-
-    TR_KA-4 asks for both the jwt and the attestation proof type, each with key_attestations_required. Open: whether
-    key_attestations_required is mandatory for EAA and when the attestation profile becomes binding (like the WIA).
 - id: assumption/REG_CERT-content-eaa-provider
   subject: vci.metadata.issuer_info.registration_cert
   spec: assumptions
