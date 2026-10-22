@@ -7,7 +7,7 @@ import type { Dataset, EncodedExample } from '../../src/model/dataset.ts'
 import { annotationFor, entryPointers, escapeToken, viewOf, type ViewDocument } from '../../src/model/pointer.ts'
 import { layerTable, resolve, timeline, type Ctx } from '../../src/model/resolve.ts'
 import type { Assertion, Example, Flow, LayerId, Level, Role, Subject } from '../../src/model/schema.ts'
-import { stepNumber } from '../../src/model/steps.ts'
+import { stepAt, stepExamples, stepNumber } from '../../src/model/steps.ts'
 
 export type Side = 'issuer' | 'verifier'
 
@@ -400,40 +400,45 @@ export function buildEffectiveApi(ds: Dataset, opts: EffectiveOptions): Effectiv
         else g.checks.push({ field: c.field, expect: c.expect, flows: new Set([flow.id]) })
         if (c.subject) covered.add(c.subject)
       }
-      const ex = step.example ? examples.get(step.example) : undefined
-      const enc = ex ? ds.encoded[ex.id] : undefined
-      if (!ex || !enc) continue
-      const view = viewOf(enc)
-      const src: ItemSource = { enc, ex, view, flow: flow.id, titles: subjects, fieldmap: ds.fieldmap }
-      for (const p of entryPointers(view)) {
-        const sid = annotationFor(p, ex.annotations, ds.fieldmap)
-        if (sid) reached.add(sid)
-      }
-      exampleRefs.push({ type: subj.id, flow: flow.id, step: stepNumber(flow, step), example: ex.id })
-      // The envelope: what travels on the wire (HTTP headers, query, body) or the JSON document itself.
-      const env = emptyShape(null)
-      env.object = new Map()
-      env.flows.add(flow.id)
-      if (view.http?.headers && Object.keys(view.http.headers).length) env.object.set('headers', shapeOf(view.http.headers, '/http/headers', src))
-      if (view.http?.query) env.object.set('query', shapeOf(view.http.query, '/http/query', src))
-      if (view.http?.body !== undefined) env.object.set('body', shapeOf(view.http.body, '/http/body', src))
-      if (view.json !== undefined) env.object.set('body', shapeOf(view.json, '/json', src))
-      if (env.object.size) g.envelope = g.envelope ? merge(g.envelope, env) : env
-      for (const [name, j] of Object.entries(view.jwt)) {
-        const meta = ITEMS[name] ?? { type: pascal(name), producer: roleOf(step.from) ?? 'wallet', what: 'JWS' }
-        const sh = emptyShape(null)
-        sh.object = new Map([
-          ['header', shapeOf(j.header, `/jwt/${escapeToken(name)}/header`, src)],
-          ['payload', shapeOf(j.payload, `/jwt/${escapeToken(name)}/payload`, src)],
-        ])
-        if (j.disclosures) sh.object.set('disclosures', disclosuresShape(`/jwt/${escapeToken(name)}/disclosures`, src))
-        sh.flows.add(flow.id)
-        addItem(meta, sh, subj.id, flow.id, g)
-      }
-      for (const [name, c] of Object.entries(view.cbor ?? {})) {
-        const meta = ITEMS[`cbor:${name}`] ?? { type: pascal(name), producer: roleOf(step.from) ?? 'wallet', what: 'CBOR' }
-        const sh = shapeOf(c, `/cbor/${escapeToken(name)}`, src)
-        addItem({ ...meta, what: enc.cbor?.[name]?.label ?? meta.what }, sh, subj.id, flow.id, g)
+      // The shapes come from the spec example and its d-you recording together, so a field the rules still allow stays in
+      // the type when the wallet solution leaves it out; examples.json shows the message seen through the layers.
+      const shown = stepAt(step, opts.layers).example
+      for (const exId of [shown, ...stepExamples(step).filter((e) => e !== shown)]) {
+        const ex = exId ? examples.get(exId) : undefined
+        const enc = ex ? ds.encoded[ex.id] : undefined
+        if (!ex || !enc) continue
+        const view = viewOf(enc)
+        const src: ItemSource = { enc, ex, view, flow: flow.id, titles: subjects, fieldmap: ds.fieldmap }
+        for (const p of entryPointers(view)) {
+          const sid = annotationFor(p, ex.annotations, ds.fieldmap)
+          if (sid) reached.add(sid)
+        }
+        if (exId === shown) exampleRefs.push({ type: subj.id, flow: flow.id, step: stepNumber(flow, step), example: ex.id })
+        // The envelope: what travels on the wire (HTTP headers, query, body) or the JSON document itself.
+        const env = emptyShape(null)
+        env.object = new Map()
+        env.flows.add(flow.id)
+        if (view.http?.headers && Object.keys(view.http.headers).length) env.object.set('headers', shapeOf(view.http.headers, '/http/headers', src))
+        if (view.http?.query) env.object.set('query', shapeOf(view.http.query, '/http/query', src))
+        if (view.http?.body !== undefined) env.object.set('body', shapeOf(view.http.body, '/http/body', src))
+        if (view.json !== undefined) env.object.set('body', shapeOf(view.json, '/json', src))
+        if (env.object.size) g.envelope = g.envelope ? merge(g.envelope, env) : env
+        for (const [name, j] of Object.entries(view.jwt)) {
+          const meta = ITEMS[name] ?? { type: pascal(name), producer: roleOf(step.from) ?? 'wallet', what: 'JWS' }
+          const sh = emptyShape(null)
+          sh.object = new Map([
+            ['header', shapeOf(j.header, `/jwt/${escapeToken(name)}/header`, src)],
+            ['payload', shapeOf(j.payload, `/jwt/${escapeToken(name)}/payload`, src)],
+          ])
+          if (j.disclosures) sh.object.set('disclosures', disclosuresShape(`/jwt/${escapeToken(name)}/disclosures`, src))
+          sh.flows.add(flow.id)
+          addItem(meta, sh, subj.id, flow.id, g)
+        }
+        for (const [name, c] of Object.entries(view.cbor ?? {})) {
+          const meta = ITEMS[`cbor:${name}`] ?? { type: pascal(name), producer: roleOf(step.from) ?? 'wallet', what: 'CBOR' }
+          const sh = shapeOf(c, `/cbor/${escapeToken(name)}`, src)
+          addItem({ ...meta, what: enc.cbor?.[name]?.label ?? meta.what }, sh, subj.id, flow.id, g)
+        }
       }
     }
   }

@@ -1,0 +1,12 @@
+id: vci-par-response-authcode-dyou
+title: PAR response
+subject: vci.par-response
+kind: http-response
+note: Shape recorded from a d-you issuance in the authorization code flow (IDGo 81, 2026-10-22, login at the authorization endpoint).
+http:
+  status: 201
+  headers: { Cache-Control: no-store, Content-Type: application/json }
+  body: { type: json, value: { request_uri: "urn:ietf:params:oauth:request_uri:zLJBqkvzAeWbpneyPRdQFj9PPKsAzD_x", expires_in: 300 } }
+annotations:
+  /http/body/request_uri: vci.par-response.request_uri
+  /http/body/expires_in: vci.par-response.expires_in

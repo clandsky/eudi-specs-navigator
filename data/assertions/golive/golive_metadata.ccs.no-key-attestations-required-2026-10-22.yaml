@@ -14,6 +14,6 @@
   decided_by: project owner (2026-10-22)
   reference: d-you launch compromise, no key attestation required (project owner, 2026-10-22)
   note: >-
-    Applies to every issuance flow. Observed in the recorded pre-authorized code issuance (IDGo 81, 2026-10-22): the
+    Applies to every issuance flow. Observed in the recorded pre-authorized and authorization code issuances (IDGo 81, 2026-10-22): the
     wallet sends the jwt key proof without key_attestation, and issuance works when the issuer metadata has no
     key_attestations_required. From 2028 TR_KA-4 applies again.

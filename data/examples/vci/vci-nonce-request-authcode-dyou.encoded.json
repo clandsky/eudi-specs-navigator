@@ -1,5 +1,5 @@
 {
-  "id": "vci-nonce-request-preauth",
+  "id": "vci-nonce-request-authcode-dyou",
   "http": {
     "method": "POST",
     "url": "https://eaa.example.eu/openid4vci/nonce",

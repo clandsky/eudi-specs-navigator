@@ -133,6 +133,13 @@ export const Step = z.strictObject({
   note: z.string().optional(),
   /** Makes this a substep of an earlier step (e.g. the checks inside "validate response"): drawn indented, numbered 4.1, 4.2 … */
   parent: slug.optional(),
+  /**
+   * The step as the wallet solution runs it (d-you, recorded from real traffic). Laid over example, tags and note while
+   * the go-live layer is on in the lens; with it off, the spec example shows again.
+   */
+  golive: z
+    .strictObject({ example: slug.optional(), tags: z.array(z.string()).optional(), note: z.string().optional() })
+    .optional(),
 })
 export type Step = z.infer<typeof Step>
 

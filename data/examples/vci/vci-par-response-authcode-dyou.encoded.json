@@ -1,21 +1,19 @@
 {
-  "id": "vci-token-response-preauth",
+  "id": "vci-par-response-authcode-dyou",
   "http": {
-    "status": 200,
+    "status": 201,
     "headers": {
       "Cache-Control": "no-store",
-      "Pragma": "no-cache",
       "Content-Type": "application/json"
     },
     "body": {
       "type": "json",
       "value": {
-        "access_token": "z6aa0Y2lPpXPZaWWbUVI5ld5uJCEeyRf2iBLd0iuXQE",
-        "token_type": "DPoP",
+        "request_uri": "urn:ietf:params:oauth:request_uri:zLJBqkvzAeWbpneyPRdQFj9PPKsAzD_x",
         "expires_in": 300
       }
     }
   },
   "jwts": {},
-  "inputHash": "7d89fbd1464eb87c"
+  "inputHash": "96ac0f5a7e719ae0"
 }

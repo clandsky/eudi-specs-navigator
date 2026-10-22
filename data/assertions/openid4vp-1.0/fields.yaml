@@ -49,7 +49,7 @@
   }
 - {
     id: oid4vp/5.1/request_uri_method,
-    subject: vp.authorization-request.request_uri,
+    subject: vp.authorization-request.request_uri_method,
     spec: openid4vp-1.0,
     locator: { section: "5.1" },
     relation: defines,

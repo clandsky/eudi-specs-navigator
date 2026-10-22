@@ -15,6 +15,6 @@
   reference: d-you launch compromise, no key attestation required (project owner, 2026-10-22)
   note: >-
     Applies to every issuance flow until the end of 2027, together with the issuer-side compromise on
-    key_attestations_required. Observed in the recorded pre-authorized code issuance (IDGo 81, 2026-10-22) against
+    key_attestations_required. Observed in the recorded pre-authorized and authorization code issuances (IDGo 81, 2026-10-22) against
     issuer metadata with only the jwt proof type and no key_attestations_required. Whether the wallet adds a key
     attestation when the issuer requires one was not tested. From 2028 CRED-REQ-4.6.1.2-03 applies again.

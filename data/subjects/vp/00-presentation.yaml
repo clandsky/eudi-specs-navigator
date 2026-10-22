@@ -15,6 +15,7 @@
 - { id: vp.authorization-request.scheme, kind: value, parent: vp.authorization-request, title: URL scheme that invokes the Wallet, location: uri, description: "Custom URL scheme that makes the device open a Wallet with the presentation request." }
 - { id: vp.authorization-request.client_id, kind: field, parent: vp.authorization-request, title: client_id, location: query, description: "Verifier identifier; must match client_id inside the Request Object." }
 - { id: vp.authorization-request.request_uri, kind: field, parent: vp.authorization-request, title: request_uri, location: query, description: "URL where the Wallet fetches the signed Request Object." }
+- { id: vp.authorization-request.request_uri_method, kind: field, parent: vp.authorization-request, title: request_uri_method, location: query, description: "HTTP method the Wallet uses to fetch the Request Object: get or post." }
 - { id: vp.request-uri-fetch, kind: message, parent: vp, title: Request Object fetched from request_uri, endpoint: { method: GET, path: "/request/{id}", server: verifier } }
 - { id: vp.request-object.typ, kind: field, parent: vp.request-object, title: typ = oauth-authz-req+jwt, location: jwt-header, description: "Marks the JWT as a signed authorization request (oauth-authz-req+jwt)." }
 - { id: vp.request-object.x5c, kind: field, parent: vp.request-object, title: x5c = RP access certificate, location: jwt-header, description: "Certificate chain of the signing key, starting with the relying party's access certificate." }

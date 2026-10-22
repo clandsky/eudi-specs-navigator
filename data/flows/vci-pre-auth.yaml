@@ -7,34 +7,133 @@ variant: { grant: pre-authorized_code, device: cross }
 summary: >-
   The user is authenticated on the issuer's website and scans a QR code with the wallet on a second device. The offer
   carries a pre-authorized code; a transaction code sent on a separate channel can bind it to the user. By the binding
-  rules the token request still carries the WIA (CIR TR-WIA-3 does not depend on the grant). The example messages are
-  recorded from a d-you issuance (IDGo 81, 2026-10-22): no transaction code, no WIA and no key attestation, encrypted
-  Credential Request and Response, no notification endpoint.
+  rules the token request still carries the WIA (CIR TR-WIA-3 does not depend on the grant). With d-you in the lens the
+  steps show the messages recorded from a d-you issuance (IDGo 81, 2026-10-22): no transaction code, no WIA and no key
+  attestation, encrypted Credential Request and Response, no notification endpoint.
 participants:
   - { id: wp, label: Wallet Provider, role: wallet-provider }
   - { id: wallet, label: Wallet Unit, role: wallet }
   - { id: as, label: Authorization Server, role: as }
   - { id: issuer, label: Credential Issuer, role: issuer }
 steps:
-  - { id: provision, from: wp, to: wallet, kind: internal, label: Wallet Instance Attestation, subject: vci.provisioning, example: vci-wia, tags: [WIA], note: The recorded d-you run sent no WIA in this flow. }
-  - { id: offer, from: issuer, to: wallet, kind: redirect, label: QR code with credential_offer_uri, subject: vci.offer, example: vci-offer-preauth, tags: ["openid-credential-offer://", by reference] }
-  - { id: offer-fetch, from: wallet, to: issuer, kind: request, label: GET credential_offer_uri, subject: vci.offer-fetch, example: vci-offer-fetch, tags: [pre-authorized_code] }
-  - { id: tx-code, from: issuer, to: wallet, kind: internal, label: "Transaction Code (SMS, e-mail)", subject: vci.tx-code-delivery, note: Only when the offer carries tx_code; the user types the code into the wallet. The recorded d-you run had none. }
-  - { id: metadata, from: wallet, to: issuer, kind: request, label: GET /.well-known/openid-credential-issuer, subject: vci.metadata, example: vci-issuer-metadata-preauth, tags: [signed, Accept application/jwt] }
+  - id: provision
+    from: wp
+    to: wallet
+    kind: internal
+    label: Wallet Instance Attestation
+    subject: vci.provisioning
+    example: vci-wia
+    tags: [WIA]
+    golive: { note: The recorded d-you run sent no WIA in this flow. }
+  - id: offer
+    from: issuer
+    to: wallet
+    kind: redirect
+    label: QR code with credential_offer_uri
+    subject: vci.offer
+    example: vci-offer-preauth
+    tags: ["eu-eaa-offer://", by reference]
+    golive: { example: vci-offer-preauth-dyou, tags: ["openid-credential-offer://", by reference] }
+  - id: offer-fetch
+    from: wallet
+    to: issuer
+    kind: request
+    label: GET credential_offer_uri
+    subject: vci.offer-fetch
+    example: vci-offer-fetch
+    tags: [pre-authorized_code, tx_code]
+    golive: { example: vci-offer-fetch-dyou, tags: [pre-authorized_code] }
+  - id: tx-code
+    from: issuer
+    to: wallet
+    kind: internal
+    label: "Transaction Code (SMS, e-mail)"
+    subject: vci.tx-code-delivery
+    note: Only when the offer carries tx_code; the user types the code into the wallet.
+    golive: { note: Only when the offer carries tx_code. The recorded d-you run had none. }
+  - id: metadata
+    from: wallet
+    to: issuer
+    kind: request
+    label: GET /.well-known/openid-credential-issuer
+    subject: vci.metadata
+    example: vci-issuer-metadata
+    tags: [signed]
+    golive: { example: vci-issuer-metadata-preauth-dyou, tags: [signed, Accept application/jwt] }
   - { id: metadata-validate, from: wallet, to: wallet, kind: internal, label: "validate signed metadata (x5c)", subject: vci.wallet.validate-metadata }
-  - { id: as-metadata, from: wallet, to: as, kind: request, label: GET /.well-known/oauth-authorization-server, subject: vci.as-metadata, example: vci-as-metadata-preauth }
-  - { id: token, from: wallet, to: as, kind: request, label: POST /token (pre-authorized code), subject: vci.token-request, example: vci-token-request-preauth, tags: [DPoP, no WIA] }
+  - id: as-metadata
+    from: wallet
+    to: as
+    kind: request
+    label: GET /.well-known/oauth-authorization-server
+    subject: vci.as-metadata
+    example: vci-as-metadata
+    golive: { example: vci-as-metadata-preauth-dyou }
+  - id: token
+    from: wallet
+    to: as
+    kind: request
+    label: POST /token (pre-authorized code)
+    subject: vci.token-request
+    example: vci-token-request-preauth
+    tags: [WIA + PoP, DPoP, tx_code]
+    golive: { example: vci-token-request-preauth-dyou, tags: [DPoP, no WIA] }
   - { id: token-validate, from: as, to: as, kind: internal, label: validate token request, subject: vci.as.validate-token-request }
   - { id: token-validate-wia, parent: token-validate, from: as, to: as, kind: internal, label: verify WIA, subject: vci.wia.verification }
   - { id: token-validate-pop, parent: token-validate, from: as, to: as, kind: internal, label: verify WIA PoP, subject: vci.wia-pop.verification }
   - { id: token-validate-dpop, parent: token-validate, from: as, to: as, kind: internal, label: verify DPoP proof, subject: vci.dpop-proof.verification }
   - { id: token-validate-preauth, parent: token-validate, from: as, to: as, kind: internal, label: pre-authorized_code + tx_code, subject: vci.as.check-pre-authorized-code }
-  - { id: token-response, from: as, to: wallet, kind: response, label: DPoP access token, subject: vci.token-response, example: vci-token-response-preauth }
-  - { id: nonce, from: wallet, to: issuer, kind: request, label: POST /nonce, subject: vci.nonce-request, example: vci-nonce-request-preauth }
-  - { id: nonce-response, from: issuer, to: wallet, kind: response, label: c_nonce, subject: vci.nonce-response, example: vci-nonce-response-preauth }
-  - { id: ka-request, from: wallet, to: wp, kind: request, label: request key attestation (c_nonce), subject: vci.ka-request, note: Wallet-to-Wallet-Provider interface; not standardised by OpenID4VCI. Not performed in the recorded d-you run. }
-  - { id: ka, from: wp, to: wallet, kind: response, label: key attestation, subject: vci.ka-request, example: vci-key-attestation, tags: [nonce, attested_keys] }
-  - { id: credential, from: wallet, to: issuer, kind: request, label: POST /credential, subject: vci.credential-request, example: vci-credential-request-preauth, tags: [JWE, DPoP, proofs.jwt] }
+  - id: token-response
+    from: as
+    to: wallet
+    kind: response
+    label: DPoP access token
+    subject: vci.token-response
+    example: vci-token-response
+    golive: { example: vci-token-response-preauth-dyou }
+  - id: nonce
+    from: wallet
+    to: issuer
+    kind: request
+    label: POST /nonce
+    subject: vci.nonce-request
+    example: vci-nonce-request
+    golive: { example: vci-nonce-request-preauth-dyou }
+  - id: nonce-response
+    from: issuer
+    to: wallet
+    kind: response
+    label: c_nonce
+    subject: vci.nonce-response
+    example: vci-nonce-response
+    tags: [DPoP-Nonce]
+    golive: { example: vci-nonce-response-preauth-dyou, tags: [] }
+  - id: ka-request
+    from: wallet
+    to: wp
+    kind: request
+    label: request key attestation (c_nonce)
+    subject: vci.ka-request
+    note: Wallet-to-Wallet-Provider interface; not standardised by OpenID4VCI.
+    golive: { tags: [not performed], note: Wallet-to-Wallet-Provider interface; not standardised by OpenID4VCI. Not performed in the recorded d-you run. }
+  - id: ka
+    from: wp
+    to: wallet
+    kind: response
+    label: key attestation
+    subject: vci.ka-request
+    example: vci-key-attestation
+    tags: [nonce, attested_keys]
+    golive: { tags: [not sent] }
+  - id: credential
+    from: wallet
+    to: issuer
+    kind: request
+    label: POST /credential
+    subject: vci.credential-request
+    example: vci-credential-request
+    tags: [DPoP + nonce, proofs.jwt + KA]
+    golive: { example: vci-credential-request-preauth-dyou, tags: [JWE, DPoP, proofs.jwt] }
   - { id: credential-validate, from: issuer, to: issuer, kind: internal, label: validate credential request, subject: vci.issuer.validate-credential-request }
   - { id: credential-validate-token, parent: credential-validate, from: issuer, to: issuer, kind: internal, label: "access token + DPoP (ath, jkt)", subject: vci.issuer.check-access-token }
   - { id: credential-validate-config, parent: credential-validate, from: issuer, to: issuer, kind: internal, label: credential configuration + proofs, subject: vci.issuer.check-credential-configuration }
@@ -43,6 +142,21 @@ steps:
   - { id: issue, from: issuer, to: issuer, kind: internal, label: create and sign credentials, subject: vci.issuer.issue-credentials }
   - { id: issue-per-key, parent: issue, from: issuer, to: issuer, kind: internal, label: one credential per attested key, subject: vci.credential-response.one-per-key }
   - { id: issue-sign, parent: issue, from: issuer, to: issuer, kind: internal, label: sign SD-JWT VC (x5c), subject: vci.issuer.sign-credential }
-  - { id: credential-response, from: issuer, to: wallet, kind: response, label: credentials, subject: vci.credential-response, example: vci-credential-response-preauth, tags: [JWE] }
-  - { id: notification, from: wallet, to: issuer, kind: request, label: POST /notification, subject: vci.notification-request, example: vci-notification-request, tags: [DPoP], note: The recorded d-you issuer offered no notification endpoint. }
+  - id: credential-response
+    from: issuer
+    to: wallet
+    kind: response
+    label: credentials
+    subject: vci.credential-response
+    example: vci-credential-response
+    golive: { example: vci-credential-response-preauth-dyou, tags: [JWE] }
+  - id: notification
+    from: wallet
+    to: issuer
+    kind: request
+    label: POST /notification
+    subject: vci.notification-request
+    example: vci-notification-request
+    tags: [DPoP]
+    golive: { tags: [not offered], note: The recorded d-you issuer offered no notification endpoint. }
   - { id: notification-response, from: issuer, to: wallet, kind: response, label: "204", subject: vci.notification-response }

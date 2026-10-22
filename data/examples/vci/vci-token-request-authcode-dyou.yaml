@@ -1,0 +1,32 @@
+id: vci-token-request-authcode-dyou
+title: Token Request (authorization code) with PKCE and DPoP, without client attestation
+subject: vci.token-request
+kind: http-request
+note: >-
+  Shape recorded from a d-you issuance in the authorization code flow (IDGo 81, 2026-10-22, login at the authorization endpoint): no OAuth-Client-Attestation or -PoP header; client_id as form parameter. The DPoP key is the one of the PAR.
+http:
+  method: POST
+  url: https://eaa.example.eu/openid4vci/token
+  headers:
+    Content-Type: application/x-www-form-urlencoded
+    DPoP: "{{jwt:dpop}}"
+  body:
+    type: form
+    value:
+      redirect_uri: "org.sprind.wallet.sandbox:/authorization"
+      code_verifier: QnswHps2QClCmZD4BBI5VIfuDEau_7bxfWtAgxx6YfT
+      client_id: cbc61b45-907a-4c65-8467-3194d8af12ab
+      grant_type: authorization_code
+      code: JiJ61kJKkyxbd8ELhCnKmU-80e33Mg0-kHh64vWZh1M
+jwts:
+  dpop:
+    key: wallet-dpop
+    header: { alg: ES256, jwk: { $jwk: wallet-dpop, alg: ES256, kid: dpop-e13a2796c5b2f6ad, use: sig }, typ: dpop+jwt }
+    payload: { htm: POST, jti: Ra60MYuw8uRA9oDMqH1k, htu: https://eaa.example.eu/openid4vci/token, iat: 1792681338 }
+annotations:
+  /http/headers/DPoP: vci.token-request.dpop
+  /http/body/redirect_uri: vci.token-request.redirect_uri
+  /http/body/code_verifier: vci.token-request.code_verifier
+  /http/body/client_id: vci.token-request.client_id
+  /http/body/grant_type: vci.token-request.grant_type
+  /http/body/code: vci.token-request.code

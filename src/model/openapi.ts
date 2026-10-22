@@ -6,6 +6,7 @@ import { stringify } from 'yaml'
 import { annotationFor, escapeToken, viewOf, type ViewDocument } from './pointer'
 import { layerTable, levelLabel, resolve, type Ctx, type EffectiveRule } from './resolve'
 import type { Example, LayerId, Role } from './schema'
+import { stepAt } from './steps'
 
 type Json = Record<string, unknown>
 
@@ -201,9 +202,11 @@ export function buildOpenApi(ds: Dataset, opts: OpenApiOptions): Json {
     const step = flow.steps[idx]!
     const next = flow.steps.slice(idx + 1).find((s) => s.kind !== 'internal')
     const respStep = next && next.from === step.to && (next.kind === 'response' || next.kind === 'redirect') ? next : undefined
-    const reqEx = step.example ? ds.examples.find((e) => e.id === step.example) : undefined
-    const resEx =
-      (reqEx?.kind === 'http-response' ? reqEx : undefined) ?? (respStep?.example ? ds.examples.find((e) => e.id === respStep.example) : undefined)
+    // The examples as seen through the exported layers: with go-live on, the d-you recordings.
+    const reqId = stepAt(step, opts.layers).example
+    const respId = respStep ? stepAt(respStep, opts.layers).example : undefined
+    const reqEx = reqId ? ds.examples.find((e) => e.id === reqId) : undefined
+    const resEx = (reqEx?.kind === 'http-response' ? reqEx : undefined) ?? (respId ? ds.examples.find((e) => e.id === respId) : undefined)
     const serverRole = (flow.participants.find((p) => p.id === step.to)?.role ?? 'verifier') as Role
     return { flow, step, respStep, reqEx, resEx, serverRole, variant: flow.variant as Partial<Ctx> }
   }

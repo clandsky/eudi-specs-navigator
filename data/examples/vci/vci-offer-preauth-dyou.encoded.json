@@ -1,0 +1,9 @@
+{
+  "id": "vci-offer-preauth-dyou",
+  "http": {
+    "url": "openid-credential-offer://?credential_offer_uri=https%3A%2F%2Feaa.example.eu%2Fopenid4vci%2Foffer%2FERYQqTlprJvVveIFniGGUQ",
+    "headers": {}
+  },
+  "jwts": {},
+  "inputHash": "6e8ba4eb0e6518f8"
+}

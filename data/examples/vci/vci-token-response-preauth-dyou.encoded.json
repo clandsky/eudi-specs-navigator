@@ -1,0 +1,21 @@
+{
+  "id": "vci-token-response-preauth-dyou",
+  "http": {
+    "status": 200,
+    "headers": {
+      "Cache-Control": "no-store",
+      "Pragma": "no-cache",
+      "Content-Type": "application/json"
+    },
+    "body": {
+      "type": "json",
+      "value": {
+        "access_token": "z6aa0Y2lPpXPZaWWbUVI5ld5uJCEeyRf2iBLd0iuXQE",
+        "token_type": "DPoP",
+        "expires_in": 300
+      }
+    }
+  },
+  "jwts": {},
+  "inputHash": "7d89fbd1464eb87c"
+}

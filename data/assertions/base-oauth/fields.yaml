@@ -327,3 +327,36 @@
   quote: "If the Authorization Server offers a challenge endpoint, the Client MUST retrieve a challenge and MUST use this
     challenge in the OAuth-Attestation-PoP as defined in Section 5.2."
   verified: source-checked
+- id: rfc9449/10.1/par-dpop
+  subject: vci.par-request.dpop
+  spec: rfc-9449
+  locator: { section: "10.1" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ as ] }
+  quote: "Alternatively, the DPoP header can be added to the PAR request. In this case, the authorization server MUST
+    check the provided DPoP proof JWT as defined in Section 4.3. It MUST further behave as if the contained public key's
+    thumbprint was provided using dpop_jkt, i.e., reject the subsequent token request unless a DPoP proof for the same
+    key is provided."
+  verified: source-checked
+- id: rfc9449/10.1/par-support
+  subject: vci.par-request.dpop
+  spec: rfc-9449
+  locator: { section: "10.1" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ as ] }
+  quote: "Both mechanisms MUST be supported by an authorization server that supports PAR and DPoP."
+  verified: source-checked
+- id: rfc9101/6.3/query-params
+  subject: vci.authorization-request.state
+  spec: rfc-9101
+  locator: { section: "6.3" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ as ] }
+  quote: "The authorization server MUST only use the parameters in the Request Object, even if the same parameter is
+    provided in the query parameter."
+  note: "RFC 9126 Section 4 builds the authorization request with the request_uri as defined in RFC 9101; the pushed
+    request takes the place of the Request Object, so a state repeated in the query is not used."
+  verified: source-checked

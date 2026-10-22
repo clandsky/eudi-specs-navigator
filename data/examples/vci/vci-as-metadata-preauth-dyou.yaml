@@ -1,4 +1,4 @@
-id: vci-as-metadata-preauth
+id: vci-as-metadata-preauth-dyou
 title: Authorization Server metadata for the pre-authorized code grant only (RFC 8414)
 subject: vci.as-metadata
 kind: http-response

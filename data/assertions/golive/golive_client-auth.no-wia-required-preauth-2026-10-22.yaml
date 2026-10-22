@@ -15,4 +15,4 @@
   reference: d-you wallet traffic, pre-authorized code flow (recorded 2026-10-22)
   note: >-
     An Authorization Server that requires the WIA cannot issue to the d-you wallet in this flow, because the wallet
-    sends none. Proven for the pre-authorized code flow only.
+    sends none. The authorization code flow has its own entry (recorded the same day).

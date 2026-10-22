@@ -1,4 +1,4 @@
-id: vci-issuer-metadata-preauth
+id: vci-issuer-metadata-preauth-dyou
 title: Signed Credential Issuer metadata with request and response encryption (application/jwt)
 subject: vci.metadata
 kind: http-response

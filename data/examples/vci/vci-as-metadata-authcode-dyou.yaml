@@ -1,0 +1,38 @@
+id: vci-as-metadata-authcode-dyou
+title: Authorization Server metadata with PAR required and anonymous token endpoint (RFC 8414)
+subject: vci.as-metadata
+kind: http-response
+note: >-
+  Shape recorded from a d-you issuance in the authorization code flow (IDGo 81, 2026-10-22, login at the authorization endpoint). The Credential Issuer is its own Authorization Server. It supports both grants, requires PAR, announces the iss
+  parameter (RFC 9207) and no client authentication ("none"), because the Wallet sends no WIA.
+http:
+  status: 200
+  headers: { Content-Type: application/json }
+  body:
+    type: json
+    value:
+      issuer: https://eaa.example.eu
+      authorization_endpoint: https://eaa.example.eu/openid4vci/authorize
+      token_endpoint: https://eaa.example.eu/openid4vci/token
+      pushed_authorization_request_endpoint: https://eaa.example.eu/openid4vci/par
+      require_pushed_authorization_requests: true
+      response_types_supported: [code]
+      grant_types_supported: [authorization_code, "urn:ietf:params:oauth:grant-type:pre-authorized_code"]
+      code_challenge_methods_supported: [S256]
+      authorization_response_iss_parameter_supported: true
+      token_endpoint_auth_methods_supported: [none]
+      pre-authorized_grant_anonymous_access_supported: true
+      dpop_signing_alg_values_supported: [ES256]
+annotations:
+  /http/body/issuer: vci.as-metadata.issuer
+  /http/body/authorization_endpoint: vci.as-metadata.authorization_endpoint
+  /http/body/token_endpoint: vci.as-metadata.token_endpoint
+  /http/body/pushed_authorization_request_endpoint: vci.as-metadata.pushed_authorization_request_endpoint
+  /http/body/require_pushed_authorization_requests: vci.as-metadata.require_pushed_authorization_requests
+  /http/body/response_types_supported: vci.as-metadata.response_types_supported
+  /http/body/grant_types_supported: vci.as-metadata.grant_types_supported
+  /http/body/code_challenge_methods_supported: vci.as-metadata.code_challenge_methods_supported
+  /http/body/authorization_response_iss_parameter_supported: vci.as-metadata.authorization_response_iss_parameter_supported
+  /http/body/token_endpoint_auth_methods_supported: vci.as-metadata.token_endpoint_auth_methods_supported
+  /http/body/pre-authorized_grant_anonymous_access_supported: vci.as-metadata.pre-authorized_grant_anonymous_access_supported
+  /http/body/dpop_signing_alg_values_supported: vci.as-metadata.dpop_signing_alg_values_supported

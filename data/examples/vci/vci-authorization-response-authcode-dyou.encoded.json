@@ -1,0 +1,13 @@
+{
+  "id": "vci-authorization-response-authcode-dyou",
+  "http": {
+    "url": "org.sprind.wallet.sandbox:/authorization?code=JiJ61kJKkyxbd8ELhCnKmU-80e33Mg0-kHh64vWZh1M&state=LG1yt8t0gdL0VmsJlgfWqB_d9XWJDyXd&iss=https%3A%2F%2Feaa.example.eu",
+    "status": 302,
+    "headers": {
+      "Location": "org.sprind.wallet.sandbox:/authorization?code=JiJ61kJKkyxbd8ELhCnKmU-80e33Mg0-kHh64vWZh1M&state=LG1yt8t0gdL0VmsJlgfWqB_d9XWJDyXd&iss=https%3A%2F%2Feaa.example.eu",
+      "Cache-Control": "no-store"
+    }
+  },
+  "jwts": {},
+  "inputHash": "e310841ba6070df6"
+}

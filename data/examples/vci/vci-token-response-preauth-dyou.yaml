@@ -1,4 +1,4 @@
-id: vci-token-response-preauth
+id: vci-token-response-preauth-dyou
 title: Token Response with a DPoP-bound access token, no refresh token
 subject: vci.token-response
 kind: http-response

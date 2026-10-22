@@ -225,9 +225,9 @@
   relation: defines
   level: info
   applies_to: { grant: [ authorization_code ] }
-  quote: "The Authorization Server and the User Agent may exchange any further messages between the steps if required
-    by the Authorization Server to authenticate the End-User. For example, the Authorization Server may request
-    Credential presentation as a means to authenticate or identify the End-User during the issuance flow"
+  quote: "The Authorization Server and the User Agent may exchange any further messages between the steps if required by
+    the Authorization Server to authenticate the End-User. For example, the Authorization Server may request Credential
+    presentation as a means to authenticate or identify the End-User during the issuance flow"
   note: "Informative note; the flow it points to is Appendix H.5."
   verified: source-checked
 - id: oid4vci/F.1/ka-nonce-step
@@ -475,4 +475,27 @@
   quote: "For the Pre-Authorized Code Grant Type, authentication of the Client is OPTIONAL, as described in Section 3.2.1
     of OAuth 2.0 [RFC6749], and, consequently, the client_id parameter is only needed when a form of Client
     Authentication that relies on this parameter is used."
+  verified: source-checked
+- id: oid4vci/F.1/iss
+  subject: vci.proof-jwt.iss
+  spec: openid4vci-1.0
+  locator: { section: "F.1" }
+  relation: defines
+  level: may
+  applies_to: { role: [ wallet ] }
+  quote: "iss: OPTIONAL (string). The value of this claim MUST be the client_id of the Client making the Credential
+    request. This claim MUST be omitted if the access token authorizing the issuance call was obtained from a
+    Pre-Authorized Code Flow through anonymous access to the token endpoint."
+  verified: source-checked
+- id: oid4vci/5.1.2/resource
+  subject: vci.par-request.resource
+  spec: openid4vci-1.0
+  locator: { section: "5.1.2" }
+  relation: defines
+  level: should
+  applies_to: { role: [ wallet ] }
+  condition: When the Credential Issuer metadata contains authorization_servers.
+  quote: "If the Credential Issuer metadata contains an authorization_servers property, it is RECOMMENDED to use a
+    resource parameter [RFC8707] whose value is the Credential Issuer's identifier value to allow the Authorization
+    Server to differentiate Credential Issuers."
   verified: source-checked

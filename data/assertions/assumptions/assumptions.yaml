@@ -181,3 +181,23 @@
   note: >-
     The definition says JWK Set, while the specification's own example shows a bare array. The d-you wallet works with
     the object form.
+# Decisions taken while building the same issuer for the authorization code flow (login and nested PID presentation,
+# 2026-10-22), where the sources were unclear or silent.
+- id: assumption/haip-4.4.1-client_id-without-wia
+  subject: vci.par-request.client_id
+  spec: assumptions
+  locator: { at: "Reading of HAIP 1.0 Section 4.4.1" }
+  relation: adapts
+  interpretation: true
+  level: may
+  applies_to: { role: [ wallet, as ] }
+  target: haip/4.4.1/client_id
+  quote: >-
+    Without a client attestation the rule does not apply ("if applicable"): client_id is the Wallet's own identifier,
+    which the authorization server takes as given and only matches between PAR, authorization request and token
+    request.
+  decided_by: project owner (2026-10-22)
+  note: >-
+    The d-you wallet sends a UUID (the same in both grants and both recorded authorization code runs) and no WIA to
+    match it against. Open: whether the UUID identifies the installation or the wallet solution, and whether issuers
+    may rely on it at all.

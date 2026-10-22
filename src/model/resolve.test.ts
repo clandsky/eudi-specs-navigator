@@ -205,13 +205,16 @@ describe('assumptions and resolved interpretations', () => {
 })
 
 describe('recorded d-you issuance (pre-authorized code flow)', () => {
-  it('the WIA on the token request becomes a MAY in the pre-authorized code flow only, ETSI outranked', () => {
+  it('the WIA on the token request becomes a MAY in each grant by its own recording, ETSI outranked', () => {
     const stack = stackOf('vci.token-request.oauth-client-attestation')
     const pre = resolve(stack, ctx({ grant: 'pre-authorized_code', asOf: '2026-10-22' }), table, specLayer)
     expect(pre.level).toBe('may')
     expect(ids(pre.decidedBy)).toEqual(['golive/token-request.no-wia-preauth-2026-10-22'])
     expect(ids(pre.overruled)).toContain('etsi-472-3/TOKEN-REQ-4.5.1-01')
     const code = resolve(stack, ctx({ grant: 'authorization_code', asOf: '2026-10-22' }), table, specLayer)
-    expect(ids(code.decidedBy)).toEqual(['cir/TR-WIA-3/token'])
+    expect(code.level).toBe('may')
+    expect(ids(code.decidedBy)).toEqual(['golive/token-request.no-wia-authcode-2026-10-22'])
+    const before = resolve(stack, ctx({ grant: 'authorization_code', asOf: '2026-10-21' }), table, specLayer)
+    expect(ids(before.decidedBy)).toEqual(['cir/TR-WIA-3/token'])
   })
 })

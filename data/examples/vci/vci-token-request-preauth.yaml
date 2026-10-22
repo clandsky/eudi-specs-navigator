@@ -1,29 +1,35 @@
 id: vci-token-request-preauth
-title: Token Request (pre-authorized code) with DPoP, without client attestation
+title: Token Request (pre-authorized code) with WIA, PoP and DPoP
 subject: vci.token-request
 kind: http-request
-note: >-
-  Shape recorded from a d-you issuance (IDGo 81, 2026-10-22): no OAuth-Client-Attestation or -PoP headers and no
-  tx_code; the Wallet still sends a client_id (a UUID) as form parameter.
 http:
   method: POST
-  url: https://eaa.example.eu/openid4vci/token
+  url: https://eaa.example.eu/token
   headers:
     Content-Type: application/x-www-form-urlencoded
+    OAuth-Client-Attestation: "{{jwt:wia}}"
+    OAuth-Client-Attestation-PoP: "{{jwt:pop}}"
     DPoP: "{{jwt:dpop}}"
   body:
     type: form
     value:
       grant_type: "urn:ietf:params:oauth:grant-type:pre-authorized_code"
-      pre-authorized_code: kh_1vkpxLgHqvQwUYhZswmJ0ilAwuTE2kQb3K1nHVGE
-      client_id: cbc61b45-907a-4c65-8467-3194d8af12ab
+      pre-authorized_code: oaKazRN8I0IbtZ0C7JuMn5
+      tx_code: "493536"
 jwts:
+  wia: { use: vci-wia/wia }
+  pop:
+    key: wallet-instance
+    header: { typ: oauth-client-attestation-pop+jwt, alg: ES256 }
+    payload: { iss: https://wallet-provider.example.eu/wallet-solution/eudi-wallet, aud: https://eaa.example.eu, jti: 6f1c2b7e-token-0003, iat: 1792072860 }
   dpop:
     key: wallet-dpop
-    header: { alg: ES256, jwk: { $jwk: wallet-dpop, alg: ES256, kid: dpop-e13a2796c5b2f6ad, use: sig }, typ: dpop+jwt }
-    payload: { htu: https://eaa.example.eu/openid4vci/token, htm: POST, jti: 8LxFdIBzviqbHIPES7La, iat: 1792676865 }
+    header: { typ: dpop+jwt, alg: ES256, jwk: "{{jwk:wallet-dpop}}" }
+    payload: { jti: dpop-token-0002, htm: POST, htu: https://eaa.example.eu/token, iat: 1792072860 }
 annotations:
+  /http/headers/OAuth-Client-Attestation: vci.token-request.oauth-client-attestation
+  /http/headers/OAuth-Client-Attestation-PoP: vci.token-request.oauth-client-attestation-pop
   /http/headers/DPoP: vci.token-request.dpop
   /http/body/grant_type: vci.token-request.grant_type
   /http/body/pre-authorized_code: vci.token-request.pre-authorized_code
-  /http/body/client_id: vci.token-request.client_id
+  /http/body/tx_code: vci.token-request.tx_code
