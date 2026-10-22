@@ -80,8 +80,23 @@ topics:
     summary: >-
       How the issuer authenticates the user before it issues: in the authorization code flow (a login, or a PID
       presentation nested into issuance), beforehand in the pre-authorized code flow, or not at all.
-    subtopics: [Pre Auth Flow, Auth Code Flow, No Auth, Nested Flow, Interactive Endpoint]
-    flows: [vci-auth-code-par, vci-pre-auth]
+    subtopics:
+      - Pre Auth Flow
+      - Auth Code Flow
+      - No Auth
+      - id: isarch-auth-mechanism.nested-flow
+        title: Nested Flow
+        summary: >-
+          The user logs in with the PID. In the authorization code flow the authorization server answers GET /authorize
+          not with a login form but with an OpenID4VP request: it acts as a Verifier, the same wallet presents the PID,
+          and the browser comes back into the authorization session. The example asks only for given_name and
+          family_name (ERIKA MUSTERMANN), which identify the user before the code is issued.
+        flows: [vci-nested-presentation]
+        subjects: [vci.user-authentication.pid-presentation, vci.as.identify-user]
+        specs: [openid4vci-1.0, openid4vp-1.0]
+        related: [rparch-basics]
+      - Interactive Endpoint
+    flows: [vci-auth-code-par, vci-nested-presentation, vci-pre-auth]
     subjects: [vci.user-authentication, vci.tx-code-delivery]
     links:
       - title: OpenID for Verifiable Credential Issuance 1.0

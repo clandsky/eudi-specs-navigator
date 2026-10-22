@@ -28,6 +28,8 @@ function Content() {
       return import.meta.env.DEV ? <ReviewPage /> : <NotFound />
     case 'endpoints':
       return <HomeView focus="endpoints" />
+    case 'learn':
+    // Former address of the learning roadmap, kept so old links still work.
     case 'educate':
       return <EducateView />
     case 'wallets':

@@ -19,5 +19,6 @@ keys:
   - id: verifier-access     # RP access certificate, signs the Request Object (x509_hash client identifier)
     cert: { cn: "TEST Relying Party Access Certificate", issuer: access-root }
   - id: verifier-enc        # ephemeral response-encryption key published in client_metadata.jwks
+  - id: issuer-enc          # the authorization server's response-encryption key when it asks for the PID (nested presentation)
   - id: pid-issuer          # signs the PID SD-JWT VC that the wallet presents
     cert: { cn: "TEST PID Provider Signer", issuer: access-root }

@@ -1,0 +1,89 @@
+id: vci-nested-presentation
+title: Issuance — authorization code flow with a nested PID presentation
+role: issuer
+order: 2
+subject: vci.flow.nested-presentation
+variant: { grant: authorization_code, device: same, transport: redirect, format: sd-jwt-vc }
+summary: >-
+  The authorization code flow with PAR, but the authorization server authenticates the user with the PID instead of a
+  login form. At GET /authorize it acts as an OpenID4VP Verifier and opens an eu-eaap:// link; the same Wallet presents
+  the PID (in this example given_name and family_name), the redirect_uri brings the browser back into the
+  authorization session, and the authorization server identifies the user by the two claims before it returns the code.
+  Token, nonce, key attestation and credential steps are as in the plain authorization code flow (OpenID4VCI §3.4,
+  Appendix H.5).
+participants:
+  - { id: wp, label: Wallet Provider, role: wallet-provider }
+  - { id: wallet, label: Wallet Unit, role: wallet }
+  - { id: as, label: Authorization Server, role: as }
+  - { id: issuer, label: Credential Issuer, role: issuer }
+steps:
+  - id: provision
+    from: wp
+    to: wallet
+    kind: internal
+    label: Wallet Instance Attestation
+    subject: vci.provisioning
+    example: vci-wia
+    tags: [WIA]
+    note: Before issuance; the Wallet Provider keeps the wallet supplied with WIAs (CIR TR-WIA-2.2).
+  - { id: offer, from: issuer, to: wallet, kind: redirect, label: Credential Offer, subject: vci.offer, example: vci-offer, tags: ["eu-eaa-offer://"] }
+  - { id: metadata, from: wallet, to: issuer, kind: request, label: GET /.well-known/openid-credential-issuer, subject: vci.metadata, example: vci-issuer-metadata, tags: [signed] }
+  - { id: metadata-validate, from: wallet, to: wallet, kind: internal, label: "validate signed metadata (x5c)", subject: vci.wallet.validate-metadata }
+  - { id: as-metadata, from: wallet, to: as, kind: request, label: GET /.well-known/oauth-authorization-server, subject: vci.as-metadata, example: vci-as-metadata }
+  - { id: par, from: wallet, to: as, kind: request, label: POST /par, subject: vci.par-request, example: vci-par-request, tags: [WIA + PoP, PKCE] }
+  - { id: par-validate, from: as, to: as, kind: internal, label: validate PAR request, subject: vci.as.validate-par-request }
+  - { id: par-validate-wia, parent: par-validate, from: as, to: as, kind: internal, label: verify WIA, subject: vci.wia.verification }
+  - { id: par-validate-pop, parent: par-validate, from: as, to: as, kind: internal, label: verify WIA PoP, subject: vci.wia-pop.verification }
+  - { id: par-validate-params, parent: par-validate, from: as, to: as, kind: internal, label: "PKCE, scope, redirect_uri", subject: vci.as.check-par-request }
+  - { id: par-response, from: as, to: wallet, kind: response, label: "201 request_uri", subject: vci.par-response, example: vci-par-response }
+  - { id: authorize, from: wallet, to: as, kind: redirect, label: GET /authorize (via browser), subject: vci.authorization-request, example: vci-authorization-request, tags: [client_id, request_uri] }
+  - { id: user-auth, from: as, to: as, kind: internal, label: "PID login: prepare OpenID4VP request", subject: vci.user-authentication.pid-presentation, note: "OpenID4VCI §3.4: the authorization server may exchange further messages in the front channel to authenticate the user, e.g. a Credential presentation. Here it is the Verifier, signing with the EAA provider's access certificate." }
+  - { id: user-auth-nonce, parent: user-auth, from: as, to: as, kind: internal, label: generate nonce, subject: vp.verifier.generate-nonce }
+  - { id: user-auth-enc-key, parent: user-auth, from: as, to: as, kind: internal, label: ephemeral encryption key, subject: vp.verifier.ephemeral-enc-key }
+  - { id: user-auth-sign, parent: user-auth, from: as, to: as, kind: internal, label: sign Request Object, subject: vp.verifier.sign-request-object }
+  - { id: vp-invoke, from: as, to: wallet, kind: redirect, label: "open eu-eaap:// link (via browser)", subject: vp.authorization-request, example: vci-nested-vp-authorization-request, tags: [client_id, request_uri] }
+  - { id: vp-fetch, from: wallet, to: as, kind: request, label: GET request_uri, subject: vp.request-uri-fetch, example: vci-nested-vp-request-uri-get }
+  - { id: vp-request-object, from: as, to: wallet, kind: response, label: signed Request Object, subject: vp.request-object, example: vci-nested-vp-request-object, tags: ["DCQL: given_name, family_name"] }
+  - { id: vp-process, from: wallet, to: wallet, kind: internal, label: "validate request, user consent", subject: vp.wallet.process-request }
+  - { id: vp-process-signature, parent: vp-process, from: wallet, to: wallet, kind: internal, label: verify signature + access cert, subject: vp.wallet.verify-request-signature }
+  - { id: vp-process-registration, parent: vp-process, from: wallet, to: wallet, kind: internal, label: validate registration cert, subject: vp.wallet.validate-registration-cert }
+  - { id: vp-process-overasking, parent: vp-process, from: wallet, to: wallet, kind: internal, label: over-asking check, subject: vp.wallet.overasking }
+  - { id: vp-process-encrypt, parent: vp-process, from: wallet, to: wallet, kind: internal, label: "build KB-JWT, encrypt", subject: vp.authorization-response.encryption }
+  - { id: vp-response, from: wallet, to: as, kind: request, label: POST response_uri (direct_post.jwt), subject: vp.response-post, example: vci-nested-vp-response-post, tags: [JWE, PID SD-JWT VC + KB-JWT] }
+  - { id: vp-validate, from: as, to: as, kind: internal, label: validate PID presentation, subject: vp.verifier.validate-response }
+  - { id: vp-validate-decrypt, parent: vp-validate, from: as, to: as, kind: internal, label: decrypt JWE, subject: vp.verifier.decrypt-response }
+  - { id: vp-validate-state, parent: vp-validate, from: as, to: as, kind: internal, label: match state, subject: vp.verifier.check-state }
+  - { id: vp-validate-vp-token, parent: vp-validate, from: as, to: as, kind: internal, label: vp_token vs DCQL, subject: vp.verifier.check-vp-token }
+  - { id: vp-validate-issuer, parent: vp-validate, from: as, to: as, kind: internal, label: PID issuer signature + x5c, subject: vp.verifier.verify-issuer-signature }
+  - { id: vp-validate-disclosures, parent: vp-validate, from: as, to: as, kind: internal, label: disclosures vs _sd, subject: vp.verifier.verify-disclosures }
+  - { id: vp-validate-kb, parent: vp-validate, from: as, to: as, kind: internal, label: "KB-JWT nonce, aud, sd_hash", subject: vp.verifier.verify-kb-jwt }
+  - { id: vp-validate-validity, parent: vp-validate, from: as, to: as, kind: internal, label: exp / validity, subject: vp.verifier.check-validity }
+  - { id: vp-validate-status, parent: vp-validate, from: as, to: as, kind: internal, label: status list, subject: vp.verifier.check-status }
+  - { id: vp-ack, from: as, to: wallet, kind: response, label: 200 redirect_uri, subject: vp.response-ack, example: vci-nested-vp-response-ack, tags: [response_code] }
+  - { id: vp-redirect-back, from: wallet, to: as, kind: redirect, label: open redirect_uri (back to /authorize), subject: vp.redirect-back }
+  - { id: identify, from: as, to: as, kind: internal, label: "identify user (given_name, family_name), consent", subject: vci.as.identify-user, tags: [ERIKA MUSTERMANN], note: "Application-specific: the session that returns with the response_code gets the verified claims; the authorization server identifies the user by them and asks for consent to the issuance." }
+  - { id: authz-response, from: as, to: wallet, kind: redirect, label: "302 code, iss", subject: vci.authorization-response, example: vci-authorization-response }
+  - { id: authz-validate, from: wallet, to: wallet, kind: internal, label: check state + iss, subject: vci.wallet.check-authorization-response }
+  - { id: token, from: wallet, to: as, kind: request, label: POST /token, subject: vci.token-request, example: vci-token-request, tags: [WIA + PoP, DPoP] }
+  - { id: token-validate, from: as, to: as, kind: internal, label: validate token request, subject: vci.as.validate-token-request }
+  - { id: token-validate-wia, parent: token-validate, from: as, to: as, kind: internal, label: verify WIA, subject: vci.wia.verification }
+  - { id: token-validate-pop, parent: token-validate, from: as, to: as, kind: internal, label: verify WIA PoP, subject: vci.wia-pop.verification }
+  - { id: token-validate-dpop, parent: token-validate, from: as, to: as, kind: internal, label: verify DPoP proof, subject: vci.dpop-proof.verification }
+  - { id: token-validate-code, parent: token-validate, from: as, to: as, kind: internal, label: code + code_verifier (PKCE), subject: vci.as.check-authorization-code }
+  - { id: token-response, from: as, to: wallet, kind: response, label: DPoP access token, subject: vci.token-response, example: vci-token-response }
+  - { id: nonce, from: wallet, to: issuer, kind: request, label: POST /nonce, subject: vci.nonce-request, example: vci-nonce-request }
+  - { id: nonce-response, from: issuer, to: wallet, kind: response, label: c_nonce, subject: vci.nonce-response, example: vci-nonce-response, tags: [DPoP-Nonce] }
+  - { id: ka-request, from: wallet, to: wp, kind: request, label: request key attestation (c_nonce), subject: vci.ka-request, note: Wallet-to-Wallet-Provider interface; not standardised by OpenID4VCI. }
+  - { id: ka, from: wp, to: wallet, kind: response, label: key attestation, subject: vci.ka-request, example: vci-key-attestation, tags: [nonce, attested_keys] }
+  - { id: credential, from: wallet, to: issuer, kind: request, label: POST /credential, subject: vci.credential-request, example: vci-credential-request, tags: [DPoP + nonce, proofs.jwt + KA] }
+  - { id: credential-validate, from: issuer, to: issuer, kind: internal, label: validate credential request, subject: vci.issuer.validate-credential-request }
+  - { id: credential-validate-token, parent: credential-validate, from: issuer, to: issuer, kind: internal, label: "access token + DPoP (ath, jkt)", subject: vci.issuer.check-access-token }
+  - { id: credential-validate-config, parent: credential-validate, from: issuer, to: issuer, kind: internal, label: credential configuration + proofs, subject: vci.issuer.check-credential-configuration }
+  - { id: credential-validate-ka, parent: credential-validate, from: issuer, to: issuer, kind: internal, label: verify key attestation, subject: vci.ka.verification }
+  - { id: credential-validate-proof, parent: credential-validate, from: issuer, to: issuer, kind: internal, label: "verify key proof (nonce, aud)", subject: vci.proof-jwt.verification }
+  - { id: issue, from: issuer, to: issuer, kind: internal, label: create and sign credentials, subject: vci.issuer.issue-credentials }
+  - { id: issue-per-key, parent: issue, from: issuer, to: issuer, kind: internal, label: one credential per attested key, subject: vci.credential-response.one-per-key }
+  - { id: issue-sign, parent: issue, from: issuer, to: issuer, kind: internal, label: sign SD-JWT VC (x5c), subject: vci.issuer.sign-credential }
+  - { id: credential-response, from: issuer, to: wallet, kind: response, label: credentials, subject: vci.credential-response, example: vci-credential-response }
+  - { id: notification, from: wallet, to: issuer, kind: request, label: POST /notification, subject: vci.notification-request, example: vci-notification-request, tags: [DPoP] }
+  - { id: notification-response, from: issuer, to: wallet, kind: response, label: "204", subject: vci.notification-response }

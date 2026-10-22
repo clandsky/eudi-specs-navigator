@@ -31,6 +31,11 @@ export function decodeJwt(compact: string): { header: Record<string, unknown>; p
   return { header: JSON.parse(b64urlDecode(h)), payload: JSON.parse(b64urlDecode(p)) }
 }
 
+/** The Disclosures of an SD-JWT (issuer JWT~d1~d2~…~[KB-JWT]), each decoded to [salt, claim name, value]. */
+export function decodeDisclosures(sdjwt: string): unknown[][] {
+  return sdjwt.split('~').slice(1, -1).map((d) => JSON.parse(b64urlDecode(d)) as unknown[])
+}
+
 function parseQuery(url: string): Record<string, unknown> | undefined {
   const i = url.indexOf('?')
   if (i < 0) return undefined

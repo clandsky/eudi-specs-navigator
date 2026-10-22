@@ -1,0 +1,11 @@
+id: vci-nested-vp-response-ack
+title: Response endpoint answer with redirect_uri back into the authorization session
+subject: vp.response-ack
+kind: http-response
+note: The redirect_uri leads the browser back to the authorization server's /authorize session, which then answers with the authorization code.
+http:
+  status: 200
+  headers: { Content-Type: application/json, Cache-Control: no-store }
+  body: { type: json, value: { redirect_uri: "https://eaa.example.eu/authorize/pid-done#response_code=7d1e0b4a93c2f58e6a1b2c3d4e5f6a7b" } }
+annotations:
+  /http/body/redirect_uri: vp.response-ack.redirect_uri

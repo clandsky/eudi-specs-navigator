@@ -208,3 +208,14 @@
     - { field: state, subject: vci.authorization-response.state, expect: "Equals the state the Wallet pushed in the PAR request. Mismatch: reject." }
     - { field: iss, subject: vci.authorization-response.iss, expect: "Equals, by simple string comparison, the issuer in the metadata of the authorization server the request was sent to, e.g. https://eaa.example.eu. Mismatch: reject and do not redeem the code." }
     - { field: code, subject: vci.authorization-response.code, expect: "Present; redeemed once, at the token endpoint of that same authorization server." }
+
+# Authorization server: nested PID presentation -----------------------------------------------------------------------
+- id: vci.as.identify-user
+  kind: step
+  parent: vci.user-authentication.pid-presentation
+  title: Authorization server identifies the user from the presented PID
+  description: "Application-specific. Once the presentation is validated, the authorization server takes the disclosed PID claims as the authenticated identity of the user, then gathers consent and answers the authorization request with a code."
+  checks:
+    - { field: response_code, subject: vp.result-fetch, expect: "The browser session that comes back from the Wallet hands in the response_code; only that session gets the result (OpenID4VP §13.3 reference design)." }
+    - { field: "given_name (PID)", expect: "From a disclosure that verified against _sd, e.g. ERIKA." }
+    - { field: "family_name (PID)", expect: "From a disclosure that verified against _sd, e.g. MUSTERMANN. Together with given_name it identifies the user for the issuance." }

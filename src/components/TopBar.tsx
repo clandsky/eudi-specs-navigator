@@ -81,9 +81,9 @@ const SECTIONS: Section[] = [
     icon: <path d="M2.5 4.5a1 1 0 0 1 1-1h9a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1h-9a1 1 0 0 1-1-1zM10 7.25h3.5v3H10a1.5 1.5 0 0 1 0-3z" />,
   },
   {
-    to: 'educate',
-    label: 'Educate',
-    match: ['educate'],
+    to: 'learn',
+    label: 'Learn',
+    match: ['learn', 'educate'],
     icon: <path d="M1.5 6 8 3l6.5 3L8 9zM4.5 7.6V11c1 .9 2.2 1.4 3.5 1.4s2.5-.5 3.5-1.4V7.6M14.5 6v4" />,
   },
 ]

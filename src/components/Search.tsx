@@ -41,7 +41,7 @@ function getIndex(): MiniSearch<Doc> {
           kind: 'topic' as const,
           title: y.title,
           text: y.summary ?? '',
-          link: `educate?topic=${y.id}`,
+          link: `learn?topic=${y.id}`,
           meta: y === x ? `${t.code}, ${t.title}` : `${t.code}, ${x.title}`,
         })),
       ),
@@ -59,13 +59,13 @@ function getIndex(): MiniSearch<Doc> {
 
 /** Links are built at render time so they keep the current role, date and lens. */
 const linkOf = (path: string) => {
-  const topic = /^educate\?topic=(.+)$/.exec(path)?.[1]
-  if (topic) return href(['educate'], { topic })
+  const topic = /^learn\?topic=(.+)$/.exec(path)?.[1]
+  if (topic) return href(['learn'], { topic })
   const i = path.indexOf('/')
   return href([path.slice(0, i), path.slice(i + 1)])
 }
 
-const KIND_LABEL: Record<Doc['kind'], string> = { subject: 'Field or message', assertion: 'Requirement', spec: 'Spec', flow: 'Flow', topic: 'Educate' }
+const KIND_LABEL: Record<Doc['kind'], string> = { subject: 'Field or message', assertion: 'Requirement', spec: 'Spec', flow: 'Flow', topic: 'Learn' }
 
 /** A lens button that opens the search field in its place; the field folds back when it loses focus. "/" opens it too. */
 export function Search() {

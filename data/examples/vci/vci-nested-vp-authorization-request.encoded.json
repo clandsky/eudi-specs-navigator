@@ -1,0 +1,9 @@
+{
+  "id": "vci-nested-vp-authorization-request",
+  "http": {
+    "url": "eu-eaap://?client_id=x509_hash:TZDRs_g9iTjfeHoCuvPCALk6GUQsGDO_oyDbfpBWVvo&request_uri=https%3A%2F%2Feaa.example.eu%2Fvp%2Frequest%2F5c2e",
+    "headers": {}
+  },
+  "jwts": {},
+  "inputHash": "182da1d93b3ff12e"
+}

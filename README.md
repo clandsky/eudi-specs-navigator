@@ -26,7 +26,7 @@ override it, and the effective rule as of a date**.
   are TypeScript declarations with fixed comment markers (levels per role, conditions, flows, exact rule wording, checks),
   compact enough for an agent's context; `*.examples.json` beside them hold the decoded example messages. Deterministic,
   so a git diff of the files is the change log. Not part of the web app; commit and push the files by hand.
-- **Educate**: a learning roadmap of the concepts each role needs, in clusters (general and ecosystem trust, then the
+- **Learn**: a learning roadmap of the concepts each role needs, in clusters (general and ecosystem trust, then the
   verifier or issuer path), with questions, reading and links into the flows and specs.
 
 Flows in v1: issuance with authorization code + PAR, pre-authorized code; presentation via redirect (same device and
@@ -43,7 +43,7 @@ readings of unclear rules, kept like comments. It exists only in the dev server 
 
 ```bash
 pnpm install
-pnpm dev        # dev server; also enables saving go-live compromises, assumptions, example and Educate edits
+pnpm dev        # dev server; also enables saving go-live compromises, assumptions, example and Learn edits
 pnpm test
 pnpm validate   # schema + cross-reference check of data/
 pnpm build      # validate + typecheck + static build + OpenAPI files in dist/

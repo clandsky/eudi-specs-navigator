@@ -1,0 +1,11 @@
+id: vci-nested-vp-authorization-request
+title: PID request by the authorization server (eu-eaap://)
+subject: vp.authorization-request
+kind: uri
+note: The authorization server answers GET /authorize with this link instead of a login form; the browser hands it to the Wallet on the same device.
+http:
+  url: "eu-eaap://?client_id={{x509hash:issuer-access}}&request_uri=https%3A%2F%2Feaa.example.eu%2Fvp%2Frequest%2F5c2e"
+annotations:
+  /http/url: vp.authorization-request.scheme
+  /http/query/client_id: vp.authorization-request.client_id
+  /http/query/request_uri: vp.authorization-request.request_uri
