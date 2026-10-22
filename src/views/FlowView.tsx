@@ -6,7 +6,7 @@ import { OverruleEditor, type EntryKind } from '../components/OverruleEditor'
 import { StackPanel } from '../components/StackPanel'
 import { SequenceDiagram } from '../diagram/SequenceDiagram'
 import { setParams, useRoute } from '../lib/router'
-import { ds, exampleById, flowById, subjectById } from '../lib/store'
+import { ds, exampleById, flowById, layerOf, subjectById } from '../lib/store'
 import type { Assertion } from '../model/schema'
 import { stepNumber } from '../model/steps'
 
@@ -102,12 +102,15 @@ export function FlowView({ flowId }: { flowId: string }) {
   )
 }
 
+/** Layers that hold at least one assertion; one without any (today ARF) would never show a bar. */
+const usedLayers = new Set(ds.assertions.map(layerOf))
+
 function Legend() {
   return (
     <div className="meta" style={{ display: 'grid', gap: 6, marginTop: 14 }}>
       <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap', alignItems: 'center' }}>
         {ds.layers
-          .filter((l) => l.rank !== null)
+          .filter((l) => l.rank !== null && usedLayers.has(l.id))
           .map((l) => (
             <span key={l.id} style={{ display: 'inline-flex', gap: 5, alignItems: 'center' }}>
               <LayerBadges layers={[l.id]} label={false} /> <LayerName id={l.id}>{l.label}</LayerName>
