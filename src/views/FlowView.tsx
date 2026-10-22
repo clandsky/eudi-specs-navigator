@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { LayerBadges, LayerName } from '../components/bits'
 import { CheckList, hasChecks } from '../components/CheckList'
 import { ObjectView } from '../components/ObjectView'
@@ -14,6 +14,14 @@ export function FlowView({ flowId }: { flowId: string }) {
   const flow = flowById.get(flowId)
   const { params } = useRoute()
   const [editing, setEditing] = useState<{ subjectId: string; kind: EntryKind; entry?: Assertion } | null>(null)
+  // A link to a step (e.g. from the endpoints list) shows that step in the diagram, not only its example. One frame
+  // later, so the shell's scroll-to-top on navigation has already run.
+  useEffect(() => {
+    const linked = params.get('step')
+    if (!linked) return
+    const id = requestAnimationFrame(() => document.querySelector(`[data-step="${linked}"]`)?.scrollIntoView({ block: 'center' }))
+    return () => cancelAnimationFrame(id)
+  }, [flowId])
   if (!flow) return <div className="page">Unknown flow “{flowId}”.</div>
 
   const step = flow.steps.find((s) => s.id === params.get('step')) ?? flow.steps[0]!
