@@ -286,6 +286,21 @@
   quote: "Digests of Disclosures for object properties are added to an array under the new key _sd in the object. The _sd
     key MUST refer to an array of strings, each string being a digest of a Disclosure or a decoy digest"
   verified: source-checked
+- id: rfc9901/4.2.1/disclosure
+  subject: sdjwt.disclosure
+  spec: rfc-9901
+  locator: { section: "4.2.1" }
+  relation: defines
+  level: shall
+  condition: For each claim that is to be made selectively disclosable.
+  applies_to: { role: [ issuer ] }
+  quote: >-
+    For each claim that is an object property and that is to be made selectively disclosable, the Issuer MUST create a
+    Disclosure as follows: … Create a JSON array of three elements in the following order: … A salt value. MUST be a
+    string. … The claim name, or key, as it would be used in a regular JWT payload. … The claim value, as it would be
+    used in a regular JWT payload. … base64url-encode the UTF-8 byte sequence of the JSON array. This string is the
+    Disclosure.
+  verified: source-checked
 - id: rfc9901/4.1.1/_sd_alg
   subject: sdjwt._sd_alg
   spec: rfc-9901

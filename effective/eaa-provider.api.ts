@@ -666,6 +666,7 @@ export type IssuedCredential = {
     _sd?: string[] // no rule · Digests of the selectively disclosable claims; each Disclosure the holder reveals must hash to one of them.
     _sd_alg?: string // MAY · Hash algorithm used for the _sd digests, e.g. sha-256. · "The claim _sd_alg indicates the hash algorithm used by the Issuer to generate the digests as described in Section 4.2. When used, this claim MUST appear at the top level of the SD-JWT payload."
   }
+  disclosures?: [string, string, unknown][] // MUST for each claim that is to be made selectively disclosable · One selectively disclosable claim, sent after the issuer-signed JWT, separated by ~: the base64url-encoded JSON array [salt, claim name, claim value]. Its digest is listed in _sd. · "For each claim that is an object property and that is to be made selectively disclosable, the Issuer MUST create a Disclosure as follows: … Create a JSON array of three elements in the following order: … A salt value. MUST be a string. … The claim name, or key, as it would be used in a regular JWT payload. … The claim value, as it would be used in a regular JWT payload. … base64url-encode the UTF-8 byte sequence of the JSON array. This string is the Disclosure."
 }
 
 // ── Notification Request ── POST /notification · Wallet Unit → Credential Issuer · steps auth-code-par 24, pre-auth 19

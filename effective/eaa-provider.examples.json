@@ -691,7 +691,19 @@
               "_mOwpe5S-X4I95kqAeqvPOfnjalOE9ipsQ6bDwPZq94"
             ],
             "_sd_alg": "sha-256"
-          }
+          },
+          "disclosures": [
+            [
+              "6Ij7tM-a5iVPGboS5tmvVA",
+              "member_id",
+              "GYM-0042"
+            ],
+            [
+              "Qg_O64zqAxe412a108iroA",
+              "membership_level",
+              "gold"
+            ]
+          ]
         }
       }
     },
@@ -1305,7 +1317,19 @@
               "_mOwpe5S-X4I95kqAeqvPOfnjalOE9ipsQ6bDwPZq94"
             ],
             "_sd_alg": "sha-256"
-          }
+          },
+          "disclosures": [
+            [
+              "6Ij7tM-a5iVPGboS5tmvVA",
+              "member_id",
+              "GYM-0042"
+            ],
+            [
+              "Qg_O64zqAxe412a108iroA",
+              "membership_level",
+              "gold"
+            ]
+          ]
         }
       }
     },
