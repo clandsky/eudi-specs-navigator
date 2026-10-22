@@ -1,0 +1,45 @@
+id: vci-nested-vp-response-post
+title: Encrypted PID presentation posted to the authorization server (given_name, family_name)
+note: Same shape as vp-response-post; the Key Binding JWT is bound to the authorization server's client_id and nonce. Only the two requested claims are disclosed.
+subject: vp.response-post
+kind: http-request
+http:
+  method: POST
+  url: https://eaa.example.eu/vp/response
+  headers: { Content-Type: application/x-www-form-urlencoded }
+  body: { type: form, value: { response: "{{jwe:resp}}" } }
+jwts:
+  resp:
+    encrypt: { key: as-vp-enc, alg: ECDH-ES, enc: A128GCM }
+    header: { kid: enc-as-1 }
+    payload:
+      vp_token: { pid-sd-jwt: ["{{sdjwt:pid}}"] }
+      state: tx-5c2e-authz
+  pid:
+    key: pid-issuer
+    header: { typ: dc+sd-jwt, alg: ES256, x5c: "{{x5c:pid-issuer}}" }
+    payload: { iss: https://pid-provider.example.de, vct: "urn:eudi:pid:de:1", iat: 1791936000, exp: 1793145600, cnf: { jwk: "{{jwk:wallet-key-1}}" }, status: { status_list: { idx: 107, uri: "https://pid-provider.example.de/status/abc3d468-799f-4fbc-85df-99e7f7192da0" } } }
+    disclosures:
+      - { salt: 2GLC42sKQveCfGfryNRN9w, name: given_name, value: ERIKA }
+      - { salt: eluV5Og3gSNII8EYnsxA_A, name: family_name, value: MUSTERMANN }
+    kb:
+      key: wallet-key-1
+      payload: { aud: "{{x509hash:issuer-access}}", nonce: q3TzV8mR1xKp, iat: 1792072814 }
+annotations:
+  /http/body/response: vp.response-post.response
+  /jwt/resp/header/alg: vp.authorization-response.encryption
+  /jwt/resp/header/enc: vp.authorization-response.enc
+  /jwt/resp/header/kid: vp.authorization-response.kid
+  /jwt/resp/header/epk: vp.authorization-response.encryption
+  /jwt/resp/header/epk/*: vp.authorization-response.encryption
+  /jwt/resp/payload/vp_token: vp.vp_token
+  /jwt/resp/payload/vp_token/*: vp.dcql.id
+  /jwt/resp/payload/state: vp.request-object.state
+  /jwt/pid/header/typ: sdjwtvc.typ
+  /jwt/pid/payload/iss: sdjwtvc.iss
+  /jwt/pid/payload/exp: sdjwtvc.exp
+  /jwt/pid/payload/cnf: sdjwtvc.cnf
+  /jwt/pid-kb/header/typ: vp.kb-jwt.typ
+  /jwt/pid-kb/payload/sd_hash: vp.kb-jwt.sd_hash
+  /jwt/pid-kb/payload/aud: vp.kb-jwt.aud
+  /jwt/pid-kb/payload/nonce: vp.kb-jwt.nonce

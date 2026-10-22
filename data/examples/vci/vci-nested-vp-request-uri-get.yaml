@@ -1,0 +1,8 @@
+id: vci-nested-vp-request-uri-get
+title: Wallet fetches the authorization server's Request Object
+subject: vp.request-uri-fetch
+kind: http-request
+http:
+  method: GET
+  url: https://eaa.example.eu/vp/request/5c2e
+  headers: { Accept: application/oauth-authz-req+jwt }

@@ -1,0 +1,74 @@
+id: vci-nested-vp-request-object
+title: Signed Request Object of the authorization server, asking for given_name and family_name of the PID
+note: Same shape as the Verifier's Request Object (vp-request-uri-response); here the authorization server is the Verifier and signs with the EAA provider's access certificate. It asks only for what it needs to identify the user.
+subject: vp.request-uri-fetch
+kind: http-response
+http:
+  status: 200
+  headers: { Content-Type: application/oauth-authz-req+jwt }
+  body: { type: jwt, value: "{{jwt:ro}}" }
+jwts:
+  ro:
+    key: issuer-access
+    header: { typ: oauth-authz-req+jwt, alg: ES256, x5c: "{{x5c:issuer-access}}" }
+    payload:
+      client_id: "{{x509hash:issuer-access}}"
+      client_id_scheme: x509_hash
+      iss: "{{x509hash:issuer-access}}"
+      response_type: vp_token
+      response_mode: direct_post.jwt
+      response_uri: https://eaa.example.eu/vp/response
+      nonce: q3TzV8mR1xKp
+      state: tx-5c2e-authz
+      aud: https://self-issued.me/v2
+      iat: 1792072800
+      exp: 1792073100
+      dcql_query:
+        credentials:
+          - id: pid-sd-jwt
+            format: dc+sd-jwt
+            meta: { vct_values: ["urn:eudi:pid:de:1"] }
+            claims: [{ path: [given_name] }, { path: [family_name] }]
+      client_metadata:
+        jwks: { keys: [{ $jwk: as-vp-enc, kid: enc-as-1, use: enc, alg: ECDH-ES }] }
+        vp_formats_supported:
+          dc+sd-jwt: { sd-jwt_alg_values: [ES256], kb-jwt_alg_values: [ES256] }
+        encrypted_response_enc_values_supported: [A128GCM]
+      verifier_info:
+        - { format: registration_cert, data: "{{b64url:TEST ONLY - RP registration certificate of the EAA provider (structure per ETSI TS 119 475, not modelled here)}}" }
+annotations:
+  /http/headers/Content-Type: http.content-type
+  /jwt/ro/header/typ: vp.request-object.typ
+  /jwt/ro/header/x5c: vp.request-object.x5c
+  /jwt/ro/payload/client_id: vp.request-object.client_id
+  /jwt/ro/payload/client_id_scheme: vp.request-object.client_id_scheme
+  /jwt/ro/payload/iss: vp.request-object.iss
+  /jwt/ro/payload/response_type: vp.request-object.response_type
+  /jwt/ro/payload/response_mode: vp.request-object.response_mode
+  /jwt/ro/payload/response_uri: vp.request-object.response_uri
+  /jwt/ro/payload/nonce: vp.request-object.nonce
+  /jwt/ro/payload/state: vp.request-object.state
+  /jwt/ro/payload/aud: vp.request-object.aud
+  /jwt/ro/payload/dcql_query: vp.dcql
+  /jwt/ro/payload/dcql_query/credentials: vp.dcql.credentials
+  /jwt/ro/payload/dcql_query/credentials/*/id: vp.dcql.id
+  /jwt/ro/payload/dcql_query/credentials/*/format: vp.dcql.format
+  /jwt/ro/payload/dcql_query/credentials/*/meta: vp.dcql.meta
+  /jwt/ro/payload/dcql_query/credentials/*/meta/vct_values: vp.dcql.vct_values
+  /jwt/ro/payload/dcql_query/credentials/*/claims: vp.dcql.claims
+  /jwt/ro/payload/dcql_query/credentials/*/claims/*/path: vp.dcql.path
+  /jwt/ro/payload/client_metadata: vp.request-object.client_metadata
+  /jwt/ro/payload/client_metadata/jwks: vp.request-object.client_metadata.jwks
+  /jwt/ro/payload/client_metadata/jwks/keys: vp.request-object.client_metadata.jwks
+  /jwt/ro/payload/client_metadata/jwks/keys/*/kid: vp.request-object.client_metadata.jwks.kid
+  /jwt/ro/payload/client_metadata/jwks/keys/*/use: vp.request-object.client_metadata.jwks.use
+  /jwt/ro/payload/client_metadata/jwks/keys/*/alg: vp.request-object.client_metadata.jwks.alg
+  /jwt/ro/payload/client_metadata/encrypted_response_enc_values_supported: vp.request-object.client_metadata.enc_values
+  /jwt/ro/payload/client_metadata/vp_formats_supported: vp.request-object.client_metadata.vp_formats_supported
+  /jwt/ro/payload/client_metadata/vp_formats_supported/dc+sd-jwt: vp.request-object.client_metadata.vp_formats_supported.dc-sd-jwt
+  /jwt/ro/payload/client_metadata/vp_formats_supported/dc+sd-jwt/sd-jwt_alg_values: vp.request-object.client_metadata.sd-jwt_alg_values
+  /jwt/ro/payload/client_metadata/vp_formats_supported/dc+sd-jwt/kb-jwt_alg_values: vp.request-object.client_metadata.kb-jwt_alg_values
+  /jwt/ro/payload/verifier_info: vp.request-object.verifier_info
+  /jwt/ro/payload/verifier_info/0: vp.request-object.verifier_info.registration_cert
+  /jwt/ro/payload/verifier_info/*/format: vp.request-object.verifier_info.format
+  /jwt/ro/payload/verifier_info/*/data: vp.request-object.verifier_info.data

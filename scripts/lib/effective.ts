@@ -459,7 +459,9 @@ export function buildEffectiveApi(ds: Dataset, opts: EffectiveOptions): Effectiv
 
   // Text ---------------------------------------------------------------------------------------------------------
   const typeName = (g: Group) => {
-    const base = pascal(g.subject.id.split('.').slice(1).join('-'))
+    const [head, ...rest] = g.subject.id.split('.')
+    // A message of the other protocol (the OpenID4VP request nested into issuance) keeps its prefix: VpAuthorizationRequest.
+    const base = pascal([...(head === root ? [] : [head!]), ...rest].join('-'))
     return items.has(base) ? `${base}Message` : base
   }
   const L: string[] = []

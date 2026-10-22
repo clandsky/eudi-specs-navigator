@@ -43,6 +43,7 @@
 - { id: vci.ka-request, kind: step, parent: vci.ka, title: Wallet obtains a key attestation bound to the c_nonce }
 - { id: vci.dpop-proof.nonce, kind: field, parent: vci.dpop-proof, title: nonce (from DPoP-Nonce), location: jwt-payload, description: "Server-provided nonce from the DPoP-Nonce header, showing the proof is fresh." }
 - { id: vci.user-authentication, kind: step, parent: vci, title: Authorization server authenticates the user and gathers consent }
+- { id: vci.user-authentication.pid-presentation, kind: step, parent: vci.user-authentication, title: "Authorization server authenticates the user with a PID presentation (nested OpenID4VP)", description: "Instead of a login form, the authorization server acts as an OpenID4VP Verifier in the front channel and asks the Wallet for the PID." }
 - { id: vci.as-metadata.challenge_endpoint, kind: metadata-param, parent: vci.as-metadata, title: challenge_endpoint (not offered in this example), location: json, description: "URL where clients fetch a fresh challenge for the client attestation PoP." }
 - { id: vci.notification-request.dpop, kind: field, parent: vci.notification-request, title: DPoP proof, location: header, description: "DPoP proof for the notification request." }
 - { id: vci.token-response.pragma, kind: field, parent: vci.token-response, title: "Pragma: no-cache", location: header, description: "Legacy HTTP/1.0 header that also disables caching of the token response." }

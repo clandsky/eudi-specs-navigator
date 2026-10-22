@@ -56,7 +56,7 @@ const entryIndex = new Map<string, Place>(
 )
 const hasContent = (e: Entry) => Boolean(e.summary) || e.links.length + e.questions.length + e.flows.length + e.subjects.length + e.specs.length > 0
 
-const topicHref = (id: string) => href(['educate'], { topic: id })
+const topicHref = (id: string) => href(['learn'], { topic: id })
 const clusterAnchor = (id: string) => `cluster-${id}`
 function scrollToCluster(id: string) {
   document.getElementById(clusterAnchor(id))?.scrollIntoView({ behavior: 'smooth', block: 'start' })
@@ -82,7 +82,7 @@ export function EducateView() {
   const cluster = (t: Track) => <Cluster key={t.id} track={t} done={done} openId={open?.entry.id} onAdd={() => setAdding(t)} />
   return (
     <div className="page educate">
-      <h1>Educate</h1>
+      <h1>Learn</h1>
       <p className="lede">
         The concepts a role needs, cluster by cluster: first the shared ground, then the path of your side. Open a topic or one of its subtopics for an explanation, questions, reading and the
         places in this navigator where its rules are traced. The explanations are a first draft and only give

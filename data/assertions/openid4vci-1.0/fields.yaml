@@ -218,6 +218,18 @@
   quote: "The Authorization Endpoint processes the Authorization Request, which typically includes authenticating the
     End-User and gathering End-User consent."
   verified: source-checked
+- id: oid4vci/3.4/credential-presentation
+  subject: vci.user-authentication.pid-presentation
+  spec: openid4vci-1.0
+  locator: { section: "3.4" }
+  relation: defines
+  level: info
+  applies_to: { grant: [ authorization_code ] }
+  quote: "The Authorization Server and the User Agent may exchange any further messages between the steps if required
+    by the Authorization Server to authenticate the End-User. For example, the Authorization Server may request
+    Credential presentation as a means to authenticate or identify the End-User during the issuance flow"
+  note: "Informative note; the flow it points to is Appendix H.5."
+  verified: source-checked
 - id: oid4vci/F.1/ka-nonce-step
   subject: vci.ka-request
   spec: openid4vci-1.0
