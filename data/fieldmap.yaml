@@ -32,6 +32,8 @@
 # SD-JWT
 - { pattern: /jwt/*/payload/_sd, subject: sdjwt._sd }
 - { pattern: /jwt/*/payload/_sd_alg, subject: sdjwt._sd_alg }
+- { pattern: /jwt/*/disclosures, subject: sdjwt.disclosure }
+- { pattern: /jwt/*/disclosures/*, subject: sdjwt.disclosure }
 - { pattern: /jwt/*/payload/vct, subject: sdjwtvc.vct }
 # Wallet Instance Attestation (JWT name "wia")
 - { pattern: /jwt/wia/header/typ, subject: vci.wia.typ }

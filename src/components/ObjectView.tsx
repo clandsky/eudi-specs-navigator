@@ -286,6 +286,30 @@ export function ObjectView({ exampleId, sender, selected, onSelect, variant = {}
           <Tree v={j.header} ptr={`/jwt/${escapeToken(name)}/header`} />
           <div className="meta" style={{ padding: '0 12px' }}>Payload</div>
           <Tree v={j.payload} ptr={`/jwt/${escapeToken(name)}/payload`} />
+          {j.disclosures && (
+            <>
+              <div className="meta" style={{ padding: '0 12px' }}>Disclosures, each [salt, claim name, claim value]</div>
+              <div className="code">
+                {j.disclosures.map((d, i) => {
+                  const p = `/jwt/${escapeToken(name)}/disclosures/${i}`
+                  const els = Array.isArray(d) ? d : [d]
+                  return (
+                    <Fragment key={i}>
+                      <FieldKey ptr={p}>{`[${i}]`}</FieldKey>
+                      {' ['}
+                      {els.map((x, k) => (
+                        <Fragment key={k}>
+                          <Value v={x} ptr={`${p}/${k}`} indent={1} />
+                          {k < els.length - 1 ? ', ' : ''}
+                        </Fragment>
+                      ))}
+                      {']\n'}
+                    </Fragment>
+                  )
+                })}
+              </div>
+            </>
+          )}
           {raw && <div className="code jwt" style={{ borderTop: '1px solid var(--rule)' }}>{j.compact}</div>}
         </div>
       ))}

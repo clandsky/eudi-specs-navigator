@@ -691,7 +691,19 @@
               "_mOwpe5S-X4I95kqAeqvPOfnjalOE9ipsQ6bDwPZq94"
             ],
             "_sd_alg": "sha-256"
-          }
+          },
+          "disclosures": [
+            [
+              "6Ij7tM-a5iVPGboS5tmvVA",
+              "member_id",
+              "GYM-0042"
+            ],
+            [
+              "Qg_O64zqAxe412a108iroA",
+              "membership_level",
+              "gold"
+            ]
+          ]
         }
       }
     },
@@ -1353,7 +1365,29 @@
               "kAMfZbKqnyLH0Oy58SsSWUKpgw-hEryUn0LvjbnSbJE"
             ],
             "_sd_alg": "sha-256"
-          }
+          },
+          "disclosures": [
+            [
+              "x5Fveu8iaQLR9qLrvfgUHQ",
+              "pet_name",
+              "Bello"
+            ],
+            [
+              "ksE09UUdlK-CR7d_5P29mQ",
+              "pet_race",
+              "Labrador Retriever"
+            ],
+            [
+              "fR_g__2Efpvt_aeivBKgQg",
+              "owner_firstname",
+              "Erika"
+            ],
+            [
+              "kzi7hp1-LfMUpXYwNYzNCA",
+              "owner_lastname",
+              "Mustermann"
+            ]
+          ]
         },
         "EncryptedCredentialResponse": {
           "header": {

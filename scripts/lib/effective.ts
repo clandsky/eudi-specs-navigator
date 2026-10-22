@@ -167,6 +167,21 @@ function shapeOf(value: unknown, ptr: string, src: ItemSource): Shape {
   return s
 }
 
+/** The Disclosures of an SD-JWT: [salt, claim name, claim value] each (RFC 9901 §4.2.1); the value can be any JSON. */
+function disclosuresShape(ptr: string, src: ItemSource): Shape {
+  const el = (prim?: Prim) => {
+    const e = emptyShape(null)
+    if (prim) e.prims.add(prim)
+    e.flows.add(src.flow)
+    return e
+  }
+  const s = el()
+  s.subject = annotationFor(ptr, src.ex.annotations, src.fieldmap)
+  s.items = el()
+  s.items.tuple = [el('string'), el('string'), el()]
+  return s
+}
+
 function pascal(s: string): string {
   return s.replace(/(^|[^a-z0-9]+)([a-z0-9])/gi, (_, __, c: string) => c.toUpperCase())
 }
@@ -326,7 +341,7 @@ export function buildEffectiveApi(ds: Dataset, opts: EffectiveOptions): Effectiv
     if (sh.tuple) alts.push(`[${sh.tuple.map((t, i) => `${typeOf(t, indent, producer, typeFlows)}${t.subject && t.subject !== sh.subject ? ` /* ${i}: ${fieldTitle(t.subject)} */` : ''}`).join(', ')}]`)
     return alts.length ? [...new Set(alts)].join(' | ') : 'unknown'
   }
-  const wrap = (t: string) => (/[|\s]/.test(t) && !t.startsWith('{') ? `(${t})` : t)
+  const wrap = (t: string) => (/[|\s]/.test(t) && !/^[{[]/.test(t) ? `(${t})` : t)
   const fieldTitle = (id: string) => oneLine(subjects.get(id)?.title ?? id)
 
   function objectType(sh: Shape, indent: string, producer: Role | undefined, typeFlows: readonly string[]): string {
@@ -411,6 +426,7 @@ export function buildEffectiveApi(ds: Dataset, opts: EffectiveOptions): Effectiv
           ['header', shapeOf(j.header, `/jwt/${escapeToken(name)}/header`, src)],
           ['payload', shapeOf(j.payload, `/jwt/${escapeToken(name)}/payload`, src)],
         ])
+        if (j.disclosures) sh.object.set('disclosures', disclosuresShape(`/jwt/${escapeToken(name)}/disclosures`, src))
         sh.flows.add(flow.id)
         addItem(meta, sh, subj.id, flow.id, g)
       }
@@ -562,7 +578,7 @@ export function buildEffectiveApi(ds: Dataset, opts: EffectiveOptions): Effectiv
         ...(v.http ? { http: v.http } : {}),
         ...(v.json !== undefined ? { json: v.json } : {}),
         ...(Object.keys(v.jwt).length
-          ? { tokens: Object.fromEntries(Object.entries(v.jwt).map(([n, j]) => [ITEMS[n]?.type ?? pascal(n), { header: j.header, payload: j.payload }])) }
+          ? { tokens: Object.fromEntries(Object.entries(v.jwt).map(([n, j]) => [ITEMS[n]?.type ?? pascal(n), { header: j.header, payload: j.payload, ...(j.disclosures ? { disclosures: j.disclosures } : {}) }])) }
           : {}),
         ...(v.cbor ? { cbor: Object.fromEntries(Object.entries(v.cbor).map(([n, c]) => [ITEMS[`cbor:${n}`]?.type ?? pascal(n), c])) } : {}),
       }
