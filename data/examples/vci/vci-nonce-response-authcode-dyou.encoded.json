@@ -1,5 +1,5 @@
 {
-  "id": "vci-nonce-response-preauth",
+  "id": "vci-nonce-response-authcode-dyou",
   "http": {
     "status": 200,
     "headers": {
@@ -9,10 +9,10 @@
     "body": {
       "type": "json",
       "value": {
-        "c_nonce": "lHsPx2DheLM172hYAbi8eMjK3lSXo3cw"
+        "c_nonce": "toLKgaaMinQ4ZsNTJhAAKwgWiohV5_Q5"
       }
     }
   },
   "jwts": {},
-  "inputHash": "c4bf97a9276a2639"
+  "inputHash": "859a4d548ffbb0c4"
 }

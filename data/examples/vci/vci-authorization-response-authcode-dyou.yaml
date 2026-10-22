@@ -1,0 +1,15 @@
+id: vci-authorization-response-authcode-dyou
+title: Authorization Response into the Wallet's private-use redirect URI, with iss (RFC 9207)
+subject: vci.authorization-response
+kind: http-response
+note: Shape recorded from a d-you issuance in the authorization code flow (IDGo 81, 2026-10-22, login at the authorization endpoint). The successful login answers with this redirect; the browser hands it to the Wallet.
+http:
+  status: 302
+  url: "org.sprind.wallet.sandbox:/authorization?code=JiJ61kJKkyxbd8ELhCnKmU-80e33Mg0-kHh64vWZh1M&state=LG1yt8t0gdL0VmsJlgfWqB_d9XWJDyXd&iss=https%3A%2F%2Feaa.example.eu"
+  headers:
+    Location: "org.sprind.wallet.sandbox:/authorization?code=JiJ61kJKkyxbd8ELhCnKmU-80e33Mg0-kHh64vWZh1M&state=LG1yt8t0gdL0VmsJlgfWqB_d9XWJDyXd&iss=https%3A%2F%2Feaa.example.eu"
+    Cache-Control: no-store
+annotations:
+  /http/query/code: vci.authorization-response.code
+  /http/query/state: vci.authorization-response.state
+  /http/query/iss: vci.authorization-response.iss

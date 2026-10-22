@@ -1,0 +1,20 @@
+id: vci-nested-vp-authorization-request-dyou
+title: GET /authorize answered with a redirect into the Wallet (openid4vp://)
+subject: vp.authorization-request
+kind: http-response
+note: >-
+  Shape recorded from a d-you issuance with a nested PID presentation (IDGo 81, 2026-10-22). The authorization endpoint shows no page: it answers the Wallet's authorization request in the browser with a
+  302 straight to an openid4vp:// link, which the browser hands back to the Wallet. A page with a button to the link
+  failed: it took the user out of the Wallet's authorization browser session, and the issuance never completed.
+http:
+  status: 302
+  url: "openid4vp://?client_id={{x509hash:issuer-access}}&request_uri=https%3A%2F%2Feaa.example.eu%2Fopenid4vp%2Frequest%2F91y-tdPk4uwy93FvF5PwoQ&request_uri_method=get"
+  headers:
+    Location: "openid4vp://?client_id={{x509hash:issuer-access}}&request_uri=https%3A%2F%2Feaa.example.eu%2Fopenid4vp%2Frequest%2F91y-tdPk4uwy93FvF5PwoQ&request_uri_method=get"
+    Cache-Control: no-store
+annotations:
+  /http/url: vp.authorization-request.scheme
+  /http/headers/Location: vp.authorization-request.scheme
+  /http/query/client_id: vp.authorization-request.client_id
+  /http/query/request_uri: vp.authorization-request.request_uri
+  /http/query/request_uri_method: vp.authorization-request.request_uri_method

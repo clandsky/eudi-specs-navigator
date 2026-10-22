@@ -1,0 +1,17 @@
+id: vci-nested-vp-response-ack-dyou
+title: Response endpoint answer with redirect_uri back into the authorization (/authorize/continue)
+subject: vp.response-ack
+kind: http-response
+note: >-
+  Shape recorded from a d-you issuance with a nested PID presentation (IDGo 81, 2026-10-22), with the response_code the
+  issuer added afterwards: OpenID4VP Section 8.2 asks for a fresh, cryptographically random value in this URL, so that
+  only the receiver of the redirect can continue. The request_uri finds the pushed authorization request; the
+  response_code (128 bits, single use, a query parameter because the server reads it) proves that this browser comes
+  from the Wallet that posted the presentation. A rejected presentation gets a redirect_uri as well; continue then sends
+  error=access_denied to the Wallet (not exercised with the real Wallet).
+http:
+  status: 200
+  headers: { Content-Type: application/json }
+  body: { type: json, value: { redirect_uri: "https://eaa.example.eu/openid4vci/authorize/continue?request_uri=urn%3Aietf%3Aparams%3Aoauth%3Arequest_uri%3AzLJBqkvzAeWbpneyPRdQFj9PPKsAzD_x&response_code=rg9TZrCrJ9gxftXSwPowgA" } }
+annotations:
+  /http/body/redirect_uri: vp.response-ack.redirect_uri

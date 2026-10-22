@@ -2,11 +2,8 @@ id: vci-offer-preauth
 title: Credential Offer by reference, shown as a QR code
 subject: vci.offer
 kind: uri
-note: >-
-  Shape recorded from a d-you issuance (IDGo 81, 2026-10-22): the openid-credential-offer:// scheme with a
-  credential_offer_uri, scanned cross-device from the issuer's web page.
 http:
-  url: "openid-credential-offer://?credential_offer_uri=https%3A%2F%2Feaa.example.eu%2Fopenid4vci%2Foffer%2FERYQqTlprJvVveIFniGGUQ"
+  url: "eu-eaa-offer://?credential_offer_uri=https%3A%2F%2Feaa.example.eu%2Fcredential-offer%2F5a2f1c"
 annotations:
   /http/url: vci.offer.scheme
   /http/query/credential_offer_uri: vci.offer.credential_offer_uri

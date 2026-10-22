@@ -1,0 +1,10 @@
+{
+  "id": "vci-nested-continue-dyou",
+  "http": {
+    "method": "GET",
+    "url": "https://eaa.example.eu/openid4vci/authorize/continue?request_uri=urn:ietf:params:oauth:request_uri:zLJBqkvzAeWbpneyPRdQFj9PPKsAzD_x&response_code=rg9TZrCrJ9gxftXSwPowgA",
+    "headers": {}
+  },
+  "jwts": {},
+  "inputHash": "d608ec0b7a510c49"
+}

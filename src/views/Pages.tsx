@@ -6,7 +6,7 @@ import { StackPanel } from '../components/StackPanel'
 import { annotationFor, entryPointers, viewOf } from '../model/pointer'
 import type { EffectiveRule } from '../model/resolve'
 import type { Assertion, Role } from '../model/schema'
-import { stepNumber } from '../model/steps'
+import { stepExamples, stepNumber } from '../model/steps'
 import { href } from '../lib/router'
 import {
   C2BO_URL,
@@ -61,7 +61,7 @@ export function SubjectPage({ subjectId, focus }: { subjectId: string; focus?: s
               </li>
             ))}
             {examples
-              .filter((e) => !steps.some(({ s }) => s.example === e.id))
+              .filter((e) => !steps.some(({ s }) => stepExamples(s).includes(e.id)))
               .map((e) => (
                 <li key={e.id}>
                   <a href={href(['object', e.id])}>{e.title}</a>
@@ -761,7 +761,7 @@ export function EndpointsTable() {
               const parts = [s.id, ...ds.subjects.filter((x) => x.id.startsWith(`${s.id}.`)).map((x) => x.id)]
               const use = ds.flows.flatMap((f) => f.steps.filter((st) => st.subject === s.id).map((st) => ({ f, st })))
               // The message opens on its step in the sequence diagram, where its example dataset is shown.
-              const shown = use.find(({ st }) => st.example) ?? use[0]
+              const shown = use.find(({ st }) => stepExamples(st).length) ?? use[0]
               return (
                 <tr key={s.id}>
                   <td className="mono">{s.endpoint!.method}</td>

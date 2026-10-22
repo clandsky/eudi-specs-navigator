@@ -1,0 +1,18 @@
+id: vci-offer-authcode-dyou
+title: Credential Offer by value with issuer_state, shown as a QR code
+subject: vci.offer
+kind: uri
+note: >-
+  Shape recorded from a d-you issuance in the authorization code flow (IDGo 81, 2026-10-22, login at the authorization endpoint): the openid-credential-offer:// scheme with the offer by value, scanned cross-device from the issuer's web page.
+  The authorization itself then runs on the phone, in its browser. There is no offer fetch, so the PAR is the first
+  request of the Wallet that the issuer sees.
+http:
+  url: "openid-credential-offer://?credential_offer=%7B%22credential_issuer%22%3A%22https%3A%2F%2Feaa.example.eu%22%2C%22credential_configuration_ids%22%3A%5B%22dog_tag_sd_jwt%22%5D%2C%22grants%22%3A%7B%22authorization_code%22%3A%7B%22issuer_state%22%3A%22gCiOrOwJ5HjAJNM9V1Eibw%22%7D%7D%7D"
+annotations:
+  /http/url: vci.offer.scheme
+  /http/query/credential_offer: vci.offer.credential_offer
+  /http/query/credential_offer/credential_issuer: vci.offer.credential_issuer
+  /http/query/credential_offer/credential_configuration_ids: vci.offer.credential_configuration_ids
+  /http/query/credential_offer/grants: vci.offer.grants
+  /http/query/credential_offer/grants/authorization_code: vci.offer.grants.authorization_code
+  /http/query/credential_offer/grants/authorization_code/issuer_state: vci.offer.issuer_state

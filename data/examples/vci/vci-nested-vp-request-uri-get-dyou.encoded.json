@@ -1,0 +1,12 @@
+{
+  "id": "vci-nested-vp-request-uri-get-dyou",
+  "http": {
+    "method": "GET",
+    "url": "https://eaa.example.eu/openid4vp/request/91y-tdPk4uwy93FvF5PwoQ",
+    "headers": {
+      "Accept": "*/*"
+    }
+  },
+  "jwts": {},
+  "inputHash": "389e460a3ea0dac3"
+}

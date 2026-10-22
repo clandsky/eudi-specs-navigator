@@ -1,0 +1,29 @@
+{
+  "id": "vci-par-request-authcode-dyou",
+  "http": {
+    "method": "POST",
+    "url": "https://eaa.example.eu/openid4vci/par",
+    "headers": {
+      "Content-Type": "application/x-www-form-urlencoded",
+      "DPoP": "eyJhbGciOiJFUzI1NiIsImp3ayI6eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ims1TDNfajUzZWJhWm9JazlqUk1jbmxTRGNjekpMOWJLLWxma3FJc3p3MWciLCJ5IjoiX2IxNUo3OGV0OTh4eVQ0UTVhRy03TWlMZGpGMGVWZ2RKUC1Mcml6T0hGUSIsImFsZyI6IkVTMjU2Iiwia2lkIjoiZHBvcC1lMTNhMjc5NmM1YjJmNmFkIiwidXNlIjoic2lnIn0sInR5cCI6ImRwb3Arand0In0.eyJpYXQiOjE3OTI2ODEzMDQsImp0aSI6Ik0yQXlnUlhFUW1BV041NUo0VVdGIiwiaHR1IjoiaHR0cHM6Ly9lYWEuZXhhbXBsZS5ldS9vcGVuaWQ0dmNpL3BhciIsImh0bSI6IlBPU1QifQ.ROXYRqjXuaMd_LDyeaQXj9PE6oiAvbBrsmpw73SQtXmzSvM1aVGpESkuLLGSV5rl8dPuJJqAyRgDdiVjGg25Vw"
+    },
+    "body": {
+      "type": "form",
+      "value": {
+        "code_challenge": "vNePzLOfMG82cwEAOpsYG3cnKXePXpyJPtqoCL23z9Q",
+        "response_type": "code",
+        "state": "LG1yt8t0gdL0VmsJlgfWqB_d9XWJDyXd",
+        "client_id": "cbc61b45-907a-4c65-8467-3194d8af12ab",
+        "resource": "https://eaa.example.eu",
+        "redirect_uri": "org.sprind.wallet.sandbox:/authorization",
+        "scope": "dog_tag",
+        "issuer_state": "gCiOrOwJ5HjAJNM9V1Eibw",
+        "code_challenge_method": "S256"
+      }
+    }
+  },
+  "jwts": {
+    "dpop": "eyJhbGciOiJFUzI1NiIsImp3ayI6eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6Ims1TDNfajUzZWJhWm9JazlqUk1jbmxTRGNjekpMOWJLLWxma3FJc3p3MWciLCJ5IjoiX2IxNUo3OGV0OTh4eVQ0UTVhRy03TWlMZGpGMGVWZ2RKUC1Mcml6T0hGUSIsImFsZyI6IkVTMjU2Iiwia2lkIjoiZHBvcC1lMTNhMjc5NmM1YjJmNmFkIiwidXNlIjoic2lnIn0sInR5cCI6ImRwb3Arand0In0.eyJpYXQiOjE3OTI2ODEzMDQsImp0aSI6Ik0yQXlnUlhFUW1BV041NUo0VVdGIiwiaHR1IjoiaHR0cHM6Ly9lYWEuZXhhbXBsZS5ldS9vcGVuaWQ0dmNpL3BhciIsImh0bSI6IlBPU1QifQ.ROXYRqjXuaMd_LDyeaQXj9PE6oiAvbBrsmpw73SQtXmzSvM1aVGpESkuLLGSV5rl8dPuJJqAyRgDdiVjGg25Vw"
+  },
+  "inputHash": "56167309dccd2a28"
+}

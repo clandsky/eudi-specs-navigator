@@ -1,0 +1,26 @@
+{
+  "id": "vci-offer-fetch-dyou",
+  "http": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json",
+      "Cache-Control": "no-store"
+    },
+    "body": {
+      "type": "json",
+      "value": {
+        "credential_issuer": "https://eaa.example.eu",
+        "credential_configuration_ids": [
+          "dog_tag_sd_jwt"
+        ],
+        "grants": {
+          "urn:ietf:params:oauth:grant-type:pre-authorized_code": {
+            "pre-authorized_code": "kh_1vkpxLgHqvQwUYhZswmJ0ilAwuTE2kQb3K1nHVGE"
+          }
+        }
+      }
+    }
+  },
+  "jwts": {},
+  "inputHash": "9190a749f5450d6c"
+}

@@ -154,9 +154,18 @@ export async function encodeExample(
     if ('encrypt' in spec) {
       const payload = (await substitute(spec.payload, encodedJwt)) as Record<string, unknown>
       const extra = (await substitute(spec.header, encodedJwt)) as Record<string, unknown>
-      const protectedHeader = { ...extra, alg: spec.encrypt.alg, enc: spec.encrypt.enc }
+      // apu / apv (base64url) enter the ECDH-ES key derivation, so they go to jose as key management parameters, which
+      // also writes them into the protected header.
+      const { apu, apv, ...rest } = extra
+      const protectedHeader = { ...rest, alg: spec.encrypt.alg, enc: spec.encrypt.enc }
       const pub = await importSPKI(readFileSync(join(KEYS, `${spec.encrypt.key}.pub.pem`), 'utf8'), 'ECDH-ES')
-      const jwe = await new CompactEncrypt(new TextEncoder().encode(JSON.stringify(payload))).setProtectedHeader(protectedHeader as never).encrypt(pub)
+      const enc = new CompactEncrypt(new TextEncoder().encode(JSON.stringify(payload))).setProtectedHeader(protectedHeader as never)
+      if (typeof apu === 'string' || typeof apv === 'string')
+        enc.setKeyManagementParameters({
+          ...(typeof apu === 'string' ? { apu: Buffer.from(apu, 'base64url') } : {}),
+          ...(typeof apv === 'string' ? { apv: Buffer.from(apv, 'base64url') } : {}),
+        })
+      const jwe = await enc.encrypt(pub)
       // Show the full protected header (incl. the generated epk) next to the plaintext the build encrypted.
       const fullHeader = JSON.parse(Buffer.from(jwe.split('.')[0]!, 'base64url').toString('utf8')) as Record<string, unknown>
       plaintexts[name] = { header: fullHeader, payload }

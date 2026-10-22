@@ -17,7 +17,7 @@
 // [key binding JWT]; JWE = compact JWE whose decrypted header and payload are given; bstr = CBOR byte string.
 
 // FLOWS
-// auth-code-par: Issuance — authorization code flow with PAR. Issuer-initiated issuance on one device. The Wallet authenticates with its Wallet Instance Attestation at the PAR and token endpoints, binds the access token with DPoP, fetches a nonce, obtains a key attestation bound to that nonce from its Wallet Provider, and proves key possession with a jwt proof that carries the key attestation.
+// auth-code-par: Issuance — authorization code flow with PAR. Issuer-initiated issuance on one device. The Wallet authenticates with its Wallet Instance Attestation at the PAR and token endpoints, binds the access token with DPoP, fetches a nonce, obtains a key attestation bound to that nonce from its Wallet Provider, and proves key possession with a jwt proof that carries the key attestation. With d-you in the lens the steps show the messages recorded from a d-you issuance (IDGo 81, 2026-10-22): offer by QR code, the authorization in the phone's browser with a login form, DPoP from the PAR on, no WIA and no key attestation, encrypted Credential Request and Response, no notification endpoint.
 //   1 Wallet Provider → Wallet Unit: Wallet Instance Attestation → WalletInstanceAttestation
 //   2 Credential Issuer → Wallet Unit: Credential Offer → Offer
 //   3 Wallet Unit → Credential Issuer: GET /.well-known/openid-credential-issuer → Metadata
@@ -31,7 +31,7 @@
 //   8 Authorization Server → Wallet Unit: 201 request_uri → ParResponse
 //   9 Wallet Unit → Authorization Server: GET /authorize (via browser) → AuthorizationRequest
 //   10 Authorization Server: authenticate user, consent
-//   11 Authorization Server → Wallet Unit: 302 code, iss → AuthorizationResponse
+//   11 Authorization Server → Wallet Unit: 302 code, iss → AuthorizationResponseMessage
 //   12 Wallet Unit: check state + iss
 //   13 Wallet Unit → Authorization Server: POST /token → TokenRequest
 //   14 Authorization Server: validate token request
@@ -56,7 +56,70 @@
 //   23 Credential Issuer → Wallet Unit: credentials → CredentialResponse
 //   24 Wallet Unit → Credential Issuer: POST /notification → NotificationRequest
 //   25 Credential Issuer → Wallet Unit: 204
-// pre-auth: Issuance — pre-authorized code flow, cross device. The user is authenticated on the issuer's website and scans a QR code with the wallet on a second device. The offer carries a pre-authorized code; a transaction code sent on a separate channel can bind it to the user. By the binding rules the token request still carries the WIA (CIR TR-WIA-3 does not depend on the grant). The example messages are recorded from a d-you issuance (IDGo 81, 2026-10-22): no transaction code, no WIA and no key attestation, encrypted Credential Request and Response, no notification endpoint.
+// nested-presentation: Issuance — authorization code flow with a nested PID presentation. The authorization code flow with PAR, but the authorization server authenticates the user with the PID instead of a login form. At GET /authorize it acts as an OpenID4VP Verifier and opens an eu-eaap:// link; the same Wallet presents the PID (in this example given_name and family_name), the redirect_uri brings the browser back into the authorization session, and the authorization server identifies the user by the two claims before it returns the code. Token, nonce, key attestation and credential steps are as in the plain authorization code flow (OpenID4VCI §3.4, Appendix H.5). With d-you in the lens the steps show a recorded d-you issuance (IDGo 81, 2026-10-22): /authorize answers with a 302 into openid4vp://, the response_uri's redirect_uri leads to /authorize/continue, which redirects into the Wallet with the code; the presented names become the owner on the credential.
+//   1 Wallet Provider → Wallet Unit: Wallet Instance Attestation → WalletInstanceAttestation
+//   2 Credential Issuer → Wallet Unit: Credential Offer → Offer
+//   3 Wallet Unit → Credential Issuer: GET /.well-known/openid-credential-issuer → Metadata
+//   4 Wallet Unit: validate signed metadata (x5c)
+//   5 Wallet Unit → Authorization Server: GET /.well-known/oauth-authorization-server → AsMetadata
+//   6 Wallet Unit → Authorization Server: POST /par → ParRequest
+//   7 Authorization Server: validate PAR request
+//   7.1 Authorization Server: verify WIA
+//   7.2 Authorization Server: verify WIA PoP
+//   7.3 Authorization Server: PKCE, scope, redirect_uri
+//   8 Authorization Server → Wallet Unit: 201 request_uri → ParResponse
+//   9 Wallet Unit → Authorization Server: GET /authorize (via browser) → AuthorizationRequest
+//   10 Authorization Server: PID login: prepare OpenID4VP request
+//   10.1 Authorization Server: generate nonce
+//   10.2 Authorization Server: ephemeral encryption key
+//   10.3 Authorization Server: sign Request Object
+//   11 Authorization Server → Wallet Unit: open eu-eaap:// link (via browser) → VpAuthorizationRequest
+//   12 Wallet Unit → Authorization Server: GET request_uri → VpRequestUriFetch
+//   13 Authorization Server → Wallet Unit: signed Request Object → VpRequestObject
+//   14 Wallet Unit: validate request, user consent
+//   14.1 Wallet Unit: verify signature + access cert
+//   14.2 Wallet Unit: validate registration cert
+//   14.3 Wallet Unit: over-asking check
+//   14.4 Wallet Unit: build KB-JWT, encrypt
+//   15 Wallet Unit → Authorization Server: POST response_uri (direct_post.jwt) → VpResponsePost
+//   16 Authorization Server: validate PID presentation
+//   16.1 Authorization Server: decrypt JWE
+//   16.2 Authorization Server: match state
+//   16.3 Authorization Server: vp_token vs DCQL
+//   16.4 Authorization Server: PID issuer signature + x5c
+//   16.5 Authorization Server: disclosures vs _sd
+//   16.6 Authorization Server: KB-JWT nonce, aud, sd_hash
+//   16.7 Authorization Server: exp / validity
+//   16.8 Authorization Server: status list
+//   17 Authorization Server → Wallet Unit: 200 redirect_uri → VpResponseAck
+//   18 Wallet Unit → Authorization Server: open redirect_uri (back to /authorize) → VpRedirectBack
+//   19 Authorization Server: identify user (given_name, family_name), consent
+//   20 Authorization Server → Wallet Unit: 302 code, iss → AuthorizationResponseMessage
+//   21 Wallet Unit: check state + iss
+//   22 Wallet Unit → Authorization Server: POST /token → TokenRequest
+//   23 Authorization Server: validate token request
+//   23.1 Authorization Server: verify WIA
+//   23.2 Authorization Server: verify WIA PoP
+//   23.3 Authorization Server: verify DPoP proof
+//   23.4 Authorization Server: code + code_verifier (PKCE)
+//   24 Authorization Server → Wallet Unit: DPoP access token → TokenResponse
+//   25 Wallet Unit → Credential Issuer: POST /nonce → NonceRequest
+//   26 Credential Issuer → Wallet Unit: c_nonce → NonceResponse
+//   27 Wallet Unit → Wallet Provider: request key attestation (c_nonce) → KeyAttestation
+//   28 Wallet Provider → Wallet Unit: key attestation → KeyAttestation
+//   29 Wallet Unit → Credential Issuer: POST /credential → CredentialRequest
+//   30 Credential Issuer: validate credential request
+//   30.1 Credential Issuer: access token + DPoP (ath, jkt)
+//   30.2 Credential Issuer: credential configuration + proofs
+//   30.3 Credential Issuer: verify key attestation
+//   30.4 Credential Issuer: verify key proof (nonce, aud)
+//   31 Credential Issuer: create and sign credentials
+//   31.1 Credential Issuer: one credential per attested key
+//   31.2 Credential Issuer: sign SD-JWT VC (x5c)
+//   32 Credential Issuer → Wallet Unit: credentials → CredentialResponse
+//   33 Wallet Unit → Credential Issuer: POST /notification → NotificationRequest
+//   34 Credential Issuer → Wallet Unit: 204
+// pre-auth: Issuance — pre-authorized code flow, cross device. The user is authenticated on the issuer's website and scans a QR code with the wallet on a second device. The offer carries a pre-authorized code; a transaction code sent on a separate channel can bind it to the user. By the binding rules the token request still carries the WIA (CIR TR-WIA-3 does not depend on the grant). With d-you in the lens the steps show the messages recorded from a d-you issuance (IDGo 81, 2026-10-22): no transaction code, no WIA and no key attestation, encrypted Credential Request and Response, no notification endpoint.
 //   1 Wallet Provider → Wallet Unit: Wallet Instance Attestation → WalletInstanceAttestation
 //   2 Credential Issuer → Wallet Unit: QR code with credential_offer_uri → Offer
 //   3 Wallet Unit → Credential Issuer: GET credential_offer_uri → OfferFetch
@@ -119,9 +182,9 @@ export type WalletInstanceAttestation = {
     }
     client_status: { // MUST ⚠ · Revocation status of the Wallet instance: a status list reference and how long it is maintained. · "it shall maintain the revocation status of the relevant wallet instance until the 'wallet_instance_status.exp' indicated in that wallet instance attestation has passed." · "EAA-6.2.10.1-15: The wallet provider shall implement the attestation revocation mechanisms specified in EAA-6.2.10.1-02 in their wallet solution."
       status: { // MUST · Status list reference for the Wallet instance's revocation status. · "The wallet provider shall use the attestation status list mechanism (EAA-6.2.10.1-02.2) for the revocation of a wallet instance attestation (WIA)."
-        status_list?: { // Issuer: MUST when the status list mechanism is used · Reference to a status list: which list (uri) and which position in it (idx). [R7] [R8]
-          idx?: number // Issuer: MUST for the PID, qualified EAA and EAA provided by or on behalf of a public sector body responsible for an authentic source · Index of this token's entry in the status list. [R9]
-          uri?: string // Issuer: MUST · URL where the Status List Token can be fetched. [R10]
+        status_list?: { // auth-code-par, pre-auth: Issuer: MUST when the status list mechanism is used | nested-presentation: Issuer: MUST in an SD-JWT VC with a status claim · Reference to a status list: which list (uri) and which position in it (idx). [R7] [R8] [R9]
+          idx?: number // auth-code-par, pre-auth: Issuer: MUST for the PID, qualified EAA and EAA provided by or on behalf of a public sector body responsible for an authentic source | nested-presentation: Issuer: MUST · Index of this token's entry in the status list. [R10] [R11]
+          uri?: string // auth-code-par, pre-auth: Issuer: MUST | nested-presentation: Issuer: MUST · URL where the Status List Token can be fetched. [R12] [R13]
         }
       }
       exp: number // MUST · Until when the Wallet Provider keeps maintaining that status entry. · "'exp': a NumericDate, as specified in RFC 7519, defining the time until which the wallet provider will maintain the revocation status at the status list index referenced in 'status'."
@@ -133,144 +196,45 @@ export type WalletInstanceAttestation = {
 // rule: Issuer: MUST if issuer-initiated flows are supported; Wallet: MUST · "If Issuer-initiated flows are supported, they MUST use the Credential Offer as defined in Section 4.1 of [OIDF.OID4VCI]." · "Both Issuer and Wallet MUST support Credential Offer in both same-device and cross-device flows."
 export interface Offer {
   query: {
-    credential_offer?: { // only auth-code-par: MAY · The Credential Offer itself, passed by value as URL-encoded JSON. · "credential_offer: Object with the Credential Offer parameters. This MUST NOT be present when the credential_offer_uri parameter is present."
-      credential_issuer: string // only auth-code-par: MUST · Identifier (URL) of the Credential Issuer; the Wallet uses it to fetch the issuer metadata. [R11]
-      credential_configuration_ids: string[] // only auth-code-par: MUST · Which credentials are offered, as keys into credential_configurations_supported in the issuer metadata. [R12]
-      grants: { // only auth-code-par: MUST · Grant types the Wallet can use to obtain an access token for this offer, with their parameters. [R13]
-        authorization_code: { // only auth-code-par: MUST · Parameters for starting issuance with the authorization code flow. [R14]
-          issuer_state?: string // only auth-code-par: MAY · Opaque value the Wallet passes back in the authorization request so the issuer can link it to this offer. [R15]
+    credential_offer?: { // except pre-auth: MAY · The Credential Offer itself, passed by value as URL-encoded JSON. · "credential_offer: Object with the Credential Offer parameters. This MUST NOT be present when the credential_offer_uri parameter is present."
+      credential_issuer: string // except pre-auth: MUST · Identifier (URL) of the Credential Issuer; the Wallet uses it to fetch the issuer metadata. [R14]
+      credential_configuration_ids: string[] // except pre-auth: MUST · Which credentials are offered, as keys into credential_configurations_supported in the issuer metadata. [R15]
+      grants: { // except pre-auth: MUST · Grant types the Wallet can use to obtain an access token for this offer, with their parameters. [R16]
+        authorization_code: { // except pre-auth: MUST · Parameters for starting issuance with the authorization code flow. [R17]
+          issuer_state?: string // except pre-auth: MAY · Opaque value the Wallet passes back in the authorization request so the issuer can link it to this offer. [R18]
         }
       }
     }
     credential_offer_uri?: string // only pre-auth: MAY · URL where the Wallet fetches the Credential Offer, instead of receiving it inline. · "credential_offer_uri: String that is a URL using the https scheme referencing a resource containing a JSON object with the Credential Offer parameters. This MUST NOT be present when the credential_offer parameter is present."
   }
   body: {
-    credential_issuer: string // only auth-code-par: MUST [R11]
-    credential_configuration_ids: string[] // only auth-code-par: MUST [R12]
-    grants: { // only auth-code-par: MUST [R13]
-      authorization_code: { // only auth-code-par: MUST [R14]
-        issuer_state?: string // only auth-code-par: MAY [R15]
+    credential_issuer: string // except pre-auth: MUST [R14]
+    credential_configuration_ids: string[] // except pre-auth: MUST [R15]
+    grants: { // except pre-auth: MUST [R16]
+      authorization_code: { // except pre-auth: MUST [R17]
+        issuer_state?: string // except pre-auth: MAY [R18]
       }
     }
   }
 }
 // also:
-//   - URL scheme that invokes the Wallet: no rule · Custom URL scheme that makes the device open a Wallet with the Credential Offer.
-//   - tx_code: Issuer: MAY · Announces that a Transaction Code (PIN) is needed and how it looks; the code itself is sent to the user separately. · "tx_code: OPTIONAL. Object indicating that a Transaction Code is required if present, even if empty."
-//   - tx_code.input_mode: Issuer: MAY · Character set of the Transaction Code: numeric or text. · "input_mode : OPTIONAL. String specifying the input character set. Possible values are numeric (only digits) and text (any characters). The default is numeric."
-//   - tx_code.length: Issuer: MAY · Length of the Transaction Code, so the Wallet can render a fitting input field. · "length: OPTIONAL. Integer specifying the length of the Transaction Code."
-//   - tx_code.description: Issuer: MAY · Text the Wallet shows to tell the user where to find the Transaction Code. · "description: OPTIONAL. String containing guidance for the Holder of the Wallet on how to obtain the Transaction Code"
+//   - URL scheme that invokes the Wallet: Issuer: MAY · Custom URL scheme that makes the device open a Wallet with the Credential Offer. · "The d-you wallet is invoked with the openid-credential-offer:// scheme of OpenID4VCI, for an offer by value (authorization code flow) and by reference (pre-authorized code flow)."
 
-// ── Credential Issuer metadata ── GET /.well-known/openid-credential-issuer · Wallet Unit → Credential Issuer · steps auth-code-par 3, pre-auth 5
+// ── Credential Issuer metadata ── GET /.well-known/openid-credential-issuer · Wallet Unit → Credential Issuer · steps auth-code-par 3, nested-presentation 3, pre-auth 5
 // Configuration the Credential Issuer publishes: endpoints, offered credentials, supported algorithms and proofs.
-// rule: auth-code-par: Issuer: MUST | pre-auth: Issuer: MUST; Wallet: MUST · "The Credential Issuer MUST support returning metadata in an unsigned form 'application/json' and MAY support returning it in a signed form 'application/jwt'." · "The d-you wallet requests the Credential Issuer metadata with Accept: application/jwt only and accepts only the signed form; plain JSON is reported as invalid credential metadata."
+// rule: Issuer: MUST; Wallet: MUST · "The d-you wallet requests the Credential Issuer metadata with Accept: application/jwt only and accepts only the signed form; plain JSON is reported as invalid credential metadata."
 export interface Metadata {
   headers: {
     "Content-Type"?: string // Issuer: MUST · Signals that the metadata is returned as a signed JWT rather than plain JSON. · "MAY support returning it in a signed form 'application/jwt'. In all cases the Credential Issuer MUST indicate the media type of the returned Metadata using the HTTP Content-Type header."
   }
   body: SignedIssuerMetadata
 }
-/** JWS, produced by Issuer. */
-export type SignedIssuerMetadata = {
-  header: {
-    typ: string // MUST · Marks the signed metadata JWT as Credential Issuer metadata. · "typ: REQUIRED. MUST be openidvci-issuer-metadata+jwt"
-    alg: string // MUST [R1]
-    x5c: string[] // MUST; Wallet: MUST · Certificate chain of the key that signs the metadata, starting with the issuer's access certificate. · "A relying party that also issues EAAs signs its issuer metadata with its existing access certificate (same organisation identifier); it needs no separate access certificate as issuer." · "Key resolution to validate the signed Issuer Metadata MUST be supported using the x5c JOSE header parameter as defined in [RFC7515]. In this case, the X.509 certificate of the trust anchor MUST NOT be included in the x5c JOSE header of the signed request."
-  }
-  payload: {
-    sub: string // MUST · Credential Issuer Identifier the signed metadata is about. · "sub: REQUIRED. String matching the Credential Issuer Identifier"
-    iat: number // MUST · Time the signed metadata was issued. · "iat: REQUIRED. Integer for the time at which the Credential Issuer Metadata was issued using the syntax defined in [RFC7519]."
-    exp?: number // SHOULD · Time after which the signed metadata must no longer be used. · "Signed issuer metadata carries exp, 24 hours after iat."
-    credential_issuer: string // MUST · The Credential Issuer's identifier (URL); must match the URL the metadata was fetched for. · "credential_issuer: REQUIRED. The Credential Issuer's identifier, as defined in Section 12.2.1. The value MUST be identical to the Credential Issuer's identifier value into which the well-known URI string was inserted to create the URL used to retrieve the metadata."
-    credential_endpoint: string // MUST · URL of the Credential Endpoint where the Wallet requests credentials. · "credential_endpoint: REQUIRED. URL of the Credential Issuer's Credential Endpoint, as defined in Section 8.2. This URL MUST use the https scheme"
-    nonce_endpoint?: string // MUST if a credential configuration requires key binding · URL where the Wallet fetches a fresh c_nonce for its key proofs. · "If the Issuer supports Credential Configurations that require key binding, as indicated by the presence of cryptographic_binding_methods_supported, the nonce_endpoint MUST be present in the Credential Issuer Metadata."
-    notification_endpoint?: string // only auth-code-par: MAY · URL where the Wallet reports what happened to an issued credential (accepted, deleted, failed). · "notification_endpoint: OPTIONAL. URL of the Credential Issuer's Notification Endpoint, as defined in Section 11."
-    batch_credential_issuance?: { // only auth-code-par: MAY · Announces that several credentials can be issued in one request, one per proven key. Optional: an issuer may offer batch issuance, and one that does not support it simply omits the parameter. · "An issuer that does not support batch issuance omits batch_credential_issuance; the MUST is to indicate support by including or omitting the parameter, not to include it."
-      batch_size?: number // only auth-code-par: MUST when batch_credential_issuance is present · Maximum number of key proofs, and so credentials, in one Credential Request. · "batch_size: REQUIRED. Integer value specifying the maximum array size for the proofs parameter in a Credential Request. It MUST be 2 or greater."
-    }
-    preferred_client_status_period?: number // only auth-code-par: MAY; AS: MAY · How long the issuer would like the remaining status maintenance period in Wallet Instance Attestations to be. · "An authorisation server may communicate its preferences for the remaining status maintenance period in wallet instance attestations by including the 'preferred_client_status_period' metadata parameter in their Credential Issuer metadata endpoint"
-    issuer_info: { // MUST · Array of attestations about the issuer, such as its registration certificate or registrar data. · "The Issuer Metadata shall contain the issuer_info metadata parameter."
-      format: string // MUST · Format of the issuer_info element, e.g. registration_cert or registrar_dataset. · "The value of the format member of the element in the issuer_info array parameter that contains the PID/EAA Provider's registration certificate shall be "registration_cert"."
-      data: string | RegistrationCertificate // MUST · Content of the issuer_info element in the format named by format. · "The value of the data member of the element in the issuer_info array parameter that contains the PID/EAA Provider's registration certificate shall be the registration certificate of the PID/EAA Provider."
-    }[]
-    credential_configurations_supported: { // MUST · The credentials the issuer can issue, keyed by credential configuration identifier. · "credential_configurations_supported: REQUIRED. Object that describes specifics of the Credential that the Credential Issuer supports issuance of."
-      [credential_configuration_id: string]: { // no rule · Key naming one credential configuration; Credential Offers and Credential Requests refer to it.
-        format: string // MUST · Credential format of this configuration, e.g. dc+sd-jwt or mso_mdoc. · "format: REQUIRED. A JSON string identifying the format of this Credential"
-        vct?: string // MUST for the dc+sd-jwt Credential Format · Verifiable Credential Type of the SD-JWT VC issued under this configuration. · "vct: REQUIRED. String designating the type of the Credential, as defined in [I-D.ietf-oauth-sd-jwt-vc]."
-        scope: string // only auth-code-par: MUST · OAuth scope the Wallet can request to obtain this credential. · "The Credential Issuer metadata MUST include a scope for every Credential Configuration it supports."
-        cryptographic_binding_methods_supported?: string[] // MAY · How the credential can be bound to a holder key, e.g. jwk. · "It MUST be present when Cryptographic Key Binding is required for a Credential, and omitted otherwise."
-        credential_signing_alg_values_supported?: string[] // MAY · Algorithms the issuer signs this credential with. · "credential_signing_alg_values_supported: OPTIONAL. A non-empty array of algorithm identifiers that identify the algorithms that the Issuer uses to sign the issued Credential."
-        proof_types_supported?: { // auth-code-par: MUST where the credential issuer issues device-bound credentials | pre-auth: MUST · Key proof types the Wallet may send for this credential (jwt, attestation) and their requirements. · "Where a credential issuer issues device-bound credentials, it shall indicate in the 'proof_types_supported' parameter in its Issuer Credential Metadata, as specified in Section 12.2.4 OID4VCI, that it supports both the 'jwt' and the 'attestation' proof type for key attestations that shall include the 'key_attestations_required' object." · "Every credential configuration offered to the d-you wallet includes proof_types_supported; the wallet always binds the credential to a holder key and stops without it (No valid signing algorithms found in credential metadata)."
-          jwt?: { // no rule · Name of a proof type: jwt (key proof JWT) or attestation (key attestation alone).
-            proof_signing_alg_values_supported: string[] // MUST · Algorithms the issuer accepts for signing key proofs of this type. [R16]
-            key_attestations_required?: { // only auth-code-par: MAY (until 2028-01-01, then MUST) · Signals that key proofs must come with a key attestation, optionally with minimum key storage and user authentication levels. [R17]
-              key_storage?: string[] // only auth-code-par: MAY · Accepted levels of key storage and user authentication that the key attestation must state. [R18]
-              user_authentication?: string[] // only auth-code-par: MAY [R18]
-            }
-          }
-          attestation?: { // only auth-code-par: no rule
-            proof_signing_alg_values_supported: string[] // only auth-code-par: MUST [R16]
-            key_attestations_required?: { // only auth-code-par: MAY (until 2028-01-01, then MUST) [R17]
-              key_storage?: string[] // only auth-code-par: MAY [R18]
-              user_authentication?: string[] // only auth-code-par: MAY [R18]
-            }
-          }
-        }
-        credential_metadata?: { // MAY · Display and claim information about the credential, plus EUDI extensions such as the reuse policy. · "credential_metadata: OPTIONAL. Object containing information relevant to the usage and display of issued Credentials."
-          credential_reuse_policy?: { // only auth-code-par: MUST if id = arf_annex_ii and details contains once_only or per-relying-party · How often the Wallet may present one credential instance before it should use a fresh one. · "Where the id member has the value 'arf_annex_ii' and the array mapped to the label 'details' contains the value 'once_only' or the value 'per-relying-party', then the JSON Object that contains this array mapped to the label 'details' shall also contain a JSON number mapped to the label 'reissue_trigger_unused'."
-            id: string // only auth-code-par: MUST · Identifies which reuse policy scheme applies, e.g. arf_annex_ii. · "The credential_reuse_policy parameter shall have the id member, identifying the PID/EAA reuse policy."
-            options?: { // only auth-code-par: MAY · Details of the reuse policy: once-only or limited-time use, batch size and reissue trigger. · "The credential_reuse_policy parameter may have the options member for providing specific details of the reuse policy identified by the id member."
-              details?: string[] // only auth-code-par: MUST if id is arf_annex_ii · Kind of reuse limit: once_only or limited_time. · "If the id member has the value "arf_annex_ii" the element within the options member shall contain the member of label "details" mapped to an array of strings."
-              batch_size: number // only auth-code-par: MUST · Maximum number of proofs, and so credential instances, the Wallet requests in one batch. · "The JSON number mapped to the label "batch_size" shall specify the maximum array size for the proofs parameter in a Credential Request and shall be 2 or greater."
-              reissue_trigger_unused: number // only auth-code-par: MUST · When the Wallet holds fewer unused instances than this, it should request new ones. · "The JSON number mapped to the label "reissue_trigger_unused" shall specify the lower limit for the number of unused PIDs/EAAs held by the Wallet Unit."
-            }[]
-          }
-          display?: { // only pre-auth: MAY · Name of the credential as the Wallet shows it, one entry per language (name, locale). [R19]
-            name?: string // only pre-auth: MAY [R19]
-            locale?: string // only pre-auth: MAY [R19]
-          }[]
-          claims?: { // only pre-auth: MAY · The credential's claims, each with its path and display names per language. [R20]
-            path?: string[] // only pre-auth: MAY [R20]
-            display?: { // only pre-auth: MAY [R20]
-              name?: string // only pre-auth: MAY [R20]
-              locale?: string // only pre-auth: MAY [R20]
-            }[]
-          }[]
-        }
-      }
-    }
-    credential_response_encryption: { // only pre-auth: MUST · Whether and how the issuer can encrypt the Credential Response to a key the Wallet sends in the request. · "The Credential Issuer metadata includes credential_response_encryption; without it the d-you wallet stops before the Credential Request (responseEncryptionRequiredByWalletButNotSupportedByIssuer)."
-      alg_values_supported?: string[] // only pre-auth: MUST when credential_response_encryption is present · Key management algorithms (alg) the issuer can encrypt responses with, e.g. ECDH-ES. · "alg_values_supported: REQUIRED. A non-empty array containing a list of the JWE [RFC7516] encryption algorithms (alg values) [RFC7518] supported by the Credential Endpoint to encode the Credential Response in a JWT [RFC7519]."
-      enc_values_supported?: string[] // only pre-auth: MUST when credential_response_encryption is present · Content encryption algorithms (enc) the issuer can encrypt responses with, e.g. A128GCM, A256GCM. · "enc_values_supported: REQUIRED. A non-empty array containing a list of the JWE [RFC7516] encryption algorithms (enc values) [RFC7518] supported by the Credential Endpoint to encode the Credential Response in a JWT [RFC7519]."
-      encryption_required?: boolean // only pre-auth: MUST when credential_response_encryption is present · true: the Wallet must send a response encryption key in every Credential Request; false: the Wallet chooses. · "encryption_required: REQUIRED. Boolean value specifying whether the Credential Issuer requires the additional encryption on top of TLS for the Credential Response. If the value is true, the Credential Issuer requires encryption for every Credential Response and therefore the Wallet MUST provide encryption keys in the Credential Request."
-    }
-    display?: { // only pre-auth: MAY · Name of the Credential Issuer as the Wallet shows it, one entry per language (name, locale). [R21]
-      name?: string // only pre-auth: MAY [R21]
-      locale?: string // only pre-auth: MAY [R21]
-    }[]
-    credential_request_encryption: { // only pre-auth: MUST · Whether and how the Wallet can encrypt the Credential Request: the issuer's encryption keys and the accepted enc values. · "The Credential Issuer metadata includes credential_request_encryption, because the d-you wallet always sends a response encryption key and OpenID4VCI Section 8.2 then requires an encrypted Credential Request."
-      jwks: { // only pre-auth: MUST · JWK Set (an object with a keys array) of the issuer's public keys for encrypting the Credential Request; each key has a kid. [R22]
-        keys: { // only pre-auth: MUST [R22]
-          kty: string // only pre-auth: MUST [R22]
-          crv: string // only pre-auth: MUST [R22]
-          x: string // only pre-auth: MUST [R22]
-          y: string // only pre-auth: MUST [R22]
-          use: string // only pre-auth: MUST [R22]
-          kid: string // only pre-auth: MUST [R22]
-          alg: string // only pre-auth: MUST [R22]
-        }[]
-      }
-      enc_values_supported?: string[] // only pre-auth: MUST when credential_request_encryption is present · Content encryption algorithms (enc) the Credential Endpoint accepts for encrypted requests, e.g. A128GCM. · "enc_values_supported: REQUIRED. A non-empty array containing a list of the JWE [RFC7516] encryption algorithms (enc values) [RFC7518] supported by the Credential Endpoint to decode the Credential Request from a JWT [RFC7519]."
-      encryption_required?: boolean // only pre-auth: MUST when credential_request_encryption is present · true: every Credential Request must be encrypted; false: the Wallet chooses. · "encryption_required: REQUIRED. Boolean value specifying whether the Credential Issuer requires the additional encryption on top of TLS for the Credential Requests. If the value is true, the Credential Issuer requires encryption for every Credential Request. If the value is false, the Wallet MAY choose whether it encrypts the request or not."
-    }
-  }
-}
 /** JWS, produced by the registrar, served by the Issuer. */
 export type RegistrationCertificate = {
   header: {
     typ?: string // no rule · JWT from the registrar that states who the provider is and what it is registered for; carried in issuer_info.
     iat?: number // no rule
-    x5c?: string[] // MUST in an issued SD-JWT VC · X.509 certificate chain of the signing key, leaf first, each certificate base64 DER encoded. [R23]
+    x5c?: string[] // MUST in an issued SD-JWT VC · X.509 certificate chain of the signing key, leaf first, each certificate base64 DER encoded. [R19]
     alg: string // MUST [R1]
   }
   payload?: { // no rule
@@ -315,13 +279,108 @@ export type RegistrationCertificate = {
     jti?: string // no rule
   }
 }
+/** JWS, produced by Issuer. */
+export type SignedIssuerMetadata = {
+  header: {
+    x5c: string[] // MUST; Wallet: MUST · Certificate chain of the key that signs the metadata, starting with the issuer's access certificate. · "A relying party that also issues EAAs signs its issuer metadata with its existing access certificate (same organisation identifier); it needs no separate access certificate as issuer." · "Key resolution to validate the signed Issuer Metadata MUST be supported using the x5c JOSE header parameter as defined in [RFC7515]. In this case, the X.509 certificate of the trust anchor MUST NOT be included in the x5c JOSE header of the signed request."
+    typ: string // MUST · Marks the signed metadata JWT as Credential Issuer metadata. · "typ: REQUIRED. MUST be openidvci-issuer-metadata+jwt"
+    alg: string // MUST [R1]
+  }
+  payload: {
+    sub: string // MUST · Credential Issuer Identifier the signed metadata is about. · "sub: REQUIRED. String matching the Credential Issuer Identifier"
+    credential_issuer: string // MUST · The Credential Issuer's identifier (URL); must match the URL the metadata was fetched for. · "credential_issuer: REQUIRED. The Credential Issuer's identifier, as defined in Section 12.2.1. The value MUST be identical to the Credential Issuer's identifier value into which the well-known URI string was inserted to create the URL used to retrieve the metadata."
+    credential_response_encryption: { // MUST · Whether and how the issuer can encrypt the Credential Response to a key the Wallet sends in the request. · "The Credential Issuer metadata includes credential_response_encryption; without it the d-you wallet stops before the Credential Request (responseEncryptionRequiredByWalletButNotSupportedByIssuer)."
+      alg_values_supported?: string[] // MUST when credential_response_encryption is present · Key management algorithms (alg) the issuer can encrypt responses with, e.g. ECDH-ES. · "alg_values_supported: REQUIRED. A non-empty array containing a list of the JWE [RFC7516] encryption algorithms (alg values) [RFC7518] supported by the Credential Endpoint to encode the Credential Response in a JWT [RFC7519]."
+      enc_values_supported?: string[] // MUST when credential_response_encryption is present · Content encryption algorithms (enc) the issuer can encrypt responses with, e.g. A128GCM, A256GCM. · "enc_values_supported: REQUIRED. A non-empty array containing a list of the JWE [RFC7516] encryption algorithms (enc values) [RFC7518] supported by the Credential Endpoint to encode the Credential Response in a JWT [RFC7519]."
+      encryption_required?: boolean // MUST when credential_response_encryption is present · true: the Wallet must send a response encryption key in every Credential Request; false: the Wallet chooses. · "encryption_required: REQUIRED. Boolean value specifying whether the Credential Issuer requires the additional encryption on top of TLS for the Credential Response. If the value is true, the Credential Issuer requires encryption for every Credential Response and therefore the Wallet MUST provide encryption keys in the Credential Request."
+    }
+    display?: { // MAY · Name of the Credential Issuer as the Wallet shows it, one entry per language (name, locale). [R20]
+      name?: string // MAY [R20]
+      locale?: string // MAY [R20]
+    }[]
+    credential_request_encryption: { // MUST · Whether and how the Wallet can encrypt the Credential Request: the issuer's encryption keys and the accepted enc values. · "The Credential Issuer metadata includes credential_request_encryption, because the d-you wallet always sends a response encryption key and OpenID4VCI Section 8.2 then requires an encrypted Credential Request."
+      jwks: { // MUST · JWK Set (an object with a keys array) of the issuer's public keys for encrypting the Credential Request; each key has a kid. [R21]
+        keys: { // MUST [R21]
+          kty: string // MUST [R21]
+          crv: string // MUST [R21]
+          x: string // MUST [R21]
+          y: string // MUST [R21]
+          use: string // MUST [R21]
+          kid: string // MUST [R21]
+          alg: string // MUST [R21]
+        }[]
+      }
+      enc_values_supported?: string[] // MUST when credential_request_encryption is present · Content encryption algorithms (enc) the Credential Endpoint accepts for encrypted requests, e.g. A128GCM. · "enc_values_supported: REQUIRED. A non-empty array containing a list of the JWE [RFC7516] encryption algorithms (enc values) [RFC7518] supported by the Credential Endpoint to decode the Credential Request from a JWT [RFC7519]."
+      encryption_required?: boolean // MUST when credential_request_encryption is present · true: every Credential Request must be encrypted; false: the Wallet chooses. · "encryption_required: REQUIRED. Boolean value specifying whether the Credential Issuer requires the additional encryption on top of TLS for the Credential Requests. If the value is true, the Credential Issuer requires encryption for every Credential Request. If the value is false, the Wallet MAY choose whether it encrypts the request or not."
+    }
+    issuer_info: { // MUST · Array of attestations about the issuer, such as its registration certificate or registrar data. · "The Issuer Metadata shall contain the issuer_info metadata parameter."
+      format: string // MUST · Format of the issuer_info element, e.g. registration_cert or registrar_dataset. · "The value of the format member of the element in the issuer_info array parameter that contains the PID/EAA Provider's registration certificate shall be "registration_cert"."
+      data: string | RegistrationCertificate // MUST · Content of the issuer_info element in the format named by format. · "The value of the data member of the element in the issuer_info array parameter that contains the PID/EAA Provider's registration certificate shall be the registration certificate of the PID/EAA Provider."
+    }[]
+    credential_configurations_supported: { // MUST · The credentials the issuer can issue, keyed by credential configuration identifier. · "credential_configurations_supported: REQUIRED. Object that describes specifics of the Credential that the Credential Issuer supports issuance of."
+      [credential_configuration_id: string]: { // no rule · Key naming one credential configuration; Credential Offers and Credential Requests refer to it.
+        format: string // MUST · Credential format of this configuration, e.g. dc+sd-jwt or mso_mdoc. · "format: REQUIRED. A JSON string identifying the format of this Credential"
+        vct?: string // MUST for the dc+sd-jwt Credential Format · Verifiable Credential Type of the SD-JWT VC issued under this configuration. · "vct: REQUIRED. String designating the type of the Credential, as defined in [I-D.ietf-oauth-sd-jwt-vc]."
+        credential_signing_alg_values_supported?: string[] // MAY · Algorithms the issuer signs this credential with. · "credential_signing_alg_values_supported: OPTIONAL. A non-empty array of algorithm identifiers that identify the algorithms that the Issuer uses to sign the issued Credential."
+        scope?: string // auth-code-par, nested-presentation: MUST | pre-auth: MAY · OAuth scope the Wallet can request to obtain this credential. · "The Credential Issuer metadata MUST include a scope for every Credential Configuration it supports." · "A credential configuration that is only offered with a pre-authorized code needs no scope: the Wallet never requests it by scope, and the d-you wallet issues without one."
+        cryptographic_binding_methods_supported?: string[] // MAY · How the credential can be bound to a holder key, e.g. jwk. · "It MUST be present when Cryptographic Key Binding is required for a Credential, and omitted otherwise."
+        proof_types_supported: { // MUST · Key proof types the Wallet may send for this credential (jwt, attestation) and their requirements. · "Every credential configuration offered to the d-you wallet includes proof_types_supported; the wallet always binds the credential to a holder key and stops without it (No valid signing algorithms found in credential metadata)."
+          jwt?: { // no rule · Name of a proof type: jwt (key proof JWT) or attestation (key attestation alone).
+            proof_signing_alg_values_supported: string[] // MUST · Algorithms the issuer accepts for signing key proofs of this type. [R22]
+            key_attestations_required?: { // MAY (until 2028-01-01, then MUST) · Signals that key proofs must come with a key attestation, optionally with minimum key storage and user authentication levels. [R23]
+              key_storage?: string[] // MAY · Accepted levels of key storage and user authentication that the key attestation must state. [R24]
+              user_authentication?: string[] // MAY [R24]
+            }
+          }
+          attestation?: { // no rule
+            proof_signing_alg_values_supported: string[] // MUST [R22]
+            key_attestations_required?: { // MAY (until 2028-01-01, then MUST) [R23]
+              key_storage?: string[] // MAY [R24]
+              user_authentication?: string[] // MAY [R24]
+            }
+          }
+        }
+        credential_metadata?: { // MAY · Display and claim information about the credential, plus EUDI extensions such as the reuse policy. · "credential_metadata: OPTIONAL. Object containing information relevant to the usage and display of issued Credentials."
+          display?: { // MAY · Name of the credential as the Wallet shows it, one entry per language (name, locale). [R25]
+            name?: string // MAY [R25]
+            locale?: string // MAY [R25]
+          }[]
+          claims?: { // MAY · The credential's claims, each with its path and display names per language. [R26]
+            path?: string[] // MAY [R26]
+            display?: { // MAY [R26]
+              name?: string // MAY [R26]
+              locale?: string // MAY [R26]
+            }[]
+          }[]
+          credential_reuse_policy?: { // MUST if id = arf_annex_ii and details contains once_only or per-relying-party · How often the Wallet may present one credential instance before it should use a fresh one. · "Where the id member has the value 'arf_annex_ii' and the array mapped to the label 'details' contains the value 'once_only' or the value 'per-relying-party', then the JSON Object that contains this array mapped to the label 'details' shall also contain a JSON number mapped to the label 'reissue_trigger_unused'."
+            id: string // MUST · Identifies which reuse policy scheme applies, e.g. arf_annex_ii. · "The credential_reuse_policy parameter shall have the id member, identifying the PID/EAA reuse policy."
+            options?: { // MAY · Details of the reuse policy: once-only or limited-time use, batch size and reissue trigger. · "The credential_reuse_policy parameter may have the options member for providing specific details of the reuse policy identified by the id member."
+              details?: string[] // MUST if id is arf_annex_ii · Kind of reuse limit: once_only or limited_time. · "If the id member has the value "arf_annex_ii" the element within the options member shall contain the member of label "details" mapped to an array of strings."
+              batch_size: number // MUST · Maximum number of proofs, and so credential instances, the Wallet requests in one batch. · "The JSON number mapped to the label "batch_size" shall specify the maximum array size for the proofs parameter in a Credential Request and shall be 2 or greater."
+              reissue_trigger_unused: number // MUST · When the Wallet holds fewer unused instances than this, it should request new ones. · "The JSON number mapped to the label "reissue_trigger_unused" shall specify the lower limit for the number of unused PIDs/EAAs held by the Wallet Unit."
+            }[]
+          }
+        }
+      }
+    }
+    exp?: number // SHOULD · Time after which the signed metadata must no longer be used. · "Signed issuer metadata carries exp, 24 hours after iat."
+    nonce_endpoint?: string // MUST if a credential configuration requires key binding · URL where the Wallet fetches a fresh c_nonce for its key proofs. · "If the Issuer supports Credential Configurations that require key binding, as indicated by the presence of cryptographic_binding_methods_supported, the nonce_endpoint MUST be present in the Credential Issuer Metadata."
+    iat: number // MUST · Time the signed metadata was issued. · "iat: REQUIRED. Integer for the time at which the Credential Issuer Metadata was issued using the syntax defined in [RFC7519]."
+    credential_endpoint: string // MUST · URL of the Credential Endpoint where the Wallet requests credentials. · "credential_endpoint: REQUIRED. URL of the Credential Issuer's Credential Endpoint, as defined in Section 8.2. This URL MUST use the https scheme"
+    notification_endpoint?: string // MAY · URL where the Wallet reports what happened to an issued credential (accepted, deleted, failed). · "notification_endpoint: OPTIONAL. URL of the Credential Issuer's Notification Endpoint, as defined in Section 11."
+    batch_credential_issuance?: { // MAY · Announces that several credentials can be issued in one request, one per proven key. Optional: an issuer may offer batch issuance, and one that does not support it simply omits the parameter. · "An issuer that does not support batch issuance omits batch_credential_issuance; the MUST is to indicate support by including or omitting the parameter, not to include it."
+      batch_size?: number // MUST when batch_credential_issuance is present · Maximum number of key proofs, and so credentials, in one Credential Request. · "batch_size: REQUIRED. Integer value specifying the maximum array size for the proofs parameter in a Credential Request. It MUST be 2 or greater."
+    }
+    preferred_client_status_period?: number // MAY; AS: MAY · How long the issuer would like the remaining status maintenance period in Wallet Instance Attestations to be. · "An authorisation server may communicate its preferences for the remaining status maintenance period in wallet instance attestations by including the 'preferred_client_status_period' metadata parameter in their Credential Issuer metadata endpoint"
+  }
+}
 // also:
 //   - Signed metadata (application/jwt): Issuer: MUST; Wallet: MUST when ecosystem policies require issuer authentication beyond TLS · "The Issuer Metadata shall be a signed metadata according to clause 12.2.3 of OpenID4VCI [2] with a JSON Web Signature (JWS hereinafter) specified in IETF RFC 7515 [8]." · "When Ecosystem policies require Issuer Authentication to a higher level than possible with TLS alone, signed Credential Issuer Metadata as specified in Section 11.2.3 in [OIDF.OID4VCI] MUST be supported by both the Wallet and the Issuer."
 //   - authorization_servers: Issuer: MAY · Authorization servers the issuer trusts; absent means the issuer is its own authorization server. · "authorization_servers: OPTIONAL. A non-empty array of strings, where each string is an identifier of the OAuth 2.0 Authorization Server (as defined in [RFC8414]) the Credential Issuer relies on for authorization."
 //   - issuer_info element with format registration_cert: Issuer: MUST · issuer_info element carrying the provider's registration certificate. · "The registration certificate of an EAA provider carries the entitlement Service_Provider and lists the issued credential types in provides_attestations (format dc+sd-jwt, vct_values)."
 //   - issuer_info element with format registrar_dataset: no rule · issuer_info element carrying the provider's registration information provided by the registrar.
 
-// ── Wallet validates the signed Credential Issuer metadata ── Wallet Unit → Wallet Unit · steps auth-code-par 4, pre-auth 6
+// ── Wallet validates the signed Credential Issuer metadata ── Wallet Unit → Wallet Unit · steps auth-code-par 4, nested-presentation 4, pre-auth 6
 // The metadata tells the Wallet where to send the user, the WIA and the keys, so the Wallet trusts it only after checking who signed it. For a PID or EAA Provider the metadata is signed with its access certificate (ETSI TS 119 472-3 ISS-MDATA-4.2.1); a Wallet that cannot establish trust in the signer rejects it (OpenID4VCI §12.2.3).
 // rule: Wallet: MUST · "When requesting signed metadata, the Wallet MUST establish trust in the signer of the metadata. Otherwise, the Wallet MUST reject the signed metadata."
 // check Content-Type: application/jwt: the signed form. Plain JSON from a PID or EAA Provider: reject.
@@ -334,7 +393,7 @@ export type RegistrationCertificate = {
 // check iat / exp: iat not in the future; if exp is present, it lies in the future.
 // check credential_configurations_supported: Has an entry for every credential_configuration_id of the offer, e.g. gym_membership_sd_jwt.
 
-// ── Authorization Server metadata ── GET /.well-known/oauth-authorization-server · Wallet Unit → Authorization Server · steps auth-code-par 5, pre-auth 7
+// ── Authorization Server metadata ── GET /.well-known/oauth-authorization-server · Wallet Unit → Authorization Server · steps auth-code-par 5, nested-presentation 5, pre-auth 7
 // Configuration the authorization server publishes: endpoints, grant types and supported client authentication.
 // rule: AS: MUST · "The Authorization Server MUST support metadata according to [RFC8414]."
 export interface AsMetadata {
@@ -343,40 +402,66 @@ export interface AsMetadata {
   }
   body: {
     issuer?: string // AS: MUST · The authorization server's issuer identifier (URL); must match the URL the metadata was fetched for. · "issuer REQUIRED. The authorization server's issuer identifier, which is a URL that uses the "https" scheme and has no query or fragment components."
-    authorization_endpoint?: string // only auth-code-par: AS: MUST · URL of the authorization endpoint the user's browser is sent to. · "authorization_endpoint URL of the authorization server's authorization endpoint [RFC6749]. This is REQUIRED unless no grant types are supported that use the authorization endpoint."
+    authorization_endpoint?: string // AS: MUST · URL of the authorization endpoint the user's browser is sent to. · "authorization_endpoint URL of the authorization server's authorization endpoint [RFC6749]. This is REQUIRED unless no grant types are supported that use the authorization endpoint."
     token_endpoint?: string // AS: MUST · URL where the Wallet exchanges a code for an access token. · "token_endpoint URL of the authorization server's token endpoint [RFC6749]. This is REQUIRED unless only the implicit grant type is supported."
-    pushed_authorization_request_endpoint?: string // only auth-code-par: AS: SHOULD · URL where the Wallet pushes its authorization request before the browser redirect. · "Authorization servers supporting PAR SHOULD include the URL of their pushed authorization request endpoint in their authorization server metadata document [RFC8414] using the "pushed_authorization_request_endpoint" parameter"
-    require_pushed_authorization_requests?: boolean // only auth-code-par: AS: MAY · When true, the server only accepts authorization requests pushed through PAR. · "require_pushed_authorization_requests Boolean parameter indicating whether the authorization server accepts authorization request data only via PAR. If omitted, the default value is "false"."
+    pushed_authorization_request_endpoint?: string // AS: SHOULD · URL where the Wallet pushes its authorization request before the browser redirect. · "Authorization servers supporting PAR SHOULD include the URL of their pushed authorization request endpoint in their authorization server metadata document [RFC8414] using the "pushed_authorization_request_endpoint" parameter"
+    require_pushed_authorization_requests?: boolean // AS: MAY · When true, the server only accepts authorization requests pushed through PAR. · "require_pushed_authorization_requests Boolean parameter indicating whether the authorization server accepts authorization request data only via PAR. If omitted, the default value is "false"."
     response_types_supported?: string[] // AS: MUST · OAuth response types the server supports; code for the authorization code flow. · "response_types_supported REQUIRED. JSON array containing a list of the OAuth 2.0 "response_type" values that this authorization server supports."
     grant_types_supported?: string[] // AS: MAY · Grant types accepted at the token endpoint, e.g. authorization_code or pre-authorized_code. · "grant_types_supported OPTIONAL. JSON array containing a list of the OAuth 2.0 grant type values that this authorization server supports."
-    code_challenge_methods_supported?: string[] // only auth-code-par: AS: MAY · PKCE methods supported; S256 hashes the code verifier. · "code_challenge_methods_supported OPTIONAL. JSON array containing a list of Proof Key for Code Exchange (PKCE) [RFC7636] code challenge methods supported by this authorization server."
+    code_challenge_methods_supported?: string[] // AS: MAY · PKCE methods supported; S256 hashes the code verifier. · "code_challenge_methods_supported OPTIONAL. JSON array containing a list of Proof Key for Code Exchange (PKCE) [RFC7636] code challenge methods supported by this authorization server."
+    authorization_response_iss_parameter_supported?: boolean // AS: MAY · When true, the server adds iss to authorization responses so the client can detect mix-up attacks. · "authorization_response_iss_parameter_supported: Boolean parameter indicating whether the authorization server provides the iss parameter in the authorization response as defined in Section 2. If omitted, the default value is false."
     token_endpoint_auth_methods_supported?: string[] // AS: SHOULD · Client authentication methods accepted at the token endpoint, e.g. attest_jwt_client_auth. · "The Authorization Server SHOULD communicate support and requirement for authentication with Attestation-Based Client Authentication by using the value attest_jwt_client_auth in the token_endpoint_auth_methods_supported within its published metadata."
-    client_attestation_signing_alg_values_supported?: string[] // only auth-code-par: AS: MUST if token_endpoint_auth_methods_supported includes attest_jwt_client_auth · Algorithms accepted for signing the client attestation (WIA). · "The Authorization Server MUST include client_attestation_signing_alg_values_supported and client_attestation_pop_signing_alg_values_supported in its published metadata if the token_endpoint_auth_methods_supported includes attest_jwt_client_auth."
-    client_attestation_pop_signing_alg_values_supported?: string[] // only auth-code-par: AS: MUST if token_endpoint_auth_methods_supported includes attest_jwt_client_auth · Algorithms accepted for signing the client attestation PoP JWT. · "client_attestation_pop_signing_alg_values_supported in its published metadata if the token_endpoint_auth_methods_supported includes attest_jwt_client_auth."
-    dpop_signing_alg_values_supported?: string[] // auth-code-par: AS: MAY | pre-auth: AS: MUST · Algorithms accepted for signing DPoP proofs. · "dpop_signing_alg_values_supported: A JSON array containing a list of the JWS alg values (from the [IANA.JOSE.ALGS] registry) supported by the authorization server for DPoP proof JWTs." · "The Authorization Server metadata includes dpop_signing_alg_values_supported; without it the d-you wallet stops before the Token Request (ValidationError dpopRequired)."
-    authorization_response_iss_parameter_supported?: boolean // only auth-code-par: AS: MAY · When true, the server adds iss to authorization responses so the client can detect mix-up attacks. · "authorization_response_iss_parameter_supported: Boolean parameter indicating whether the authorization server provides the iss parameter in the authorization response as defined in Section 2. If omitted, the default value is false."
-    "pre-authorized_grant_anonymous_access_supported"?: boolean // only pre-auth: AS: MAY · true: the token endpoint accepts a pre-authorized code without a client_id, i.e. without client authentication. · "pre-authorized_grant_anonymous_access_supported: OPTIONAL. A boolean indicating whether the Credential Issuer accepts a Token Request with a Pre-Authorized Code but without a client_id. The default is false."
+    "pre-authorized_grant_anonymous_access_supported"?: boolean // AS: MAY · true: the token endpoint accepts a pre-authorized code without a client_id, i.e. without client authentication. · "pre-authorized_grant_anonymous_access_supported: OPTIONAL. A boolean indicating whether the Credential Issuer accepts a Token Request with a Pre-Authorized Code but without a client_id. The default is false."
+    dpop_signing_alg_values_supported?: string[] // AS: MUST · Algorithms accepted for signing DPoP proofs. · "The Authorization Server metadata includes dpop_signing_alg_values_supported; without it the d-you wallet stops before the Token Request (ValidationError dpopRequired)."
+    client_attestation_signing_alg_values_supported?: string[] // AS: MUST if token_endpoint_auth_methods_supported includes attest_jwt_client_auth · Algorithms accepted for signing the client attestation (WIA). · "The Authorization Server MUST include client_attestation_signing_alg_values_supported and client_attestation_pop_signing_alg_values_supported in its published metadata if the token_endpoint_auth_methods_supported includes attest_jwt_client_auth."
+    client_attestation_pop_signing_alg_values_supported?: string[] // AS: MUST if token_endpoint_auth_methods_supported includes attest_jwt_client_auth · Algorithms accepted for signing the client attestation PoP JWT. · "client_attestation_pop_signing_alg_values_supported in its published metadata if the token_endpoint_auth_methods_supported includes attest_jwt_client_auth."
   }
 }
 // also:
 //   - challenge_endpoint (not offered in this example): AS: MAY · URL where clients fetch a fresh challenge for the client attestation PoP. · "An Authorization Server MAY offer a challenge endpoint for Clients to fetch Challenges in the context of this specification."
 
-// ── Pushed Authorization Request ── POST /par · Wallet Unit → Authorization Server · steps auth-code-par 6
+// ── Pushed Authorization Request ── POST /par · Wallet Unit → Authorization Server · steps auth-code-par 6, nested-presentation 6
 export interface ParRequest {
   headers: {
     "Content-Type"?: string // no rule
-    "OAuth-Client-Attestation": WalletInstanceAttestation // MUST · The Wallet Instance Attestation: a JWT from the Wallet Provider that authenticates the Wallet as OAuth client. [R24]
-    "OAuth-Client-Attestation-PoP": ClientAttestationPoP // MUST · Short-lived JWT signed with the key in the WIA, proving the Wallet holds that key. [R25]
+    DPoP?: DPoPProof // AS: MUST · A DPoP proof on the PAR: the authorization server checks it and binds the authorization code to its key, as if dpop_jkt had been sent (RFC 9449 §10.1). · "Alternatively, the DPoP header can be added to the PAR request. In this case, the authorization server MUST check the provided DPoP proof JWT as defined in Section 4.3. It MUST further behave as if the contained public key's thumbprint was provided using dpop_jkt, i.e., reject the subsequent token request unless a DPoP proof for the same key is provided." · "Both mechanisms MUST be supported by an authorization server that supports PAR and DPoP."
+    "OAuth-Client-Attestation"?: WalletInstanceAttestation // MAY · The Wallet Instance Attestation: a JWT from the Wallet Provider that authenticates the Wallet as OAuth client. · "In the authorization code flow the d-you wallet sends no OAuth-Client-Attestation header in the Pushed Authorization Request; the request carries a DPoP proof instead."
+    "OAuth-Client-Attestation-PoP"?: ClientAttestationPoP // MAY · Short-lived JWT signed with the key in the WIA, proving the Wallet holds that key. · "In the authorization code flow the d-you wallet sends no OAuth-Client-Attestation-PoP header in the Pushed Authorization Request."
   }
   body: {
+    code_challenge: string // MUST; AS: MUST · PKCE: hash of a secret code verifier, so only this Wallet can later redeem the authorization code. [R27]
     response_type: string // MUST · Asks for an authorization code (value code). · "response_type REQUIRED. Value MUST be set to "code"."
-    client_id: string // MUST · The Wallet's OAuth client identifier; matches sub in the WIA. · "if applicable, the client_id value in the PAR request MUST be the string in the sub value in the client attestation JWT."
-    scope: string // MUST · Which credential the Wallet asks to be authorised for, as an OAuth scope. · "MUST use the scope parameter to communicate Credential Type(s) to be issued. The scope value MUST map to a specific Credential Type."
-    code_challenge: string // MUST; AS: MUST · PKCE: hash of a secret code verifier, so only this Wallet can later redeem the authorization code. [R26]
-    code_challenge_method: string // MUST; AS: MUST [R26]
-    redirect_uri?: string // MAY · Where the authorization server sends the user back with the code. · "redirect_uri OPTIONAL. As described in Section 3.1.2."
-    issuer_state?: string // MUST if the Credential Offer carried issuer_state · Value copied from the Credential Offer, linking this request to the offer. · "If the Wallet decides to use the Authorization Code Flow and received a value for this parameter, it MUST include it in the subsequent Authorization Request to the Authorization Server as the issuer_state parameter value."
     state?: string // SHOULD · Random value the Wallet checks on return to tie the response to its own request (CSRF protection). · "state RECOMMENDED. An opaque value used by the client to maintain state between the request and callback."
+    client_id?: string // MAY; AS: MAY · The Wallet's OAuth client identifier; matches sub in the WIA. · "Without a client attestation the rule does not apply ("if applicable"): client_id is the Wallet's own identifier, which the authorization server takes as given and only matches between PAR, authorization request and token request."
+    resource?: string // SHOULD when the Credential Issuer metadata contains authorization_servers · Resource indicator (RFC 8707): the protected resource the access token is meant for, here the Credential Issuer. · "If the Credential Issuer metadata contains an authorization_servers property, it is RECOMMENDED to use a resource parameter [RFC8707] whose value is the Credential Issuer's identifier value to allow the Authorization Server to differentiate Credential Issuers."
+    redirect_uri?: string // MAY · Where the authorization server sends the user back with the code. · "redirect_uri OPTIONAL. As described in Section 3.1.2."
+    scope: string // MUST · Which credential the Wallet asks to be authorised for, as an OAuth scope. · "MUST use the scope parameter to communicate Credential Type(s) to be issued. The scope value MUST map to a specific Credential Type."
+    issuer_state?: string // MUST if the Credential Offer carried issuer_state · Value copied from the Credential Offer, linking this request to the offer. · "If the Wallet decides to use the Authorization Code Flow and received a value for this parameter, it MUST include it in the subsequent Authorization Request to the Authorization Server as the issuer_state parameter value."
+    code_challenge_method: string // MUST; AS: MUST [R27]
+  }
+}
+/** JWS, produced by Wallet. */
+export type DPoPProof = {
+  header: {
+    alg: string // MUST [R1]
+    jwk: { // MUST · The DPoP public key; the access token gets bound to it. · "jwk: Represents the public key chosen by the client in JSON Web Key (JWK) [RFC7517] format as defined in Section 4.1.3 of [RFC7515]. It MUST NOT contain a private key."
+      kty: string // MUST [R3]
+      crv: string // MUST [R4]
+      x: string // MUST [R5]
+      y: string // MUST [R6]
+      alg?: string // MAY · Algorithm the key is meant for, e.g. ES256 for signing or ECDH-ES for key agreement. [R28]
+      kid?: string // MAY · Key ID: lets a JWS or JWE kid header, or a JWK Set lookup, pick this key. [R29]
+      use?: string // no rule · Intended use of the public key: sig (signatures) or enc (encryption and key agreement).
+    }
+    typ: string // MUST · Marks the JWT as a DPoP proof (dpop+jwt). · "typ: A field with the value dpop+jwt, which explicitly types the"
+  }
+  payload: {
+    iat: number // MUST · Time the proof was created. · "iat: Creation timestamp of the JWT (Section 4.1.6 of [RFC7519])."
+    jti: string // MUST · Unique identifier of the proof, used to detect replay. · "jti: Unique identifier for the DPoP proof JWT."
+    htu: string // MUST · HTTP URL (without query and fragment) of the request the proof belongs to. · "htu: The HTTP target URI (Section 7.1 of [RFC9110]) of the request to which the JWT is attached, without query and fragment parts."
+    htm: string // MUST · HTTP method of the request the proof belongs to. · "htm: The value of the HTTP method (Section 9.1 of [RFC9110]) of the request to which the JWT is attached."
+    ath?: string // MUST when the DPoP proof accompanies an access token at a protected resource · Hash of the access token, binding the proof to it at resource endpoints. · "ath: Hash of the access token. The value MUST be the result of a base64url encoding (as defined in Section 2 of [RFC7515]) the SHA-256 [SHS] hash of the ASCII encoding of the associated access token's value."
+    nonce?: string // MUST when the server provided a DPoP-Nonce header · Server-provided nonce from the DPoP-Nonce header, showing the proof is fresh. · "When the authentication server or resource server provides a DPoP-Nonce HTTP header in a response (see Sections 8 and 9), the DPoP proof MUST also contain the following claim: nonce: A recent nonce provided via the DPoP-Nonce HTTP header." · "In this case, the Wallet uses the new nonce value in the DPoP proof when presenting an access token at the Credential Endpoint."
   }
 }
 /** JWS, produced by Wallet. */
@@ -394,11 +479,11 @@ export type ClientAttestationPoP = {
 }
 // carries WalletInstanceAttestation (defined at Wallet Provider equips the Wallet Unit with WIA and key attestations)
 
-// ── Authorization server validates the Pushed Authorization Request ── Authorization Server → Authorization Server · steps auth-code-par 7
+// ── Authorization server validates the Pushed Authorization Request ── Authorization Server → Authorization Server · steps auth-code-par 7, nested-presentation 7
 // Before it stores the request and hands out a request_uri, the authorization server authenticates the Wallet with its Wallet Instance Attestation and the PoP, as it would at the token endpoint, and validates the pushed parameters as it would an authorization request (RFC 9126 §2.1, ETSI TS 119 472-3 clause 4.4.3). Any failure ends the flow with an error response; no request_uri is issued.
 // rule: AS: MUST · "The authorization server MUST process the request as follows: 1. Authenticate the client in the same way as at the token endpoint (Section 2.3 of [RFC6749])."
 
-// ── Authorization server verifies the WIA ── Authorization Server → Authorization Server · steps auth-code-par 7.1, auth-code-par 14.1, pre-auth 9.1
+// ── Authorization server verifies the WIA ── Authorization Server → Authorization Server · steps auth-code-par 7.1, auth-code-par 14.1, nested-presentation 7.1, nested-presentation 23.1, pre-auth 9.1
 // The Wallet Instance Attestation authenticates the Wallet as OAuth client: the Wallet Provider vouches for this Wallet solution and for the key in cnf. The authorization server checks it at every endpoint that authenticates the client, the PAR and the token endpoint (ETSI TS 119 472-3 AUTH-REQ-PROC-4.4.3, TOKEN-REQ-PROC-4.5.2; CIR TR-WIA-4).
 // rule: AS: MUST where the authorisation server receives a WIA · "Where an authorisation server receives a wallet instance attestation, it shall verify the signature of the wallet instance attestation using the public key in the signing certificate included in the 'x5c' parameter … The authorisation server shall verify that the wallet instance attestation has not expired. … The authorisation server shall verify the signature of the PoP under the public key present in the 'cnf' claim." · "EAA-6.2.10.1-16: The provider of person identification data and the provider of electronic attestations of attributes shall support both the attestation status list mechanism and the attestation revocation list mechanism specified in EAA-6.2.10.1-02 for verifying the revocation status of a wallet instance attestation (WIA)"
 // check OAuth-Client-Attestation: Exactly one such header, holding a single well-formed JWT (attestation-based client auth §6.2).
@@ -412,7 +497,7 @@ export type ClientAttestationPoP = {
 // check cnf.jwk: A public JWK, not a private key. The PoP must verify with it.
 // check client_status: The Wallet Unit's entry in the referenced status list is valid; a revoked Wallet Unit is refused (CIR EAA-6.2.10.1-16).
 
-// ── Authorization server verifies the Client Attestation PoP ── Authorization Server → Authorization Server · steps auth-code-par 7.2, auth-code-par 14.2, pre-auth 9.2
+// ── Authorization server verifies the Client Attestation PoP ── Authorization Server → Authorization Server · steps auth-code-par 7.2, auth-code-par 14.2, nested-presentation 7.2, nested-presentation 23.2, pre-auth 9.2
 // The PoP proves that the Wallet sending this request holds the private key the WIA names in cnf, and that the proof was made for this authorization server just now. Without it a copied WIA would authenticate anyone (attestation-based client auth §5.2, §9).
 // rule: AS: MUST · "The signature of the Client Attestation PoP JWT verifies with the public key contained in the cnf claim of the Client Attestation JWT. 8. If the server provided a challenge value to the client, the challenge claim is present in the Client Attestation PoP JWT and matches the server-provided challenge value. 9. The creation time of the Client Attestation PoP JWT as determined by either the iat claim or a server managed timestamp via the challenge claim, is within an acceptable window. 10. The audience claim in the Client Attestation PoP JWT is the issuer identifier URL of the authorization server" · "The value of the iss claim, representing the client_id MUST match the value of the sub claim in the corresponding Client Attestation JWT."
 // check OAuth-Client-Attestation-PoP: Exactly one such header, holding a single well-formed JWT.
@@ -425,7 +510,7 @@ export type ClientAttestationPoP = {
 // check jti: Not seen before within that window. A repeated jti is a replay: reject.
 // check challenge: Only if the server handed out a challenge: present and equal to it, else use_attestation_challenge. This example offers no challenge endpoint, so freshness rests on iat and jti.
 
-// ── Authorization server checks the pushed authorization parameters ── Authorization Server → Authorization Server · steps auth-code-par 7.3
+// ── Authorization server checks the pushed authorization parameters ── Authorization Server → Authorization Server · steps auth-code-par 7.3, nested-presentation 7.3
 // The pushed parameters are validated as an authorization request would be at the authorization endpoint (RFC 9126 §2.1). The server stores them, in particular code_challenge and redirect_uri, for the token request.
 // rule: AS: MUST · "Reject the request if the "request_uri" authorization request parameter is provided. 3. Validate the pushed request as it would an authorization request sent to the authorization endpoint." · "If a client_id is provided in the request containing the Client Attestation, then this client_id matches the sub claim of the Client Attestation JWT and the iss claim of the Client Attestation PoP JWT."
 // check request_uri: Absent. A PAR request that carries request_uri: reject (RFC 9126 §2.1).
@@ -436,11 +521,11 @@ export type ClientAttestationPoP = {
 // check scope: The scope of a credential configuration in the issuer metadata, e.g. gym_membership. Unknown scope: invalid_scope.
 // check issuer_state: If present, the value of a Credential Offer this issuer made that has not expired; it links the request to that offer.
 
-// ── PAR response (201) ── Authorization Server → Wallet Unit · steps auth-code-par 8
+// ── PAR response (201) ── Authorization Server → Wallet Unit · steps auth-code-par 8, nested-presentation 8
 export interface ParResponse {
   headers: {
-    "Content-Type"?: string // no rule
     "Cache-Control"?: string // no rule · Caching directives; responses carrying tokens or nonces use no-store so intermediaries keep no copy.
+    "Content-Type"?: string // no rule
   }
   body: {
     request_uri: string // MUST · Reference to the pushed request; the Wallet puts it into the browser redirect instead of the full request. · "request_uri The request URI corresponding to the authorization request posted."
@@ -448,21 +533,23 @@ export interface ParResponse {
   }
 }
 
-// ── Authorization Request (front channel) ── GET /authorize · Wallet Unit → Authorization Server · steps auth-code-par 9
+// ── Authorization Request (front channel) ── GET /authorize · Wallet Unit → Authorization Server · steps auth-code-par 9, nested-presentation 9
 export interface AuthorizationRequest {
   query: {
+    state?: string // AS: MUST · The pushed state repeated in the front channel. With PAR only client_id and request_uri are needed; the authorization server echoes the pushed state. · "The authorization server MUST only use the parameters in the Request Object, even if the same parameter is provided in the query parameter."
+    request_uri: string // MUST · Reference returned by PAR that stands for the pushed authorization request. [R30]
     client_id: string // MUST · The Wallet's client identifier, repeated so the server can match the pushed request. · "client_id REQUIRED. The client identifier as described in Section 2.2."
-    request_uri: string // MUST · Reference returned by PAR that stands for the pushed authorization request. · "The client uses the "request_uri" value returned by the authorization server to build an authorization request as defined in [RFC9101]."
   }
 }
 
 // ── Authorization server authenticates the user and gathers consent ── Authorization Server → Authorization Server · steps auth-code-par 10
 
-// ── Authorization Response (redirect) ── Authorization Server → Wallet Unit · steps auth-code-par 11
+// ── Authorization Response (redirect) ── Authorization Server → Wallet Unit · steps auth-code-par 11, nested-presentation 20
 // rule: AS: MUST · "Authorization Responses MUST be made as defined in [RFC6749]."
-export interface AuthorizationResponse {
+export interface AuthorizationResponseMessage {
   headers: {
     Location?: string // no rule · URL the client is sent to or where a created resource lives.
+    "Cache-Control"?: string // no rule
   }
   query: {
     code: string // MUST · Short-lived, single-use authorization code the Wallet exchanges for an access token. · "code REQUIRED. The authorization code generated by the authorization server."
@@ -471,64 +558,39 @@ export interface AuthorizationResponse {
   }
 }
 
-// ── Wallet checks state and iss of the authorization response ── Wallet Unit → Wallet Unit · steps auth-code-par 12
+// ── Wallet checks state and iss of the authorization response ── Wallet Unit → Wallet Unit · steps auth-code-par 12, nested-presentation 21
 // The redirect back to the Wallet can be forged or come from another authorization server (mix-up). The Wallet only redeems the code after state and iss match the request it sent (RFC 9207 §2.4).
 // rule: Wallet: MUST · "If the value does not match the expected issuer identifier, clients MUST reject the authorization response and MUST NOT proceed with the authorization grant. … clients that interact with authorization servers supporting OAuth metadata [RFC8414] MUST compare the iss parameter value to the issuer value in the server's metadata document."
 // check state: Equals the state the Wallet pushed in the PAR request. Mismatch: reject.
 // check iss: Equals, by simple string comparison, the issuer in the metadata of the authorization server the request was sent to, e.g. https://eaa.example.eu. Mismatch: reject and do not redeem the code.
 // check code: Present; redeemed once, at the token endpoint of that same authorization server.
 
-// ── Token Request ── POST /token · Wallet Unit → Authorization Server · steps auth-code-par 13, pre-auth 8
+// ── Token Request ── POST /token · Wallet Unit → Authorization Server · steps auth-code-par 13, nested-presentation 22, pre-auth 8
 // rule: Wallet: MUST · "The Token Request is made as defined in Section 4.1.3 of [RFC6749]."
 export interface TokenRequest {
   headers: {
     "Content-Type"?: string // no rule
-    "OAuth-Client-Attestation": WalletInstanceAttestation // only auth-code-par: MUST · The Wallet Instance Attestation, authenticating the Wallet at the token endpoint. [R24]
-    "OAuth-Client-Attestation-PoP": ClientAttestationPoP // only auth-code-par: MUST · Proof of possession of the WIA key for this token request. [R25]
-    DPoP: DPoPProof // MUST; AS: MUST · DPoP proof JWT; binds the access token to be issued to the Wallet's DPoP key. [R27]
+    DPoP: DPoPProof // MUST; AS: MUST · DPoP proof JWT; binds the access token to be issued to the Wallet's DPoP key. [R31]
+    "OAuth-Client-Attestation"?: WalletInstanceAttestation // auth-code-par, nested-presentation: MAY | pre-auth: MAY · The Wallet Instance Attestation, authenticating the Wallet at the token endpoint. · "In the authorization code flow the d-you wallet sends no OAuth-Client-Attestation header in the Token Request; the request carries only the DPoP proof." · "In the pre-authorized code flow the d-you wallet sends no OAuth-Client-Attestation header in the Token Request; the request carries only the DPoP proof."
+    "OAuth-Client-Attestation-PoP"?: ClientAttestationPoP // auth-code-par, nested-presentation: MAY | pre-auth: MAY · Proof of possession of the WIA key for this token request. · "In the authorization code flow the d-you wallet sends no OAuth-Client-Attestation-PoP header in the Token Request." · "In the pre-authorized code flow the d-you wallet sends no OAuth-Client-Attestation-PoP header in the Token Request."
   }
   body: {
+    redirect_uri?: string // except pre-auth: MUST if redirect_uri was included in the authorization request · Same redirect_uri as in the authorization request. · "redirect_uri REQUIRED, if the "redirect_uri" parameter was included in the authorization request as described in Section 4.1.1, and their values MUST be identical."
+    code_verifier: string // except pre-auth: MUST · PKCE secret whose hash was sent as code_challenge; proves the Wallet started the flow. [R27]
+    client_id?: string // MAY · Identifier of the Wallet as OAuth client; only needed in the pre-authorized code flow when a client authentication method relies on it. · "For the Pre-Authorized Code Grant Type, authentication of the Client is OPTIONAL, as described in Section 3.2.1 of OAuth 2.0 [RFC6749], and, consequently, the client_id parameter is only needed when a form of Client Authentication that relies on this parameter is used."
     grant_type: string // MUST · Which grant the Wallet redeems: authorization_code or the pre-authorized code grant. · "grant_type REQUIRED. Value MUST be set to "authorization_code"."
-    code: string // only auth-code-par: MUST · The authorization code received in the authorization response. · "code REQUIRED. The authorization code received from the authorization server."
-    code_verifier: string // only auth-code-par: MUST · PKCE secret whose hash was sent as code_challenge; proves the Wallet started the flow. [R26]
-    redirect_uri?: string // only auth-code-par: MUST if redirect_uri was included in the authorization request · Same redirect_uri as in the authorization request. · "redirect_uri REQUIRED, if the "redirect_uri" parameter was included in the authorization request as described in Section 4.1.1, and their values MUST be identical."
+    code: string // except pre-auth: MUST · The authorization code received in the authorization response. · "code REQUIRED. The authorization code received from the authorization server."
     "pre-authorized_code": string // only pre-auth: MUST · The pre-authorized code from the Credential Offer. · "pre-authorized_code: The code representing the authorization to obtain Credentials of a certain type. This parameter MUST be present if the grant_type is urn:ietf:params:oauth:grant-type:pre-authorized_code."
-    client_id?: string // only pre-auth: MAY · Identifier of the Wallet as OAuth client; only needed in the pre-authorized code flow when a client authentication method relies on it. · "For the Pre-Authorized Code Grant Type, authentication of the Client is OPTIONAL, as described in Section 3.2.1 of OAuth 2.0 [RFC6749], and, consequently, the client_id parameter is only needed when a form of Client Authentication that relies on this parameter is used."
+    tx_code?: string // only pre-auth: MUST if a tx_code object was present in the Credential Offer · Transaction Code the user entered, delivered to them on a separate channel. · "tx_code: OPTIONAL. String value containing a Transaction Code value itself. This value MUST be present if a tx_code object was present in the Credential Offer (including if the object was empty)."
   }
 }
-/** JWS, produced by Wallet. */
-export type DPoPProof = {
-  header: {
-    typ: string // MUST · Marks the JWT as a DPoP proof (dpop+jwt). · "typ: A field with the value dpop+jwt, which explicitly types the"
-    alg: string // MUST [R1]
-    jwk: { // MUST · The DPoP public key; the access token gets bound to it. · "jwk: Represents the public key chosen by the client in JSON Web Key (JWK) [RFC7517] format as defined in Section 4.1.3 of [RFC7515]. It MUST NOT contain a private key."
-      kty: string // MUST [R3]
-      crv: string // MUST [R4]
-      x: string // MUST [R5]
-      y: string // MUST [R6]
-      alg?: string // only pre-auth: MAY · Algorithm the key is meant for, e.g. ES256 for signing or ECDH-ES for key agreement. [R28]
-      kid?: string // only pre-auth: MAY · Key ID: lets a JWS or JWE kid header, or a JWK Set lookup, pick this key. [R29]
-      use?: string // only pre-auth: no rule · Intended use of the public key: sig (signatures) or enc (encryption and key agreement).
-    }
-  }
-  payload: {
-    jti: string // MUST · Unique identifier of the proof, used to detect replay. · "jti: Unique identifier for the DPoP proof JWT."
-    htm: string // MUST · HTTP method of the request the proof belongs to. · "htm: The value of the HTTP method (Section 9.1 of [RFC9110]) of the request to which the JWT is attached."
-    htu: string // MUST · HTTP URL (without query and fragment) of the request the proof belongs to. · "htu: The HTTP target URI (Section 7.1 of [RFC9110]) of the request to which the JWT is attached, without query and fragment parts."
-    iat: number // MUST · Time the proof was created. · "iat: Creation timestamp of the JWT (Section 4.1.6 of [RFC7519])."
-    nonce?: string // MUST when the server provided a DPoP-Nonce header · Server-provided nonce from the DPoP-Nonce header, showing the proof is fresh. · "When the authentication server or resource server provides a DPoP-Nonce HTTP header in a response (see Sections 8 and 9), the DPoP proof MUST also contain the following claim: nonce: A recent nonce provided via the DPoP-Nonce HTTP header." · "In this case, the Wallet uses the new nonce value in the DPoP proof when presenting an access token at the Credential Endpoint."
-    ath?: string // MUST when the DPoP proof accompanies an access token at a protected resource · Hash of the access token, binding the proof to it at resource endpoints. · "ath: Hash of the access token. The value MUST be the result of a base64url encoding (as defined in Section 2 of [RFC7515]) the SHA-256 [SHS] hash of the ASCII encoding of the associated access token's value."
-  }
-}
-// carries WalletInstanceAttestation (defined at Wallet Provider equips the Wallet Unit with WIA and key attestations), ClientAttestationPoP (defined at Pushed Authorization Request)
-// also:
-//   - tx_code: Wallet: MUST if a tx_code object was present in the Credential Offer · Transaction Code the user entered, delivered to them on a separate channel. · "tx_code: OPTIONAL. String value containing a Transaction Code value itself. This value MUST be present if a tx_code object was present in the Credential Offer (including if the object was empty)."
+// carries DPoPProof (defined at Pushed Authorization Request), WalletInstanceAttestation (defined at Wallet Provider equips the Wallet Unit with WIA and key attestations), ClientAttestationPoP (defined at Pushed Authorization Request)
 
-// ── Authorization server validates the Token Request ── Authorization Server → Authorization Server · steps auth-code-par 14, pre-auth 9
+// ── Authorization server validates the Token Request ── Authorization Server → Authorization Server · steps auth-code-par 14, nested-presentation 23, pre-auth 9
 // The token endpoint authenticates the Wallet again with WIA and PoP (ETSI TS 119 472-3 TOKEN-REQ-PROC-4.5.2; CIR TR-WIA-3 does not depend on the grant), checks the DPoP proof whose key the access token will be bound to, and redeems the grant. Only if every check passes does it issue a DPoP-bound access token; a failed check returns an error per RFC 6749 §5.2 (invalid_client, invalid_dpop_proof, invalid_grant).
 // rule: AS: MUST · "The DPoP HTTP header field MUST contain a valid DPoP proof JWT. If the DPoP proof is invalid, the authorization server issues an error response per Section 5.2 of [RFC6749] with invalid_dpop_proof as the" · "The requirements specified in Sections 4.1.3 and 3.2.1 of [RFC6749] MUST be followed."
 
-// ── Server verifies the DPoP proof ── Authorization Server → Authorization Server · steps auth-code-par 14.3, pre-auth 9.3
+// ── Server verifies the DPoP proof ── Authorization Server → Authorization Server · steps auth-code-par 14.3, nested-presentation 23.3, pre-auth 9.3
 // A DPoP proof is a fresh JWT for one HTTP request, signed with the Wallet's DPoP key. At the token endpoint it fixes the key the access token gets bound to; at the Credential and Notification Endpoints it proves that the sender of the token holds that key (RFC 9449 §4.3).
 // rule: Issuer: MUST; AS: MUST · "To validate a DPoP proof, the receiving server MUST ensure the following: … The typ JOSE Header Parameter has the value dpop+jwt. … The JWT signature verifies with the public key contained in the jwk JOSE Header Parameter. 7. The jwk JOSE Header Parameter does not contain a private key. 8. The htm claim matches the HTTP method of the current request. 9. The htu claim matches the HTTP URI value for the HTTP request in which the JWT was received, ignoring any query and fragment parts. 10. If the server provided a nonce value to the client, the nonce claim matches the server-provided nonce value."
 // check DPoP header: Not more than one DPoP header, holding a single well-formed JWT with all required claims.
@@ -542,7 +604,7 @@ export type DPoPProof = {
 // check jti: Not seen before within that window. A repeated jti is a replay: reject.
 // check nonce: If the server handed out a DPoP-Nonce: equals it, else use_dpop_nonce with a fresh one.
 
-// ── Authorization server redeems the authorization code with PKCE ── Authorization Server → Authorization Server · steps auth-code-par 14.4
+// ── Authorization server redeems the authorization code with PKCE ── Authorization Server → Authorization Server · steps auth-code-par 14.4, nested-presentation 23.4
 // The code stands for the user's authentication and consent at the authorization endpoint. PKCE ties it to the Wallet that started the flow: only that Wallet knows the code_verifier behind the code_challenge it pushed (RFC 6749 §4.1.3, RFC 7636 §4.6).
 // rule: AS: MUST · "The authorization server MUST: … ensure that the authorization code was issued to the authenticated confidential client, or if the client is public, ensure that the code was issued to "client_id" in the request, o verify that the authorization code is valid, and o ensure that the "redirect_uri" parameter is present if the "redirect_uri" parameter was included in the initial authorization request as described in Section 4.1.1, and if included ensure that their values are identical." · "If the values are equal, the token endpoint MUST continue processing as normal (as defined by OAuth 2.0 [RFC6749]). If the values are not equal, an error response indicating "invalid_grant" as described in Section 5.2 of [RFC6749] MUST be returned."
 // check grant_type: authorization_code.
@@ -550,44 +612,44 @@ export type DPoPProof = {
 // check redirect_uri: Present and identical to the redirect_uri of the pushed authorization request, e.g. https://wallet.example.eu/cb.
 // check code_verifier: BASE64URL(SHA-256(code_verifier)) equals the code_challenge of the pushed request. Mismatch: invalid_grant.
 
-// ── Token Response ── Authorization Server → Wallet Unit · steps auth-code-par 15, pre-auth 10
+// ── Token Response ── Authorization Server → Wallet Unit · steps auth-code-par 15, nested-presentation 24, pre-auth 10
 export interface TokenResponse {
   headers: {
-    "Content-Type"?: string // no rule
     "Cache-Control": string // MUST · Keeps the token response out of any cache. · "The authorization server MUST include the HTTP "Cache-Control" response header field [RFC2616] with a value of "no-store" in any response containing tokens"
     Pragma: string // MUST · Legacy HTTP/1.0 header that also disables caching of the token response. · "as well as the "Pragma" response header field [RFC2616] with a value of "no-cache"."
+    "Content-Type"?: string // no rule
   }
   body: {
     access_token: string // MUST · Token the Wallet presents at the Credential Endpoint. · "access_token REQUIRED. The access token issued by the authorization server."
     token_type: string // MUST · How the access token is used; DPoP means it is bound to the Wallet's DPoP key. · "A token_type of DPoP MUST be"
     expires_in?: number // SHOULD · Lifetime of the access token in seconds. · "expires_in RECOMMENDED. The lifetime in seconds of the access token."
-    refresh_token?: string // only auth-code-par: MAY · Token the Wallet can use later to get a new access token, e.g. to refresh credentials, without user interaction. · "refresh_token OPTIONAL. The refresh token, which can be used to obtain new access tokens using the same authorization grant"
+    refresh_token?: string // MAY · Token the Wallet can use later to get a new access token, e.g. to refresh credentials, without user interaction. · "refresh_token OPTIONAL. The refresh token, which can be used to obtain new access tokens using the same authorization grant"
   }
 }
 // also:
 //   - authorization_details[].credential_identifiers: AS: MUST when authorization_details of type openid_credential is returned · Identifiers of the specific credential datasets the access token covers; the Wallet may name them in the Credential Request. · "credential_identifiers: REQUIRED. A non-empty array of strings, each uniquely identifying a Credential Dataset that can be issued using the Access Token returned in this response."
 
-// ── Nonce Request ── POST /nonce · Wallet Unit → Credential Issuer · steps auth-code-par 16, pre-auth 11
+// ── Nonce Request ── POST /nonce · Wallet Unit → Credential Issuer · steps auth-code-par 16, nested-presentation 25, pre-auth 11
 export interface NonceRequest {
   headers: {
+    "Content-Type"?: string // no rule
     "Content-Length"?: string // no rule · Size of the HTTP body in bytes.
-    "Content-Type"?: string // only pre-auth: no rule
   }
 }
 
-// ── Nonce Response ── Credential Issuer → Wallet Unit · steps auth-code-par 17, pre-auth 12
+// ── Nonce Response ── Credential Issuer → Wallet Unit · steps auth-code-par 17, nested-presentation 26, pre-auth 12
 export interface NonceResponse {
   headers: {
-    "Content-Type"?: string // no rule
     "Cache-Control": string // MUST · Keeps the nonce response out of any cache. · "the Credential Issuer MUST make the response uncacheable by adding a Cache-Control header field including the value no-store."
-    "DPoP-Nonce"?: string // only auth-code-par: MAY; AS: MAY · Server-provided nonce the Wallet must include in its next DPoP proofs. · "The authorization server includes a DPoP-Nonce HTTP header in the response supplying a nonce value to be used when sending the subsequent request. Nonce values MUST be unpredictable." · "The Credential Issuer MAY provide a DPoP nonce in an HTTP header as defined in Section 8.2 of [RFC9449]."
+    "Content-Type"?: string // no rule
+    "DPoP-Nonce"?: string // MAY; AS: MAY · Server-provided nonce the Wallet must include in its next DPoP proofs. · "The authorization server includes a DPoP-Nonce HTTP header in the response supplying a nonce value to be used when sending the subsequent request. Nonce values MUST be unpredictable." · "The Credential Issuer MAY provide a DPoP nonce in an HTTP header as defined in Section 8.2 of [RFC9449]."
   }
   body: {
     c_nonce: string // MUST · Fresh nonce from the issuer that the Wallet puts into its key proofs, showing they were made just now. · "c_nonce: REQUIRED. String containing a challenge to be used when creating a proof of possession of the key (see Section 8.2). It is at the discretion of the Credential Issuer when to return a new challenge value as opposed to the one returned in the previous request. New challenge values MUST be unpredictable."
   }
 }
 
-// ── Wallet obtains a key attestation bound to the c_nonce ── Wallet Unit → Wallet Provider · steps auth-code-par 18, auth-code-par 19, pre-auth 13, pre-auth 14
+// ── Wallet obtains a key attestation bound to the c_nonce ── Wallet Unit → Wallet Provider · steps auth-code-par 18, auth-code-par 19, nested-presentation 27, nested-presentation 28, pre-auth 13, pre-auth 14
 // rule: Wallet: MUST · "A wallet unit shall use a key attestation during at most one credential issuance or re-issuance process."
 /** JWS, produced by WP. */
 export type KeyAttestation = {
@@ -597,7 +659,7 @@ export type KeyAttestation = {
     x5c: string[] // MUST; Issuer: MUST · Certificate chain of the Wallet Provider key that signs the key attestation. · "The public key used to validate the signature on the key attestation MUST be included in the x5c JOSE header of the key attestation The X.509 certificate of the trust anchor MUST NOT be included in the x5c JOSE header of the key attestation." · "it shall verify the signature of the key attestation under the public key in the signing certificate included in the 'x5c' parameter in the JOSE header of the key attestation"
   }
   payload: {
-    iss?: string // MAY · Issuer of the JWT: who created and signed it. · "The "iss" (issuer) claim identifies the principal that issued the JWT."
+    iss?: string // MAY · Issuer of the JWT: who created and signed it. [R32]
     iat?: number // MAY [R2]
     exp?: number // MAY · Expiry of the key attestation. · "exp: OPTIONAL (number). Integer for the time at which the key attestation and the key(s) it is attesting expire, using the syntax defined in [RFC7519]. MUST be present if the attestation is used with the JWT proof type."
     nonce?: string // MUST when the key attestation travels in a jwt proof and the Credential Issuer provided a c_nonce; Wallet: MUST when the key attestation travels in a jwt proof and the Credential Issuer provided a c_nonce · The issuer's c_nonce, when the key attestation itself serves as fresh proof. · "key_attestation: OPTIONAL. JOSE Header containing a key attestation as described in Appendix D. If the Credential Issuer provided a c_nonce, the nonce claim in the key attestation MUST be set to a server-provided c_nonce."
@@ -607,14 +669,14 @@ export type KeyAttestation = {
       x: string // MUST [R5]
       y: string // MUST [R6]
     }[]
-    key_storage: string[] // MUST · Attack potential resistance of the key storage and of the user authentication protecting the keys. [R30]
-    user_authentication: string[] // MUST [R30]
+    key_storage: string[] // MUST · Attack potential resistance of the key storage and of the user authentication protecting the keys. [R33]
+    user_authentication: string[] // MUST [R33]
     certification: string // MUST · URL with information about the certification of the key storage. · "the 'certification' claim specified in Appendix D of OID4VCI, containing a URL where information can be obtained about the certification achieved by the WSCD or keystore"
     key_storage_status: { // MUST · Revocation status of the key storage: a status list reference and how long it is maintained. · "a 'key_storage_status' claim, containing two sub-fields:"
       status: { // MUST · Status list reference for the key storage's revocation status. · "The wallet provider shall use the attestation status list mechanism (EAA-6.2.10.1-02.2) for the revocation of a key attestation (KA)."
-        status_list?: { // Issuer: MUST when the status list mechanism is used [R7] [R8]
-          idx?: number // Issuer: MUST for the PID, qualified EAA and EAA provided by or on behalf of a public sector body responsible for an authentic source [R9]
-          uri?: string // Issuer: MUST [R10]
+        status_list?: { // auth-code-par, pre-auth: Issuer: MUST when the status list mechanism is used | nested-presentation: Issuer: MUST in an SD-JWT VC with a status claim [R7] [R8] [R9]
+          idx?: number // auth-code-par, pre-auth: Issuer: MUST for the PID, qualified EAA and EAA provided by or on behalf of a public sector body responsible for an authentic source | nested-presentation: Issuer: MUST [R10] [R11]
+          uri?: string // auth-code-par, pre-auth: Issuer: MUST | nested-presentation: Issuer: MUST [R12] [R13]
         }
       }
       exp: number // MUST · Until when the Wallet Provider keeps maintaining that status entry. · "maintain the revocation status at the status list index referenced in 'status'. — the 'exp' claim specified in Appendix D of OID4VCI."
@@ -622,40 +684,41 @@ export type KeyAttestation = {
   }
 }
 
-// ── Credential Request ── POST /credential · Wallet Unit → Credential Issuer · steps auth-code-par 20, pre-auth 15
+// ── Credential Request ── POST /credential · Wallet Unit → Credential Issuer · steps auth-code-par 20, nested-presentation 29, pre-auth 15
 export interface CredentialRequest {
   headers: {
-    "Content-Type"?: string // no rule
+    "Content-Type": string // MUST; Issuer: MUST when the Credential Request carries credential_response_encryption · Credential Request or Response sent as a compact JWE (application/jwt) on top of TLS, encrypted with ECDH-ES. [R34] [R35] [R36]
     Authorization: string // MUST · The DPoP-bound access token from the token response. · "A DPoP-bound access token is sent using the Authorization request header field per Section 11.6.2 of [RFC9110] with an authentication scheme of DPoP."
-    DPoP: DPoPProof // MUST; Issuer: MUST · DPoP proof for this request, bound to the access token via ath. [R27]
+    DPoP: DPoPProof // MUST; Issuer: MUST · DPoP proof for this request, bound to the access token via ath. [R31]
   }
-  body: EncryptedCredentialRequest | { // MUST; Issuer: MUST when the Credential Request carries credential_response_encryption · Credential Request or Response sent as a compact JWE (application/jwt) on top of TLS, encrypted with ECDH-ES. [R31] [R32] [R33]
-    credential_configuration_id?: string // only auth-code-par: MUST if no credential_identifiers were returned in the Token Response · Which credential configuration from the issuer metadata the Wallet requests. [R34]
-    proofs?: { // only auth-code-par: MAY (until 2028-01-01, then MUST) · Proofs of possession of the keys the credentials should be bound to, grouped by proof type. [R35]
-      jwt: ProofJwt[] // only auth-code-par: MUST · Array of key proof JWTs, one per key to be bound. [R36]
+  body: EncryptedCredentialRequest | { // MUST; Issuer: MUST when the Credential Request carries credential_response_encryption [R34] [R35] [R36]
+    credential_configuration_id?: string // MUST if no credential_identifiers were returned in the Token Response · Which credential configuration from the issuer metadata the Wallet requests. [R37]
+    proofs?: { // MAY (until 2028-01-01, then MUST) · Proofs of possession of the keys the credentials should be bound to, grouped by proof type. [R38]
+      jwt: ProofJwt[] // MUST · Array of key proof JWTs, one per key to be bound. [R39]
     }
   }
 }
 /** JWS, produced by Wallet. */
 export type ProofJwt = {
   header: {
-    typ: string // MUST · Marks the JWT as a key proof (openid4vci-proof+jwt). · "typ: REQUIRED. MUST be openid4vci-proof+jwt"
     alg: string // MUST [R1]
-    key_attestation?: KeyAttestation // only auth-code-par: MAY (until 2028-01-01, then MUST) · Key attestation from the Wallet Provider, vouching for how the proven key is stored and protected. · "The d-you wallet sends the jwt key proof without a key_attestation; the Protected Header carries only alg, typ and jwk."
-    jwk?: { // only pre-auth: MAY · Public key that verifies the signature, embedded as a JWK. · "The "jwk" (JSON Web Key) Header Parameter is the public key that corresponds to the key used to digitally sign the JWS."
-      kty: string // only pre-auth: MUST [R3]
-      crv: string // only pre-auth: MUST [R4]
-      x: string // only pre-auth: MUST [R5]
-      y: string // only pre-auth: MUST [R6]
-      alg?: string // only pre-auth: MAY [R28]
-      kid?: string // only pre-auth: MAY [R29]
-      use?: string // only pre-auth: no rule
+    jwk?: { // MAY · Public key that verifies the signature, embedded as a JWK. · "The "jwk" (JSON Web Key) Header Parameter is the public key that corresponds to the key used to digitally sign the JWS."
+      kty: string // MUST [R3]
+      crv: string // MUST [R4]
+      x: string // MUST [R5]
+      y: string // MUST [R6]
+      alg?: string // MAY [R28]
+      kid?: string // MAY [R29]
+      use?: string // no rule
     }
+    typ: string // MUST · Marks the JWT as a key proof (openid4vci-proof+jwt). · "typ: REQUIRED. MUST be openid4vci-proof+jwt"
+    key_attestation?: KeyAttestation // MAY (until 2028-01-01, then MUST) · Key attestation from the Wallet Provider, vouching for how the proven key is stored and protected. · "The d-you wallet sends the jwt key proof without a key_attestation; the Protected Header carries only alg, typ and jwk."
   }
   payload: {
     aud: string // MUST · The Credential Issuer identifier the proof is meant for. · "aud: REQUIRED (string). The value of this claim MUST be the Credential Issuer Identifier."
-    iat: number // MUST · Time the proof was created. · "iat: REQUIRED (number). The value of this claim MUST be the time at which the key proof was issued using the syntax defined in [RFC7519]."
     nonce: string // MUST; Issuer: MUST · The c_nonce from the issuer, showing the proof is fresh. · "The element in the jwt member shall contain the nonce claim in their corresponding JWT Bodies, obtained from the Nonce Endpoint of the PID/EAA Provider." · "The credential issuer shall verify that the 'nonce' field of the 'jwt' element includes a valid c_nonce from their nonce_endpoint, as specified in OID4VCI."
+    iss?: string // except pre-auth: MAY [R32]
+    iat: number // MUST · Time the proof was created. · "iat: REQUIRED (number). The value of this claim MUST be the time at which the key proof was issued using the syntax defined in [RFC7519]."
   }
 }
 /** JWE, produced by Wallet. */
@@ -670,7 +733,7 @@ export type EncryptedCredentialRequest = {
       kid?: string // MAY [R29]
       use?: string // no rule
     }
-    kid?: string // MUST if the selected public key contains a kid; Issuer: MUST if the selected public key contains a kid · kid of the recipient's public key the JWE was encrypted to. [R37]
+    kid?: string // MUST if the selected public key contains a kid; Issuer: MUST if the selected public key contains a kid · kid of the recipient's public key the JWE was encrypted to. [R40]
     alg: string // MUST [R1]
     enc?: string // no rule · Content encryption algorithm of the JWE, e.g. A128GCM.
     epk?: { // no rule · Ephemeral public key of the sender for the ECDH-ES key agreement.
@@ -693,21 +756,21 @@ export type EncryptedCredentialRequest = {
       }
       enc?: string // MUST when credential_response_encryption is present · Content encryption algorithm for the response, one of the issuer's enc_values_supported, e.g. A128GCM. · "enc: REQUIRED. JWE [RFC7516] enc algorithm [RFC7518] for encrypting Credential Responses."
     }
-    proofs?: { // MAY (until 2028-01-01, then MUST) [R35]
-      jwt: ProofJwt[] // MUST [R36]
+    proofs?: { // MAY (until 2028-01-01, then MUST) [R38]
+      jwt: ProofJwt[] // MUST [R39]
     }
-    credential_configuration_id?: string // MUST if no credential_identifiers were returned in the Token Response [R34]
+    credential_configuration_id?: string // MUST if no credential_identifiers were returned in the Token Response [R37]
   }
 }
-// carries DPoPProof (defined at Token Request), KeyAttestation (defined at Wallet obtains a key attestation bound to the c_nonce)
+// carries DPoPProof (defined at Pushed Authorization Request), KeyAttestation (defined at Wallet obtains a key attestation bound to the c_nonce)
 // also:
 //   - proofs.attestation: Wallet: MAY · Key attestation used directly as proof, covering all attested keys at once. · "The attestation array member shall contain only one element. … The element in the attestation array member shall be the WUA."
 
-// ── Credential Issuer validates the Credential Request ── Credential Issuer → Credential Issuer · steps auth-code-par 21, pre-auth 16
+// ── Credential Issuer validates the Credential Request ── Credential Issuer → Credential Issuer · steps auth-code-par 21, nested-presentation 30, pre-auth 16
 // The Credential Endpoint is an OAuth protected resource: first the DPoP-bound access token, then what it authorises, then the key attestation and the key proof that name the keys the credentials will be bound to (RFC 9449 §7.1, OpenID4VCI §8.2, ETSI TS 119 472-3 clause 4.6.2.1). Errors use the codes of OpenID4VCI §8.3.1: invalid_token for the token, unknown_credential_configuration, invalid_proof, invalid_nonce for the request.
 // rule: Issuer: MUST · "For errors related to the Credential Request's payload, such as issues with type, format, proofs, encryption parameters, or if the request is denied, the specific error codes from this section MUST be used instead of the generic invalid_request parameter"
 
-// ── Credential Issuer checks the DPoP-bound access token ── Credential Issuer → Credential Issuer · steps auth-code-par 21.1, pre-auth 16.1
+// ── Credential Issuer checks the DPoP-bound access token ── Credential Issuer → Credential Issuer · steps auth-code-par 21.1, nested-presentation 30.1, pre-auth 16.1
 // A DPoP-bound access token is useless without the private DPoP key: the Credential Issuer checks the token itself, the DPoP proof of this request, and that both name the same key (RFC 9449 §4.3 item 12, §7.1).
 // rule: Issuer: MUST · "If presented to a protected resource in conjunction with an access token, * ensure that the value of the ath claim equals the hash of that access token, and * confirm that the public key to which the access token is bound matches the public key from the DPoP proof." · "a resource server MUST check that a DPoP proof was also received in the DPoP header field of the HTTP request, check the DPoP proof according to the rules in Section 4.3, and check that the public key of the DPoP proof matches the public key to which the access token is bound per Section 6. The resource server MUST NOT grant access to the resource unless all checks are successful."
 // check Authorization: Scheme DPoP followed by an access token this authorization server issued for this Credential Issuer, not expired (expires_in 300 in the example).
@@ -716,7 +779,7 @@ export type EncryptedCredentialRequest = {
 // check jwk (DPoP header): Its JWK SHA-256 thumbprint equals the key the access token is bound to (cnf.jkt). Another key: reject.
 // check nonce (DPoP): Equals the DPoP-Nonce the issuer returned with the Nonce Response.
 
-// ── Credential Issuer checks what the access token authorises ── Credential Issuer → Credential Issuer · steps auth-code-par 21.2, pre-auth 16.2
+// ── Credential Issuer checks what the access token authorises ── Credential Issuer → Credential Issuer · steps auth-code-par 21.2, nested-presentation 30.2, pre-auth 16.2
 // The request names a credential configuration; the access token must cover it. Which identifier the Wallet uses depends on the Token Response (OpenID4VCI §8.2).
 // rule: Issuer: MUST · "credential_configuration_id: REQUIRED if a credential_identifiers parameter was not returned from the Token Response as part of the authorization_details parameter. It MUST NOT be used otherwise. … The corresponding object in the credential_configurations_supported map MUST contain one of the value(s) used in the scope parameter in the Authorization Request."
 // check credential_configuration_id: A key of credential_configurations_supported, e.g. gym_membership_sd_jwt, whose scope was granted to this access token (gym_membership). Unknown: unknown_credential_configuration.
@@ -724,7 +787,7 @@ export type EncryptedCredentialRequest = {
 // check proofs: Present, because the credential is bound to a key, with exactly one member: jwt or attestation (CRED-REQ-4.6.1.1). Missing: invalid_proof.
 // check proofs.jwt: An array of exactly one key proof JWT (CRED-REQ-4.6.1.2-01).
 
-// ── Credential issuer verifies the key attestation ── Credential Issuer → Credential Issuer · steps auth-code-par 21.3, pre-auth 16.3
+// ── Credential issuer verifies the key attestation ── Credential Issuer → Credential Issuer · steps auth-code-par 21.3, nested-presentation 30.3, pre-auth 16.3
 // The key attestation (the WUA) is the Wallet Provider's statement about the keys the credentials will be bound to: which keys, and how well the device protects them. The Credential Issuer only binds credentials to keys the attestation names (CIR TR_KA-5, ETSI TS 119 472-3 CRED-REQ-PROC-4.6.2.1-01).
 // rule: Issuer: MUST · "Where a credential issuer receives a key attestation in a 'jwt' or an 'attestation' proof type, it shall verify the signature of the key attestation under the public key in the signing certificate included in the 'x5c' parameter" · "EAA-6.2.10.1-16: The provider of person identification data and the provider of electronic attestations of attributes shall support both the attestation status list mechanism and the attestation revocation list mechanism specified in EAA-6.2.10.1-02 … and of a key attestation (KA)."
 // check key_attestation (proof header): Present in the protected header of the key proof (CRED-REQ-4.6.1.2-03).
@@ -738,7 +801,7 @@ export type EncryptedCredentialRequest = {
 // check key_storage_status: The key storage's entry in the referenced status list is valid (CIR EAA-6.2.10.1-16).
 // check nonce: When the key attestation itself is the proof (proof type attestation): equals a valid c_nonce. With the jwt proof type the key proof carries the nonce.
 
-// ── Credential Issuer verifies the key proof JWT ── Credential Issuer → Credential Issuer · steps auth-code-par 21.4, pre-auth 16.4
+// ── Credential Issuer verifies the key proof JWT ── Credential Issuer → Credential Issuer · steps auth-code-par 21.4, nested-presentation 30.4, pre-auth 16.4
 // The key proof shows that the Wallet holds the private key of the first attested key, and that it made the proof for this issuer just now, using a c_nonce from the Nonce Endpoint (OpenID4VCI F.4, ETSI TS 119 472-3 CRED-REQ-PROC-4.6.2.1-02, -03).
 // rule: Issuer: MUST · "To validate a key proof, the Credential Issuer MUST ensure that: all required claims for that proof type are contained as defined in Appendix F, the key proof is explicitly typed using header parameters as defined for that proof type, … if the server has a Nonce Endpoint, the nonce in the key proof matches the server-provided c_nonce value, the creation time of the JWT, as determined by either the issuance time, or a server managed timestamp via the nonce claim, is within an acceptable window"
 // check typ (JWT header): openid4vci-proof+jwt.
@@ -748,10 +811,10 @@ export type EncryptedCredentialRequest = {
 // check iat: Within an acceptable window around now; a few seconds or minutes in the future may be tolerated (OpenID4VCI §13.8).
 // check nonce: A c_nonce this issuer's Nonce Endpoint handed out and still accepts, e.g. wKI4LT17ac15ES9bw8ac4. Missing: invalid_proof; stale or unknown: invalid_nonce.
 
-// ── Credential Issuer creates and signs the credentials ── Credential Issuer → Credential Issuer · steps auth-code-par 22, pre-auth 17
+// ── Credential Issuer creates and signs the credentials ── Credential Issuer → Credential Issuer · steps auth-code-par 22, nested-presentation 31, pre-auth 17
 // After the request passed every check, the issuer creates one credential per attested key and signs each with its own key. Each credential is an SD-JWT VC with its own holder key and status entry, so two presentations cannot be linked by either.
 
-// ── One credential per attested key ── Credential Issuer → Credential Issuer · steps auth-code-par 22.1, pre-auth 17.1
+// ── One credential per attested key ── Credential Issuer → Credential Issuer · steps auth-code-par 22.1, nested-presentation 31.1, pre-auth 17.1
 // With a key attestation the Wallet asks for one credential instance per attested key in a single request (ETSI TS 119 472-3 CRED-REQ-PROC-4.6.2.1-04 to -06).
 // rule: Issuer: MUST · "The PID/EAA Provider shall generate as many PIDs/EAAs as elements present in the attested_keys array within the key_attestation parameter."
 // check credentials: As many credentials as attested_keys has entries; two in the example.
@@ -759,7 +822,7 @@ export type EncryptedCredentialRequest = {
 // check distinct keys: No two credentials are bound to the same public key.
 // check status.status_list.idx: Each credential has its own unique, unpredictable index, even on the same status list, e.g. 1307 and 2918 (HAIP §6.1).
 
-// ── Credential Issuer builds and signs each SD-JWT VC ── Credential Issuer → Credential Issuer · steps auth-code-par 22.2, pre-auth 17.2
+// ── Credential Issuer builds and signs each SD-JWT VC ── Credential Issuer → Credential Issuer · steps auth-code-par 22.2, nested-presentation 31.2, pre-auth 17.2
 // The Issuer-signed JWT carries the credential type, the holder key and the validity limits; its x5c lets every Wallet and Verifier resolve the issuer's key without further lookups (HAIP §6.1, §6.1.1).
 // rule: Issuer: MUST · "A non-qualified EAA provider signs its SD-JWT VCs with a certificate from its own issuer CA; that CA is the trust anchor, is left out of x5c and is published in the provider's own trust list."
 // check typ (JWT header): dc+sd-jwt.
@@ -771,57 +834,57 @@ export type EncryptedCredentialRequest = {
 // check status: If present, a status_list with uri and idx, e.g. https://eaa.example.eu/status/gym/3.
 // check credentials[].credential: The SD-JWT in compact serialization: Issuer-signed JWT, then the Disclosures, each followed by ~.
 
-// ── Credential Response ── Credential Issuer → Wallet Unit · steps auth-code-par 23, pre-auth 18
+// ── Credential Response ── Credential Issuer → Wallet Unit · steps auth-code-par 23, nested-presentation 32, pre-auth 18
 export interface CredentialResponse {
   headers: {
-    "Content-Type"?: string // no rule
-    "Cache-Control"?: string // only pre-auth: no rule
+    "Cache-Control"?: string // no rule
+    "Content-Type"?: string // MUST when the Credential Request carries credential_response_encryption; Wallet: MUST [R36] [R34] [R35]
   }
-  body?: EncryptedCredentialResponse | { // MUST when the Credential Request carries credential_response_encryption; Wallet: MUST [R33] [R31] [R32]
-    credentials?: { // only auth-code-par: MAY · Array of issued credentials, one object per credential instance. [R38]
-      credential: IssuedCredential // only auth-code-par: MUST · One issued credential, e.g. an SD-JWT VC with its Disclosures. [R39]
+  body?: EncryptedCredentialResponse | { // MUST when the Credential Request carries credential_response_encryption; Wallet: MUST [R36] [R34] [R35]
+    credentials?: { // MAY · Array of issued credentials, one object per credential instance. [R41]
+      credential: IssuedCredential // MUST · One issued credential, e.g. an SD-JWT VC with its Disclosures. [R42]
     }[]
-    notification_id?: string // only auth-code-par: MAY · Identifier the Wallet uses to report back about these credentials at the notification endpoint. · "notification_id: OPTIONAL. String identifying one or more Credentials issued in one Credential Response. It MUST be included in the Notification Request as defined in Section 11.1."
+    notification_id?: string // MAY · Identifier the Wallet uses to report back about these credentials at the notification endpoint. · "notification_id: OPTIONAL. String identifying one or more Credentials issued in one Credential Response. It MUST be included in the Notification Request as defined in Section 11.1."
   }
 }
 /** SD-JWT VC, produced by Issuer. */
 export type IssuedCredential = {
   header: {
-    typ: "dc+sd-jwt" // MUST · Marks the JWT as an SD-JWT Verifiable Credential. · "The typ header parameter of the SD-JWT MUST be present. The typ value MUST use dc+sd-jwt."
+    x5c?: string[] // MUST in an issued SD-JWT VC [R19]
+    typ: "dc+sd-jwt" // MUST · Marks the JWT as an SD-JWT Verifiable Credential. [R43]
     alg: string // MUST [R1]
-    x5c?: string[] // MUST in an issued SD-JWT VC [R23]
   }
   payload: {
-    iss?: string // MUST when iss is present · Identifier of the credential issuer that signed the SD-JWT VC. · "iss is the Credential Issuer Identifier (the issuer URL), and the signing certificate carries the same URL as SAN URI; that is what "consistent with the signing certificate" means."
-    vct: string // MUST · Verifiable Credential Type: identifies the type of credential, e.g. the PID type. · "vct may be a URN that is not resolvable; the Wallet takes display data from the issuer metadata, and the type metadata is handed to the registrar."
-    iat?: number // MAY [R2]
-    exp?: number // MAY · Expiry time of the credential. · "exp: OPTIONAL. The expiry time of the Verifiable Credential after which the Verifiable Credential is no longer valid."
-    cnf?: { // MUST when cryptographic Key Binding is to be supported · Holder key the credential is bound to; the holder proves possession with a Key Binding JWT. · "cnf: OPTIONAL unless cryptographic Key Binding is to be supported, in which case it is REQUIRED."
+    vct: string // MUST · Verifiable Credential Type: identifies the type of credential, e.g. the PID type. [R44]
+    iss?: string // MUST when iss is present · Identifier of the credential issuer that signed the SD-JWT VC. [R45]
+    cnf?: { // MUST when cryptographic Key Binding is to be supported · Holder key the credential is bound to; the holder proves possession with a Key Binding JWT. [R46]
       jwk?: { // no rule
         kty: string // MUST [R3]
         crv: string // MUST [R4]
         x: string // MUST [R5]
         y: string // MUST [R6]
-        use?: string // only pre-auth: no rule
-        kid?: string // only pre-auth: MAY [R29]
-        alg?: string // only pre-auth: MAY [R28]
+        use?: string // no rule
+        kid?: string // MAY [R29]
+        alg?: string // MAY [R28]
       }
     }
-    status?: { // only auth-code-par: MUST when the token uses a status mechanism (CIR requires one for the PID, a qualified EAA and a public-sector EAA) · Points to the entry in a Token Status List that tells whether this token is still valid. · "The status claim is required in a token that uses a status mechanism; a non-qualified EAA that is not provided by or on behalf of a public sector body may be issued without status."
-      status_list?: { // only auth-code-par: MUST when the status list mechanism is used [R7] [R8]
-        idx?: number // only auth-code-par: MUST for the PID, qualified EAA and EAA provided by or on behalf of a public sector body responsible for an authentic source [R9]
-        uri: string // only auth-code-par: MUST [R10]
-      }
-    }
+    exp?: number // MAY · Expiry time of the credential. [R47]
+    iat?: number // MAY [R2]
     _sd?: string[] // no rule · Digests of the selectively disclosable claims; each Disclosure the holder reveals must hash to one of them.
-    _sd_alg?: string // MAY · Hash algorithm used for the _sd digests, e.g. sha-256. · "The claim _sd_alg indicates the hash algorithm used by the Issuer to generate the digests as described in Section 4.2. When used, this claim MUST appear at the top level of the SD-JWT payload."
+    _sd_alg?: string // MAY · Hash algorithm used for the _sd digests, e.g. sha-256. [R48]
+    status?: { // MUST when the token uses a status mechanism (CIR requires one for the PID, a qualified EAA and a public-sector EAA) · Points to the entry in a Token Status List that tells whether this token is still valid. [R49]
+      status_list?: { // auth-code-par, pre-auth: MUST when the status list mechanism is used | nested-presentation: MUST in an SD-JWT VC with a status claim [R7] [R8] [R9]
+        idx?: number // auth-code-par, pre-auth: MUST for the PID, qualified EAA and EAA provided by or on behalf of a public sector body responsible for an authentic source | nested-presentation: MUST [R10] [R11]
+        uri: string // auth-code-par, pre-auth: MUST | nested-presentation: MUST [R12] [R13]
+      }
+    }
   }
-  disclosures?: [string, string, unknown][] // MUST for each claim that is to be made selectively disclosable · One selectively disclosable claim, sent after the issuer-signed JWT, separated by ~: the base64url-encoded JSON array [salt, claim name, claim value]. Its digest is listed in _sd. · "For each claim that is an object property and that is to be made selectively disclosable, the Issuer MUST create a Disclosure as follows: … Create a JSON array of three elements in the following order: … A salt value. MUST be a string. … The claim name, or key, as it would be used in a regular JWT payload. … The claim value, as it would be used in a regular JWT payload. … base64url-encode the UTF-8 byte sequence of the JSON array. This string is the Disclosure."
+  disclosures?: [string, string, unknown][] // MUST for each claim that is to be made selectively disclosable · One selectively disclosable claim, sent after the issuer-signed JWT, separated by ~: the base64url-encoded JSON array [salt, claim name, claim value]. Its digest is listed in _sd. [R50]
 }
 /** JWE, produced by Issuer. */
 export type EncryptedCredentialResponse = {
   header: {
-    kid?: string // MUST if the selected public key contains a kid; Wallet: MUST if the selected public key contains a kid [R37]
+    kid?: string // MUST if the selected public key contains a kid; Wallet: MUST if the selected public key contains a kid [R40]
     alg: string // MUST [R1]
     enc?: string // no rule
     epk?: { // no rule
@@ -832,28 +895,377 @@ export type EncryptedCredentialResponse = {
     }
   }
   payload: {
-    credentials?: { // MAY [R38]
-      credential: IssuedCredential // MUST [R39]
+    credentials?: { // MAY [R41]
+      credential: IssuedCredential // MUST [R42]
     }[]
   }
 }
 
-// ── Notification Request ── POST /notification · Wallet Unit → Credential Issuer · steps auth-code-par 24, pre-auth 19
+// ── Notification Request ── POST /notification · Wallet Unit → Credential Issuer · steps auth-code-par 24, nested-presentation 33, pre-auth 19
 // rule: Wallet: MUST if the EUDI Wallet supports notifications · "If the EUDI Wallet supports notifications, then it shall send one or more Notification Requests per notification_id value received from the PID/EAA Provider."
 export interface NotificationRequest {
   headers: {
     "Content-Type"?: string // no rule
-    Authorization: string // MUST; Issuer: MUST · Presents a DPoP-bound access token; the server checks it together with the DPoP proof header. [R27]
-    DPoP: DPoPProof // MUST; Issuer: MUST · DPoP proof for the notification request. [R27]
+    Authorization: string // MUST; Issuer: MUST · Presents a DPoP-bound access token; the server checks it together with the DPoP proof header. [R31]
+    DPoP: DPoPProof // MUST; Issuer: MUST · DPoP proof for the notification request. [R31]
   }
   body: {
     notification_id: string // MUST · The notification_id from the Credential Response. · "notification_id: REQUIRED. String received in the Credential Response or Deferred Credential Response identifying an issuance flow"
     event: string // MUST · What happened to the credentials: credential_accepted, credential_deleted or credential_failure. · "event: REQUIRED. Type of the notification event. It MUST be a case sensitive string whose value is either credential_accepted, credential_failure, or credential_deleted."
   }
 }
-// carries DPoPProof (defined at Token Request)
+// carries DPoPProof (defined at Pushed Authorization Request)
 
-// ── Notification Response (204) ── Credential Issuer → Wallet Unit · steps auth-code-par 25, pre-auth 20
+// ── Notification Response (204) ── Credential Issuer → Wallet Unit · steps auth-code-par 25, nested-presentation 34, pre-auth 20
+
+// ── Authorization server authenticates the user with a PID presentation (nested OpenID4VP) ── Authorization Server → Authorization Server · steps nested-presentation 10
+// Instead of a login form, the authorization server acts as an OpenID4VP Verifier in the front channel and asks the Wallet for the PID.
+
+// ── Verifier generates a fresh nonce for the transaction ── Authorization Server → Authorization Server · steps nested-presentation 10.1
+// rule: Verifier: MUST · "The Verifier MUST create a fresh, cryptographically random number with sufficient entropy for every Authorization Request, store it with its current session, and pass it in the nonce Authorization Request Parameter to the Wallet."
+
+// ── Verifier generates an ephemeral response encryption key ── Authorization Server → Authorization Server · steps nested-presentation 10.2
+// rule: Verifier: MUST · "Verifiers MUST supply ephemeral encryption public keys specific to each Authorization Request passed via client metadata as specified in Section 8.3 of [OIDF.OID4VP]." · "The JWE alg (algorithm) header parameter (see Section 4.1.1 of [RFC7516]) value ECDH-ES (as defined in Section 4.6 of [RFC7518]), with key agreement utilizing keys on the P-256 curve (see Section 6.2.1.1 of [RFC7518]) MUST be supported."
+
+// ── Verifier signs the Request Object with the RP access certificate key ── Authorization Server → Authorization Server · steps nested-presentation 10.3
+// rule: Verifier: MUST [R51]
+
+// ── Authorization Request (wallet invocation) ── Authorization Server → Wallet Unit · steps nested-presentation 11
+export interface VpAuthorizationRequest {
+  headers: {
+    Location?: string // Wallet: MUST · Custom URL scheme that makes the device open a Wallet with the presentation request. · "OIDFVP-HAIP-REDIRECTS-03: The EUDI Wallet shall support at least a custom URL scheme "eu-eaap://" for its authorization_endpoint."
+    "Cache-Control"?: string // no rule
+  }
+  query: {
+    client_id?: string // Verifier: MUST · Verifier identifier; must match client_id inside the Request Object. [R52]
+    request_uri?: string // Verifier: MUST · URL where the Wallet fetches the signed Request Object. · "Signed Authorization Requests MUST be used by utilizing JWT-Secured Authorization Request (JAR) [RFC9101] with the request_uri parameter."
+    request_uri_method?: string // Verifier: MAY · HTTP method the Wallet uses to fetch the Request Object: get or post. · "request_uri_method: OPTIONAL. A string determining the HTTP method to be used when the request_uri parameter is included in the same request."
+  }
+}
+
+// ── Request Object fetched from request_uri ── GET /request/{id} · Wallet Unit → Authorization Server · steps nested-presentation 12
+// rule: Wallet: MUST · "Upon receipt of the Request, the authorization server MUST send an HTTP "GET" request to the "request_uri" to retrieve the referenced Request Object"
+export interface VpRequestUriFetch {
+  headers: {
+    Accept?: string // no rule · Media types the client is willing to receive in the response.
+  }
+}
+
+// ── Request Object (JAR) ── Authorization Server → Wallet Unit · steps nested-presentation 13
+// Signed JWT carrying the Verifier's full presentation request: who asks, what for, and where to answer.
+export interface VpRequestObject {
+  headers: {
+    "Content-Type"?: string // no rule
+  }
+  body: RequestObject
+}
+/** JWS, produced by AS. */
+export type Vrc = {
+  header: {
+    typ?: string // Verifier: MUST · verifier_info element carrying the relying party's registration certificate. [R53]
+    iat?: number // Verifier: MUST [R53]
+    x5c?: string[] // Verifier: MUST [R53]
+    alg?: string // Verifier: MUST [R53]
+  }
+  payload?: { // Verifier: MUST [R53]
+    name?: string // Verifier: MUST [R53]
+    sub_ln?: string // Verifier: MUST [R53]
+    sub?: string // Verifier: MUST [R53]
+    country?: string // Verifier: MUST [R53]
+    registry_uri?: string // Verifier: MUST [R53]
+    srv_description?: { // Verifier: MUST [R53]
+      lang?: string // Verifier: MUST [R53]
+      value?: string // Verifier: MUST [R53]
+    }[][]
+    entitlements?: string[] // Verifier: MUST [R53]
+    privacy_policy?: string // Verifier: MUST [R53]
+    support_uri?: string // Verifier: MUST [R53]
+    supervisory_authority?: { // Verifier: MUST [R53]
+      email?: string // Verifier: MUST [R53]
+      phone?: string // Verifier: MUST [R53]
+      uri?: string // Verifier: MUST [R53]
+    }
+    iat?: number // Verifier: MUST [R53]
+    status?: { // Verifier: MUST [R53]
+      status_list?: { // Verifier: MUST [R53]
+        idx?: number // Verifier: MUST [R53]
+        uri?: string // Verifier: MUST [R53]
+      }
+    }
+    purpose?: { // Verifier: MUST [R53]
+      lang?: string // Verifier: MUST [R53]
+      value?: string // Verifier: MUST [R53]
+    }[]
+    credentials?: { // Verifier: MUST NOT · The OpenID4VP member that limits a verifier_info element to some of the requested Credentials; the element carrying the registration certificate must not have it. [R54]
+      format?: string // Verifier: MUST NOT [R54]
+      meta?: { // Verifier: MUST NOT [R54]
+        vct_values?: string[] // Verifier: MUST NOT [R54]
+      }
+      claim?: { // Verifier: MUST NOT [R54]
+        path?: string[] // Verifier: MUST NOT [R54]
+      }[]
+    }[]
+    intermediary?: { // Verifier: MUST [R53]
+      sub?: string // Verifier: MUST [R53]
+      sname?: string // Verifier: MUST [R53]
+    }
+    act?: { // Verifier: MUST [R53]
+      sub?: string // Verifier: MUST [R53]
+    }
+    public_body?: boolean // Verifier: MUST [R53]
+    jti?: string // Verifier: MUST [R53]
+  }
+}
+/** JWS, produced by Verifier. */
+export type RequestObject = {
+  header: {
+    x5c: string[] // MUST · Certificate chain of the signing key, starting with the relying party's access certificate. [R51]
+    typ: "oauth-authz-req+jwt" // MUST; Wallet: MUST · Marks the JWT as a signed authorization request (oauth-authz-req+jwt). · "Verifiers MUST include the typ Header Parameter in Request Objects with the value oauth-authz-req+jwt, as defined in [RFC9101]." · "Wallets MUST NOT process Request Objects where the typ Header Parameter is not present or does not have the value oauth-authz-req+jwt."
+    alg: string // MUST [R1]
+  }
+  payload: {
+    client_id: string // MUST · Verifier identifier; with the x509_hash prefix it is the hash of the leaf certificate in x5c. [R52]
+    client_id_scheme?: string // Wallet: MUST · Pre-1.0 parameter naming the client identifier scheme; OpenID4VP 1.0 uses a prefix in client_id instead. · "The Wallet MUST ignore any unrecognized parameters, other than the transaction_data parameter."
+    iss?: string // MAY; Wallet: MUST · Issuer of the Request Object; the Wallet relies on client_id instead. · "To avoid breaking existing JAR implementations, the iss claim MAY be present in the Request Object." · "However, if it is present, the Wallet MUST ignore it."
+    response_type: string // MUST · What the Wallet returns; vp_token for a presentation. · "The Response type MUST be vp_token."
+    response_mode: string // MUST · How the response is delivered, e.g. direct_post.jwt (encrypted POST to response_uri) or dc_api.jwt. [R55]
+    response_uri: string // MUST · URL where the Wallet posts the Authorization Response. · "response_uri: REQUIRED when the Response Mode direct_post is used. The URL to which the Wallet MUST send the Authorization Response using an HTTP POST request as defined by the Response Mode direct_post."
+    nonce: string // MUST · Fresh random value from the Verifier; the Wallet signs it into the Key Binding JWT to prove freshness. · "nonce: REQUIRED. A case-sensitive String representing a value to securely bind Verifiable Presentation(s) provided by the Wallet to the particular transaction."
+    state?: string // MAY · Value the Verifier uses to match the response to its transaction. [R56]
+    aud: string // MUST · Audience of the Request Object; for a Wallet that is not known in advance this is https://self-issued.me/v2. · "OIDFVP-HAIP-COMMON-REQ-RO-22: The RO JWT body shall contain the aud parameter."
+    iat?: number // MAY [R2]
+    exp?: number // MAY · Expiry time of the JWT, in seconds since the epoch; the JWT is not accepted after it. [R57]
+    dcql_query: { // MUST; Wallet: MUST · Digital Credentials Query Language query: which credentials and claims the Verifier asks for. · "The DCQL query and response MUST be used as defined in Section 6 of [OIDF.OID4VP]."
+      credentials: { // MUST · List of requested credentials, each with format, type constraints and claims. · "credentials: REQUIRED. A non-empty array of Credential Queries as defined in Section 6.1 that specify the requested Credentials."
+        id: string // MUST · Identifier of this credential query; the vp_token returns the matching presentation under the same key. [R58]
+        format: string // MUST · Requested credential format, e.g. dc+sd-jwt. [R59]
+        meta: { // MUST · Format-specific constraints, such as the accepted credential types. · "meta: REQUIRED. An object defining additional properties requested by the Verifier that apply to the metadata and validity data of the Credential."
+          vct_values: string[] // MUST · Accepted Verifiable Credential Types for an SD-JWT VC. · "vct_values: REQUIRED. A non-empty array of strings that specifies allowed values for the type of the requested Verifiable Credential."
+        }
+        claims?: { // MAY · Claims the Verifier wants disclosed. · "claims: OPTIONAL. A non-empty array of objects as defined in Section 6.3 that specifies claims in the requested Credential."
+          path: string[] // MUST · Path to the claim inside the credential, as an array of keys. · "path: REQUIRED The value MUST be a non-empty array representing a claims path pointer that specifies the path to a claim within the Credential, as defined in Section 7." · "A claims path pointer MUST be a non-empty array of strings, nulls and non-negative integers."
+        }[]
+      }[]
+    }
+    client_metadata: { // MUST · Verifier metadata passed inline: response encryption keys and supported formats. · "OIDFVP-HAIP-COMMON-REQ-RO-18: The RO JWT body shall contain the client_metadata parameter."
+      jwks: { // MUST · Public keys the Wallet encrypts the Authorization Response to. [R60]
+        keys: { // MUST [R60]
+          kty: string // MUST [R3]
+          crv: string // MUST [R4]
+          x: string // MUST [R5]
+          y: string // MUST [R6]
+          kid: string // MUST · Key ID of a response encryption key; it identifies the key within the request. [R61] · "OIDFVP-HAIP-COMMON-REQ-RO-21: The kid parameters shall univocally identify one key."
+          use: string // MUST · Intended use of a response encryption key (enc). [R61]
+          alg: string // MUST · Key agreement algorithm of a response encryption key; the Wallet uses it as the JWE alg. · "The alg parameter MUST be present in the JWKs. The JWE alg algorithm used MUST be equal to the alg value of the chosen jwk."
+        }[]
+      }
+      vp_formats_supported?: { // MUST when the Wallet cannot obtain the Verifier's supported formats by another mechanism · Credential formats and algorithms the Verifier can process. · "vp_formats_supported: REQUIRED when not available to the Wallet via another mechanism."
+        "dc+sd-jwt": { // MUST · Credential Format Identifier of SD-JWT VC as the key in vp_formats_supported; its value holds the SD-JWT VC parameters. [R59]
+          "sd-jwt_alg_values"?: string[] // MAY · Signature algorithms accepted for the issuer-signed SD-JWT. · "sd-jwt_alg_values: OPTIONAL. A non-empty array containing fully-specified identifiers of cryptographic algorithms … supported for an Issuer-signed JWT of an SD-JWT."
+          "kb-jwt_alg_values"?: string[] // MAY · Signature algorithms accepted for the Key Binding JWT. · "kb-jwt_alg_values: OPTIONAL. A non-empty array containing fully-specified identifiers of cryptographic algorithms … supported for a Key Binding JWT (KB-JWT)."
+        }
+      }
+      encrypted_response_enc_values_supported: string[] // MUST · Content encryption algorithms the Verifier accepts for the encrypted response, e.g. A128GCM. · "The d-you verifier lists only A128GCM in encrypted_response_enc_values_supported; A256GCM is not offered."
+    }
+    verifier_info: { // MUST · Array of attestations about the Verifier, e.g. its registration certificate, shown to the Wallet. · "OIDFVP-HAIP-COMMON-REQ-RO-01: The RO JWT body shall contain the verifier_info parameter."
+      format: string // MUST · Format of the verifier_info element, e.g. registration_cert. · "The value of the format member of the element in the verifier_info array enclosing the registration certificate shall be: "registration_cert"."
+      data: string | Vrc // MUST · Content of the verifier_info element in the format named by format. · "The value of the data member of the element in the verifier_info array enclosing the registration certificate shall be the base64url encoding of the serialized RP registration certificate."
+    }[]
+  }
+}
+
+// ── Wallet validates the request and asks the user for consent ── Wallet Unit → Wallet Unit · steps nested-presentation 14
+
+// ── Wallet verifies the Request Object signature and the access certificate ── Wallet Unit → Wallet Unit · steps nested-presentation 14.1
+// rule: Wallet: MUST · "(1) authenticate and validate the wallet-relying party access certificates where interacting with wallet-relying parties without delegating execution of these processes to an operating system browser or other intermediary application;" · "(3) authenticate and validate requests made using wallet-relying party access certificates;"
+
+// ── Wallet authenticates and validates the RP registration certificate ── Wallet Unit → Wallet Unit · steps nested-presentation 14.2
+// rule: Wallet: MUST ⚠ · "WRP-VALIDATION-01: The EUDI Wallet shall validate the wallet-relying party registration certificate received in the request before presenting any requested PID or electronic attestation of attributes to the wallet user for approval."
+
+// ── Over-asking check against the registration certificate ── Wallet Unit → Wallet Unit · steps nested-presentation 14.3
+// rule: Wallet: MUST · "WRP-OVERASKING-01: The EUDI Wallet shall compare the attestations and attributes requested by the wallet-relying party with the registered attestations and attributes in the wallet-relying party registration certificate." · "the EUDI Wallet shall clearly warn the wallet user before any disclosure. The warning shall identify that the wallet-relying party is requesting more information than it has registered."
+
+// ── Response encryption (direct_post.jwt / dc_api.jwt) ── Wallet Unit → Wallet Unit · steps nested-presentation 14.4
+// The Authorization Response is a JWE encrypted with ECDH-ES to the Verifier's key; alg and epk (the Wallet's ephemeral public key) set up the key agreement.
+// rule: Wallet: MUST ⚠; Verifier: MUST [R62] [R55]
+
+// ── Authorization Response posted to response_uri (direct_post.jwt) ── POST /response · Wallet Unit → Authorization Server · steps nested-presentation 15
+// rule: Wallet: MUST · "direct_post: In this mode, the Authorization Response is sent to the Verifier using an HTTP POST request to an endpoint controlled by the Verifier. The Authorization Response MUST be encoded in the request body using the format defined by the application/x-www-form-urlencoded HTTP content type."
+export interface VpResponsePost {
+  headers: {
+    "Content-Type"?: string // no rule
+  }
+  body: {
+    response: AuthorizationResponse // MUST · The Authorization Response as a JWE, encrypted to the Verifier's key from client_metadata. · "The Wallet adds the response parameter containing the JWT as defined in Section 8.3 in the body of an HTTP POST request using the application/x-www-form-urlencoded content type."
+  }
+}
+/** JWS, produced by Wallet. */
+export type KeyBindingJwt = {
+  header: {
+    typ: "kb+jwt" // MUST · Marks the JWT as a Key Binding JWT (kb+jwt). · "typ: REQUIRED. MUST be kb+jwt, which explicitly types the Key Binding JWT as recommended in Section 3.11 of [RFC8725]."
+    alg: string // MUST [R1]
+  }
+  payload: {
+    aud: string // MUST · The Verifier the presentation is meant for: its client_id, or its web origin with the origin: prefix. · "the aud claim MUST be the value of the Client Identifier, except for requests over the DC API where it MUST be the Origin prefixed with origin:, as described in Appendix A.4."
+    nonce: string // MUST · The nonce from the Request Object, proving the presentation is fresh. · "the nonce claim MUST be the value of nonce from the Authorization Request;"
+    iat?: number // MAY [R2]
+    sd_hash: string // MUST · Hash over the issuer-signed JWT and the selected Disclosures, so they cannot be swapped. · "sd_hash: REQUIRED. The base64url-encoded hash value over the Issuer-signed JWT and the selected Disclosures as defined below."
+  }
+}
+/** SD-JWT VC, produced by Issuer. */
+export type PresentedSdJwtVc = {
+  header: {
+    typ: "dc+sd-jwt" // MUST [R43]
+    alg: string // MUST [R1]
+    x5c?: string[] // MUST in an issued SD-JWT VC [R19]
+  }
+  payload: {
+    iss?: string // MUST when iss is present [R45]
+    vct: string // MUST [R44]
+    iat?: number // MAY [R2]
+    exp?: number // MAY [R47]
+    cnf?: { // MUST when cryptographic Key Binding is to be supported [R46]
+      jwk?: { // no rule
+        kty: string // MUST [R3]
+        crv: string // MUST [R4]
+        x: string // MUST [R5]
+        y: string // MUST [R6]
+      }
+    }
+    status?: { // MUST when the token uses a status mechanism (CIR requires one for the PID, a qualified EAA and a public-sector EAA) [R49]
+      status_list?: { // MUST in an SD-JWT VC with a status claim [R9]
+        idx: number // MUST [R11]
+        uri: string // MUST [R13]
+      }
+    }
+    _sd?: string[] // no rule
+    _sd_alg?: string // MAY [R48]
+  }
+  disclosures?: [string, string, unknown][] // MUST for each claim that is to be made selectively disclosable [R50]
+}
+/** JWE, produced by Wallet. */
+export type AuthorizationResponse = {
+  header: {
+    kid?: string // MUST if the selected public key contains a kid · Identifies which of the Verifier's encryption keys the response was encrypted to. · "If the selected public key contains a kid parameter, the JWE MUST include the same value in the kid JWE Header Parameter"
+    alg: string // MUST ⚠; Verifier: MUST · The Authorization Response is a JWE encrypted with ECDH-ES to the Verifier's key; alg and epk (the Wallet's ephemeral public key) set up the key agreement. [R62] [R55]
+    enc?: string // SHOULD if the wallet supports both A128GCM and A256GCM · Content encryption algorithm of the response JWE, e.g. A128GCM. · "Wallets MUST support A128GCM or A256GCM, or both. If both are supported, the Wallet SHOULD use A256GCM for the JWE enc."
+    epk: { // MUST ⚠; Verifier: MUST [R62] [R55]
+      x: string // MUST ⚠; Verifier: MUST [R62] [R55]
+      crv: string // MUST ⚠; Verifier: MUST [R62] [R55]
+      kty: string // MUST ⚠; Verifier: MUST [R62] [R55]
+      y: string // MUST ⚠; Verifier: MUST [R62] [R55]
+    }
+    apu: string // MUST ⚠; Verifier: MUST [R62] [R55]
+    apv: string // MUST ⚠; Verifier: MUST [R62] [R55]
+  }
+  payload: {
+    vp_token: { // MUST · The presentations, keyed by the DCQL credential query id; for SD-JWT VC an SD-JWT with Disclosures and Key Binding JWT. · "vp_token: REQUIRED. This is a JSON-encoded object containing entries where the key is the id value used for a Credential Query in the DCQL query and the value is an array of one or more Presentations"
+      [credential_query_id: string]: PresentedSdJwtVc[] // Verifier: MUST [R58]
+    }
+    state?: string // Verifier: MAY [R56]
+  }
+}
+
+// ── Verifier decrypts and validates the Authorization Response ── Authorization Server → Authorization Server · steps nested-presentation 16
+// The Verifier takes the response apart from the outside in: the JWE envelope, the binding to its own transaction, the vp_token against the DCQL query, then each credential (issuer signature, the selectively disclosed claims, holder binding, validity, status). Holder binding is the Key Binding JWT for an SD-JWT VC and the device signature over the SessionTranscript for an mdoc. Every check runs on the Verifier itself and any failure rejects the whole response (OpenID4VP §8.6, §14.9). Below, each check lists the fields it looks at and the result each one must have.
+// rule: Verifier: MUST · "Verifiers MUST validate the VP Token in the following manner: … If any of the checks pertaining to the VP Token or the overall response fails, the VP Token MUST be rejected." · "it MUST NOT rely on the Wallet to enforce these constraints. The Wallet is not controlled by the Verifier and the Verifier MUST perform its own security checks on the returned Credentials and Presentations."
+
+// ── Verifier decrypts the JWE with the ephemeral private key ── Authorization Server → Authorization Server · steps nested-presentation 16.1
+// The response parameter is an unsigned, encrypted JWT (OpenID4VP §8.3). The Verifier looks up the ephemeral key pair it generated for this transaction, runs the ECDH-ES key agreement with the Wallet's epk and decrypts. Nothing inside is trusted before this step succeeds.
+// rule: Verifier: MUST · "The JWE enc (encryption algorithm) header parameter (see Section 4.1.2 of [RFC7516]) values A128GCM and A256GCM (as defined in Section 5.3 of [RFC7518]) MUST be supported by Verifiers."
+// check alg (JWE header): ECDH-ES, the key agreement the Verifier offered. Any other value: reject.
+// check enc (JWE header): A128GCM or A256GCM, and one of the values listed in client_metadata.encrypted_response_enc_values_supported.
+// check kid (JWE header): Equals the kid of the ephemeral key in client_metadata.jwks of this transaction. Unknown kid: reject.
+// check epk (JWE header): An EC public key on P-256 that is a valid point on the curve; it is the Wallet's half of the key agreement.
+// check ciphertext + tag: Decrypts with the ephemeral private key and the authentication tag verifies. Failure means the response was altered or was not encrypted for this transaction.
+// check payload: A JSON object with vp_token (and state where the request carried one). The JWE is not signed, so its content proves nothing yet; the checks below do.
+
+// ── Verifier matches state to a recent Authorization Request ── Authorization Server → Authorization Server · steps nested-presentation 16.2
+// In the redirect flows anyone can POST to the response_uri. state ties the POST to a transaction the Verifier actually started and is still waiting for (OpenID4VP §14.3.2). Over the Digital Credentials API the browser returns the response to the page that asked, so there is no state.
+// rule: Verifier: SHOULD · "The Verifier SHOULD protect its Response URI from inadvertent requests by checking that the value of the received state parameter corresponds to a recent Authorization Request."
+// check state: Present and byte-for-byte equal to the state of an open transaction created by this Verifier.
+// check transaction age: The transaction is recent, i.e. inside the Verifier's timeout (a few minutes). Expired: reject.
+// check transaction status: No response was accepted for this transaction yet. A second POST with the same state is a replay: reject.
+
+// ── Verifier checks the vp_token structure against the DCQL query ── Authorization Server → Authorization Server · steps nested-presentation 16.3
+// The vp_token must answer the DCQL query of this transaction, no more and no less (OpenID4VP §8.1, §8.6, §6.4). This is a structural check; the cryptographic checks of each presentation follow.
+// rule: Verifier: MUST · "Validate the format of the VP Token as defined in Section 8.1. … Validate that the returned Credential(s) meet all criteria defined in the query in the Authorization Request (e.g., Claims included in the presentation)." · "Check that the set of Presentations returned satisfies all requirements defined in the Verifier's request as described in Section 6.4."
+// check vp_token: A JSON object. Each key is the id of a credential query from the request; each value is an array of presentations.
+// check vp_token keys: Only ids that were requested, and every required query (or one option of each required credential_set) is answered, e.g. pid-sd-jwt.
+// check presentations per key: Exactly one, unless the query set multiple: true.
+// check format: Matches the query's format. For dc+sd-jwt: an SD-JWT with Disclosures and a Key Binding JWT, separated by ~.
+// check vct: The credential's vct is one of the query's meta.vct_values, e.g. urn:eudi:pid:de:1.
+// check claims: Every claim path the query asked for is disclosed (or one claim_sets option is satisfied).
+
+// ── Verifier verifies the issuer signature and the x5c chain ── Authorization Server → Authorization Server · steps nested-presentation 16.4
+// Proves the credential comes from a trusted issuer and was not changed. The key comes from the end-entity certificate of the chain the credential carries (x5c in an SD-JWT VC, x5chain in the issuerAuth of an mdoc), and that chain is validated (RFC 9901 §7.1, SD-JWT VC §3.5, HAIP §6.1.1).
+// rule: Verifier: MUST · "This specification mandates the support for X.509 certificate-based key resolution to validate the issuer signature of an SD-JWT VC. This MUST be supported by all entities (Issuer, Wallet, Verifier)."
+// check typ (JWT header): dc+sd-jwt.
+// check alg (JWT header): An asymmetric algorithm the Verifier accepts, at least ES256. none: always reject.
+// check x5c (JWT header): The chain validates up to a trust anchor the Verifier trusts for this credential type (e.g. the PID Provider trusted list); every certificate is within its validity period and not revoked.
+// check signature: Verifies over the Issuer-signed JWT with the public key of the x5c end-entity certificate.
+// check iss: Identifies the issuer and is consistent with the end-entity certificate, e.g. https://pid-provider.example.de.
+
+// ── Verifier matches the Disclosures against the _sd digests ── Authorization Server → Authorization Server · steps nested-presentation 16.5
+// Each Disclosure carries one selectively disclosed claim. Its digest must appear in the signed payload, so the issuer signature covers the claim even though the claim travels outside the JWT (RFC 9901 §7.1). The result is the processed payload with the disclosed claims put back in place.
+// rule: Verifier: MUST · "Check that the _sd_alg claim value is understood and the hash algorithm is deemed secure according to the Holder or Verifier's policy … Calculate the digest over the base64url-encoded string as described in Section 4.2.3." · "If any digest value is encountered more than once in the Issuer-signed JWT payload (directly or recursively via other Disclosures), the SD-JWT MUST be rejected. … If any Disclosure was not referenced by digest value in the Issuer-signed JWT (directly or recursively via other Disclosures), the SD-JWT MUST be rejected."
+// check _sd_alg: A hash algorithm the Verifier understands and considers secure; sha-256 when absent.
+// check each Disclosure: base64url-decodes to a JSON array [salt, name, value] (or [salt, value] for an array element).
+// check digest of each Disclosure: The hash over the base64url Disclosure string appears in an _sd array (or as {"...": digest} in an array) of the payload or of another Disclosure.
+// check duplicates: No digest occurs twice, and every Disclosure is referenced. Otherwise: reject.
+// check claim names: Not _sd or ..., and not already present in the same object of the payload.
+
+// ── Verifier verifies the Key Binding JWT (cnf key, nonce, aud, iat, sd_hash) ── Authorization Server → Authorization Server · steps nested-presentation 16.6
+// The Key Binding JWT proves that the holder of the key the issuer bound into the credential presented it, to this Verifier, in this transaction (RFC 9901 §7.3, OpenID4VP §14.1.2). It closes replay: a presentation copied from another transaction fails on nonce or aud.
+// rule: Verifier: MUST · "EAAP-SD-JWT VC-01: If the SD-JWT VC EAA contains the cnf claim, the corresponding SD-JWT VC EAAP shall be a SD-JWT+KB as specified in IETF SD-JWT [2]."
+// check KB-JWT: Present whenever the credential has a cnf key (HAIP §6.1.1.1).
+// check typ (KB-JWT header): kb+jwt.
+// check alg (KB-JWT header): ES256 or another algorithm the Verifier accepts (client_metadata.vp_formats_supported); never none.
+// check signature: Verifies with the public key in the credential's cnf.jwk.
+// check nonce: Equals the nonce of this transaction's Request Object.
+// check aud: Equals the client_id of the request, e.g. x509_hash:<hash of the access certificate> (OpenID4VP B.3.6).
+// check iat: Within an acceptable window around now (a few minutes, plus clock skew).
+// check sd_hash: Equals the base64url hash (_sd_alg) over the Issuer-signed JWT and the presented Disclosures, up to and including the last ~.
+
+// ── Verifier checks exp and other validity claims ── Authorization Server → Authorization Server · steps nested-presentation 16.7
+// Checks the time window the issuer set: exp and nbf in an SD-JWT VC (RFC 9901 §7.1, RFC 7519 §4.1.4), validityInfo in the Mobile Security Object of an mdoc. A validity claim the Verifier's policy requires but the credential lacks rejects the credential.
+// rule: Verifier: MUST · "Check that the SD-JWT is valid using claims such as nbf, exp, and aud in the processed payload, if present. If a required validity-controlling claim is missing (see Section 9.7), the SD-JWT MUST be rejected." [R57]
+// check exp: Lies in the future: now < exp, allowing a small clock skew.
+// check nbf: If present, lies in the past: now ≥ nbf.
+// check iat: If present, not in the future.
+
+// ── Verifier checks the status list entry ── Authorization Server → Authorization Server · steps nested-presentation 16.8
+// Asks the issuer's Token Status List whether the credential was revoked or suspended. Only after the credential itself passed the checks above (Token Status List §8.3). What a non-valid status means for the transaction is Verifier policy (SD-JWT VC §3.4).
+// rule: Verifier: SHOULD · "If status is present in the verified payload of the SD-JWT, the status SHOULD be checked. It depends on the Verifier policy to reject or accept a presentation of a SD-JWT VC based on the status of the Verifiable Credential."
+// check status.status_list.uri: An https URL. The Verifier fetches the Status List Token from it (or uses a cached copy that has not expired).
+// check Status List Token: typ statuslist+jwt, signature valid and from the issuer (or a party it trusts for status), sub equals the uri, exp not passed.
+// check status.status_list.idx: The entry at idx in the decompressed list (bits per entry as the token's bits says) is 0x00 VALID. 0x01 INVALID: reject. 0x02 SUSPENDED: per policy, usually reject.
+
+// ── Response endpoint answer to the Wallet ── Authorization Server → Wallet Unit · steps nested-presentation 17
+export interface VpResponseAck {
+  headers: {
+    "Content-Type"?: string // no rule
+    "Cache-Control"?: string // no rule
+  }
+  body: {
+    redirect_uri?: string // Verifier: MUST · Where the Wallet sends the user's browser after posting the response (same device); carries a response_code. · "Verifiers MUST include redirect_uri in the HTTP response to the Wallet's HTTP POST to the response_uri, as defined in Section 8.2 of [OIDF.OID4VP]."
+  }
+}
+
+// ── Wallet opens the redirect_uri in the browser (same device) ── Wallet Unit → Authorization Server · steps nested-presentation 18
+// rule: Wallet: MUST · "Wallets MUST follow the redirect to redirect_uri."
+export interface VpRedirectBack {
+  query: {
+    request_uri: string // MUST [R30]
+    response_code?: string // no rule · The fresh random value from the redirect_uri; the Verifier checks that it belongs to the posted Authorization Response, so only the browser the Wallet sent back can continue.
+  }
+}
+
+// ── Authorization server identifies the user from the presented PID ── Authorization Server → Authorization Server · steps nested-presentation 19
+// Application-specific. Once the presentation is validated, the authorization server takes the disclosed PID claims as the authenticated identity of the user, then gathers consent and answers the authorization request with a code.
+// check response_code: The browser session that comes back from the Wallet hands in the response_code; only that session gets the result (OpenID4VP §13.3 reference design).
+// check given_name (PID): From a disclosure that verified against _sd, e.g. ERIKA.
+// check family_name (PID): From a disclosure that verified against _sd, e.g. MUSTERMANN. Together with given_name it identifies the user for the issuance.
 
 // ── Credential Offer fetched by reference ── GET /credential-offer/{id} · Wallet Unit → Credential Issuer · steps pre-auth 3
 // rule: Issuer: SHOULD; Wallet: MUST · "The Credential Issuer SHOULD use a unique URI for each Credential Offer utilizing distinct parameters, or otherwise prevent the Credential Issuer from caching the credential_offer_uri." · "Upon receipt of the credential_offer_uri, the Wallet MUST send an HTTP GET request to the URI to retrieve the referenced Credential Offer Object, unless it is already cached"
@@ -863,11 +1275,16 @@ export interface OfferFetch {
     "Cache-Control"?: string // no rule
   }
   body: {
-    credential_issuer: string // MUST [R11]
-    credential_configuration_ids: string[] // MUST [R12]
-    grants?: { // Issuer: MUST [R13]
+    credential_issuer: string // MUST [R14]
+    credential_configuration_ids: string[] // MUST [R15]
+    grants?: { // Issuer: MUST [R16]
       "urn:ietf:params:oauth:grant-type:pre-authorized_code"?: { // Issuer: MAY · Parameters for the pre-authorized code flow: the user is already authorised, the Wallet goes straight to the token endpoint. · "If the Wallet decides to use the Pre-Authorized Code Flow, this parameter value MUST be included in the subsequent Token Request with the Pre-Authorized Code Flow."
         "pre-authorized_code"?: string // Issuer: MUST in the pre-authorized_code grant of the offer · Short-lived code that stands for the user's prior authorisation; the Wallet exchanges it for an access token. · "pre-authorized_code: REQUIRED. The code representing the Credential Issuer's authorization for the Wallet to obtain Credentials of a certain type. This code MUST be short lived and single use."
+        tx_code?: { // Issuer: MAY · Announces that a Transaction Code (PIN) is needed and how it looks; the code itself is sent to the user separately. · "tx_code: OPTIONAL. Object indicating that a Transaction Code is required if present, even if empty."
+          input_mode?: string // Issuer: MAY · Character set of the Transaction Code: numeric or text. · "input_mode : OPTIONAL. String specifying the input character set. Possible values are numeric (only digits) and text (any characters). The default is numeric."
+          length?: number // Issuer: MAY · Length of the Transaction Code, so the Wallet can render a fitting input field. · "length: OPTIONAL. Integer specifying the length of the Transaction Code."
+          description?: string // Issuer: MAY · Text the Wallet shows to tell the user where to find the Transaction Code. · "description: OPTIONAL. String containing guidance for the Holder of the Wallet on how to obtain the Transaction Code"
+        }
       }
     }
   }
@@ -883,16 +1300,17 @@ export interface OfferFetch {
 // check tx_code: Present, because the offer carried a tx_code object, and equal to the code sent to the user. Missing: invalid_request; wrong: invalid_grant (OpenID4VCI §6.3).
 
 // ── Role-wide obligations (all flows) ──
-// - Client authentication of the Wallet at the OAuth endpoints (PAR, token): AS: MAY; Wallet: MAY · "In the pre-authorized code flow the d-you wallet uses no client authentication at the token endpoint."
-// - Authorization server rejects PAR / token requests without a WIA: AS: MUST NOT · "In the pre-authorized code flow the Authorization Server does not require client authentication from the d-you wallet; a Token Request without WIA is accepted."
+// - Client authentication of the Wallet at the OAuth endpoints (PAR, token): AS: MAY; Wallet: MAY · "In the pre-authorized code flow the d-you wallet uses no client authentication at the token endpoint." · "In the authorization code flow the d-you wallet uses no client authentication at the PAR and token endpoints; it identifies itself only by client_id."
+// - Authorization server rejects PAR / token requests without a WIA: AS: MUST NOT · "In the authorization code flow the Authorization Server does not require client authentication from the d-you wallet; a Pushed Authorization Request and a Token Request without WIA are accepted." · "In the pre-authorized code flow the Authorization Server does not require client authentication from the d-you wallet; a Token Request without WIA is accepted."
 // - Support of the authorization code flow: Issuer: MAY ⚠; AS: MAY ⚠; Wallet: MUST · "shall implement at least one of the following flows: the Authorisation Code Flow as specified in clause 3.4 of OpenID4VCI [2], or the Pre-Authorised Code Flow as specified in clause 3.5 of OpenID4VCI [2]." · "The EUDI Wallet shall support the following flows: the Authorisation Code Flow as specified in clause 3.4 of OpenID4VCI [2], and the Pre-Authorised Code Flow as specified in clause 3.5 of OpenID4VCI [2]."
-// - Sender-constrained access tokens (DPoP): Issuer: MUST; AS: MUST; Wallet: MUST [R27]
+// - Sender-constrained access tokens (DPoP): Issuer: MUST; AS: MUST; Wallet: MUST [R31]
 // - PKCE with S256: AS: MUST; Wallet: MUST · "This includes, but is not limited to using PKCE [RFC7636] with S256 as the code challenge method, Pushed Authorization Requests (PAR) [RFC9126] (where applicable) and the iss value in the Authorization response [RFC9207]."
 // - Pushed Authorization Requests: AS: MUST; Wallet: MUST · "Pushed Authorization Requests (PAR): Only required when using the Authorization Endpoint as defined in Section 5 of [OIDF.OID4VCI]."
 // - Refresh tokens for credential refresh: AS: MAY · "Refresh tokens for credential refresh may be supported."
 // - Support of A128GCM and A256GCM: no rule
 // - PID providers: user authorisation with physical presence in the pre-authorized code flow: no rule
 // - Proof signed with the key at attested_keys[0]: Issuer: MUST; Wallet: MUST · "Where a credential issuer receives a key attestation in a 'jwt' proof type, it shall verify the signature of the 'jwt' element under the key at index 0 of the 'attested_keys' array within the 'key_attestation' object included in the 'jwt' element." · "Where a wallet unit includes a key attestation in a 'jwt' element, it shall sign or seal the 'jwt' element (the key proof) using the private key corresponding to the public key at index 0 of the 'attested_keys' array within the 'key_attestation' object."
+// - iss: Wallet: MAY · The client_id of the Wallet; omitted after anonymous access in the pre-authorized code flow. · "iss: OPTIONAL (string). The value of this claim MUST be the client_id of the Client making the Credential request. This claim MUST be omitted if the access token authorizing the issuance call was obtained from a Pre-Authorized Code Flow through anonymous access to the token endpoint."
 // - Wallet Instance Attestation (client attestation JWT): WP: MUST · Wallet Instance Attestation: JWT signed by the Wallet Provider that authenticates the Wallet instance as OAuth client. · "A wallet instance attestation shall be a wallet attestation as specified in Appendix E of OpenID for Verifiable Credential Issuance v1.0"
 // - WIA lifetime and reuse: Wallet: MUST · "A wallet unit shall send the same wallet instance attestation to only one authorisation server."
 // - challenge: Wallet: MUST if the Authorization Server offers a challenge endpoint ⚠ · Challenge from the authorization server, showing the PoP is fresh. · "If the Authorization Server offers a challenge endpoint, the Client MUST retrieve a challenge and MUST use this challenge in the OAuth-Attestation-PoP as defined in Section 5.2."
@@ -908,34 +1326,57 @@ export interface OfferFetch {
 // [R6] "The "y" (y coordinate) parameter contains the y coordinate for the Elliptic Curve point."
 // [R7] "EAA-6.2.10.1-01.2: When implementing the status list mechanism, the status element shall contain the status_list element as set out in EAA-6.2.10.1-13."
 // [R8] "EAA-6.2.10.1-13.1: The status_list element shall follow the requirements for the StatusListInfo structure as specified in the token status list specification and the optional certificate element defined in EAA-6.2.10.1-06 shall be added."
-// [R9] "EAA-6.2.10.1-03.1: For a status list this implies that only values 'valid' and 'invalid', as specified in the token status list specification shall be used."
-// [R10] "EAA-6.2.10.1-13.2: To prevent the status index from being a correlation across presentations, the combination of status index and URI shall be unique per MSO."
-// [R11] "credential_issuer: REQUIRED. The URL of the Credential Issuer, as defined in Section 12.2.1, from which the Wallet is requested to obtain one or more Credentials."
-// [R12] "credential_configuration_ids: REQUIRED. A non-empty array of unique strings that each identify one of the keys in the name/value pairs stored in the credential_configurations_supported Credential Issuer metadata."
-// [R13] "PID/EAA Providers shall support at least one of the following Grant Types: "authorisation_code" or "urn:ietf:params:oauth:grant-type:pre-authorised_code", as defined in clause 4.1.1 of OpenID4VCI [2]."
-// [R14] "The Grant Type authorization_code MUST be supported as defined in Section 4.1.1 in [OIDF.OID4VCI]"
-// [R15] "issuer_state: OPTIONAL. String value created by the Credential Issuer and opaque to the Wallet that is used to bind the subsequent Authorization Request with a context set up during previous process steps."
-// [R16] "proof_signing_alg_values_supported: REQUIRED. A non-empty array of algorithm identifiers that the Issuer supports for this proof type."
-// [R17] "Until the end of 2027 a credential issuer does not have to require key attestations: the d-you wallet sends none, so key_attestations_required may be omitted from proof_types_supported."
-// [R18] "key_storage: OPTIONAL. A non-empty array defining values specified in Appendix D.2 accepted by the Credential Issuer. user_authentication: OPTIONAL. A non-empty array defining values specified in Appendix D.2 accepted by the Credential Issuer."
-// [R19] "display: OPTIONAL. A non-empty array of objects, where each object contains the display properties of the supported Credential for a certain language."
-// [R20] "claims: OPTIONAL. A non-empty array of claims description objects as defined in Appendix B.2."
-// [R21] "display: OPTIONAL. A non-empty array of objects, where each object contains display properties of a Credential Issuer for a certain language."
-// [R22] "credential_request_encryption.jwks is a JWK Set object with a keys array, not a bare array of keys."
-// [R23] "The SD-JWT VC MUST contain the credential issuer's signing certificate along with a trust chain in the x5c JOSE header parameter as described in section 3.5 of [I-D.ietf-oauth-sd-jwt-vc]."
-// [R24] "During issuance, a wallet unit shall send a wallet instance attestation to the authorisation server in the pushed authorisation request and the token request, as specified in OID4VCI."
-// [R25] "A wallet unit shall send the wallet instance attestation together with a Proof-of-Possession ('PoP') as specified in Appendix E of OID4VCI."
-// [R26] "using PKCE [RFC7636] with S256 as the code challenge method"
-// [R27] "Sender-constrained access token: MUST support DPoP as defined in [RFC9449]."
+// [R9] "The status claim, if present, MUST contain status_list as defined in [I-D.ietf-oauth-status-list]"
+// [R10] "EAA-6.2.10.1-03.1: For a status list this implies that only values 'valid' and 'invalid', as specified in the token status list specification shall be used."
+// [R11] "Each Credential MUST have its own unique, unpredictable status list index, even when multiple Credentials reference the same status list URI"
+// [R12] "EAA-6.2.10.1-13.2: To prevent the status index from being a correlation across presentations, the combination of status index and URI shall be unique per MSO."
+// [R13] "uri: REQUIRED. The uri (URI) claim MUST specify a String value that identifies the Status List Token containing the status information for the Referenced Token."
+// [R14] "credential_issuer: REQUIRED. The URL of the Credential Issuer, as defined in Section 12.2.1, from which the Wallet is requested to obtain one or more Credentials."
+// [R15] "credential_configuration_ids: REQUIRED. A non-empty array of unique strings that each identify one of the keys in the name/value pairs stored in the credential_configurations_supported Credential Issuer metadata."
+// [R16] "PID/EAA Providers shall support at least one of the following Grant Types: "authorisation_code" or "urn:ietf:params:oauth:grant-type:pre-authorised_code", as defined in clause 4.1.1 of OpenID4VCI [2]."
+// [R17] "The Grant Type authorization_code MUST be supported as defined in Section 4.1.1 in [OIDF.OID4VCI]"
+// [R18] "issuer_state: OPTIONAL. String value created by the Credential Issuer and opaque to the Wallet that is used to bind the subsequent Authorization Request with a context set up during previous process steps."
+// [R19] "The SD-JWT VC MUST contain the credential issuer's signing certificate along with a trust chain in the x5c JOSE header parameter as described in section 3.5 of [I-D.ietf-oauth-sd-jwt-vc]."
+// [R20] "display: OPTIONAL. A non-empty array of objects, where each object contains display properties of a Credential Issuer for a certain language."
+// [R21] "credential_request_encryption.jwks is a JWK Set object with a keys array, not a bare array of keys."
+// [R22] "proof_signing_alg_values_supported: REQUIRED. A non-empty array of algorithm identifiers that the Issuer supports for this proof type."
+// [R23] "Until the end of 2027 a credential issuer does not have to require key attestations: the d-you wallet sends none, so key_attestations_required may be omitted from proof_types_supported."
+// [R24] "key_storage: OPTIONAL. A non-empty array defining values specified in Appendix D.2 accepted by the Credential Issuer. user_authentication: OPTIONAL. A non-empty array defining values specified in Appendix D.2 accepted by the Credential Issuer."
+// [R25] "display: OPTIONAL. A non-empty array of objects, where each object contains the display properties of the supported Credential for a certain language."
+// [R26] "claims: OPTIONAL. A non-empty array of claims description objects as defined in Appendix B.2."
+// [R27] "using PKCE [RFC7636] with S256 as the code challenge method"
 // [R28] "The "alg" (algorithm) parameter identifies the algorithm intended for use with the key."
 // [R29] "The "kid" (key ID) parameter is used to match a specific key. … When used with JWS or JWE, the "kid" value is used to match a JWS or JWE "kid" Header Parameter value."
-// [R30] "the 'key_storage' and 'user_authentication' claims specified in Appendix D of OID4VCI. … The 'key_storage' and 'user_authentication' attributes shall have value 'iso_18045_high' where a key attestation mentions a WSCD,"
-// [R31] "The contents of the message MUST be encoded as a JWT as described in [RFC7519]. The media type MUST be set to application/jwt."
-// [R32] "The alg parameter MUST be present. The JWE alg algorithm used MUST be equal to the alg value of the chosen JWK."
-// [R33] "If the Client requested an encrypted response by including the credential_response_encryption object in the request, the Credential Issuer MUST encode the information in the Credential Response as specified by Section 10, using the parameters from the credential_response_encryption object."
-// [R34] "credential_configuration_id: REQUIRED if a credential_identifiers parameter was not returned from the Token Response as part of the authorization_details parameter."
-// [R35] "The d-you wallet includes no key attestation in the proofs of the Credential Request; it sends one jwt proof signed with the holder key."
-// [R36] "The jwt JSON array member shall have 1 element."
-// [R37] "If the selected public key contains a kid parameter, the JWE MUST include the same value in the kid JWE Header Parameter (as defined in Section 4.1.6) of the encrypted message."
-// [R38] "credentials: OPTIONAL. Contains an array of one or more issued Credentials. It MUST NOT be used if the transaction_id parameter is present."
-// [R39] "credential: REQUIRED. Contains one issued Credential. The encoding of the Credential depends on the Credential Format and MAY be a string or an object."
+// [R30] "The client uses the "request_uri" value returned by the authorization server to build an authorization request as defined in [RFC9101]."
+// [R31] "Sender-constrained access token: MUST support DPoP as defined in [RFC9449]."
+// [R32] "The "iss" (issuer) claim identifies the principal that issued the JWT."
+// [R33] "the 'key_storage' and 'user_authentication' claims specified in Appendix D of OID4VCI. … The 'key_storage' and 'user_authentication' attributes shall have value 'iso_18045_high' where a key attestation mentions a WSCD,"
+// [R34] "The contents of the message MUST be encoded as a JWT as described in [RFC7519]. The media type MUST be set to application/jwt."
+// [R35] "The alg parameter MUST be present. The JWE alg algorithm used MUST be equal to the alg value of the chosen JWK."
+// [R36] "If the Client requested an encrypted response by including the credential_response_encryption object in the request, the Credential Issuer MUST encode the information in the Credential Response as specified by Section 10, using the parameters from the credential_response_encryption object."
+// [R37] "credential_configuration_id: REQUIRED if a credential_identifiers parameter was not returned from the Token Response as part of the authorization_details parameter."
+// [R38] "The d-you wallet includes no key attestation in the proofs of the Credential Request; it sends one jwt proof signed with the holder key."
+// [R39] "The jwt JSON array member shall have 1 element."
+// [R40] "If the selected public key contains a kid parameter, the JWE MUST include the same value in the kid JWE Header Parameter (as defined in Section 4.1.6) of the encrypted message."
+// [R41] "credentials: OPTIONAL. Contains an array of one or more issued Credentials. It MUST NOT be used if the transaction_id parameter is present."
+// [R42] "credential: REQUIRED. Contains one issued Credential. The encoding of the Credential depends on the Credential Format and MAY be a string or an object."
+// [R43] "The typ header parameter of the SD-JWT MUST be present. The typ value MUST use dc+sd-jwt."
+// [R44] "vct may be a URN that is not resolvable; the Wallet takes display data from the issuer metadata, and the type metadata is handed to the registrar."
+// [R45] "iss is the Credential Issuer Identifier (the issuer URL), and the signing certificate carries the same URL as SAN URI; that is what "consistent with the signing certificate" means."
+// [R46] "cnf: OPTIONAL unless cryptographic Key Binding is to be supported, in which case it is REQUIRED."
+// [R47] "exp: OPTIONAL. The expiry time of the Verifiable Credential after which the Verifiable Credential is no longer valid."
+// [R48] "The claim _sd_alg indicates the hash algorithm used by the Issuer to generate the digests as described in Section 4.2. When used, this claim MUST appear at the top level of the SD-JWT payload."
+// [R49] "The status claim is required in a token that uses a status mechanism; a non-qualified EAA that is not provided by or on behalf of a public sector body may be issued without status."
+// [R50] "For each claim that is an object property and that is to be made selectively disclosable, the Issuer MUST create a Disclosure as follows: … Create a JSON array of three elements in the following order: … A salt value. MUST be a string. … The claim name, or key, as it would be used in a regular JWT payload. … The claim value, as it would be used in a regular JWT payload. … base64url-encode the UTF-8 byte sequence of the JSON array. This string is the Disclosure."
+// [R51] "OIDFVP-HAIP-COMMON-REQ-RO-23: The leaf certificate mentioned in OpenID4VP section 5.9.3 for use with the x509_hash Client Identifier Prefix shall be a RP access certificate as specified in ETSI TS 119 475 [14]."
+// [R52] "For signed requests, the Verifier MUST use, and the Wallet MUST accept the Client Identifier Prefix x509_hash as defined in Section 5.9.3 of [OIDF.OID4VP]."
+// [R53] "OIDFVP-HAIP-COMMON-REQ-RO-13: One of the elements of the verifier_info parameter shall include the registration certificate."
+// [R54] "OIDFVP-HAIP-COMMON-REQ-RO-14: The element in the verifier_info array enclosing the registration certificate shall be a JSON Object which shall not contain the credential_ids member."
+// [R55] "Response encryption MUST be used by utilizing response mode direct_post.jwt, as defined in Section 8.3 of [OIDF.OID4VP]."
+// [R56] "state: REQUIRED under the conditions defined in Section 5.3. Otherwise, state is OPTIONAL."
+// [R57] "The "exp" (expiration time) claim identifies the expiration time on or after which the JWT MUST NOT be accepted for processing."
+// [R58] "id: REQUIRED. A string identifying the Credential in the response and, if provided, the constraints in credential_sets."
+// [R59] "The Credential Format identifier MUST be dc+sd-jwt."
+// [R60] "OIDFVP-HAIP-COMMON-REQ-RO-19: The client_metadata parameter shall contain the jwks member."
+// [R61] "OIDFVP-HAIP-COMMON-REQ-RO-20: The jwks member of the client_metadata parameter shall contain the kid and use parameters for identifying the key and the use of the identified key, respectively."
+// [R62] "Response encryption MUST be performed as specified in Section 8.3 of [OIDF.OID4VP]."

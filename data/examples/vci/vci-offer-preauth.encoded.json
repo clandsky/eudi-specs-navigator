@@ -1,9 +1,9 @@
 {
   "id": "vci-offer-preauth",
   "http": {
-    "url": "openid-credential-offer://?credential_offer_uri=https%3A%2F%2Feaa.example.eu%2Fopenid4vci%2Foffer%2FERYQqTlprJvVveIFniGGUQ",
+    "url": "eu-eaa-offer://?credential_offer_uri=https%3A%2F%2Feaa.example.eu%2Fcredential-offer%2F5a2f1c",
     "headers": {}
   },
   "jwts": {},
-  "inputHash": "6e8ba4eb0e6518f8"
+  "inputHash": "9d14f18fb9374f8d"
 }

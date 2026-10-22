@@ -1,0 +1,9 @@
+{
+  "id": "vci-offer-authcode-dyou",
+  "http": {
+    "url": "openid-credential-offer://?credential_offer=%7B%22credential_issuer%22%3A%22https%3A%2F%2Feaa.example.eu%22%2C%22credential_configuration_ids%22%3A%5B%22dog_tag_sd_jwt%22%5D%2C%22grants%22%3A%7B%22authorization_code%22%3A%7B%22issuer_state%22%3A%22gCiOrOwJ5HjAJNM9V1Eibw%22%7D%7D%7D",
+    "headers": {}
+  },
+  "jwts": {},
+  "inputHash": "4194f892134d57ea"
+}

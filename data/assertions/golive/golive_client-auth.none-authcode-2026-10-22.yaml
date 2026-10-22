@@ -1,0 +1,17 @@
+# Go-live compromise (d-you), recorded from the d-you wallet's traffic of an authorization code issuance.
+- id: golive/client-auth.none-authcode-2026-10-22
+  subject: vci.client-auth
+  spec: golive-compromises
+  locator: { at: "d-you wallet traffic, authorization code flow (recorded 2026-10-22)" }
+  relation: replaces
+  level: may
+  applies_to: { role: [wallet, as], grant: [authorization_code] }
+  target: haip/4.4.1/client-auth
+  window: { from: "2026-10-22" }
+  quote: >-
+    In the authorization code flow the d-you wallet uses no client authentication at the PAR and token endpoints; it
+    identifies itself only by client_id.
+  decided_by: d-you implementation (recorded issuance, IDGo 81, 2026-10-22)
+  reference: d-you wallet traffic, authorization code flow (recorded 2026-10-22)
+  note: >-
+    The code is bound to the wallet by PKCE (S256) and to its DPoP key from the PAR on (RFC 9449 Section 10.1).

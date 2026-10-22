@@ -144,6 +144,8 @@ export function loadDataset(opts: { requireEncoded?: boolean } = {}): Dataset {
       if (!parts.has(s.from) || !parts.has(s.to)) problems.push(`${f._file}: step ${s.id} uses unknown participant`)
       if (!subjectIds.has(s.subject)) problems.push(`${f._file}: step ${s.id} has unknown subject ${s.subject}`)
       if (s.example && !exampleIds.has(s.example)) problems.push(`${f._file}: step ${s.id} has unknown example ${s.example}`)
+      if (s.golive?.example && !exampleIds.has(s.golive.example))
+        problems.push(`${f._file}: step ${s.id} has unknown go-live example ${s.golive.example}`)
     }
   }
   for (const f of fieldmap) if (!subjectIds.has(f.subject)) problems.push(`data/fieldmap.yaml: ${f.pattern} → unknown subject ${f.subject}`)

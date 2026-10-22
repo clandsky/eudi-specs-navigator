@@ -1,0 +1,19 @@
+id: vci-token-response-authcode-dyou
+title: Token Response with a DPoP-bound access token, no refresh token
+subject: vci.token-response
+kind: http-response
+note: Shape recorded from a d-you issuance in the authorization code flow (IDGo 81, 2026-10-22, login at the authorization endpoint). No refresh token and no authorization_details, since the Wallet asked by scope.
+http:
+  status: 200
+  headers: { Cache-Control: no-store, Pragma: no-cache, Content-Type: application/json }
+  body:
+    type: json
+    value:
+      access_token: W4VwkD5aXfF7b_mX5yFRZlP6xJ2hLP-D8kHcNN2CK0o
+      token_type: DPoP
+      expires_in: 300
+annotations:
+  /http/headers/Cache-Control: vci.token-response.cache-control
+  /http/body/access_token: vci.token-response.access_token
+  /http/body/token_type: vci.token-response.token_type
+  /http/body/expires_in: vci.token-response.expires_in

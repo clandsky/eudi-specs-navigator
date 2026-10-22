@@ -6,13 +6,14 @@ import { OverruleEditor, type EntryKind } from '../components/OverruleEditor'
 import { StackPanel } from '../components/StackPanel'
 import { SequenceDiagram } from '../diagram/SequenceDiagram'
 import { setParams, useRoute } from '../lib/router'
-import { ds, exampleById, flowById, subjectById } from '../lib/store'
+import { ds, exampleById, flowById, subjectById, useViewCtx } from '../lib/store'
 import type { Assertion } from '../model/schema'
-import { stepNumber } from '../model/steps'
+import { stepAt, stepNumber } from '../model/steps'
 
 export function FlowView({ flowId }: { flowId: string }) {
   const flow = flowById.get(flowId)
   const { params } = useRoute()
+  const vc = useViewCtx()
   const [editing, setEditing] = useState<{ subjectId: string; kind: EntryKind; entry?: Assertion } | null>(null)
   // A link to a step (e.g. from the endpoints list) shows that step in the diagram, not only its example. One frame
   // later, so the shell's scroll-to-top on navigation has already run.
@@ -24,7 +25,11 @@ export function FlowView({ flowId }: { flowId: string }) {
   }, [flowId])
   if (!flow) return <div className="page">Unknown flow “{flowId}”.</div>
 
-  const step = flow.steps.find((s) => s.id === params.get('step')) ?? flow.steps[0]!
+  // With the go-live layer on, a step shows what the wallet solution really sends (recorded d-you traffic).
+  const raw = flow.steps.find((s) => s.id === params.get('step')) ?? flow.steps[0]!
+  const step = stepAt(raw, vc.layers)
+  // Which dataset the example pane shows: the spec example, or the d-you recording laid over it.
+  const recorded = !!raw.golive?.example && step.example === raw.golive.example
   const field = params.get('field')
   const subjectId = params.get('subject') ?? step.subject
   const example = step.example ? exampleById.get(step.example) : undefined
@@ -49,10 +54,26 @@ export function FlowView({ flowId }: { flowId: string }) {
             Step {stepNumber(flow, step)}: {step.label}
           </h2>
           <p>{step.note ?? `${subjectById.get(step.subject)?.title}. Click a field to see who defines it and who overrules it.`}</p>
+          {raw.golive?.example && (
+            <p className="meta">
+              {recorded ? (
+                <>
+                  <LayerName id="golive">d-you</LayerName> recording.{' '}
+                  {raw.example ? 'Take d-you out of the lens to see the spec example.' : 'The spec flow has no example for this step.'}
+                </>
+              ) : (
+                <>
+                  {raw.example ? 'Spec example. ' : ''}With <LayerName id="golive">d-you</LayerName> in the lens this step shows the
+                  recorded d-you message.
+                </>
+              )}
+            </p>
+          )}
         </div>
         <div className="pane-body">
           {step.example ? (
             <ObjectView
+              key={step.example}
               exampleId={step.example}
               sender={sender}
               selected={field}

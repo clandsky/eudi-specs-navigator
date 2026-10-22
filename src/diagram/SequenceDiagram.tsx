@@ -2,7 +2,7 @@
 // clickable, keyboard-focusable messages, per-message layer badges and lens-diff markers.
 import { useLayoutEffect, useRef, useState, type KeyboardEvent } from 'react'
 import type { Flow } from '../model/schema'
-import { stepNumber } from '../model/steps'
+import { stepAt, stepNumber } from '../model/steps'
 import { layerColor } from '../components/bits'
 import {
   LENS_STAGES,
@@ -104,7 +104,10 @@ export function SequenceDiagram({ flow, selected, onSelect }: Props) {
           <rect key={g.id} className="activation" x={g.x - 4} y={g.y1} width={8} height={g.y2 - g.y1} rx={2} />
         ))}
 
-        {flow.steps.map((s, i) => {
+        {flow.steps.map((raw, i) => {
+          // With the go-live layer on, a step shows the wallet solution's tags (drawn in its colour).
+          const s = stepAt(raw, vc.layers)
+          const overlaid = s.tags !== raw.tags
           const sub = !!s.parent
           const y = rowY[i]!
           const ay = y + (sub ? 15 : 30)
@@ -209,6 +212,7 @@ export function SequenceDiagram({ flow, selected, onSelect }: Props) {
                   x={self && leftward ? x1 - off - 4 - layers.length * 8 : (self ? x1 + off - 4 : left) + 8 + layers.length * 8 + 4}
                   y={ay + (sub ? 15 : 17)}
                   textAnchor={self && leftward ? 'end' : 'start'}
+                  style={overlaid ? { fill: layerColor('golive') } : undefined}
                 >
                   {s.tags.join(', ')}
                 </text>

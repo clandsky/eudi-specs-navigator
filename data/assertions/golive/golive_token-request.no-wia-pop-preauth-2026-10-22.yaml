@@ -13,4 +13,4 @@
   decided_by: d-you implementation (recorded issuance, IDGo 81, 2026-10-22)
   reference: d-you wallet traffic, pre-authorized code flow (recorded 2026-10-22)
   note: >-
-    Without the WIA there is no PoP either. Proven for the pre-authorized code flow only.
+    Without the WIA there is no PoP either. The authorization code flow has its own entry.

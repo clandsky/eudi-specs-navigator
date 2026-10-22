@@ -1,0 +1,10 @@
+{
+  "id": "vci-authorization-request-authcode-dyou",
+  "http": {
+    "method": "GET",
+    "url": "https://eaa.example.eu/openid4vci/authorize?state=LG1yt8t0gdL0VmsJlgfWqB_d9XWJDyXd&request_uri=urn:ietf:params:oauth:request_uri:zLJBqkvzAeWbpneyPRdQFj9PPKsAzD_x&client_id=cbc61b45-907a-4c65-8467-3194d8af12ab",
+    "headers": {}
+  },
+  "jwts": {},
+  "inputHash": "c3e4b9eb66f6ab11"
+}

@@ -140,6 +140,7 @@ export interface AuthorizationRequest {
 }
 // also:
 //   - URL scheme that invokes the Wallet: Wallet: MUST · Custom URL scheme that makes the device open a Wallet with the presentation request. · "OIDFVP-HAIP-REDIRECTS-03: The EUDI Wallet shall support at least a custom URL scheme "eu-eaap://" for its authorization_endpoint."
+//   - request_uri_method: Verifier: MAY · HTTP method the Wallet uses to fetch the Request Object: get or post. · "request_uri_method: OPTIONAL. A string determining the HTTP method to be used when the request_uri parameter is included in the same request."
 
 // ── Request Object fetched from request_uri ── GET /request/{id} · Wallet Unit → Verifier · steps redirect-same 3, redirect-cross 3, redirect-same-mdoc 3
 // rule: Wallet: MUST · "Upon receipt of the Request, the authorization server MUST send an HTTP "GET" request to the "request_uri" to retrieve the referenced Request Object"
@@ -498,6 +499,8 @@ export interface ResponseAck {
 
 // ── Wallet opens the redirect_uri in the browser (same device) ── Wallet Unit → Verifier · steps redirect-same 9, redirect-same-mdoc 9
 // rule: Wallet: MUST · "Wallets MUST follow the redirect to redirect_uri."
+// also:
+//   - response_code: no rule · The fresh random value from the redirect_uri; the Verifier checks that it belongs to the posted Authorization Response, so only the browser the Wallet sent back can continue.
 
 // ── Verifier frontend fetches the response with response_code (same device) ── Verifier → Verifier · steps redirect-same 10, redirect-same-mdoc 10
 

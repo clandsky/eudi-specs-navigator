@@ -1,0 +1,42 @@
+id: vci-par-request-authcode-dyou
+title: Pushed Authorization Request with DPoP and PKCE, without client attestation
+subject: vci.par-request
+kind: http-request
+note: >-
+  Shape recorded from a d-you issuance in the authorization code flow (IDGo 81, 2026-10-22, login at the authorization endpoint). No OAuth-Client-Attestation or -PoP header; instead a DPoP proof with the same key the Wallet later uses at the
+  token and credential endpoints (RFC 9449 Section 10.1). The Wallet asks by scope, adds resource (RFC 8707) and
+  redirects to a private-use URI scheme. client_id is a UUID, the same as in the pre-authorized code flow.
+http:
+  method: POST
+  url: https://eaa.example.eu/openid4vci/par
+  headers:
+    Content-Type: application/x-www-form-urlencoded
+    DPoP: "{{jwt:dpop}}"
+  body:
+    type: form
+    value:
+      code_challenge: "{{s256:QnswHps2QClCmZD4BBI5VIfuDEau_7bxfWtAgxx6YfT}}"
+      response_type: code
+      state: LG1yt8t0gdL0VmsJlgfWqB_d9XWJDyXd
+      client_id: cbc61b45-907a-4c65-8467-3194d8af12ab
+      resource: https://eaa.example.eu
+      redirect_uri: "org.sprind.wallet.sandbox:/authorization"
+      scope: dog_tag
+      issuer_state: gCiOrOwJ5HjAJNM9V1Eibw
+      code_challenge_method: S256
+jwts:
+  dpop:
+    key: wallet-dpop
+    header: { alg: ES256, jwk: { $jwk: wallet-dpop, alg: ES256, kid: dpop-e13a2796c5b2f6ad, use: sig }, typ: dpop+jwt }
+    payload: { iat: 1792681304, jti: M2AygRXEQmAWN55J4UWF, htu: https://eaa.example.eu/openid4vci/par, htm: POST }
+annotations:
+  /http/headers/DPoP: vci.par-request.dpop
+  /http/body/code_challenge: vci.par-request.code_challenge
+  /http/body/code_challenge_method: vci.par-request.code_challenge
+  /http/body/response_type: vci.par-request.response_type
+  /http/body/state: vci.par-request.state
+  /http/body/client_id: vci.par-request.client_id
+  /http/body/resource: vci.par-request.resource
+  /http/body/redirect_uri: vci.par-request.redirect_uri
+  /http/body/scope: vci.par-request.scope
+  /http/body/issuer_state: vci.par-request.issuer_state

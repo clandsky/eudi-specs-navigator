@@ -1,0 +1,16 @@
+id: vci-nested-continue-dyou
+title: Browser returns to the authorization (GET /authorize/continue)
+subject: vp.redirect-back
+kind: http-request
+note: >-
+  Shape recorded from a d-you issuance with a nested PID presentation (IDGo 81, 2026-10-22), with the response_code the
+  issuer added afterwards. The Wallet opens the redirect_uri in the browser; the authorization server finds the pushed
+  request by its request_uri, checks that the response_code belongs to the presentation posted for it (and has not been
+  used), and answers with the authorization code. Between the presentation and this request the Wallet fetched the
+  Credential Issuer metadata again.
+http:
+  method: GET
+  url: "https://eaa.example.eu/openid4vci/authorize/continue?request_uri=urn:ietf:params:oauth:request_uri:zLJBqkvzAeWbpneyPRdQFj9PPKsAzD_x&response_code=rg9TZrCrJ9gxftXSwPowgA"
+annotations:
+  /http/query/request_uri: vci.authorization-request.request_uri
+  /http/query/response_code: vp.redirect-back.response_code

@@ -15,6 +15,7 @@
 - { id: vp.authorization-request.scheme, kind: value, parent: vp.authorization-request, title: URL scheme that invokes the Wallet, location: uri, description: "Custom URL scheme that makes the device open a Wallet with the presentation request." }
 - { id: vp.authorization-request.client_id, kind: field, parent: vp.authorization-request, title: client_id, location: query, description: "Verifier identifier; must match client_id inside the Request Object." }
 - { id: vp.authorization-request.request_uri, kind: field, parent: vp.authorization-request, title: request_uri, location: query, description: "URL where the Wallet fetches the signed Request Object." }
+- { id: vp.authorization-request.request_uri_method, kind: field, parent: vp.authorization-request, title: request_uri_method, location: query, description: "HTTP method the Wallet uses to fetch the Request Object: get or post." }
 - { id: vp.request-uri-fetch, kind: message, parent: vp, title: Request Object fetched from request_uri, endpoint: { method: GET, path: "/request/{id}", server: verifier } }
 - { id: vp.request-object.typ, kind: field, parent: vp.request-object, title: typ = oauth-authz-req+jwt, location: jwt-header, description: "Marks the JWT as a signed authorization request (oauth-authz-req+jwt)." }
 - { id: vp.request-object.x5c, kind: field, parent: vp.request-object, title: x5c = RP access certificate, location: jwt-header, description: "Certificate chain of the signing key, starting with the relying party's access certificate." }
@@ -60,6 +61,7 @@
 - { id: vp.response-ack, kind: message, parent: vp, title: Response endpoint answer to the Wallet }
 - { id: vp.response-ack.redirect_uri, kind: field, parent: vp.response-ack, title: redirect_uri, location: json, description: "Where the Wallet sends the user's browser after posting the response (same device); carries a response_code." }
 - { id: vp.redirect-back, kind: step, parent: vp, title: Wallet opens the redirect_uri in the browser (same device) }
+- { id: vp.redirect-back.response_code, kind: field, parent: vp.redirect-back, title: response_code, location: query, description: "The fresh random value from the redirect_uri; the Verifier checks that it belongs to the posted Authorization Response, so only the browser the Wallet sent back can continue." }
 - { id: vp.result-poll, kind: step, parent: vp, title: Verifier frontend learns the result from its backend (application-specific) }
 - { id: vp.dc-api.request, kind: message, parent: vp, title: "navigator.credentials.get() request (Digital Credentials API)", location: json, description: "Argument of navigator.credentials.get(): the digital member lists one or more requests, each naming a protocol and carrying its data." }
 - { id: vp.dc-api.protocol, kind: field, parent: vp.dc-api.request, title: protocol, location: json, description: "Presentation protocol identifier for the Digital Credentials API, e.g. openid4vp-v1-signed." }

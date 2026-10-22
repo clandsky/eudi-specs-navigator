@@ -1,18 +1,19 @@
-# Go-live compromise (d-you), recorded from the d-you wallet's traffic of a pre-authorized code issuance.
+# Go-live compromise (d-you), recorded from the d-you wallet's traffic (pre-authorized and authorization code flow).
 - id: golive/metadata.signed-only-2026-10-22
   subject: vci.metadata
   spec: golive-compromises
-  locator: { at: "d-you wallet traffic, pre-authorized code flow (recorded 2026-10-22)" }
+  locator: { at: "d-you wallet traffic, pre-authorized and authorization code flow (recorded 2026-10-22)" }
   relation: adapts
   level: shall
-  applies_to: { role: [wallet, issuer], grant: [pre-authorized_code] }
+  applies_to: { role: [wallet, issuer] }
   target: oid4vci/12.2.2/unsigned
   window: { from: "2026-10-22" }
   quote: >-
     The d-you wallet requests the Credential Issuer metadata with Accept: application/jwt only and accepts only the
     signed form; plain JSON is reported as invalid credential metadata.
   decided_by: d-you implementation (recorded issuance, IDGo 81, 2026-10-22)
-  reference: d-you wallet traffic, pre-authorized code flow (recorded 2026-10-22)
+  reference: d-you wallet traffic, pre-authorized and authorization code flow (recorded 2026-10-22)
   note: >-
     A 406 answer (no JSON acceptable) surfaced in the wallet as "Server nicht erreichbar". The issuer answers the
     wallet's request with Content-Type application/jwt.
+    The same in both recorded authorization code runs (login and nested PID presentation, 2026-10-22).
