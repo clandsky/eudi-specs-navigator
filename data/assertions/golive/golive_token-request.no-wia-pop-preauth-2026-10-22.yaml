@@ -1,0 +1,16 @@
+# Go-live compromise (d-you), recorded from the d-you wallet's traffic of a pre-authorized code issuance.
+- id: golive/token-request.no-wia-pop-preauth-2026-10-22
+  subject: vci.token-request.oauth-client-attestation-pop
+  spec: golive-compromises
+  locator: { at: "d-you wallet traffic, pre-authorized code flow (recorded 2026-10-22)" }
+  relation: replaces
+  level: may
+  applies_to: { role: [wallet], grant: [pre-authorized_code] }
+  target: cir/TR-WIA-3.1/token
+  window: { from: "2026-10-22" }
+  quote: >-
+    In the pre-authorized code flow the d-you wallet sends no OAuth-Client-Attestation-PoP header in the Token Request.
+  decided_by: d-you implementation (recorded issuance, IDGo 81, 2026-10-22)
+  reference: d-you wallet traffic, pre-authorized code flow (recorded 2026-10-22)
+  note: >-
+    Without the WIA there is no PoP either. Proven for the pre-authorized code flow only.

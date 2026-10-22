@@ -1,0 +1,18 @@
+{
+  "id": "vci-nonce-response-preauth",
+  "http": {
+    "status": 200,
+    "headers": {
+      "Cache-Control": "no-store",
+      "Content-Type": "application/json"
+    },
+    "body": {
+      "type": "json",
+      "value": {
+        "c_nonce": "lHsPx2DheLM172hYAbi8eMjK3lSXo3cw"
+      }
+    }
+  },
+  "jwts": {},
+  "inputHash": "c4bf97a9276a2639"
+}

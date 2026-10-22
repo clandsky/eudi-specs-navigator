@@ -1,0 +1,18 @@
+# Go-live compromise (d-you), recorded from the d-you wallet's traffic of a pre-authorized code issuance.
+- id: golive/token-request.no-wia-preauth-2026-10-22
+  subject: vci.token-request.oauth-client-attestation
+  spec: golive-compromises
+  locator: { at: "d-you wallet traffic, pre-authorized code flow (recorded 2026-10-22)" }
+  relation: replaces
+  level: may
+  applies_to: { role: [wallet], grant: [pre-authorized_code] }
+  target: cir/TR-WIA-3/token
+  window: { from: "2026-10-22" }
+  quote: >-
+    In the pre-authorized code flow the d-you wallet sends no OAuth-Client-Attestation header in the Token Request; the
+    request carries only the DPoP proof.
+  decided_by: d-you implementation (recorded issuance, IDGo 81, 2026-10-22)
+  reference: d-you wallet traffic, pre-authorized code flow (recorded 2026-10-22)
+  note: >-
+    Observed headers of the Token Request: Content-Type, DPoP and generic HTTP headers; no OAuth-Client-Attestation.
+    Proven for the pre-authorized code flow only; the authorization code flow was not recorded.

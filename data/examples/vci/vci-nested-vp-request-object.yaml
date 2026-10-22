@@ -30,7 +30,7 @@ jwts:
             meta: { vct_values: ["urn:eudi:pid:de:1"] }
             claims: [{ path: [given_name] }, { path: [family_name] }]
       client_metadata:
-        jwks: { keys: [{ $jwk: issuer-enc, kid: enc-as-1, use: enc, alg: ECDH-ES }] }
+        jwks: { keys: [{ $jwk: as-vp-enc, kid: enc-as-1, use: enc, alg: ECDH-ES }] }
         vp_formats_supported:
           dc+sd-jwt: { sd-jwt_alg_values: [ES256], kb-jwt_alg_values: [ES256] }
         encrypted_response_enc_values_supported: [A128GCM]

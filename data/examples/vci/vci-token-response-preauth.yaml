@@ -1,0 +1,19 @@
+id: vci-token-response-preauth
+title: Token Response with a DPoP-bound access token, no refresh token
+subject: vci.token-response
+kind: http-response
+note: Shape recorded from a d-you issuance (IDGo 81, 2026-10-22).
+http:
+  status: 200
+  headers: { Cache-Control: no-store, Pragma: no-cache, Content-Type: application/json }
+  body:
+    type: json
+    value:
+      access_token: z6aa0Y2lPpXPZaWWbUVI5ld5uJCEeyRf2iBLd0iuXQE
+      token_type: DPoP
+      expires_in: 300
+annotations:
+  /http/headers/Cache-Control: vci.token-response.cache-control
+  /http/body/access_token: vci.token-response.access_token
+  /http/body/token_type: vci.token-response.token_type
+  /http/body/expires_in: vci.token-response.expires_in

@@ -154,6 +154,31 @@
   quote: "The \"kty\" (key type) parameter identifies the cryptographic algorithm family used with the key, such as
     \"RSA\" or \"EC\"."
   verified: source-checked
+- id: rfc7517/4.2/use
+  subject: jwk.use
+  spec: rfc-7517
+  locator: { section: "4.2" }
+  relation: defines
+  level: info
+  quote: "The \"use\" (public key use) parameter identifies the intended use of the public key."
+  verified: source-checked
+- id: rfc7517/4.4/alg
+  subject: jwk.alg
+  spec: rfc-7517
+  locator: { section: "4.4" }
+  relation: defines
+  level: may
+  quote: "The \"alg\" (algorithm) parameter identifies the algorithm intended for use with the key."
+  verified: source-checked
+- id: rfc7517/4.5/kid
+  subject: jwk.kid
+  spec: rfc-7517
+  locator: { section: "4.5" }
+  relation: defines
+  level: may
+  quote: "The \"kid\" (key ID) parameter is used to match a specific key. … When used with JWS or JWE, the \"kid\" value
+    is used to match a JWS or JWE \"kid\" Header Parameter value."
+  verified: source-checked
 - id: rfc7518/6.2.1.1/crv
   subject: jwk.crv
   spec: rfc-7518

@@ -1,0 +1,29 @@
+{
+  "id": "vci-as-metadata-preauth",
+  "http": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "body": {
+      "type": "json",
+      "value": {
+        "issuer": "https://eaa.example.eu",
+        "token_endpoint": "https://eaa.example.eu/openid4vci/token",
+        "response_types_supported": [],
+        "grant_types_supported": [
+          "urn:ietf:params:oauth:grant-type:pre-authorized_code"
+        ],
+        "token_endpoint_auth_methods_supported": [
+          "none"
+        ],
+        "pre-authorized_grant_anonymous_access_supported": true,
+        "dpop_signing_alg_values_supported": [
+          "ES256"
+        ]
+      }
+    }
+  },
+  "jwts": {},
+  "inputHash": "c3fb5772c22fb6e6"
+}

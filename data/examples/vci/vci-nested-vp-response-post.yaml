@@ -10,7 +10,7 @@ http:
   body: { type: form, value: { response: "{{jwe:resp}}" } }
 jwts:
   resp:
-    encrypt: { key: issuer-enc, alg: ECDH-ES, enc: A128GCM }
+    encrypt: { key: as-vp-enc, alg: ECDH-ES, enc: A128GCM }
     header: { kid: enc-as-1 }
     payload:
       vp_token: { pid-sd-jwt: ["{{sdjwt:pid}}"] }
