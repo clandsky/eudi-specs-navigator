@@ -22,6 +22,9 @@
 - { pattern: /**/crv, subject: jwk.crv }
 - { pattern: /**/x, subject: jwk.x }
 - { pattern: /**/y, subject: jwk.y }
+- { pattern: /**/kid, subject: jwk.kid }
+- { pattern: /**/use, subject: jwk.use }
+- { pattern: /**/alg, subject: jwk.alg }
 # Token Status List references
 - { pattern: /**/status/status_list, subject: tsl.status_list }
 - { pattern: /**/status_list/idx, subject: tsl.idx }

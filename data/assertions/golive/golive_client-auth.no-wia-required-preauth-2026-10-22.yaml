@@ -1,0 +1,18 @@
+# Go-live compromise (d-you), recorded from the d-you wallet's traffic of a pre-authorized code issuance.
+- id: golive/client-auth.no-wia-required-preauth-2026-10-22
+  subject: vci.client-auth.reject-without-wia
+  spec: golive-compromises
+  locator: { at: "d-you wallet traffic, pre-authorized code flow (recorded 2026-10-22)" }
+  relation: replaces
+  level: shall-not
+  applies_to: { role: [as], grant: [pre-authorized_code] }
+  target: haip/4.4.1/require-client-auth
+  window: { from: "2026-10-22" }
+  quote: >-
+    In the pre-authorized code flow the Authorization Server does not require client authentication from the d-you
+    wallet; a Token Request without WIA is accepted.
+  decided_by: d-you implementation (recorded issuance, IDGo 81, 2026-10-22)
+  reference: d-you wallet traffic, pre-authorized code flow (recorded 2026-10-22)
+  note: >-
+    An Authorization Server that requires the WIA cannot issue to the d-you wallet in this flow, because the wallet
+    sends none. Proven for the pre-authorized code flow only.

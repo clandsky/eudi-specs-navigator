@@ -1,0 +1,18 @@
+# Go-live compromise (d-you), recorded from the d-you wallet's traffic of a pre-authorized code issuance.
+- id: golive/client-auth.anonymous-preauth-2026-10-22
+  subject: vci.client-auth
+  spec: golive-compromises
+  locator: { at: "d-you wallet traffic, pre-authorized code flow (recorded 2026-10-22)" }
+  relation: replaces
+  level: may
+  applies_to: { role: [wallet, as], grant: [pre-authorized_code] }
+  target: haip/4.4.1/client-auth
+  window: { from: "2026-10-22" }
+  quote: >-
+    In the pre-authorized code flow the d-you wallet uses no client authentication at the token endpoint.
+  decided_by: d-you implementation (recorded issuance, IDGo 81, 2026-10-22)
+  reference: d-you wallet traffic, pre-authorized code flow (recorded 2026-10-22)
+  note: >-
+    The Authorization Server that issued successfully announced token_endpoint_auth_methods_supported [none] and
+    pre-authorized_grant_anonymous_access_supported true. The wallet still sends a client_id form parameter, which no
+    client authentication method uses here.

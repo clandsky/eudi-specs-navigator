@@ -1,0 +1,17 @@
+# Go-live compromise (d-you), recorded from the d-you wallet's traffic of a pre-authorized code issuance.
+- id: golive/as-metadata.dpop_signing_alg_values_supported-2026-10-22
+  subject: vci.as-metadata.dpop_signing_alg_values_supported
+  spec: golive-compromises
+  locator: { at: "d-you wallet traffic, pre-authorized code flow (recorded 2026-10-22)" }
+  relation: replaces
+  level: shall
+  applies_to: { role: [as], grant: [pre-authorized_code] }
+  target: rfc9449/5.1/dpop_signing_alg_values_supported
+  window: { from: "2026-10-22" }
+  quote: >-
+    The Authorization Server metadata includes dpop_signing_alg_values_supported; without it the d-you wallet stops
+    before the Token Request (ValidationError dpopRequired).
+  decided_by: d-you implementation (recorded issuance, IDGo 81, 2026-10-22)
+  reference: d-you wallet traffic, pre-authorized code flow (recorded 2026-10-22)
+  note: >-
+    The recorded run used [ES256].

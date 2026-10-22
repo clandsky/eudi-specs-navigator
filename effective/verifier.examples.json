@@ -1,6 +1,6 @@
 {
   "side": "verifier",
-  "asOf": "2026-10-21",
+  "asOf": "2026-10-22",
   "note": "Decoded example messages for the types in the effective API (signed with test keys; values are illustrative).",
   "messages": [
     {

@@ -1,0 +1,11 @@
+id: vci-nonce-request-preauth
+title: Nonce Request with an empty octet-stream body
+subject: vci.nonce-request
+kind: http-request
+note: >-
+  Shape recorded from a d-you issuance (IDGo 81, 2026-10-22): POST with Content-Type application/octet-stream and an
+  empty body, so the Nonce Endpoint must not insist on a JSON or form content type.
+http:
+  method: POST
+  url: https://eaa.example.eu/openid4vci/nonce
+  headers: { Content-Type: application/octet-stream, Content-Length: "0" }

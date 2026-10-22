@@ -42,3 +42,6 @@
 - { id: cose-key.crv, kind: field, parent: common, title: "crv (COSE_Key, label -1)", location: cbor, description: "Elliptic curve of the key; 1 is P-256." }
 - { id: cose-key.x, kind: field, parent: common, title: "x (COSE_Key, label -2)", location: cbor, description: "x coordinate of the EC public key, as a byte string." }
 - { id: cose-key.y, kind: field, parent: common, title: "y (COSE_Key, label -3)", location: cbor, description: "y coordinate of the EC public key, as a byte string." }
+- { id: jwk.kid, kind: field, parent: common, title: kid (JWK), location: json, description: "Key ID: lets a JWS or JWE kid header, or a JWK Set lookup, pick this key." }
+- { id: jwk.use, kind: field, parent: common, title: use (JWK), location: json, description: "Intended use of the public key: sig (signatures) or enc (encryption and key agreement)." }
+- { id: jwk.alg, kind: field, parent: common, title: alg (JWK), location: json, description: "Algorithm the key is meant for, e.g. ES256 for signing or ECDH-ES for key agreement." }
