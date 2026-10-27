@@ -1,0 +1,11 @@
+id: vci-status-list-request
+title: Verifier fetches the Status List Token from status_list.uri
+note: The URL is status_list.uri from the presented credential. Wallets may fetch the same token to show the user that a credential was revoked (Token Status List §8).
+subject: vci.status-list-request
+kind: http-request
+http:
+  method: GET
+  url: https://eaa.example.eu/status/gym/3
+  headers: { Accept: application/statuslist+jwt }
+annotations:
+  /http/headers/Accept: vci.status-list-request.accept

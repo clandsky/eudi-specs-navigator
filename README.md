@@ -29,9 +29,10 @@ override it, and the effective rule as of a date**.
 - **Learn**: a learning roadmap of the concepts each role needs, in clusters (general and ecosystem trust, then the
   verifier or issuer path), with questions, reading and links into the flows and specs.
 
-Flows in v1: issuance with authorization code + PAR, pre-authorized code; presentation via redirect (same device and
-cross device) and the Digital Credentials API, and the same-device redirect with an ISO mdoc PID (a CBOR
-DeviceResponse, decoded field by field).
+Flows in v1: issuance with authorization code + PAR (also with a nested PID presentation), pre-authorized code;
+revocation through the issuer's Token Status List; presentation via redirect (same device and cross device) and the
+Digital Credentials API, and the same-device redirect with an ISO mdoc PID (a CBOR DeviceResponse, decoded field by
+field).
 
 ## Precedence
 

@@ -1,0 +1,26 @@
+id: vci-status-list-response
+title: Status List Token after the revocation of both credentials of the batch
+note: >-
+  1 bit per entry, 16384 entries (2048 bytes before compression). Entries 1307 and 2918, the two credentials of the
+  batch from the Credential Response, are 1 (INVALID), as are eight earlier revocations on the same list (211, 4570,
+  6033, 7719, 9402, 10388, 12861, 15127); all other entries are 0 (VALID). Signed with the key that signs the
+  credentials.
+subject: vci.status-list-response
+kind: http-response
+http:
+  status: 200
+  headers: { Content-Type: application/statuslist+jwt, Cache-Control: max-age=43200 }
+  body: { type: jwt, value: "{{jwt:slt}}" }
+jwts:
+  slt:
+    key: issuer-signer
+    header: { typ: statuslist+jwt, alg: ES256, x5c: "{{x5c:issuer-signer}}" }
+    payload:
+      sub: https://eaa.example.eu/status/gym/3
+      iat: 1793610900
+      exp: 1793697300
+      ttl: 43200
+      status_list: { bits: 1, lst: eNpjYMAFOBgGCRg0DqEUODAMK8AyNJ3NxDDcQMOw89FApi0BhlFAMlAYDYKhmTsBKTcBiw }
+annotations:
+  /http/headers/Content-Type: vci.status-list-response.content-type
+  /http/headers/Cache-Control: vci.status-list-response.cache-control

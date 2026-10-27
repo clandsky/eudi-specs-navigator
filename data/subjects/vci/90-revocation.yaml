@@ -1,0 +1,60 @@
+# Revocation: the Credential Issuer keeps a Token Status List for the credentials it issued, sets the entries of revoked
+# credentials to INVALID and serves a signed Status List Token at status_list.uri (draft-ietf-oauth-status-list-20).
+- id: vci.revocation
+  kind: behaviour
+  parent: vci
+  title: Credential Issuer keeps the revocation status of issued credentials
+  description: "The issuer stays responsible for a credential after issuance: it can revoke it at any time before it expires. In the EUDI ecosystem it does so through a Token Status List: every credential points to an entry, and the issuer publishes the list as a signed Status List Token that Verifiers and Wallets fetch."
+- id: vci.issuer.allocate-status-index
+  kind: step
+  parent: vci.revocation
+  title: Issuer assigns each credential its own status list entry
+  description: "At issuance the issuer picks a list and an index for every credential and writes them into the status claim. The entry starts as 0x00 VALID, so issuing needs no list update."
+  checks:
+    - { field: status.status_list.uri, subject: tsl.uri, expect: "The URL of a list the issuer serves, e.g. https://eaa.example.eu/status/gym/3. Several credentials may share one list." }
+    - { field: status.status_list.idx, subject: tsl.idx, expect: "Unique and unpredictable on that list, also within one batch: vc1 gets 1307, vc2 gets 2918 (HAIP §6.1). Never handed out twice (Token Status List §13.3)." }
+    - { field: entry value, expect: "Already 0x00 VALID: the list is initialised with the most common value, so unused and valid entries look the same (Token Status List §13.3)." }
+- id: vci.revocation.decision
+  kind: step
+  parent: vci.revocation
+  title: Issuer decides to revoke a credential
+  description: "Why a credential is revoked is up to the issuer and its rules: the user cancels the membership, the attributes are no longer true, fraud is detected, or the wallet unit the credential was issued to has been revoked. A PID provider must revoke in the cases Article 5(4) of Implementing Regulation (EU) 2024/2977 lists."
+- id: vci.issuer.revocation-chaining
+  kind: step
+  parent: vci.revocation.decision
+  title: "PID provider checks the status of the WIA and key attestation (revocation chaining)"
+  description: "A PID provider whose PID is valid for more than 24 hours looks up, at least every 24 hours, the Wallet Provider's status list entries of the WIA and the key attestation it received during issuance. If either is revoked, it revokes the PID."
+  checks:
+    - { field: client_status.status (WIA), subject: vci.wia.client_status.status, expect: "The entry in the Wallet Provider's Token Status List is VALID. INVALID: the wallet unit was revoked, revoke the PID." }
+    - { field: key_storage_status.status (key attestation), subject: vci.ka.key_storage_status.status, expect: "The entry in the Wallet Provider's Token Status List is VALID. INVALID: the keystore or WSCD was revoked, revoke the PID." }
+- id: vci.issuer.update-status-list
+  kind: step
+  parent: vci.revocation
+  title: Issuer sets the entries of the revoked credentials to INVALID
+  description: "Revocation is a write to the issuer's own list: the bits at the credentials' indexes become 0x01 INVALID. A batch is revoked as a whole, since every credential of it carries the same attributes."
+  checks:
+    - { field: "entry 1307 (vc1)", subject: tsl.idx, expect: "Set to 0x01 INVALID." }
+    - { field: "entry 2918 (vc2)", subject: tsl.idx, expect: "Set to 0x01 INVALID as well: the second credential of the batch." }
+    - { field: bits, subject: tsl.token.bits, expect: "1 is enough while the list only knows VALID and INVALID. For the PID, QEAA and PuB-EAA no other value, such as SUSPENDED, is allowed (CIR Annex IV EAA-4.2.11.1-06)." }
+    - { field: permanence, expect: "A revoked entry never goes back to VALID (EAA-4.2.11.1-06.1). A new credential gets a new index." }
+- id: vci.issuer.sign-status-list-token
+  kind: step
+  parent: vci.revocation
+  title: Issuer compresses the list and signs a new Status List Token
+  description: "The updated byte array is compressed with DEFLATE (ZLIB format), put into a JWT with typ statuslist+jwt and signed. The new token replaces the old one at status_list.uri."
+  checks:
+    - { field: status_list.lst, subject: tsl.token.lst, expect: "base64url of the byte array compressed with DEFLATE in the ZLIB format, at the highest compression level." }
+    - { field: typ, subject: tsl.token.typ, expect: "statuslist+jwt." }
+    - { field: x5c, subject: tsl.token.x5c, expect: "The chain of the signing certificate, without the trust anchor (HAIP §6.1)." }
+    - { field: signing certificate, subject: tsl.token.signing-certificate, expect: "Not self-signed; here the credential signer certificate, issued by the access CA." }
+    - { field: sub, subject: tsl.token.sub, expect: "Equals status_list.uri in the credentials, https://eaa.example.eu/status/gym/3." }
+    - { field: iat / exp / ttl, subject: tsl.token.ttl, expect: "iat is the signing time; exp and ttl are both set (Token Status List §13.7), here exp one day later and ttl 12 hours." }
+
+# Status List endpoint ----------------------------------------------------------------------------------------------
+- { id: vci.status-list-request, kind: message, parent: vci, title: Status List Token fetched from status_list.uri, endpoint: { method: GET, path: "/status/{type}/{list}", server: issuer } }
+- { id: vci.status-list-request.accept, kind: field, parent: vci.status-list-request, title: "Accept: application/statuslist+jwt", location: header, description: "Asks for the Status List Token in JWT format, the one an SD-JWT VC refers to." }
+- { id: vci.status-list-request.cors, kind: behaviour, parent: vci.status-list-request, title: CORS on the status list endpoint, description: "Lets browser-based clients, such as a web Verifier, fetch the Status List Token across origins." }
+- { id: vci.status-list-response, kind: message, parent: vci, title: Status List Token response (200) }
+- { id: vci.status-list-response.content-type, kind: field, parent: vci.status-list-response, title: "Content-Type: application/statuslist+jwt", location: header, description: "Media type of a Status List Token in JWT format; the body is its compact serialization." }
+- { id: vci.status-list-response.content-encoding, kind: behaviour, parent: vci.status-list-response, title: "Content-Encoding (e.g. gzip) of the response", description: "HTTP compression of the JWT on the wire, negotiated with Accept-Encoding; on top of the DEFLATE compression inside lst." }
+- { id: vci.status-list-response.cache-control, kind: field, parent: vci.status-list-response, title: Cache-Control header, location: header, description: "HTTP caching hint. Relying parties go by exp and ttl in the token, which win over HTTP caching headers." }

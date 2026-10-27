@@ -24,8 +24,21 @@ topics:
     summary: >-
       Issue, refresh, suspend, revoke, expire. Revocation and suspension go through a status list the issuer keeps
       published; refresh tokens let the wallet fetch fresh credentials without the user starting over.
-    subtopics: [Key Rotation, Refresh, Token Status List]
-    subjects: [vci.refresh-token, vci.notification-request]
+    subtopics:
+      - Key Rotation
+      - Refresh
+      - id: isarch-lifecycle.token-status-list
+        title: Token Status List
+        summary: >-
+          Every credential points to an entry (status_list with uri and idx) in a list the issuer publishes as a signed
+          Status List Token. To revoke, the issuer sets the entry to INVALID and signs a new token; Verifiers fetch it
+          from the uri and reject the credential. Each credential, also within a batch, has its own unpredictable index.
+          The PID, QEAA and PuB-EAA are revoked permanently and know no suspension.
+        flows: [vci-revocation]
+        subjects: [vci.issuer.allocate-status-index, vci.issuer.update-status-list, tsl.token]
+        specs: [status-list-20, haip-1.0]
+    flows: [vci-revocation]
+    subjects: [vci.refresh-token, vci.notification-request, vci.revocation]
     specs: [status-list-20]
     links:
       - title: "Credential Lifecycle & Operations | EUDI DE Documentation"

@@ -599,3 +599,14 @@
   quote: "The Credential Issuer SHOULD issue a Credential for each cryptographic public key specified in the attested_keys
     claim within the key_attestation parameter."
   verified: source-checked
+- id: oid4vci/13.7/lifecycle
+  subject: vci.revocation.decision
+  spec: openid4vci-1.0
+  locator: { section: "13.7" }
+  relation: defines
+  level: info
+  applies_to: { role: [ issuer ] }
+  quote: "The Credential Issuer is supposed to be responsible for the lifecycle of its Credentials. This means the
+    Credential Issuer will invalidate Credentials when it deems appropriate, e.g., if it detects fraudulent behavior."
+  note: OpenID4VCI defines no revocation protocol; HAIP §6.1 makes the Token Status List the mechanism for SD-JWT VCs.
+  verified: source-checked
