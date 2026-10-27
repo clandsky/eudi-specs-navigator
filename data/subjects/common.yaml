@@ -23,6 +23,17 @@
 - { id: tsl.status_list, kind: field, parent: tsl.status, title: status.status_list, location: jwt-payload, description: "Reference to a status list: which list (uri) and which position in it (idx)." }
 - { id: tsl.idx, kind: field, parent: tsl.status_list, title: status_list.idx, location: jwt-payload, description: "Index of this token's entry in the status list." }
 - { id: tsl.uri, kind: field, parent: tsl.status_list, title: status_list.uri, location: jwt-payload, description: "URL where the Status List Token can be fetched." }
+- { id: tsl.token, kind: object, parent: common, title: Status List Token (JWT), description: "Signed JWT the issuer serves at status_list.uri: the compressed status list of many credentials, one entry each." }
+- { id: tsl.token.typ, kind: field, parent: tsl.token, title: typ = statuslist+jwt, location: jwt-header, description: "Marks the JWT as a Status List Token, so it cannot be mistaken for another token." }
+- { id: tsl.token.x5c, kind: field, parent: tsl.token, title: x5c (Status List Token), location: jwt-header, description: "Certificate chain of the key that signed the Status List Token, leaf first, without the trust anchor." }
+- { id: tsl.token.signing-certificate, kind: behaviour, parent: tsl.token, title: Certificate that signs the Status List Token, description: "The leaf certificate in x5c; Verifiers validate its chain to decide whether to trust the status list." }
+- { id: tsl.token.sub, kind: field, parent: tsl.token, title: sub (URI of the Status List Token), location: jwt-payload, description: "The URI the token is served at; equals status_list.uri in the credentials that point to it." }
+- { id: tsl.token.iat, kind: field, parent: tsl.token, title: iat (Status List Token), location: jwt-payload, description: "When this version of the status list was signed." }
+- { id: tsl.token.exp, kind: field, parent: tsl.token, title: exp (Status List Token), location: jwt-payload, description: "After this time the status list must not be relied on any more." }
+- { id: tsl.token.ttl, kind: field, parent: tsl.token, title: ttl (time to live), location: jwt-payload, description: "Seconds a consumer may cache the token before it fetches a fresh copy." }
+- { id: tsl.token.status_list, kind: field, parent: tsl.token, title: status_list (StatusList), location: jwt-payload, description: "The status list itself: bits per entry and the compressed entries." }
+- { id: tsl.token.bits, kind: field, parent: tsl.token.status_list, title: status_list.bits, location: jwt-payload, description: "Bits per entry: 1, 2, 4 or 8. With 1 bit an entry is 0 VALID or 1 INVALID." }
+- { id: tsl.token.lst, kind: field, parent: tsl.token.status_list, title: status_list.lst, location: jwt-payload, description: "The entries as a ZLIB-compressed byte array, base64url encoded; entry idx sits at bit idx, counted from the least significant bit of byte 0." }
 - { id: sdjwt._sd, kind: field, parent: common, title: _sd (disclosure digests), location: jwt-payload, description: "Digests of the selectively disclosable claims; each Disclosure the holder reveals must hash to one of them." }
 - { id: sdjwt._sd_alg, kind: field, parent: common, title: _sd_alg, location: jwt-payload, description: "Hash algorithm used for the _sd digests, e.g. sha-256." }
 - { id: sdjwt.disclosure, kind: field, parent: common, title: Disclosure, description: "One selectively disclosable claim, sent after the issuer-signed JWT, separated by ~: the base64url-encoded JSON array [salt, claim name, claim value]. Its digest is listed in _sd." }

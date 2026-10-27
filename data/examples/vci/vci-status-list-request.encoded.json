@@ -1,0 +1,12 @@
+{
+  "id": "vci-status-list-request",
+  "http": {
+    "method": "GET",
+    "url": "https://eaa.example.eu/status/gym/3",
+    "headers": {
+      "Accept": "application/statuslist+jwt"
+    }
+  },
+  "jwts": {},
+  "inputHash": "7f584f24c1339fcc"
+}

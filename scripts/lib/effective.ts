@@ -45,6 +45,7 @@ const ITEMS: Record<string, { type: string; producer: Role; what: string; by?: s
   cresp: { type: 'EncryptedCredentialResponse', producer: 'issuer', what: 'JWE' },
   rc: { type: 'RegistrationCertificate', producer: 'issuer', what: 'JWS', by: 'the registrar, served by the Issuer' },
   metadata: { type: 'SignedIssuerMetadata', producer: 'issuer', what: 'JWS' },
+  slt: { type: 'StatusListToken', producer: 'issuer', what: 'JWS' },
   ro: { type: 'RequestObject', producer: 'verifier', what: 'JWS' },
   resp: { type: 'AuthorizationResponse', producer: 'wallet', what: 'JWE' },
   pid: { type: 'PresentedSdJwtVc', producer: 'issuer', what: 'SD-JWT VC' },

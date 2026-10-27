@@ -29,6 +29,16 @@
 - { pattern: /**/status/status_list, subject: tsl.status_list }
 - { pattern: /**/status_list/idx, subject: tsl.idx }
 - { pattern: /**/status_list/uri, subject: tsl.uri }
+# Status List Token (JWT name "slt")
+- { pattern: /jwt/slt/header/typ, subject: tsl.token.typ }
+- { pattern: /jwt/slt/header/x5c, subject: tsl.token.x5c }
+- { pattern: /jwt/slt/payload/sub, subject: tsl.token.sub }
+- { pattern: /jwt/slt/payload/iat, subject: tsl.token.iat }
+- { pattern: /jwt/slt/payload/exp, subject: tsl.token.exp }
+- { pattern: /jwt/slt/payload/ttl, subject: tsl.token.ttl }
+- { pattern: /jwt/slt/payload/status_list, subject: tsl.token.status_list }
+- { pattern: /jwt/slt/payload/status_list/bits, subject: tsl.token.bits }
+- { pattern: /jwt/slt/payload/status_list/lst, subject: tsl.token.lst }
 # SD-JWT
 - { pattern: /jwt/*/payload/_sd, subject: sdjwt._sd }
 - { pattern: /jwt/*/payload/_sd_alg, subject: sdjwt._sd_alg }

@@ -1,6 +1,7 @@
 - { id: vci, kind: flow, title: Credential issuance (OpenID4VCI) }
 - { id: vci.flow.auth-code-par, kind: flow, parent: vci, title: "Issuance: authorization code flow with PAR, same device" }
 - { id: vci.flow.nested-presentation, kind: flow, parent: vci, title: "Issuance: authorization code flow with a nested PID presentation, same device" }
+- { id: vci.flow.revocation, kind: flow, parent: vci, title: "Revocation: the Credential Issuer revokes issued credentials through its Token Status List" }
 - { id: vci.provisioning, kind: step, parent: vci, title: Wallet Provider equips the Wallet Unit with WIA and key attestations }
 - { id: vci.client-auth, kind: behaviour, parent: vci, title: "Client authentication of the Wallet at the OAuth endpoints (PAR, token)" }
 - { id: vci.client-auth.reject-without-wia, kind: behaviour, parent: vci.client-auth, title: Authorization server rejects PAR / token requests without a WIA }

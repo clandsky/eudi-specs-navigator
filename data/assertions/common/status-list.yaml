@@ -1,0 +1,326 @@
+# Token Status List (draft-ietf-oauth-status-list-20) on the issuer side: allocating entries, revoking, the Status List
+# Token in JWT format and the endpoint that serves it. The Referenced Token side (status claim) is in primitives.yaml.
+
+# Allocating an entry at issuance
+- id: tsl-20/4.1/distinct-index
+  subject: vci.issuer.allocate-status-index
+  spec: status-list-20
+  locator: { section: "4.1" }
+  relation: defines
+  level: info
+  applies_to: { role: [ issuer ] }
+  quote: "Each Referenced Token is assigned a distinct index from 0 to one less than the number of Referenced Tokens
+    assigned to the Status List."
+  verified: source-checked
+- id: tsl-20/13.3/default-value
+  subject: vci.issuer.allocate-status-index
+  spec: status-list-20
+  locator: { section: "13.3" }
+  relation: defines
+  level: should
+  applies_to: { role: [ issuer ] }
+  quote: "The Status Issuer is RECOMMENDED to initialize the Status List byte array with a default value provided as an
+    initialization parameter by the Issuer of the Referenced Token."
+  note: Usually 0x00 VALID, so issuing a credential needs no list update and unused entries look like valid ones.
+  verified: source-checked
+- id: tsl-20/13.3/double-allocation
+  subject: vci.issuer.allocate-status-index
+  spec: status-list-20
+  locator: { section: "13.3" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ issuer ] }
+  quote: "The Status Issuer MUST prevent any unintended double allocation."
+  verified: source-checked
+- id: tsl-20/13.2/batch-entry
+  subject: vci.issuer.allocate-status-index
+  spec: status-list-20
+  locator: { section: "13.2" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ issuer ] }
+  condition: When credentials are issued in batches for one-time use.
+  quote: "Referenced Tokens may also be issued in batches and be presented by Holders in a one-time-use policy to avoid
+    linkability. In this case, every Referenced Token MUST have a dedicated Status List entry"
+  verified: source-checked
+- id: haip/6.1/unique-index/allocation
+  subject: vci.issuer.allocate-status-index
+  spec: haip-1.0
+  locator: { section: "6.1" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ issuer ], format: [ sd-jwt-vc ] }
+  quote: "Each Credential MUST have its own unique, unpredictable status list index, even when multiple Credentials
+    reference the same status list URI"
+  note: Narrows the distinct index of Token Status List §4.1 to an unpredictable one.
+  verified: source-checked
+
+# Revoking: the status value
+- id: tsl-20/7.1/invalid
+  subject: vci.issuer.update-status-list
+  spec: status-list-20
+  locator: { section: "7.1" }
+  relation: defines
+  level: info
+  quote: "0x01 - \"INVALID\" - The status of the Referenced Token is revoked, annulled, taken back, recalled or cancelled."
+  verified: source-checked
+- id: tsl-20/7/bits
+  subject: vci.issuer.update-status-list
+  spec: status-list-20
+  locator: { section: "7" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ issuer ] }
+  quote: "The issuer of the Status List MUST choose an adequate bits value (bit size) to be able to describe the required
+    Status Types for its application."
+  verified: source-checked
+- id: tsl-20/13.2/batch-revocation
+  subject: vci.issuer.update-status-list
+  spec: status-list-20
+  locator: { section: "13.2" }
+  relation: defines
+  level: info
+  quote: "Batch revocation of a batch of Referenced Tokens might reveal that they are all members of the same batch."
+  verified: source-checked
+
+# Signing the Status List Token
+- id: tsl-20/5.1/signature
+  subject: vci.issuer.sign-status-list-token
+  spec: status-list-20
+  locator: { section: "5.1" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ issuer ] }
+  quote: "The JWT MUST be secured using a cryptographic signature or MAC algorithm."
+  verified: source-checked
+- id: tsl-20/4.1/deflate
+  subject: vci.issuer.sign-status-list-token
+  spec: status-list-20
+  locator: { section: "4.1" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ issuer ] }
+  quote: "The Status Issuer compresses the byte array using DEFLATE [RFC1951] with the ZLIB [RFC1950] data format."
+  note: A step of the algorithm whose result lst MUST be (§4.2). §4.1 recommends the highest compression level.
+  verified: source-checked
+- id: tsl-20/13.7/exp-ttl
+  subject: tsl.token.ttl
+  spec: status-list-20
+  locator: { section: "13.7" }
+  relation: defines
+  level: should
+  applies_to: { role: [ issuer ] }
+  quote: "Both ttl and exp are RECOMMENDED to be used by the Status Issuer."
+  verified: source-checked
+
+# The Status List Token in JWT format
+- id: tsl-20/5.1/jwt
+  subject: tsl.token
+  spec: status-list-20
+  locator: { section: "5.1" }
+  relation: defines
+  level: shall
+  applies_to: { format: [ sd-jwt-vc ] }
+  quote: "The Status List Token MUST be encoded as a \"JSON Web Token (JWT)\" according to [RFC7519]."
+  note: An mdoc points to a Status List Token in CWT format instead (§5.2).
+  verified: source-checked
+- id: sd-jwt-vc-13/3.2.2.2/status-jwt
+  subject: tsl.token
+  spec: sd-jwt-vc-13
+  locator: { section: "3.2.2.2" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ issuer ], format: [ sd-jwt-vc ] }
+  quote: "When the status claim is present and using the status_list mechanism, the associated Status List Token MUST be
+    in JWT format."
+  verified: source-checked
+- id: tsl-20/5.1/typ
+  subject: tsl.token.typ
+  spec: status-list-20
+  locator: { section: "5.1" }
+  relation: defines
+  level: shall
+  quote: "typ: REQUIRED. The JWT type MUST be statuslist+jwt."
+  verified: source-checked
+- id: tsl-20/5.1/sub
+  subject: tsl.token.sub
+  spec: status-list-20
+  locator: { section: "5.1" }
+  relation: defines
+  level: shall
+  quote: "sub: REQUIRED. As generally defined in [RFC7519]. The sub (subject) claim MUST specify the URI of the Status
+    List Token. The value MUST be equal to that of the uri claim contained in the status_list claim of the Referenced
+    Token."
+  verified: source-checked
+- id: tsl-20/5.1/iat
+  subject: tsl.token.iat
+  spec: status-list-20
+  locator: { section: "5.1" }
+  relation: defines
+  level: shall
+  quote: "iat: REQUIRED. As generally defined in [RFC7519]. The iat (issued at) claim MUST specify the time at which the
+    Status List Token was issued."
+  verified: source-checked
+- id: tsl-20/5.1/exp
+  subject: tsl.token.exp
+  spec: status-list-20
+  locator: { section: "5.1" }
+  relation: defines
+  level: should
+  quote: "exp: RECOMMENDED. As generally defined in [RFC7519]. The exp (expiration time) claim, if present, MUST specify
+    the time at which the Status List Token is considered expired by the Status Issuer."
+  verified: source-checked
+- id: tsl-20/5.1/ttl
+  subject: tsl.token.ttl
+  spec: status-list-20
+  locator: { section: "5.1" }
+  relation: defines
+  level: should
+  quote: "ttl: RECOMMENDED. The ttl (time to live) claim, if present, MUST specify the maximum amount of time, in seconds,
+    that the Status List Token can be cached by a consumer before a fresh copy SHOULD be retrieved."
+  verified: source-checked
+- id: tsl-20/5.1/status_list
+  subject: tsl.token.status_list
+  spec: status-list-20
+  locator: { section: "5.1" }
+  relation: defines
+  level: shall
+  quote: "status_list: REQUIRED. The status_list (status list) claim MUST specify the Status List conforming to the
+    structure defined in Section 4.2."
+  verified: source-checked
+- id: tsl-20/4.2/bits
+  subject: tsl.token.bits
+  spec: status-list-20
+  locator: { section: "4.2" }
+  relation: defines
+  level: shall
+  quote: "bits: REQUIRED. JSON Integer specifying the number of bits per Referenced Token in the compressed byte array
+    (lst). The allowed values for bits are 1, 2, 4, and 8."
+  verified: source-checked
+- id: tsl-20/4.2/lst
+  subject: tsl.token.lst
+  spec: status-list-20
+  locator: { section: "4.2" }
+  relation: defines
+  level: shall
+  quote: "lst: REQUIRED. JSON String that contains the status values for all the Referenced Tokens it conveys statuses
+    for. The value MUST be the base64url-encoded compressed byte array as specified in Section 4.1."
+  verified: source-checked
+- id: haip/6.1/status-list-token-x5c
+  subject: tsl.token.x5c
+  spec: haip-1.0
+  locator: { section: "6.1" }
+  relation: profiles
+  level: shall
+  applies_to: { role: [ issuer ], format: [ sd-jwt-vc ] }
+  quote: "The public key used to validate the signature on the Status List Token defined in [I-D.ietf-oauth-status-list]
+    MUST be included in the x5c JOSE header of the Token. The X.509 certificate of the trust anchor MUST NOT be included
+    in the x5c JOSE header of the Status List Token."
+  note: Token Status List §11.3 leaves the key resolution open; HAIP fixes it to x5c.
+  verified: source-checked
+- id: haip/6.1/status-list-token-not-self-signed
+  subject: tsl.token.signing-certificate
+  spec: haip-1.0
+  locator: { section: "6.1" }
+  relation: profiles
+  level: shall-not
+  applies_to: { role: [ issuer ], format: [ sd-jwt-vc ] }
+  quote: "The X.509 certificate signing the request MUST NOT be self-signed."
+  verified: needs-review
+  review:
+    reason: >-
+      The sentence sits in the paragraph on the Status List Token but speaks of "the request"; no request is signed in
+      the SD-JWT VC profile. Read here as the certificate signing the Status List Token, as in the parallel key
+      attestation rule of HAIP §4.5.1.
+
+# The Status List endpoint
+- id: tsl-20/8.1/get
+  subject: vci.status-list-request
+  spec: status-list-20
+  locator: { section: "8.1" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ issuer ] }
+  quote: "The Status Provider MUST return the Status List Token in response to an HTTP GET request to the URI provided in
+    the Referenced Token, unless the Relying Party and the Status Provider have alternative methods of distribution for
+    the Status List Token."
+  verified: source-checked
+- id: tsl-20/8.1/cors
+  subject: vci.status-list-request.cors
+  spec: status-list-20
+  locator: { section: "8.1" }
+  relation: defines
+  level: should
+  applies_to: { role: [ issuer ] }
+  quote: "The HTTP endpoint SHOULD support the use of Cross-Origin Resource Sharing (CORS) [CORS] and/or other methods as
+    appropriate to enable Browser-based clients to access it, unless ecosystems using this specification choose not to
+    support Browser-based clients."
+  verified: source-checked
+- id: tsl-20/8.1/media-type
+  subject: vci.status-list-request.accept
+  spec: status-list-20
+  locator: { section: "8.1" }
+  relation: defines
+  level: info
+  quote: "The following media types are defined by this specification for HTTP based Content negotiation: …
+    \"application/statuslist+jwt\" for Status List Token in JWT format"
+  verified: source-checked
+- id: tsl-20/8.2/2xx
+  subject: vci.status-list-response
+  spec: status-list-20
+  locator: { section: "8.2" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ issuer ] }
+  quote: "A successful response that contains a Status List Token MUST use an HTTP status code in the 2xx range."
+  verified: source-checked
+- id: tsl-20/8.2/body
+  subject: vci.status-list-response
+  spec: status-list-20
+  locator: { section: "8.2" }
+  relation: defines
+  level: info
+  quote: "The body of such an HTTP response contains the raw Status List Token, that means … the JWS Compact Serialization
+    form for a Status List Token in JWT format."
+  verified: source-checked
+- id: tsl-20/8.2/content-encoding
+  subject: vci.status-list-response.content-encoding
+  spec: status-list-20
+  locator: { section: "8.2" }
+  relation: defines
+  level: should
+  applies_to: { role: [ issuer ] }
+  quote: "The HTTP response SHOULD use Content-Encoding (such as gzip) using the content negotiation and encoding
+    mechanisms as defined in [RFC9110] for Status List Tokens in JWT format."
+  verified: source-checked
+- id: tsl-20/8.2/content-type
+  subject: vci.status-list-response.content-type
+  spec: status-list-20
+  locator: { section: "8.2" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ issuer ] }
+  quote: "In the successful response, the Status Provider MUST use the following content-type: …
+    \"application/statuslist+jwt\" for Status List Token in JWT format"
+  verified: source-checked
+- id: tsl-20/8.2/caching-headers
+  subject: vci.status-list-response.cache-control
+  spec: status-list-20
+  locator: { section: "8.2" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ verifier, wallet ] }
+  quote: "If caching-related HTTP headers are present in the HTTP response, Relying Parties MUST prioritize the exp and
+    ttl claims within the Status List Token over the HTTP headers for determining caching behavior."
+  verified: source-checked
+
+# Lifecycle
+- id: tsl-20/13.1/lifecycle
+  subject: vci.revocation
+  spec: status-list-20
+  locator: { section: "13.1" }
+  relation: defines
+  level: info
+  quote: "The lifetime of a Status List Token depends on the lifetime of its Referenced Tokens. Once all Referenced Tokens
+    are expired, the Issuer may stop serving the Status List Token."
+  verified: source-checked

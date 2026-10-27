@@ -1,0 +1,29 @@
+id: vci-revocation
+title: Revocation — the issuer revokes issued credentials through its Token Status List
+role: issuer
+order: 4
+subject: vci.flow.revocation
+variant: { format: sd-jwt-vc }
+summary: >-
+  What happens after issuance when a credential must be withdrawn. At issuance every credential got its own entry in
+  the issuer's Token Status List (status_list with uri and idx; here 1307 and 2918 for the two credentials of the
+  batch). To revoke, the issuer sets both entries to 0x01 INVALID, compresses the list and signs a new Status List
+  Token, which it serves at the uri. A Verifier that is later shown one of the credentials fetches that token, finds
+  its entry INVALID and rejects the credential. Revocation is permanent; the PID, QEAA and PuB-EAA know no suspension
+  (draft-ietf-oauth-status-list-20, HAIP §6.1, CIR Annex IV).
+participants:
+  - { id: wallet, label: Wallet Unit, role: wallet }
+  - { id: issuer, label: Credential Issuer (Status Issuer), role: issuer }
+  - { id: verifier, label: Verifier, role: verifier }
+steps:
+  - { id: allocate, from: issuer, to: issuer, kind: internal, label: "assign status entries (1307, 2918)", subject: vci.issuer.allocate-status-index, note: "During issuance, before the credentials are signed (step 'create and sign credentials' of the issuance flows)." }
+  - { id: credential-response, from: issuer, to: wallet, kind: response, label: credentials with status_list, subject: vci.credential-response, example: vci-credential-response, tags: ["uri …/status/gym/3"], note: The last message of the issuance flow; each credential carries status.status_list with the list uri and its own idx. }
+  - { id: decide, from: issuer, to: issuer, kind: internal, label: decide to revoke, subject: vci.revocation.decision, note: "Days or months later, e.g. the gym membership is cancelled. The reason is the issuer's business; the protocol only carries the result." }
+  - { id: decide-chaining, parent: decide, from: issuer, to: issuer, kind: internal, label: "PID: WIA + key attestation status", subject: vci.issuer.revocation-chaining }
+  - { id: revoke, from: issuer, to: issuer, kind: internal, label: update the status list, subject: vci.revocation }
+  - { id: revoke-set, parent: revoke, from: issuer, to: issuer, kind: internal, label: "entries 1307, 2918 → 0x01 INVALID", subject: vci.issuer.update-status-list }
+  - { id: revoke-sign, parent: revoke, from: issuer, to: issuer, kind: internal, label: "compress, sign Status List Token (x5c)", subject: vci.issuer.sign-status-list-token }
+  - { id: present, from: wallet, to: verifier, kind: request, label: "present credential vc1 (OpenID4VP)", subject: vp.response-post, note: "Any presentation flow of the verifier side. The Verifier first validates the credential itself (issuer signature, disclosures, KB-JWT, exp); only then does it check the status (Token Status List §8.3)." }
+  - { id: status-fetch, from: verifier, to: issuer, kind: request, label: GET status_list.uri, subject: vci.status-list-request, example: vci-status-list-request, tags: ["Accept: application/statuslist+jwt"] }
+  - { id: status-response, from: issuer, to: verifier, kind: response, label: 200 Status List Token, subject: vci.status-list-response, example: vci-status-list-response, tags: [statuslist+jwt, ttl 12 h] }
+  - { id: status-check, from: verifier, to: verifier, kind: internal, label: "entry 1307 = 1 INVALID: reject", subject: vp.verifier.check-status }

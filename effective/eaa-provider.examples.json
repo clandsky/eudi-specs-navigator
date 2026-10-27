@@ -1,6 +1,6 @@
 {
   "side": "issuer",
-  "asOf": "2026-10-22",
+  "asOf": "2026-10-27",
   "note": "Decoded example messages for the types in the effective API (signed with test keys; values are illustrative).",
   "messages": [
     {
@@ -329,7 +329,7 @@
       }
     },
     {
-      "type": "AuthorizationResponse",
+      "type": "AuthorizationResponseMessage",
       "flow": "auth-code-par",
       "step": "11",
       "http": {
@@ -711,6 +711,981 @@
       "type": "NotificationRequest",
       "flow": "auth-code-par",
       "step": "24",
+      "http": {
+        "method": "POST",
+        "url": "https://eaa.example.eu/notification",
+        "headers": {
+          "Content-Type": "application/json",
+          "Authorization": "DPoP Kz~8mXK1EalYznwH-LC-1fBAo.4Ljp~zsPE_NeO.gxU",
+          "DPoP": "eyJ0eXAiOiJkcG9wK2p3dCIsImFsZyI6IkVTMjU2IiwiandrIjp7Imt0eSI6IkVDIiwiY3J2IjoiUC0yNTYiLCJ4IjoiazVMM19qNTNlYmFab0lrOWpSTWNubFNEY2N6Skw5YkstbGZrcUlzencxZyIsInkiOiJfYjE1Sjc4ZXQ5OHh5VDRRNWFHLTdNaUxkakYwZVZnZEpQLUxyaXpPSEZRIn19.eyJqdGkiOiJkcG9wLW5vdGlmaWNhdGlvbi0wMDAxIiwiaHRtIjoiUE9TVCIsImh0dSI6Imh0dHBzOi8vZWFhLmV4YW1wbGUuZXUvbm90aWZpY2F0aW9uIiwiaWF0IjoxNzkyMDczMDAwLCJub25jZSI6ImV5SjdTX3pHLmV5SkgwLVouSFg0dy03diIsImF0aCI6ImZVSHlPMnIyWjNEWjUzRXNOcldCYjB4V1hvYU55NTlJaUtDQXFrc21RRW8ifQ.A8P9oOQH2pf6hU3ozcgELIrSgO07f8YzFxtE5XXx5b7QMABqRmgc37u9oKeqCjEyjGoi9WOagaFz0qBF0i3TCQ"
+        },
+        "body": {
+          "notification_id": "3fwe98js",
+          "event": "credential_accepted"
+        }
+      },
+      "tokens": {
+        "DPoPProof": {
+          "header": {
+            "typ": "dpop+jwt",
+            "alg": "ES256",
+            "jwk": {
+              "kty": "EC",
+              "crv": "P-256",
+              "x": "k5L3_j53ebaZoIk9jRMcnlSDcczJL9bK-lfkqIszw1g",
+              "y": "_b15J78et98xyT4Q5aG-7MiLdjF0eVgdJP-LrizOHFQ"
+            }
+          },
+          "payload": {
+            "jti": "dpop-notification-0001",
+            "htm": "POST",
+            "htu": "https://eaa.example.eu/notification",
+            "iat": 1792073000,
+            "nonce": "eyJ7S_zG.eyJH0-Z.HX4w-7v",
+            "ath": "fUHyO2r2Z3DZ53EsNrWBb0xWXoaNy59IiKCAqksmQEo"
+          }
+        }
+      }
+    },
+    {
+      "type": "WalletInstanceAttestation",
+      "flow": "nested-presentation",
+      "step": "1",
+      "tokens": {
+        "WalletInstanceAttestation": {
+          "header": {
+            "typ": "oauth-client-attestation+jwt",
+            "alg": "ES256",
+            "x5c": [
+              "MIICEjCCAbigAwIBAgIJAKFTOzHhsExWMAoGCCqGSM49BAMCMFgxJTAjBgNVBAMMHFRFU1QgV2FsbGV0IFByb3ZpZGVyIFJvb3QgQ0ExIjAgBgNVBAoMGVRFU1QgT05MWSBzcGVjcy1uYXZpZ2F0b3IxCzAJBgNVBAYTAkVVMB4XDTI2MTAxNTE2NDE0MloXDTM2MTAxMjE2NDE0MlowYzEwMC4GA1UEAwwnVEVTVCBXYWxsZXQgUHJvdmlkZXIgQXR0ZXN0YXRpb24gU2lnbmVyMSIwIAYDVQQKDBlURVNUIE9OTFkgc3BlY3MtbmF2aWdhdG9yMQswCQYDVQQGEwJFVTBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABAr921wcP+eMtn0N95qzcD37JEj0m8Dm0IyCkW3mJdnyPBtrcdWubE45PnWE515gkgZt1jSAZNAR1Le+Q0iD1XWjYDBeMAwGA1UdEwEB/wQCMAAwDgYDVR0PAQH/BAQDAgeAMB0GA1UdDgQWBBSWH45M4+NVTUAKGgMaWoAmIwnPKjAfBgNVHSMEGDAWgBRR9VDJWAnDR7Dc8ivSEUm9/O7+hDAKBggqhkjOPQQDAgNIADBFAiEA/SxdIe/21oGPBCMFkOjiEenNAIrr0OJ9hoifzTZGr0MCIC+Lm6wdOTqBBVM5N5/8yhO7/K5oeqts/DNArvDqgUQV"
+            ]
+          },
+          "payload": {
+            "iss": "https://wallet-provider.example.eu",
+            "sub": "https://wallet-provider.example.eu/wallet-solution/eudi-wallet",
+            "iat": 1792065600,
+            "exp": 1792148400,
+            "cnf": {
+              "jwk": {
+                "kty": "EC",
+                "crv": "P-256",
+                "x": "bDMjWgZXi0nXfMJ3YX0xSUQDcuwhsj3NGI6fTwc9KJE",
+                "y": "oFUNgWnXa704UQOeZjupl4a7JyWyz09ZZQAd3CFPaUI"
+              }
+            },
+            "wallet_name": "EXAMPLE-WALLET-SOLUTION-01",
+            "wallet_link": "https://wallet-provider.example.eu/wallet",
+            "wallet_version": "3.4.1",
+            "wallet_solution_certification_information": {
+              "conformity_assessment_body": "TEST CAB",
+              "certification_number": "TEST-2026-0001"
+            },
+            "client_status": {
+              "status": {
+                "status_list": {
+                  "idx": 4711,
+                  "uri": "https://wallet-provider.example.eu/status/wia/1"
+                }
+              },
+              "exp": 1823601600
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "Offer",
+      "flow": "nested-presentation",
+      "step": "2",
+      "http": {
+        "url": "eu-eaa-offer://?credential_offer=%7B%22credential_issuer%22%3A%22https%3A%2F%2Feaa.example.eu%22%2C%22credential_configuration_ids%22%3A%5B%22gym_membership_sd_jwt%22%5D%2C%22grants%22%3A%7B%22authorization_code%22%3A%7B%22issuer_state%22%3A%22eyJhbGciOiJSU0Et...FYUaBy%22%7D%7D%7D",
+        "query": {
+          "credential_offer": {
+            "credential_issuer": "https://eaa.example.eu",
+            "credential_configuration_ids": [
+              "gym_membership_sd_jwt"
+            ],
+            "grants": {
+              "authorization_code": {
+                "issuer_state": "eyJhbGciOiJSU0Et...FYUaBy"
+              }
+            }
+          }
+        },
+        "headers": {}
+      },
+      "json": {
+        "credential_issuer": "https://eaa.example.eu",
+        "credential_configuration_ids": [
+          "gym_membership_sd_jwt"
+        ],
+        "grants": {
+          "authorization_code": {
+            "issuer_state": "eyJhbGciOiJSU0Et...FYUaBy"
+          }
+        }
+      }
+    },
+    {
+      "type": "Metadata",
+      "flow": "nested-presentation",
+      "step": "3",
+      "http": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/jwt"
+        },
+        "body": "eyJ0eXAiOiJvcGVuaWR2Y2ktaXNzdWVyLW1ldGFkYXRhK2p3dCIsImFsZyI6IkVTMjU2IiwieDVjIjpbIk1JSUNFakNDQWJpZ0F3SUJBZ0lKQUtObFRBaS9aZ01mTUFvR0NDcUdTTTQ5QkFNQ01Gc3hLREFtQmdOVkJBTU1IMVJGVTFRZ1FXTmpaWE56SUVObGNuUnBabWxqWVhSbElGSnZiM1FnUTBFeElqQWdCZ05WQkFvTUdWUkZVMVFnVDA1TVdTQnpjR1ZqY3kxdVlYWnBaMkYwYjNJeEN6QUpCZ05WQkFZVEFrVlZNQjRYRFRJMk1UQXhOVEUyTkRFME1sb1hEVE0yTVRBeE1qRTJOREUwTWxvd1lERXRNQ3NHQTFVRUF3d2tWRVZUVkNCRlFVRWdVSEp2ZG1sa1pYSWdRV05qWlhOeklFTmxjblJwWm1sallYUmxNU0l3SUFZRFZRUUtEQmxVUlZOVUlFOU9URmtnYzNCbFkzTXRibUYyYVdkaGRHOXlNUXN3Q1FZRFZRUUdFd0pGVlRCWk1CTUdCeXFHU000OUFnRUdDQ3FHU000OUF3RUhBMElBQkNTQ2JGMm9FNnAvcXBaek1iSDFrdVIrVG1xQTFvU1V0MU9DVDJRMFk1aCt3SnMwbGFzNXkzOTB0SXRCV3ZXcTZ3dDEraXIzWU81UndpQzQ4L2ZIK1BPallEQmVNQXdHQTFVZEV3RUIvd1FDTUFBd0RnWURWUjBQQVFIL0JBUURBZ2VBTUIwR0ExVWREZ1FXQkJUUUs4d1VKSkd6YkRIMHY4d2VFZUl4U3RUK0V6QWZCZ05WSFNNRUdEQVdnQlRaV0ZWaWtFYjZ5d3pnNXB1ZGpWdSs5RTFETFRBS0JnZ3Foa2pPUFFRREFnTklBREJGQWlFQW5Ddk1GcEpsN1YrNXZ5TVMyUjA0Lzh6ZHFoeXRobjJpQUs2elRxTXhsRElDSUYwUFUxVE14ZXFRZEcyTlZiNVdYbW5pNGc5OTJWR1BXek9PWU4xWE9iZ1UiXX0.eyJzdWIiOiJodHRwczovL2VhYS5leGFtcGxlLmV1IiwiaWF0IjoxNzkyMDY1NjAwLCJleHAiOjE3OTIxNTIwMDAsImNyZWRlbnRpYWxfaXNzdWVyIjoiaHR0cHM6Ly9lYWEuZXhhbXBsZS5ldSIsImNyZWRlbnRpYWxfZW5kcG9pbnQiOiJodHRwczovL2VhYS5leGFtcGxlLmV1L2NyZWRlbnRpYWwiLCJub25jZV9lbmRwb2ludCI6Imh0dHBzOi8vZWFhLmV4YW1wbGUuZXUvbm9uY2UiLCJub3RpZmljYXRpb25fZW5kcG9pbnQiOiJodHRwczovL2VhYS5leGFtcGxlLmV1L25vdGlmaWNhdGlvbiIsImJhdGNoX2NyZWRlbnRpYWxfaXNzdWFuY2UiOnsiYmF0Y2hfc2l6ZSI6MTB9LCJwcmVmZXJyZWRfY2xpZW50X3N0YXR1c19wZXJpb2QiOjI1OTIwMDAsImlzc3Vlcl9pbmZvIjpbeyJmb3JtYXQiOiJyZWdpc3RyYXRpb25fY2VydCIsImRhdGEiOiJleUowZVhBaU9pSnlZeTEzY25BcmFuZDBJaS4uLlRFU1QtUkVHSVNUUkFUSU9OLUNFUlRJRklDQVRFIn1dLCJjcmVkZW50aWFsX2NvbmZpZ3VyYXRpb25zX3N1cHBvcnRlZCI6eyJneW1fbWVtYmVyc2hpcF9zZF9qd3QiOnsiZm9ybWF0IjoiZGMrc2Qtand0IiwidmN0IjoidXJuOmV1ZGk6ZXhhbXBsZTpneW0tbWVtYmVyc2hpcDoxIiwic2NvcGUiOiJneW1fbWVtYmVyc2hpcCIsImNyeXB0b2dyYXBoaWNfYmluZGluZ19tZXRob2RzX3N1cHBvcnRlZCI6WyJqd2siXSwiY3JlZGVudGlhbF9zaWduaW5nX2FsZ192YWx1ZXNfc3VwcG9ydGVkIjpbIkVTMjU2Il0sInByb29mX3R5cGVzX3N1cHBvcnRlZCI6eyJqd3QiOnsicHJvb2Zfc2lnbmluZ19hbGdfdmFsdWVzX3N1cHBvcnRlZCI6WyJFUzI1NiJdLCJrZXlfYXR0ZXN0YXRpb25zX3JlcXVpcmVkIjp7ImtleV9zdG9yYWdlIjpbImlzb18xODA0NV9oaWdoIl0sInVzZXJfYXV0aGVudGljYXRpb24iOlsiaXNvXzE4MDQ1X2hpZ2giXX19LCJhdHRlc3RhdGlvbiI6eyJwcm9vZl9zaWduaW5nX2FsZ192YWx1ZXNfc3VwcG9ydGVkIjpbIkVTMjU2Il0sImtleV9hdHRlc3RhdGlvbnNfcmVxdWlyZWQiOnsia2V5X3N0b3JhZ2UiOlsiaXNvXzE4MDQ1X2hpZ2giXSwidXNlcl9hdXRoZW50aWNhdGlvbiI6WyJpc29fMTgwNDVfaGlnaCJdfX19LCJjcmVkZW50aWFsX21ldGFkYXRhIjp7ImNyZWRlbnRpYWxfcmV1c2VfcG9saWN5Ijp7ImlkIjoiYXJmX2FubmV4X2lpIiwib3B0aW9ucyI6W3siZGV0YWlscyI6WyJvbmNlX29ubHkiXSwiYmF0Y2hfc2l6ZSI6MTAsInJlaXNzdWVfdHJpZ2dlcl91bnVzZWQiOjN9XX19fX19.L7VSpiz_4rHvAuNnDAUKZlWh_OCvuzXjycGHdSKFe3yrq4OvNntb33a5IST2owuwLYq18Ci9FEX76_PEGfzunQ"
+      },
+      "tokens": {
+        "SignedIssuerMetadata": {
+          "header": {
+            "typ": "openidvci-issuer-metadata+jwt",
+            "alg": "ES256",
+            "x5c": [
+              "MIICEjCCAbigAwIBAgIJAKNlTAi/ZgMfMAoGCCqGSM49BAMCMFsxKDAmBgNVBAMMH1RFU1QgQWNjZXNzIENlcnRpZmljYXRlIFJvb3QgQ0ExIjAgBgNVBAoMGVRFU1QgT05MWSBzcGVjcy1uYXZpZ2F0b3IxCzAJBgNVBAYTAkVVMB4XDTI2MTAxNTE2NDE0MloXDTM2MTAxMjE2NDE0MlowYDEtMCsGA1UEAwwkVEVTVCBFQUEgUHJvdmlkZXIgQWNjZXNzIENlcnRpZmljYXRlMSIwIAYDVQQKDBlURVNUIE9OTFkgc3BlY3MtbmF2aWdhdG9yMQswCQYDVQQGEwJFVTBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABCSCbF2oE6p/qpZzMbH1kuR+TmqA1oSUt1OCT2Q0Y5h+wJs0las5y390tItBWvWq6wt1+ir3YO5RwiC48/fH+POjYDBeMAwGA1UdEwEB/wQCMAAwDgYDVR0PAQH/BAQDAgeAMB0GA1UdDgQWBBTQK8wUJJGzbDH0v8weEeIxStT+EzAfBgNVHSMEGDAWgBTZWFVikEb6ywzg5pudjVu+9E1DLTAKBggqhkjOPQQDAgNIADBFAiEAnCvMFpJl7V+5vyMS2R04/8zdqhythn2iAK6zTqMxlDICIF0PU1TMxeqQdG2NVb5WXmni4g992VGPWzOOYN1XObgU"
+            ]
+          },
+          "payload": {
+            "sub": "https://eaa.example.eu",
+            "iat": 1792065600,
+            "exp": 1792152000,
+            "credential_issuer": "https://eaa.example.eu",
+            "credential_endpoint": "https://eaa.example.eu/credential",
+            "nonce_endpoint": "https://eaa.example.eu/nonce",
+            "notification_endpoint": "https://eaa.example.eu/notification",
+            "batch_credential_issuance": {
+              "batch_size": 10
+            },
+            "preferred_client_status_period": 2592000,
+            "issuer_info": [
+              {
+                "format": "registration_cert",
+                "data": "eyJ0eXAiOiJyYy13cnArand0Ii...TEST-REGISTRATION-CERTIFICATE"
+              }
+            ],
+            "credential_configurations_supported": {
+              "gym_membership_sd_jwt": {
+                "format": "dc+sd-jwt",
+                "vct": "urn:eudi:example:gym-membership:1",
+                "scope": "gym_membership",
+                "cryptographic_binding_methods_supported": [
+                  "jwk"
+                ],
+                "credential_signing_alg_values_supported": [
+                  "ES256"
+                ],
+                "proof_types_supported": {
+                  "jwt": {
+                    "proof_signing_alg_values_supported": [
+                      "ES256"
+                    ],
+                    "key_attestations_required": {
+                      "key_storage": [
+                        "iso_18045_high"
+                      ],
+                      "user_authentication": [
+                        "iso_18045_high"
+                      ]
+                    }
+                  },
+                  "attestation": {
+                    "proof_signing_alg_values_supported": [
+                      "ES256"
+                    ],
+                    "key_attestations_required": {
+                      "key_storage": [
+                        "iso_18045_high"
+                      ],
+                      "user_authentication": [
+                        "iso_18045_high"
+                      ]
+                    }
+                  }
+                },
+                "credential_metadata": {
+                  "credential_reuse_policy": {
+                    "id": "arf_annex_ii",
+                    "options": [
+                      {
+                        "details": [
+                          "once_only"
+                        ],
+                        "batch_size": 10,
+                        "reissue_trigger_unused": 3
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "AsMetadata",
+      "flow": "nested-presentation",
+      "step": "5",
+      "http": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "issuer": "https://eaa.example.eu",
+          "authorization_endpoint": "https://eaa.example.eu/authorize",
+          "token_endpoint": "https://eaa.example.eu/token",
+          "pushed_authorization_request_endpoint": "https://eaa.example.eu/par",
+          "require_pushed_authorization_requests": true,
+          "response_types_supported": [
+            "code"
+          ],
+          "grant_types_supported": [
+            "authorization_code",
+            "urn:ietf:params:oauth:grant-type:pre-authorized_code",
+            "refresh_token"
+          ],
+          "code_challenge_methods_supported": [
+            "S256"
+          ],
+          "token_endpoint_auth_methods_supported": [
+            "attest_jwt_client_auth"
+          ],
+          "client_attestation_signing_alg_values_supported": [
+            "ES256"
+          ],
+          "client_attestation_pop_signing_alg_values_supported": [
+            "ES256"
+          ],
+          "dpop_signing_alg_values_supported": [
+            "ES256"
+          ],
+          "authorization_response_iss_parameter_supported": true
+        }
+      }
+    },
+    {
+      "type": "ParRequest",
+      "flow": "nested-presentation",
+      "step": "6",
+      "http": {
+        "method": "POST",
+        "url": "https://eaa.example.eu/par",
+        "headers": {
+          "Content-Type": "application/x-www-form-urlencoded",
+          "OAuth-Client-Attestation": "eyJ0eXAiOiJvYXV0aC1jbGllbnQtYXR0ZXN0YXRpb24rand0IiwiYWxnIjoiRVMyNTYiLCJ4NWMiOlsiTUlJQ0VqQ0NBYmlnQXdJQkFnSUpBS0ZUT3pIaHNFeFdNQW9HQ0NxR1NNNDlCQU1DTUZneEpUQWpCZ05WQkFNTUhGUkZVMVFnVjJGc2JHVjBJRkJ5YjNacFpHVnlJRkp2YjNRZ1EwRXhJakFnQmdOVkJBb01HVlJGVTFRZ1QwNU1XU0J6Y0dWamN5MXVZWFpwWjJGMGIzSXhDekFKQmdOVkJBWVRBa1ZWTUI0WERUSTJNVEF4TlRFMk5ERTBNbG9YRFRNMk1UQXhNakUyTkRFME1sb3dZekV3TUM0R0ExVUVBd3duVkVWVFZDQlhZV3hzWlhRZ1VISnZkbWxrWlhJZ1FYUjBaWE4wWVhScGIyNGdVMmxuYm1WeU1TSXdJQVlEVlFRS0RCbFVSVk5VSUU5T1RGa2djM0JsWTNNdGJtRjJhV2RoZEc5eU1Rc3dDUVlEVlFRR0V3SkZWVEJaTUJNR0J5cUdTTTQ5QWdFR0NDcUdTTTQ5QXdFSEEwSUFCQXI5MjF3Y1ArZU10bjBOOTVxemNEMzdKRWowbThEbTBJeUNrVzNtSmRueVBCdHJjZFd1YkU0NVBuV0U1MTVna2dadDFqU0FaTkFSMUxlK1EwaUQxWFdqWURCZU1Bd0dBMVVkRXdFQi93UUNNQUF3RGdZRFZSMFBBUUgvQkFRREFnZUFNQjBHQTFVZERnUVdCQlNXSDQ1TTQrTlZUVUFLR2dNYVdvQW1Jd25QS2pBZkJnTlZIU01FR0RBV2dCUlI5VkRKV0FuRFI3RGM4aXZTRVVtOS9PNytoREFLQmdncWhrak9QUVFEQWdOSUFEQkZBaUVBL1N4ZEllLzIxb0dQQkNNRmtPamlFZW5OQUlycjBPSjlob2lmelRaR3IwTUNJQytMbTZ3ZE9UcUJCVk01TjUvOHloTzcvSzVvZXF0cy9ETkFydkRxZ1VRViJdfQ.eyJpc3MiOiJodHRwczovL3dhbGxldC1wcm92aWRlci5leGFtcGxlLmV1Iiwic3ViIjoiaHR0cHM6Ly93YWxsZXQtcHJvdmlkZXIuZXhhbXBsZS5ldS93YWxsZXQtc29sdXRpb24vZXVkaS13YWxsZXQiLCJpYXQiOjE3OTIwNjU2MDAsImV4cCI6MTc5MjE0ODQwMCwiY25mIjp7Imp3ayI6eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6ImJETWpXZ1pYaTBuWGZNSjNZWDB4U1VRRGN1d2hzajNOR0k2ZlR3YzlLSkUiLCJ5Ijoib0ZVTmdXblhhNzA0VVFPZVpqdXBsNGE3SnlXeXowOVpaUUFkM0NGUGFVSSJ9fSwid2FsbGV0X25hbWUiOiJFWEFNUExFLVdBTExFVC1TT0xVVElPTi0wMSIsIndhbGxldF9saW5rIjoiaHR0cHM6Ly93YWxsZXQtcHJvdmlkZXIuZXhhbXBsZS5ldS93YWxsZXQiLCJ3YWxsZXRfdmVyc2lvbiI6IjMuNC4xIiwid2FsbGV0X3NvbHV0aW9uX2NlcnRpZmljYXRpb25faW5mb3JtYXRpb24iOnsiY29uZm9ybWl0eV9hc3Nlc3NtZW50X2JvZHkiOiJURVNUIENBQiIsImNlcnRpZmljYXRpb25fbnVtYmVyIjoiVEVTVC0yMDI2LTAwMDEifSwiY2xpZW50X3N0YXR1cyI6eyJzdGF0dXMiOnsic3RhdHVzX2xpc3QiOnsiaWR4Ijo0NzExLCJ1cmkiOiJodHRwczovL3dhbGxldC1wcm92aWRlci5leGFtcGxlLmV1L3N0YXR1cy93aWEvMSJ9fSwiZXhwIjoxODIzNjAxNjAwfX0.dWgZZpulbys5Yf9vpWtSAgjy0rIRg7EKZK_VskUIZV5CnVPFWtP_JrdqABuRpa_5UN8MUcZrCAbp2nycJjuuiw",
+          "OAuth-Client-Attestation-PoP": "eyJ0eXAiOiJvYXV0aC1jbGllbnQtYXR0ZXN0YXRpb24tcG9wK2p3dCIsImFsZyI6IkVTMjU2In0.eyJpc3MiOiJodHRwczovL3dhbGxldC1wcm92aWRlci5leGFtcGxlLmV1L3dhbGxldC1zb2x1dGlvbi9ldWRpLXdhbGxldCIsImF1ZCI6Imh0dHBzOi8vZWFhLmV4YW1wbGUuZXUiLCJqdGkiOiI2ZjFjMmI3ZS1wYXItMDAwMSIsImlhdCI6MTc5MjA3MjgwMH0.2awz7jkiVrCbGQOTCvZuNIqkgv5wArLcRKQzJPtdYIJ2hJNQk2QrWd-53ynMGGxo4AuYaya7PQ6kbcb6naFVCw"
+        },
+        "body": {
+          "response_type": "code",
+          "client_id": "https://wallet-provider.example.eu/wallet-solution/eudi-wallet",
+          "scope": "gym_membership",
+          "code_challenge": "E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM",
+          "code_challenge_method": "S256",
+          "redirect_uri": "https://wallet.example.eu/cb",
+          "issuer_state": "eyJhbGciOiJSU0Et...FYUaBy",
+          "state": "af0ifjsldkj"
+        }
+      },
+      "tokens": {
+        "WalletInstanceAttestation": {
+          "header": {
+            "typ": "oauth-client-attestation+jwt",
+            "alg": "ES256",
+            "x5c": [
+              "MIICEjCCAbigAwIBAgIJAKFTOzHhsExWMAoGCCqGSM49BAMCMFgxJTAjBgNVBAMMHFRFU1QgV2FsbGV0IFByb3ZpZGVyIFJvb3QgQ0ExIjAgBgNVBAoMGVRFU1QgT05MWSBzcGVjcy1uYXZpZ2F0b3IxCzAJBgNVBAYTAkVVMB4XDTI2MTAxNTE2NDE0MloXDTM2MTAxMjE2NDE0MlowYzEwMC4GA1UEAwwnVEVTVCBXYWxsZXQgUHJvdmlkZXIgQXR0ZXN0YXRpb24gU2lnbmVyMSIwIAYDVQQKDBlURVNUIE9OTFkgc3BlY3MtbmF2aWdhdG9yMQswCQYDVQQGEwJFVTBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABAr921wcP+eMtn0N95qzcD37JEj0m8Dm0IyCkW3mJdnyPBtrcdWubE45PnWE515gkgZt1jSAZNAR1Le+Q0iD1XWjYDBeMAwGA1UdEwEB/wQCMAAwDgYDVR0PAQH/BAQDAgeAMB0GA1UdDgQWBBSWH45M4+NVTUAKGgMaWoAmIwnPKjAfBgNVHSMEGDAWgBRR9VDJWAnDR7Dc8ivSEUm9/O7+hDAKBggqhkjOPQQDAgNIADBFAiEA/SxdIe/21oGPBCMFkOjiEenNAIrr0OJ9hoifzTZGr0MCIC+Lm6wdOTqBBVM5N5/8yhO7/K5oeqts/DNArvDqgUQV"
+            ]
+          },
+          "payload": {
+            "iss": "https://wallet-provider.example.eu",
+            "sub": "https://wallet-provider.example.eu/wallet-solution/eudi-wallet",
+            "iat": 1792065600,
+            "exp": 1792148400,
+            "cnf": {
+              "jwk": {
+                "kty": "EC",
+                "crv": "P-256",
+                "x": "bDMjWgZXi0nXfMJ3YX0xSUQDcuwhsj3NGI6fTwc9KJE",
+                "y": "oFUNgWnXa704UQOeZjupl4a7JyWyz09ZZQAd3CFPaUI"
+              }
+            },
+            "wallet_name": "EXAMPLE-WALLET-SOLUTION-01",
+            "wallet_link": "https://wallet-provider.example.eu/wallet",
+            "wallet_version": "3.4.1",
+            "wallet_solution_certification_information": {
+              "conformity_assessment_body": "TEST CAB",
+              "certification_number": "TEST-2026-0001"
+            },
+            "client_status": {
+              "status": {
+                "status_list": {
+                  "idx": 4711,
+                  "uri": "https://wallet-provider.example.eu/status/wia/1"
+                }
+              },
+              "exp": 1823601600
+            }
+          }
+        },
+        "ClientAttestationPoP": {
+          "header": {
+            "typ": "oauth-client-attestation-pop+jwt",
+            "alg": "ES256"
+          },
+          "payload": {
+            "iss": "https://wallet-provider.example.eu/wallet-solution/eudi-wallet",
+            "aud": "https://eaa.example.eu",
+            "jti": "6f1c2b7e-par-0001",
+            "iat": 1792072800
+          }
+        }
+      }
+    },
+    {
+      "type": "ParResponse",
+      "flow": "nested-presentation",
+      "step": "8",
+      "http": {
+        "status": 201,
+        "headers": {
+          "Content-Type": "application/json",
+          "Cache-Control": "no-cache, no-store"
+        },
+        "body": {
+          "request_uri": "urn:ietf:params:oauth:request_uri:6esc_11ACC5bwc014ltc14eY22c",
+          "expires_in": 60
+        }
+      }
+    },
+    {
+      "type": "AuthorizationRequest",
+      "flow": "nested-presentation",
+      "step": "9",
+      "http": {
+        "method": "GET",
+        "url": "https://eaa.example.eu/authorize?client_id=https%3A%2F%2Fwallet-provider.example.eu%2Fwallet-solution%2Feudi-wallet&request_uri=urn%3Aietf%3Aparams%3Aoauth%3Arequest_uri%3A6esc_11ACC5bwc014ltc14eY22c",
+        "query": {
+          "client_id": "https://wallet-provider.example.eu/wallet-solution/eudi-wallet",
+          "request_uri": "urn:ietf:params:oauth:request_uri:6esc_11ACC5bwc014ltc14eY22c"
+        },
+        "headers": {}
+      }
+    },
+    {
+      "type": "VpAuthorizationRequest",
+      "flow": "nested-presentation",
+      "step": "11",
+      "http": {
+        "url": "eu-eaap://?client_id=x509_hash:TZDRs_g9iTjfeHoCuvPCALk6GUQsGDO_oyDbfpBWVvo&request_uri=https%3A%2F%2Feaa.example.eu%2Fvp%2Frequest%2F5c2e",
+        "query": {
+          "client_id": "x509_hash:TZDRs_g9iTjfeHoCuvPCALk6GUQsGDO_oyDbfpBWVvo",
+          "request_uri": "https://eaa.example.eu/vp/request/5c2e"
+        },
+        "headers": {}
+      }
+    },
+    {
+      "type": "VpRequestUriFetch",
+      "flow": "nested-presentation",
+      "step": "12",
+      "http": {
+        "method": "GET",
+        "url": "https://eaa.example.eu/vp/request/5c2e",
+        "headers": {
+          "Accept": "application/oauth-authz-req+jwt"
+        }
+      }
+    },
+    {
+      "type": "VpRequestObject",
+      "flow": "nested-presentation",
+      "step": "13",
+      "http": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/oauth-authz-req+jwt"
+        },
+        "body": "eyJ0eXAiOiJvYXV0aC1hdXRoei1yZXErand0IiwiYWxnIjoiRVMyNTYiLCJ4NWMiOlsiTUlJQ0VqQ0NBYmlnQXdJQkFnSUpBS05sVEFpL1pnTWZNQW9HQ0NxR1NNNDlCQU1DTUZzeEtEQW1CZ05WQkFNTUgxUkZVMVFnUVdOalpYTnpJRU5sY25ScFptbGpZWFJsSUZKdmIzUWdRMEV4SWpBZ0JnTlZCQW9NR1ZSRlUxUWdUMDVNV1NCemNHVmpjeTF1WVhacFoyRjBiM0l4Q3pBSkJnTlZCQVlUQWtWVk1CNFhEVEkyTVRBeE5URTJOREUwTWxvWERUTTJNVEF4TWpFMk5ERTBNbG93WURFdE1Dc0dBMVVFQXd3a1ZFVlRWQ0JGUVVFZ1VISnZkbWxrWlhJZ1FXTmpaWE56SUVObGNuUnBabWxqWVhSbE1TSXdJQVlEVlFRS0RCbFVSVk5VSUU5T1RGa2djM0JsWTNNdGJtRjJhV2RoZEc5eU1Rc3dDUVlEVlFRR0V3SkZWVEJaTUJNR0J5cUdTTTQ5QWdFR0NDcUdTTTQ5QXdFSEEwSUFCQ1NDYkYyb0U2cC9xcFp6TWJIMWt1UitUbXFBMW9TVXQxT0NUMlEwWTVoK3dKczBsYXM1eTM5MHRJdEJXdldxNnd0MStpcjNZTzVSd2lDNDgvZkgrUE9qWURCZU1Bd0dBMVVkRXdFQi93UUNNQUF3RGdZRFZSMFBBUUgvQkFRREFnZUFNQjBHQTFVZERnUVdCQlRRSzh3VUpKR3piREgwdjh3ZUVlSXhTdFQrRXpBZkJnTlZIU01FR0RBV2dCVFpXRlZpa0ViNnl3emc1cHVkalZ1KzlFMURMVEFLQmdncWhrak9QUVFEQWdOSUFEQkZBaUVBbkN2TUZwSmw3Vis1dnlNUzJSMDQvOHpkcWh5dGhuMmlBSzZ6VHFNeGxESUNJRjBQVTFUTXhlcVFkRzJOVmI1V1htbmk0Zzk5MlZHUFd6T09ZTjFYT2JnVSJdfQ.eyJjbGllbnRfaWQiOiJ4NTA5X2hhc2g6VFpEUnNfZzlpVGpmZUhvQ3V2UENBTGs2R1VRc0dET19veURiZnBCV1Z2byIsImNsaWVudF9pZF9zY2hlbWUiOiJ4NTA5X2hhc2giLCJpc3MiOiJ4NTA5X2hhc2g6VFpEUnNfZzlpVGpmZUhvQ3V2UENBTGs2R1VRc0dET19veURiZnBCV1Z2byIsInJlc3BvbnNlX3R5cGUiOiJ2cF90b2tlbiIsInJlc3BvbnNlX21vZGUiOiJkaXJlY3RfcG9zdC5qd3QiLCJyZXNwb25zZV91cmkiOiJodHRwczovL2VhYS5leGFtcGxlLmV1L3ZwL3Jlc3BvbnNlIiwibm9uY2UiOiJxM1R6VjhtUjF4S3AiLCJzdGF0ZSI6InR4LTVjMmUtYXV0aHoiLCJhdWQiOiJodHRwczovL3NlbGYtaXNzdWVkLm1lL3YyIiwiaWF0IjoxNzkyMDcyODAwLCJleHAiOjE3OTIwNzMxMDAsImRjcWxfcXVlcnkiOnsiY3JlZGVudGlhbHMiOlt7ImlkIjoicGlkLXNkLWp3dCIsImZvcm1hdCI6ImRjK3NkLWp3dCIsIm1ldGEiOnsidmN0X3ZhbHVlcyI6WyJ1cm46ZXVkaTpwaWQ6ZGU6MSJdfSwiY2xhaW1zIjpbeyJwYXRoIjpbImdpdmVuX25hbWUiXX0seyJwYXRoIjpbImZhbWlseV9uYW1lIl19XX1dfSwiY2xpZW50X21ldGFkYXRhIjp7Imp3a3MiOnsia2V5cyI6W3sia3R5IjoiRUMiLCJjcnYiOiJQLTI1NiIsIngiOiJ3VnJNcm54UVZiQ3NaRmNLQnhGT1V4UDVvRmVLZl9tRVVCajVMNFhJVFBRIiwieSI6Ijl2TUlsWHlWSTNIRU5PaS16UWJXQWhyZ3ZLbEFUWWNvZHVLQVA0a3M2SVEiLCJraWQiOiJlbmMtYXMtMSIsInVzZSI6ImVuYyIsImFsZyI6IkVDREgtRVMifV19LCJ2cF9mb3JtYXRzX3N1cHBvcnRlZCI6eyJkYytzZC1qd3QiOnsic2Qtand0X2FsZ192YWx1ZXMiOlsiRVMyNTYiXSwia2Itand0X2FsZ192YWx1ZXMiOlsiRVMyNTYiXX19LCJlbmNyeXB0ZWRfcmVzcG9uc2VfZW5jX3ZhbHVlc19zdXBwb3J0ZWQiOlsiQTEyOEdDTSJdfSwidmVyaWZpZXJfaW5mbyI6W3siZm9ybWF0IjoicmVnaXN0cmF0aW9uX2NlcnQiLCJkYXRhIjoiVkVWVFZDQlBUa3haSUMwZ1VsQWdjbVZuYVhOMGNtRjBhVzl1SUdObGNuUnBabWxqWVhSbElHOW1JSFJvWlNCRlFVRWdjSEp2ZG1sa1pYSWdLSE4wY25WamRIVnlaU0J3WlhJZ1JWUlRTU0JVVXlBeE1Ua2dORGMxTENCdWIzUWdiVzlrWld4c1pXUWdhR1Z5WlNrIn1dfQ.MeWLzEeSX3_81kEux9dKfJTbCAp6eDkY-2N-d8QkOJvnprbTyMp2qpTehKz-4FF5stii68vFV_m39CHOqBNjAw"
+      },
+      "tokens": {
+        "RequestObject": {
+          "header": {
+            "typ": "oauth-authz-req+jwt",
+            "alg": "ES256",
+            "x5c": [
+              "MIICEjCCAbigAwIBAgIJAKNlTAi/ZgMfMAoGCCqGSM49BAMCMFsxKDAmBgNVBAMMH1RFU1QgQWNjZXNzIENlcnRpZmljYXRlIFJvb3QgQ0ExIjAgBgNVBAoMGVRFU1QgT05MWSBzcGVjcy1uYXZpZ2F0b3IxCzAJBgNVBAYTAkVVMB4XDTI2MTAxNTE2NDE0MloXDTM2MTAxMjE2NDE0MlowYDEtMCsGA1UEAwwkVEVTVCBFQUEgUHJvdmlkZXIgQWNjZXNzIENlcnRpZmljYXRlMSIwIAYDVQQKDBlURVNUIE9OTFkgc3BlY3MtbmF2aWdhdG9yMQswCQYDVQQGEwJFVTBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABCSCbF2oE6p/qpZzMbH1kuR+TmqA1oSUt1OCT2Q0Y5h+wJs0las5y390tItBWvWq6wt1+ir3YO5RwiC48/fH+POjYDBeMAwGA1UdEwEB/wQCMAAwDgYDVR0PAQH/BAQDAgeAMB0GA1UdDgQWBBTQK8wUJJGzbDH0v8weEeIxStT+EzAfBgNVHSMEGDAWgBTZWFVikEb6ywzg5pudjVu+9E1DLTAKBggqhkjOPQQDAgNIADBFAiEAnCvMFpJl7V+5vyMS2R04/8zdqhythn2iAK6zTqMxlDICIF0PU1TMxeqQdG2NVb5WXmni4g992VGPWzOOYN1XObgU"
+            ]
+          },
+          "payload": {
+            "client_id": "x509_hash:TZDRs_g9iTjfeHoCuvPCALk6GUQsGDO_oyDbfpBWVvo",
+            "client_id_scheme": "x509_hash",
+            "iss": "x509_hash:TZDRs_g9iTjfeHoCuvPCALk6GUQsGDO_oyDbfpBWVvo",
+            "response_type": "vp_token",
+            "response_mode": "direct_post.jwt",
+            "response_uri": "https://eaa.example.eu/vp/response",
+            "nonce": "q3TzV8mR1xKp",
+            "state": "tx-5c2e-authz",
+            "aud": "https://self-issued.me/v2",
+            "iat": 1792072800,
+            "exp": 1792073100,
+            "dcql_query": {
+              "credentials": [
+                {
+                  "id": "pid-sd-jwt",
+                  "format": "dc+sd-jwt",
+                  "meta": {
+                    "vct_values": [
+                      "urn:eudi:pid:de:1"
+                    ]
+                  },
+                  "claims": [
+                    {
+                      "path": [
+                        "given_name"
+                      ]
+                    },
+                    {
+                      "path": [
+                        "family_name"
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            "client_metadata": {
+              "jwks": {
+                "keys": [
+                  {
+                    "kty": "EC",
+                    "crv": "P-256",
+                    "x": "wVrMrnxQVbCsZFcKBxFOUxP5oFeKf_mEUBj5L4XITPQ",
+                    "y": "9vMIlXyVI3HENOi-zQbWAhrgvKlATYcoduKAP4ks6IQ",
+                    "kid": "enc-as-1",
+                    "use": "enc",
+                    "alg": "ECDH-ES"
+                  }
+                ]
+              },
+              "vp_formats_supported": {
+                "dc+sd-jwt": {
+                  "sd-jwt_alg_values": [
+                    "ES256"
+                  ],
+                  "kb-jwt_alg_values": [
+                    "ES256"
+                  ]
+                }
+              },
+              "encrypted_response_enc_values_supported": [
+                "A128GCM"
+              ]
+            },
+            "verifier_info": [
+              {
+                "format": "registration_cert",
+                "data": "VEVTVCBPTkxZIC0gUlAgcmVnaXN0cmF0aW9uIGNlcnRpZmljYXRlIG9mIHRoZSBFQUEgcHJvdmlkZXIgKHN0cnVjdHVyZSBwZXIgRVRTSSBUUyAxMTkgNDc1LCBub3QgbW9kZWxsZWQgaGVyZSk"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "type": "VpResponsePost",
+      "flow": "nested-presentation",
+      "step": "15",
+      "http": {
+        "method": "POST",
+        "url": "https://eaa.example.eu/vp/response",
+        "headers": {
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        "body": {
+          "response": "eyJraWQiOiJlbmMtYXMtMSIsImFsZyI6IkVDREgtRVMiLCJlbmMiOiJBMTI4R0NNIiwiZXBrIjp7IngiOiJqX3hES2w0clpaLUVobFdEUzEwaU1rcVJUMDU5UDM4SmNoTkt3WUNzYW1BIiwiY3J2IjoiUC0yNTYiLCJrdHkiOiJFQyIsInkiOiJGQk5pRDU2Q1FxQWxMVVF6MnVTUWc4cXVRWV9kclQ4aDRHekIyWU1sM2JJIn19..-BTmQDvxNK_EoXIl.iwTi3yd61_FyQ3q8R3-dI4rbV8P7-ARDvv74L2OcCVHhugyrgITmSq74bPUBYg19Or6uYeJSd_ITK3JMsew8eVQ7b9W7d7z0HIlj_JC48MwvqEqzb7sdJDeqAGHUPSALciZXB4CDS7pNF_QkL8wEb9EA1Pi8X-cg50v91EaXyWtXPy7N8DVCG3MVvvLHXTDveXfZzpBw54OwIsSLy1ApZBvIEnEnTGkMnjTeDIsTMaq1wxJavcSWdD0pGOShG0wvz02Hb0u7QIZWI8jOhCyDLB2lQzUbZrT9FPbQT8N64-RZeZHrpdOQ8foApbanmgG37H-PYdKJ_qeR8RCN6mHz2NgFqOoJT-0VCbppCwic9-QlY7zjEYyZGYNVo4OB8YwOWXrHSevYAY4A6OCbYdjisPkjoigseUahZj4zJdBIDo-BrnBWDewSlHHqXAwN1LG34CR68QBP4aKkn-SZaTMinkvcNHTFX4hoO_Te7ANj91OWF6jSidycLILNozJRxlKtIQZH71bkQR_i8YoRlyeOxsNSG0tkYITTY48LqC5EuOQQaN0nLZ7ScfUhYUJRFgi0JhN6XrQsDvRNw8wSP35oQdxWVPIL-Baji01BogSs3s3MMam3WaangvSs5eYpjldJxXJhNyTgSU9DEz7pCln9M5VLl6qT6anFwXLUrmfzmBkogumyAgfpcfAeppnlWUDYuluYs2ULTYd4Ym8h08rnQGsULKcNql1BobQLN1RRUE5B0wju1wT647Jzs2wDUwFujYQxiKFnAVN9XdEx5A-1DWF17eLJAZ7VeAZOZFITOrdOF00p-PDdIacQPfwp4tjx_4868bk0BM6_Xj3De8JbvLY7ncwKMDhwJIv4bOPsYkm2g7OAnaFGxeoi8t2gONg5gnmeGksbywVQs6a1BE2MqQWwz4Lz-p-6c2dQcbhLeN9hJgkapcpiL5XwbNX6G0lp83UTxaQ8yXTH0KIIiuvpyu9RSxviYXNiHMQDCvJMPTxguiQ35Ou_qcOLKNglnvyxngCkqnYw1JAX8g4sCxtxPCmVp_F8tNDuDuQVLp1TexI6PkspgdLt5YwQ6fKt5Z5JbOgPCloChHWego-eOJHYskvKsubp6CK_g9wy_QP1Svf8_wmQlmqrDq_9tzT3ZFZsNSNzNVBBMjDzVWWDexssR2u45LepLMIqa_4Y8lh3XQxZ5_ERl-R6ZmueIqQXvkfDzu-OGPZ5mijU78UXUizdyjN5KUU1kmFRwFPjMyt8uQRY6nUWVJzcA70cr5Wwqha7dBPuQoTZqaqlLj2bB9o_pwk-iC1MU2qceogkxLNz1YkcSH0NUYK5JKsqIL5Ey67sw0FWh8g6pztvsqzvrggPUIAaXkfK1K3Ki2jVrsuS1xsdDTgKAR8R79NWlRiieIAn9hThOHwHVILsEmHuq_5GuKvtVOe1lGMKMdlZE4wEGU0eHK7hhg1_PLNkUv2DbnjeBw1Sw5vXqIhYv7RhNrE7rokoBcG2U10yfJC8B3EX4LE2gSaANvRR15uHwXazQ4tECsGwNe-TEKFk8-ot1RPeW56psQurC5heMSFxJccdZ7XQe5XNFtTWjLUFemUAP77aVkDzKLbFewrCTRbF84OVkmfWhCx6Kryz2BlxbjXKneMYjyl3xE7XLfmfYklyYhJ6XwwWrYoXv3HK4oN-rqHtAdSJ_yFPhClRWXlUgFjbVfCpD1qOc8NiAVDA3B53ahTvvCOA4vIDLk9QoY_vIu8mIeUXGmopFtxVrLRDe3mlV2zzci-_R-j8aO8yePztRbu62HMKWV9NEuxuX37RngKsTRwB7M_s2y60g4Ad_E-tEdiNClTChBzUXNsM4-Qi1sqA-vCub58ByFgHWQkxK7z_VBQ6ROA8zbMTr0wvJdWNAjB8vrzFvjBe2e8TjjeyUcUoV_RJ6ku1FUbUI9Uub1JnObfLe0Mz-jI_pJUCDc2i5TGkctBH4JGGNSo4rdL_M8WmIJAxVv4GPcTn8qq6nb5aZiFSXgH7WH6tInYMX_Vs2_7k4fk6op7phW7fjMa701dubIaiJff6HCg_6Dbox2GDmzhMKNOURmS5kBh6_uexJKLxweKTtn7qf2V8gfL2YQtrVBqtkG3wcesehwoj8Q3-RqgJho1M2muiySYk8FMiCVXeDewm_KZHV1yfiwiKENwGfR11TV66AythjKUSYSn13tlpHy4FtGlprvpCuKLUlSDqZBNWFalQa-qtDdpg0V2mFIa8cFBRrdjSQ7oqWCBF6kqeKcsHwMO7gEJU918CqBl0EgdXgfT-SxdNzPxkOJxHLJj1SX_ZN9TpjrOBI37d7hm5rVCw7EqARV1_v9Z0Lt3CEBGfzj_l1-u0S0O-i1-718MmUfoU7I78RqQaxx285VZQPeyVZX7BQFI62Mywxe7dK_LsGU17QN44DCy2dgusER8WTVEBdoF6hyOIjNaZYK9foRnWLMyHKX6oc0Y8J7U_QUfO4iV5P7dOnJCmaPz9mewaGsym8q9hvqsW4k4Mqm1AHTh4YW60BFNRyD0bDxirw-Z_oHogdyfC8l8wpt5_I65GEyKAXnH8iPiIUBrIkHy8EKxVhZW3lxyqaXLH9LGnCZHdmaOqHuZW7V8r2fityh29HiVU1_CVaHyFyqzZ4MbFqMh1bY2e-VF-HOZB5ExAUNoUyjNsY1FjYT_WU6s0Ieq8cYXL4CnXDw6ARHzyPOZD04jTBXZPM1zrw6rkyiKnOEc0MapOkjN_aK2YS2dGnAsH5k7df0fJK5WuqDlv1mb5g6QF7_ZhT08joauyI1doTHWHUnMpyuBHLfXRRT-DAQp4avhJWeY_3P6b6hY0XME0da_VzpNcaZ5EQ0VPtikuNLBAcE39bPUcccKz8-fpzMRXPTiVjKnNY3YSwLVugblCbp95XGADYjS5neuwkKLSY3UNLk6ucV5ODjmmxAxeNfin2iYsEAJK8rStPCS-e3_blPYoW4mbbmf4UfiM0IQ0UJz5tPt4UlWwYN3lqUfsAg.ysLYzuEylTC_YWUXeEmEkA"
+        }
+      },
+      "tokens": {
+        "KeyBindingJwt": {
+          "header": {
+            "typ": "kb+jwt",
+            "alg": "ES256"
+          },
+          "payload": {
+            "aud": "x509_hash:TZDRs_g9iTjfeHoCuvPCALk6GUQsGDO_oyDbfpBWVvo",
+            "nonce": "q3TzV8mR1xKp",
+            "iat": 1792072814,
+            "sd_hash": "VUlRNSpubAuV-T_b-I2WCMm3XF9NbW5NbzGXRhqHkPw"
+          }
+        },
+        "PresentedSdJwtVc": {
+          "header": {
+            "typ": "dc+sd-jwt",
+            "alg": "ES256",
+            "x5c": [
+              "MIICBzCCAaygAwIBAgIJAKNlTAi/ZgMiMAoGCCqGSM49BAMCMFsxKDAmBgNVBAMMH1RFU1QgQWNjZXNzIENlcnRpZmljYXRlIFJvb3QgQ0ExIjAgBgNVBAoMGVRFU1QgT05MWSBzcGVjcy1uYXZpZ2F0b3IxCzAJBgNVBAYTAkVVMB4XDTI2MTAxNTE5MjU0MVoXDTM2MTAxMjE5MjU0MVowVDEhMB8GA1UEAwwYVEVTVCBQSUQgUHJvdmlkZXIgU2lnbmVyMSIwIAYDVQQKDBlURVNUIE9OTFkgc3BlY3MtbmF2aWdhdG9yMQswCQYDVQQGEwJFVTBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABGkvBkcbTiskYSVHGv9fWkPecJ5BpKWYjvpMfmZ3YsAuQizNbIRazxkkLcH4KOWBDO5R/BQPbSgECZpmPf8N18WjYDBeMAwGA1UdEwEB/wQCMAAwDgYDVR0PAQH/BAQDAgeAMB0GA1UdDgQWBBTd8+Jh4FzsmpHK3jxcVoTwBYFFETAfBgNVHSMEGDAWgBTZWFVikEb6ywzg5pudjVu+9E1DLTAKBggqhkjOPQQDAgNJADBGAiEAxmykrBHnwIQwMezOpE5YpWj5nFt8gAHUusuAhcVyYB8CIQDi2EVYUimjkQnbIO1CmycWmxS81uHSmVtNBsl2c7XpPA=="
+            ]
+          },
+          "payload": {
+            "iss": "https://pid-provider.example.de",
+            "vct": "urn:eudi:pid:de:1",
+            "iat": 1791936000,
+            "exp": 1793145600,
+            "cnf": {
+              "jwk": {
+                "kty": "EC",
+                "crv": "P-256",
+                "x": "zofWFtmdyxZ6hR4UdZpug5Y-9phwS3hKudqH0-ZpGMk",
+                "y": "jGe-95ajAo5RUJxiH6JLWedJ88bW2TrCfvf3jlMauX8"
+              }
+            },
+            "status": {
+              "status_list": {
+                "idx": 107,
+                "uri": "https://pid-provider.example.de/status/abc3d468-799f-4fbc-85df-99e7f7192da0"
+              }
+            },
+            "_sd": [
+              "GbH7fJ7F34lttCR_GUdhUk8lwLy9r5wwDCCPsQIMiu8",
+              "jJkI4ykV11PO9Wn5ewowUGCD3SJP80tmQX5qzTCUiw8"
+            ],
+            "_sd_alg": "sha-256"
+          },
+          "disclosures": [
+            [
+              "2GLC42sKQveCfGfryNRN9w",
+              "given_name",
+              "ERIKA"
+            ],
+            [
+              "eluV5Og3gSNII8EYnsxA_A",
+              "family_name",
+              "MUSTERMANN"
+            ]
+          ]
+        },
+        "AuthorizationResponse": {
+          "header": {
+            "kid": "enc-as-1",
+            "alg": "ECDH-ES",
+            "enc": "A128GCM",
+            "epk": {
+              "x": "j_xDKl4rZZ-EhlWDS10iMkqRT059P38JchNKwYCsamA",
+              "crv": "P-256",
+              "kty": "EC",
+              "y": "FBNiD56CQqAlLUQz2uSQg8quQY_drT8h4GzB2YMl3bI"
+            }
+          },
+          "payload": {
+            "vp_token": {
+              "pid-sd-jwt": [
+                "eyJ0eXAiOiJkYytzZC1qd3QiLCJhbGciOiJFUzI1NiIsIng1YyI6WyJNSUlDQnpDQ0FheWdBd0lCQWdJSkFLTmxUQWkvWmdNaU1Bb0dDQ3FHU000OUJBTUNNRnN4S0RBbUJnTlZCQU1NSDFSRlUxUWdRV05qWlhOeklFTmxjblJwWm1sallYUmxJRkp2YjNRZ1EwRXhJakFnQmdOVkJBb01HVlJGVTFRZ1QwNU1XU0J6Y0dWamN5MXVZWFpwWjJGMGIzSXhDekFKQmdOVkJBWVRBa1ZWTUI0WERUSTJNVEF4TlRFNU1qVTBNVm9YRFRNMk1UQXhNakU1TWpVME1Wb3dWREVoTUI4R0ExVUVBd3dZVkVWVFZDQlFTVVFnVUhKdmRtbGtaWElnVTJsbmJtVnlNU0l3SUFZRFZRUUtEQmxVUlZOVUlFOU9URmtnYzNCbFkzTXRibUYyYVdkaGRHOXlNUXN3Q1FZRFZRUUdFd0pGVlRCWk1CTUdCeXFHU000OUFnRUdDQ3FHU000OUF3RUhBMElBQkdrdkJrY2JUaXNrWVNWSEd2OWZXa1BlY0o1QnBLV1lqdnBNZm1aM1lzQXVRaXpOYklSYXp4a2tMY0g0S09XQkRPNVIvQlFQYlNnRUNacG1QZjhOMThXallEQmVNQXdHQTFVZEV3RUIvd1FDTUFBd0RnWURWUjBQQVFIL0JBUURBZ2VBTUIwR0ExVWREZ1FXQkJUZDgrSmg0RnpzbXBISzNqeGNWb1R3QllGRkVUQWZCZ05WSFNNRUdEQVdnQlRaV0ZWaWtFYjZ5d3pnNXB1ZGpWdSs5RTFETFRBS0JnZ3Foa2pPUFFRREFnTkpBREJHQWlFQXhteWtyQkhud0lRd01lek9wRTVZcFdqNW5GdDhnQUhVdXN1QWhjVnlZQjhDSVFEaTJFVllVaW1qa1FuYklPMUNteWNXbXhTODF1SFNtVnROQnNsMmM3WHBQQT09Il19.eyJpc3MiOiJodHRwczovL3BpZC1wcm92aWRlci5leGFtcGxlLmRlIiwidmN0IjoidXJuOmV1ZGk6cGlkOmRlOjEiLCJpYXQiOjE3OTE5MzYwMDAsImV4cCI6MTc5MzE0NTYwMCwiY25mIjp7Imp3ayI6eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6InpvZldGdG1keXhaNmhSNFVkWnB1ZzVZLTlwaHdTM2hLdWRxSDAtWnBHTWsiLCJ5IjoiakdlLTk1YWpBbzVSVUp4aUg2SkxXZWRKODhiVzJUckNmdmYzamxNYXVYOCJ9fSwic3RhdHVzIjp7InN0YXR1c19saXN0Ijp7ImlkeCI6MTA3LCJ1cmkiOiJodHRwczovL3BpZC1wcm92aWRlci5leGFtcGxlLmRlL3N0YXR1cy9hYmMzZDQ2OC03OTlmLTRmYmMtODVkZi05OWU3ZjcxOTJkYTAifX0sIl9zZCI6WyJHYkg3Zko3RjM0bHR0Q1JfR1VkaFVrOGx3THk5cjV3d0RDQ1BzUUlNaXU4IiwiakprSTR5a1YxMVBPOVduNWV3b3dVR0NEM1NKUDgwdG1RWDVxelRDVWl3OCJdLCJfc2RfYWxnIjoic2hhLTI1NiJ9.8DUAhcF1mDUAanMpy-XebkY-cG13D4l4cdPcnLL8kl6rde93jQAt9-JO8cXiTWBMGSlk_g8SKjnTCvVoL7cKTQ~WyIyR0xDNDJzS1F2ZUNmR2ZyeU5STjl3IiwiZ2l2ZW5fbmFtZSIsIkVSSUtBIl0~WyJlbHVWNU9nM2dTTklJOEVZbnN4QV9BIiwiZmFtaWx5X25hbWUiLCJNVVNURVJNQU5OIl0~eyJ0eXAiOiJrYitqd3QiLCJhbGciOiJFUzI1NiJ9.eyJhdWQiOiJ4NTA5X2hhc2g6VFpEUnNfZzlpVGpmZUhvQ3V2UENBTGs2R1VRc0dET19veURiZnBCV1Z2byIsIm5vbmNlIjoicTNUelY4bVIxeEtwIiwiaWF0IjoxNzkyMDcyODE0LCJzZF9oYXNoIjoiVlVsUk5TcHViQXVWLVRfYi1JMldDTW0zWEY5TmJXNU5iekdYUmhxSGtQdyJ9.V5qktAap5tOYWwmczgZkjlqtrLokdykD-c3tFvtATXKvFclwWyCjmuN5ADQ9jPpmMhuJ7z5xgJZe9QPSy01fng"
+              ]
+            },
+            "state": "tx-5c2e-authz"
+          }
+        }
+      }
+    },
+    {
+      "type": "VpResponseAck",
+      "flow": "nested-presentation",
+      "step": "17",
+      "http": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json",
+          "Cache-Control": "no-store"
+        },
+        "body": {
+          "redirect_uri": "https://eaa.example.eu/authorize/pid-done#response_code=7d1e0b4a93c2f58e6a1b2c3d4e5f6a7b"
+        }
+      }
+    },
+    {
+      "type": "AuthorizationResponseMessage",
+      "flow": "nested-presentation",
+      "step": "20",
+      "http": {
+        "url": "https://wallet.example.eu/cb?code=SplxlOBeZQQYbYS6WxSbIA&state=af0ifjsldkj&iss=https%3A%2F%2Feaa.example.eu",
+        "status": 302,
+        "query": {
+          "code": "SplxlOBeZQQYbYS6WxSbIA",
+          "state": "af0ifjsldkj",
+          "iss": "https://eaa.example.eu"
+        },
+        "headers": {
+          "Location": "https://wallet.example.eu/cb?code=SplxlOBeZQQYbYS6WxSbIA&state=af0ifjsldkj&iss=https%3A%2F%2Feaa.example.eu"
+        }
+      }
+    },
+    {
+      "type": "TokenRequest",
+      "flow": "nested-presentation",
+      "step": "22",
+      "http": {
+        "method": "POST",
+        "url": "https://eaa.example.eu/token",
+        "headers": {
+          "Content-Type": "application/x-www-form-urlencoded",
+          "OAuth-Client-Attestation": "eyJ0eXAiOiJvYXV0aC1jbGllbnQtYXR0ZXN0YXRpb24rand0IiwiYWxnIjoiRVMyNTYiLCJ4NWMiOlsiTUlJQ0VqQ0NBYmlnQXdJQkFnSUpBS0ZUT3pIaHNFeFdNQW9HQ0NxR1NNNDlCQU1DTUZneEpUQWpCZ05WQkFNTUhGUkZVMVFnVjJGc2JHVjBJRkJ5YjNacFpHVnlJRkp2YjNRZ1EwRXhJakFnQmdOVkJBb01HVlJGVTFRZ1QwNU1XU0J6Y0dWamN5MXVZWFpwWjJGMGIzSXhDekFKQmdOVkJBWVRBa1ZWTUI0WERUSTJNVEF4TlRFMk5ERTBNbG9YRFRNMk1UQXhNakUyTkRFME1sb3dZekV3TUM0R0ExVUVBd3duVkVWVFZDQlhZV3hzWlhRZ1VISnZkbWxrWlhJZ1FYUjBaWE4wWVhScGIyNGdVMmxuYm1WeU1TSXdJQVlEVlFRS0RCbFVSVk5VSUU5T1RGa2djM0JsWTNNdGJtRjJhV2RoZEc5eU1Rc3dDUVlEVlFRR0V3SkZWVEJaTUJNR0J5cUdTTTQ5QWdFR0NDcUdTTTQ5QXdFSEEwSUFCQXI5MjF3Y1ArZU10bjBOOTVxemNEMzdKRWowbThEbTBJeUNrVzNtSmRueVBCdHJjZFd1YkU0NVBuV0U1MTVna2dadDFqU0FaTkFSMUxlK1EwaUQxWFdqWURCZU1Bd0dBMVVkRXdFQi93UUNNQUF3RGdZRFZSMFBBUUgvQkFRREFnZUFNQjBHQTFVZERnUVdCQlNXSDQ1TTQrTlZUVUFLR2dNYVdvQW1Jd25QS2pBZkJnTlZIU01FR0RBV2dCUlI5VkRKV0FuRFI3RGM4aXZTRVVtOS9PNytoREFLQmdncWhrak9QUVFEQWdOSUFEQkZBaUVBL1N4ZEllLzIxb0dQQkNNRmtPamlFZW5OQUlycjBPSjlob2lmelRaR3IwTUNJQytMbTZ3ZE9UcUJCVk01TjUvOHloTzcvSzVvZXF0cy9ETkFydkRxZ1VRViJdfQ.eyJpc3MiOiJodHRwczovL3dhbGxldC1wcm92aWRlci5leGFtcGxlLmV1Iiwic3ViIjoiaHR0cHM6Ly93YWxsZXQtcHJvdmlkZXIuZXhhbXBsZS5ldS93YWxsZXQtc29sdXRpb24vZXVkaS13YWxsZXQiLCJpYXQiOjE3OTIwNjU2MDAsImV4cCI6MTc5MjE0ODQwMCwiY25mIjp7Imp3ayI6eyJrdHkiOiJFQyIsImNydiI6IlAtMjU2IiwieCI6ImJETWpXZ1pYaTBuWGZNSjNZWDB4U1VRRGN1d2hzajNOR0k2ZlR3YzlLSkUiLCJ5Ijoib0ZVTmdXblhhNzA0VVFPZVpqdXBsNGE3SnlXeXowOVpaUUFkM0NGUGFVSSJ9fSwid2FsbGV0X25hbWUiOiJFWEFNUExFLVdBTExFVC1TT0xVVElPTi0wMSIsIndhbGxldF9saW5rIjoiaHR0cHM6Ly93YWxsZXQtcHJvdmlkZXIuZXhhbXBsZS5ldS93YWxsZXQiLCJ3YWxsZXRfdmVyc2lvbiI6IjMuNC4xIiwid2FsbGV0X3NvbHV0aW9uX2NlcnRpZmljYXRpb25faW5mb3JtYXRpb24iOnsiY29uZm9ybWl0eV9hc3Nlc3NtZW50X2JvZHkiOiJURVNUIENBQiIsImNlcnRpZmljYXRpb25fbnVtYmVyIjoiVEVTVC0yMDI2LTAwMDEifSwiY2xpZW50X3N0YXR1cyI6eyJzdGF0dXMiOnsic3RhdHVzX2xpc3QiOnsiaWR4Ijo0NzExLCJ1cmkiOiJodHRwczovL3dhbGxldC1wcm92aWRlci5leGFtcGxlLmV1L3N0YXR1cy93aWEvMSJ9fSwiZXhwIjoxODIzNjAxNjAwfX0.dWgZZpulbys5Yf9vpWtSAgjy0rIRg7EKZK_VskUIZV5CnVPFWtP_JrdqABuRpa_5UN8MUcZrCAbp2nycJjuuiw",
+          "OAuth-Client-Attestation-PoP": "eyJ0eXAiOiJvYXV0aC1jbGllbnQtYXR0ZXN0YXRpb24tcG9wK2p3dCIsImFsZyI6IkVTMjU2In0.eyJpc3MiOiJodHRwczovL3dhbGxldC1wcm92aWRlci5leGFtcGxlLmV1L3dhbGxldC1zb2x1dGlvbi9ldWRpLXdhbGxldCIsImF1ZCI6Imh0dHBzOi8vZWFhLmV4YW1wbGUuZXUiLCJqdGkiOiI2ZjFjMmI3ZS10b2tlbi0wMDAyIiwiaWF0IjoxNzkyMDcyODYwfQ.8-e7tIejZTyJjpi0m2W6H-EOs3PQlFwjjS1oN3EyolzYmc7y1FgKTrZqoQF4WxF_Qzg7pQO_xsjLKS-v7CQzZQ",
+          "DPoP": "eyJ0eXAiOiJkcG9wK2p3dCIsImFsZyI6IkVTMjU2IiwiandrIjp7Imt0eSI6IkVDIiwiY3J2IjoiUC0yNTYiLCJ4IjoiazVMM19qNTNlYmFab0lrOWpSTWNubFNEY2N6Skw5YkstbGZrcUlzencxZyIsInkiOiJfYjE1Sjc4ZXQ5OHh5VDRRNWFHLTdNaUxkakYwZVZnZEpQLUxyaXpPSEZRIn19.eyJqdGkiOiJkcG9wLXRva2VuLTAwMDEiLCJodG0iOiJQT1NUIiwiaHR1IjoiaHR0cHM6Ly9lYWEuZXhhbXBsZS5ldS90b2tlbiIsImlhdCI6MTc5MjA3Mjg2MH0._J0Hsra8AMJH6LeTPb9uGrWrg7nATkVOaFW5IxGOpCosTqRuf7T_P3SOFLmNSo6nZptmL0a6L1-bvR2QA7QKlQ"
+        },
+        "body": {
+          "grant_type": "authorization_code",
+          "code": "SplxlOBeZQQYbYS6WxSbIA",
+          "code_verifier": "dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk",
+          "redirect_uri": "https://wallet.example.eu/cb"
+        }
+      },
+      "tokens": {
+        "WalletInstanceAttestation": {
+          "header": {
+            "typ": "oauth-client-attestation+jwt",
+            "alg": "ES256",
+            "x5c": [
+              "MIICEjCCAbigAwIBAgIJAKFTOzHhsExWMAoGCCqGSM49BAMCMFgxJTAjBgNVBAMMHFRFU1QgV2FsbGV0IFByb3ZpZGVyIFJvb3QgQ0ExIjAgBgNVBAoMGVRFU1QgT05MWSBzcGVjcy1uYXZpZ2F0b3IxCzAJBgNVBAYTAkVVMB4XDTI2MTAxNTE2NDE0MloXDTM2MTAxMjE2NDE0MlowYzEwMC4GA1UEAwwnVEVTVCBXYWxsZXQgUHJvdmlkZXIgQXR0ZXN0YXRpb24gU2lnbmVyMSIwIAYDVQQKDBlURVNUIE9OTFkgc3BlY3MtbmF2aWdhdG9yMQswCQYDVQQGEwJFVTBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABAr921wcP+eMtn0N95qzcD37JEj0m8Dm0IyCkW3mJdnyPBtrcdWubE45PnWE515gkgZt1jSAZNAR1Le+Q0iD1XWjYDBeMAwGA1UdEwEB/wQCMAAwDgYDVR0PAQH/BAQDAgeAMB0GA1UdDgQWBBSWH45M4+NVTUAKGgMaWoAmIwnPKjAfBgNVHSMEGDAWgBRR9VDJWAnDR7Dc8ivSEUm9/O7+hDAKBggqhkjOPQQDAgNIADBFAiEA/SxdIe/21oGPBCMFkOjiEenNAIrr0OJ9hoifzTZGr0MCIC+Lm6wdOTqBBVM5N5/8yhO7/K5oeqts/DNArvDqgUQV"
+            ]
+          },
+          "payload": {
+            "iss": "https://wallet-provider.example.eu",
+            "sub": "https://wallet-provider.example.eu/wallet-solution/eudi-wallet",
+            "iat": 1792065600,
+            "exp": 1792148400,
+            "cnf": {
+              "jwk": {
+                "kty": "EC",
+                "crv": "P-256",
+                "x": "bDMjWgZXi0nXfMJ3YX0xSUQDcuwhsj3NGI6fTwc9KJE",
+                "y": "oFUNgWnXa704UQOeZjupl4a7JyWyz09ZZQAd3CFPaUI"
+              }
+            },
+            "wallet_name": "EXAMPLE-WALLET-SOLUTION-01",
+            "wallet_link": "https://wallet-provider.example.eu/wallet",
+            "wallet_version": "3.4.1",
+            "wallet_solution_certification_information": {
+              "conformity_assessment_body": "TEST CAB",
+              "certification_number": "TEST-2026-0001"
+            },
+            "client_status": {
+              "status": {
+                "status_list": {
+                  "idx": 4711,
+                  "uri": "https://wallet-provider.example.eu/status/wia/1"
+                }
+              },
+              "exp": 1823601600
+            }
+          }
+        },
+        "ClientAttestationPoP": {
+          "header": {
+            "typ": "oauth-client-attestation-pop+jwt",
+            "alg": "ES256"
+          },
+          "payload": {
+            "iss": "https://wallet-provider.example.eu/wallet-solution/eudi-wallet",
+            "aud": "https://eaa.example.eu",
+            "jti": "6f1c2b7e-token-0002",
+            "iat": 1792072860
+          }
+        },
+        "DPoPProof": {
+          "header": {
+            "typ": "dpop+jwt",
+            "alg": "ES256",
+            "jwk": {
+              "kty": "EC",
+              "crv": "P-256",
+              "x": "k5L3_j53ebaZoIk9jRMcnlSDcczJL9bK-lfkqIszw1g",
+              "y": "_b15J78et98xyT4Q5aG-7MiLdjF0eVgdJP-LrizOHFQ"
+            }
+          },
+          "payload": {
+            "jti": "dpop-token-0001",
+            "htm": "POST",
+            "htu": "https://eaa.example.eu/token",
+            "iat": 1792072860
+          }
+        }
+      }
+    },
+    {
+      "type": "TokenResponse",
+      "flow": "nested-presentation",
+      "step": "24",
+      "http": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json",
+          "Cache-Control": "no-store",
+          "Pragma": "no-cache"
+        },
+        "body": {
+          "access_token": "Kz~8mXK1EalYznwH-LC-1fBAo.4Ljp~zsPE_NeO.gxU",
+          "token_type": "DPoP",
+          "expires_in": 300,
+          "refresh_token": "Q..Zkm29lexi8VnWg2zPW1x-tgGad0Ibc3s3EwM_Ni4-g"
+        }
+      }
+    },
+    {
+      "type": "NonceRequest",
+      "flow": "nested-presentation",
+      "step": "25",
+      "http": {
+        "method": "POST",
+        "url": "https://eaa.example.eu/nonce",
+        "headers": {
+          "Content-Length": "0"
+        }
+      }
+    },
+    {
+      "type": "NonceResponse",
+      "flow": "nested-presentation",
+      "step": "26",
+      "http": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json",
+          "Cache-Control": "no-store",
+          "DPoP-Nonce": "eyJ7S_zG.eyJH0-Z.HX4w-7v"
+        },
+        "body": {
+          "c_nonce": "wKI4LT17ac15ES9bw8ac4"
+        }
+      }
+    },
+    {
+      "type": "KeyAttestation",
+      "flow": "nested-presentation",
+      "step": "28",
+      "tokens": {
+        "KeyAttestation": {
+          "header": {
+            "typ": "key-attestation+jwt",
+            "alg": "ES256",
+            "x5c": [
+              "MIICEjCCAbigAwIBAgIJAKFTOzHhsExWMAoGCCqGSM49BAMCMFgxJTAjBgNVBAMMHFRFU1QgV2FsbGV0IFByb3ZpZGVyIFJvb3QgQ0ExIjAgBgNVBAoMGVRFU1QgT05MWSBzcGVjcy1uYXZpZ2F0b3IxCzAJBgNVBAYTAkVVMB4XDTI2MTAxNTE2NDE0MloXDTM2MTAxMjE2NDE0MlowYzEwMC4GA1UEAwwnVEVTVCBXYWxsZXQgUHJvdmlkZXIgQXR0ZXN0YXRpb24gU2lnbmVyMSIwIAYDVQQKDBlURVNUIE9OTFkgc3BlY3MtbmF2aWdhdG9yMQswCQYDVQQGEwJFVTBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABAr921wcP+eMtn0N95qzcD37JEj0m8Dm0IyCkW3mJdnyPBtrcdWubE45PnWE515gkgZt1jSAZNAR1Le+Q0iD1XWjYDBeMAwGA1UdEwEB/wQCMAAwDgYDVR0PAQH/BAQDAgeAMB0GA1UdDgQWBBSWH45M4+NVTUAKGgMaWoAmIwnPKjAfBgNVHSMEGDAWgBRR9VDJWAnDR7Dc8ivSEUm9/O7+hDAKBggqhkjOPQQDAgNIADBFAiEA/SxdIe/21oGPBCMFkOjiEenNAIrr0OJ9hoifzTZGr0MCIC+Lm6wdOTqBBVM5N5/8yhO7/K5oeqts/DNArvDqgUQV"
+            ]
+          },
+          "payload": {
+            "iss": "https://wallet-provider.example.eu",
+            "iat": 1792072900,
+            "exp": 1792076500,
+            "nonce": "wKI4LT17ac15ES9bw8ac4",
+            "attested_keys": [
+              {
+                "kty": "EC",
+                "crv": "P-256",
+                "x": "zofWFtmdyxZ6hR4UdZpug5Y-9phwS3hKudqH0-ZpGMk",
+                "y": "jGe-95ajAo5RUJxiH6JLWedJ88bW2TrCfvf3jlMauX8"
+              },
+              {
+                "kty": "EC",
+                "crv": "P-256",
+                "x": "3C98pm90pWq_XIp7Dl3ziCoMm9tkuWQp7y0KVQf6xtc",
+                "y": "4WSnzesdceqojOh8qjvuSuSE8qAom8XmNFHL_gYhkJw"
+              }
+            ],
+            "key_storage": [
+              "iso_18045_high"
+            ],
+            "user_authentication": [
+              "iso_18045_high"
+            ],
+            "certification": "https://wallet-provider.example.eu/certification/wscd",
+            "key_storage_status": {
+              "status": {
+                "status_list": {
+                  "idx": 12,
+                  "uri": "https://wallet-provider.example.eu/status/wscd/1"
+                }
+              },
+              "exp": 1823601600
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "CredentialRequest",
+      "flow": "nested-presentation",
+      "step": "29",
+      "http": {
+        "method": "POST",
+        "url": "https://eaa.example.eu/credential",
+        "headers": {
+          "Content-Type": "application/json",
+          "Authorization": "DPoP Kz~8mXK1EalYznwH-LC-1fBAo.4Ljp~zsPE_NeO.gxU",
+          "DPoP": "eyJ0eXAiOiJkcG9wK2p3dCIsImFsZyI6IkVTMjU2IiwiandrIjp7Imt0eSI6IkVDIiwiY3J2IjoiUC0yNTYiLCJ4IjoiazVMM19qNTNlYmFab0lrOWpSTWNubFNEY2N6Skw5YkstbGZrcUlzencxZyIsInkiOiJfYjE1Sjc4ZXQ5OHh5VDRRNWFHLTdNaUxkakYwZVZnZEpQLUxyaXpPSEZRIn19.eyJqdGkiOiJkcG9wLWNyZWRlbnRpYWwtMDAwMSIsImh0bSI6IlBPU1QiLCJodHUiOiJodHRwczovL2VhYS5leGFtcGxlLmV1L2NyZWRlbnRpYWwiLCJpYXQiOjE3OTIwNzI5MjAsIm5vbmNlIjoiZXlKN1NfekcuZXlKSDAtWi5IWDR3LTd2IiwiYXRoIjoiZlVIeU8ycjJaM0RaNTNFc05yV0JiMHhXWG9hTnk1OUlpS0NBcWtzbVFFbyJ9.-3fJqmpNjfiEIcavx6VbkTpIcbQZ_3fAe09RhEUVLfoH_lQ2i4N1Oxk8FwNV9ZiJ4CeKN5I2OuSpVpIEGXu6pA"
+        },
+        "body": {
+          "credential_configuration_id": "gym_membership_sd_jwt",
+          "proofs": {
+            "jwt": [
+              "eyJ0eXAiOiJvcGVuaWQ0dmNpLXByb29mK2p3dCIsImFsZyI6IkVTMjU2Iiwia2V5X2F0dGVzdGF0aW9uIjoiZXlKMGVYQWlPaUpyWlhrdFlYUjBaWE4wWVhScGIyNHJhbmQwSWl3aVlXeG5Jam9pUlZNeU5UWWlMQ0o0TldNaU9sc2lUVWxKUTBWcVEwTkJZbWxuUVhkSlFrRm5TVXBCUzBaVVQzcElhSE5GZUZkTlFXOUhRME54UjFOTk5EbENRVTFEVFVabmVFcFVRV3BDWjA1V1FrRk5UVWhHVWtaVk1WRm5WakpHYzJKSFZqQkpSa0o1WWpOYWNGcEhWbmxKUmtwMllqTlJaMUV3UlhoSmFrRm5RbWRPVmtKQmIwMUhWbEpHVlRGUloxUXdOVTFYVTBKNlkwZFdhbU41TVhWWldGcHdXakpHTUdJelNYaERla0ZLUW1kT1ZrSkJXVlJCYTFaV1RVSTBXRVJVU1RKTlZFRjRUbFJGTWs1RVJUQk5iRzlZUkZSTk1rMVVRWGhOYWtVeVRrUkZNRTFzYjNkWmVrVjNUVU0wUjBFeFZVVkJkM2R1VmtWV1ZGWkRRbGhaVjNoeldsaFJaMVZJU25aa2JXeHJXbGhKWjFGWVVqQmFXRTR3V1ZoU2NHSXlOR2RWTW14dVltMVdlVTFUU1hkSlFWbEVWbEZSUzBSQ2JGVlNWazVWU1VVNVQxUkdhMmRqTTBKc1dUTk5kR0p0UmpKaFYyUm9aRWM1ZVUxUmMzZERVVmxFVmxGUlIwVjNTa1pXVkVKYVRVSk5SMEo1Y1VkVFRUUTVRV2RGUjBORGNVZFRUVFE1UVhkRlNFRXdTVUZDUVhJNU1qRjNZMUFyWlUxMGJqQk9PVFZ4ZW1ORU16ZEtSV293YlRoRWJUQkplVU5yVnpOdFNtUnVlVkJDZEhKalpGZDFZa1UwTlZCdVYwVTFNVFZuYTJkYWRERnFVMEZhVGtGU01VeGxLMUV3YVVReFdGZHFXVVJDWlUxQmQwZEJNVlZrUlhkRlFpOTNVVU5OUVVGM1JHZFpSRlpTTUZCQlVVZ3ZRa0ZSUkVGblpVRk5RakJIUVRGVlpFUm5VVmRDUWxOWFNEUTFUVFFyVGxaVVZVRkxSMmROWVZkdlFXMUpkMjVRUzJwQlprSm5UbFpJVTAxRlIwUkJWMmRDVWxJNVZrUktWMEZ1UkZJM1JHTTRhWFpUUlZWdE9TOVBOeXRvUkVGTFFtZG5jV2hyYWs5UVVWRkVRV2RPU1VGRVFrWkJhVVZCTDFONFpFbGxMekl4YjBkUVFrTk5SbXRQYW1sRlpXNU9RVWx5Y2pCUFNqbG9iMmxtZWxSYVIzSXdUVU5KUXl0TWJUWjNaRTlVY1VKQ1ZrMDFUalV2T0hsb1R6Y3ZTelZ2WlhGMGN5OUVUa0Z5ZGtSeFoxVlJWaUpkZlEuZXlKcGMzTWlPaUpvZEhSd2N6b3ZMM2RoYkd4bGRDMXdjbTkyYVdSbGNpNWxlR0Z0Y0d4bExtVjFJaXdpYVdGMElqb3hOemt5TURjeU9UQXdMQ0psZUhBaU9qRTNPVEl3TnpZMU1EQXNJbTV2Ym1ObElqb2lkMHRKTkV4VU1UZGhZekUxUlZNNVluYzRZV00wSWl3aVlYUjBaWE4wWldSZmEyVjVjeUk2VzNzaWEzUjVJam9pUlVNaUxDSmpjbllpT2lKUUxUSTFOaUlzSW5naU9pSjZiMlpYUm5SdFpIbDRXalpvVWpSVlpGcHdkV2MxV1MwNWNHaDNVek5vUzNWa2NVZ3dMVnB3UjAxcklpd2llU0k2SW1wSFpTMDVOV0ZxUVc4MVVsVktlR2xJTmtwTVYyVmtTamc0WWxjeVZISkRablptTTJwc1RXRjFXRGdpZlN4N0ltdDBlU0k2SWtWRElpd2lZM0oySWpvaVVDMHlOVFlpTENKNElqb2lNME01T0hCdE9UQndWM0ZmV0Vsd04wUnNNM3BwUTI5TmJUbDBhM1ZYVVhBM2VUQkxWbEZtTm5oMFl5SXNJbmtpT2lJMFYxTnVlbVZ6WkdObGNXOXFUMmc0Y1dwMmRWTjFVMFU0Y1VGdmJUaFliVTVHU0V4ZloxbG9hMHAzSW4xZExDSnJaWGxmYzNSdmNtRm5aU0k2V3lKcGMyOWZNVGd3TkRWZmFHbG5hQ0pkTENKMWMyVnlYMkYxZEdobGJuUnBZMkYwYVc5dUlqcGJJbWx6YjE4eE9EQTBOVjlvYVdkb0lsMHNJbU5sY25ScFptbGpZWFJwYjI0aU9pSm9kSFJ3Y3pvdkwzZGhiR3hsZEMxd2NtOTJhV1JsY2k1bGVHRnRjR3hsTG1WMUwyTmxjblJwWm1sallYUnBiMjR2ZDNOalpDSXNJbXRsZVY5emRHOXlZV2RsWDNOMFlYUjFjeUk2ZXlKemRHRjBkWE1pT25zaWMzUmhkSFZ6WDJ4cGMzUWlPbnNpYVdSNElqb3hNaXdpZFhKcElqb2lhSFIwY0hNNkx5OTNZV3hzWlhRdGNISnZkbWxrWlhJdVpYaGhiWEJzWlM1bGRTOXpkR0YwZFhNdmQzTmpaQzh4SW4xOUxDSmxlSEFpT2pFNE1qTTJNREUyTURCOWZRLjJuUl96RXN4bkdHZ1Z2WUtvMkRLbGhmLWl5NlBwRmROSEplMXEzdVhTVUUzRzhNRlVvd3JNMzhXUTdlZG9kLUd6U0tWMVo0b2syZDYxakhLbWIzdzJRIn0.eyJhdWQiOiJodHRwczovL2VhYS5leGFtcGxlLmV1IiwiaWF0IjoxNzkyMDcyOTIwLCJub25jZSI6IndLSTRMVDE3YWMxNUVTOWJ3OGFjNCJ9.3Zz0MNTGfp029WMkPn0OknfHN4rdbSDwxpo_l584SPku7cF8gd5_B0Dww5HZFKiqvHKVmcdITt8fT9FQ5sxtMQ"
+            ]
+          }
+        }
+      },
+      "tokens": {
+        "DPoPProof": {
+          "header": {
+            "typ": "dpop+jwt",
+            "alg": "ES256",
+            "jwk": {
+              "kty": "EC",
+              "crv": "P-256",
+              "x": "k5L3_j53ebaZoIk9jRMcnlSDcczJL9bK-lfkqIszw1g",
+              "y": "_b15J78et98xyT4Q5aG-7MiLdjF0eVgdJP-LrizOHFQ"
+            }
+          },
+          "payload": {
+            "jti": "dpop-credential-0001",
+            "htm": "POST",
+            "htu": "https://eaa.example.eu/credential",
+            "iat": 1792072920,
+            "nonce": "eyJ7S_zG.eyJH0-Z.HX4w-7v",
+            "ath": "fUHyO2r2Z3DZ53EsNrWBb0xWXoaNy59IiKCAqksmQEo"
+          }
+        },
+        "KeyAttestation": {
+          "header": {
+            "typ": "key-attestation+jwt",
+            "alg": "ES256",
+            "x5c": [
+              "MIICEjCCAbigAwIBAgIJAKFTOzHhsExWMAoGCCqGSM49BAMCMFgxJTAjBgNVBAMMHFRFU1QgV2FsbGV0IFByb3ZpZGVyIFJvb3QgQ0ExIjAgBgNVBAoMGVRFU1QgT05MWSBzcGVjcy1uYXZpZ2F0b3IxCzAJBgNVBAYTAkVVMB4XDTI2MTAxNTE2NDE0MloXDTM2MTAxMjE2NDE0MlowYzEwMC4GA1UEAwwnVEVTVCBXYWxsZXQgUHJvdmlkZXIgQXR0ZXN0YXRpb24gU2lnbmVyMSIwIAYDVQQKDBlURVNUIE9OTFkgc3BlY3MtbmF2aWdhdG9yMQswCQYDVQQGEwJFVTBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABAr921wcP+eMtn0N95qzcD37JEj0m8Dm0IyCkW3mJdnyPBtrcdWubE45PnWE515gkgZt1jSAZNAR1Le+Q0iD1XWjYDBeMAwGA1UdEwEB/wQCMAAwDgYDVR0PAQH/BAQDAgeAMB0GA1UdDgQWBBSWH45M4+NVTUAKGgMaWoAmIwnPKjAfBgNVHSMEGDAWgBRR9VDJWAnDR7Dc8ivSEUm9/O7+hDAKBggqhkjOPQQDAgNIADBFAiEA/SxdIe/21oGPBCMFkOjiEenNAIrr0OJ9hoifzTZGr0MCIC+Lm6wdOTqBBVM5N5/8yhO7/K5oeqts/DNArvDqgUQV"
+            ]
+          },
+          "payload": {
+            "iss": "https://wallet-provider.example.eu",
+            "iat": 1792072900,
+            "exp": 1792076500,
+            "nonce": "wKI4LT17ac15ES9bw8ac4",
+            "attested_keys": [
+              {
+                "kty": "EC",
+                "crv": "P-256",
+                "x": "zofWFtmdyxZ6hR4UdZpug5Y-9phwS3hKudqH0-ZpGMk",
+                "y": "jGe-95ajAo5RUJxiH6JLWedJ88bW2TrCfvf3jlMauX8"
+              },
+              {
+                "kty": "EC",
+                "crv": "P-256",
+                "x": "3C98pm90pWq_XIp7Dl3ziCoMm9tkuWQp7y0KVQf6xtc",
+                "y": "4WSnzesdceqojOh8qjvuSuSE8qAom8XmNFHL_gYhkJw"
+              }
+            ],
+            "key_storage": [
+              "iso_18045_high"
+            ],
+            "user_authentication": [
+              "iso_18045_high"
+            ],
+            "certification": "https://wallet-provider.example.eu/certification/wscd",
+            "key_storage_status": {
+              "status": {
+                "status_list": {
+                  "idx": 12,
+                  "uri": "https://wallet-provider.example.eu/status/wscd/1"
+                }
+              },
+              "exp": 1823601600
+            }
+          }
+        },
+        "ProofJwt": {
+          "header": {
+            "typ": "openid4vci-proof+jwt",
+            "alg": "ES256",
+            "key_attestation": "eyJ0eXAiOiJrZXktYXR0ZXN0YXRpb24rand0IiwiYWxnIjoiRVMyNTYiLCJ4NWMiOlsiTUlJQ0VqQ0NBYmlnQXdJQkFnSUpBS0ZUT3pIaHNFeFdNQW9HQ0NxR1NNNDlCQU1DTUZneEpUQWpCZ05WQkFNTUhGUkZVMVFnVjJGc2JHVjBJRkJ5YjNacFpHVnlJRkp2YjNRZ1EwRXhJakFnQmdOVkJBb01HVlJGVTFRZ1QwNU1XU0J6Y0dWamN5MXVZWFpwWjJGMGIzSXhDekFKQmdOVkJBWVRBa1ZWTUI0WERUSTJNVEF4TlRFMk5ERTBNbG9YRFRNMk1UQXhNakUyTkRFME1sb3dZekV3TUM0R0ExVUVBd3duVkVWVFZDQlhZV3hzWlhRZ1VISnZkbWxrWlhJZ1FYUjBaWE4wWVhScGIyNGdVMmxuYm1WeU1TSXdJQVlEVlFRS0RCbFVSVk5VSUU5T1RGa2djM0JsWTNNdGJtRjJhV2RoZEc5eU1Rc3dDUVlEVlFRR0V3SkZWVEJaTUJNR0J5cUdTTTQ5QWdFR0NDcUdTTTQ5QXdFSEEwSUFCQXI5MjF3Y1ArZU10bjBOOTVxemNEMzdKRWowbThEbTBJeUNrVzNtSmRueVBCdHJjZFd1YkU0NVBuV0U1MTVna2dadDFqU0FaTkFSMUxlK1EwaUQxWFdqWURCZU1Bd0dBMVVkRXdFQi93UUNNQUF3RGdZRFZSMFBBUUgvQkFRREFnZUFNQjBHQTFVZERnUVdCQlNXSDQ1TTQrTlZUVUFLR2dNYVdvQW1Jd25QS2pBZkJnTlZIU01FR0RBV2dCUlI5VkRKV0FuRFI3RGM4aXZTRVVtOS9PNytoREFLQmdncWhrak9QUVFEQWdOSUFEQkZBaUVBL1N4ZEllLzIxb0dQQkNNRmtPamlFZW5OQUlycjBPSjlob2lmelRaR3IwTUNJQytMbTZ3ZE9UcUJCVk01TjUvOHloTzcvSzVvZXF0cy9ETkFydkRxZ1VRViJdfQ.eyJpc3MiOiJodHRwczovL3dhbGxldC1wcm92aWRlci5leGFtcGxlLmV1IiwiaWF0IjoxNzkyMDcyOTAwLCJleHAiOjE3OTIwNzY1MDAsIm5vbmNlIjoid0tJNExUMTdhYzE1RVM5Ync4YWM0IiwiYXR0ZXN0ZWRfa2V5cyI6W3sia3R5IjoiRUMiLCJjcnYiOiJQLTI1NiIsIngiOiJ6b2ZXRnRtZHl4WjZoUjRVZFpwdWc1WS05cGh3UzNoS3VkcUgwLVpwR01rIiwieSI6ImpHZS05NWFqQW81UlVKeGlINkpMV2VkSjg4YlcyVHJDZnZmM2psTWF1WDgifSx7Imt0eSI6IkVDIiwiY3J2IjoiUC0yNTYiLCJ4IjoiM0M5OHBtOTBwV3FfWElwN0RsM3ppQ29NbTl0a3VXUXA3eTBLVlFmNnh0YyIsInkiOiI0V1NuemVzZGNlcW9qT2g4cWp2dVN1U0U4cUFvbThYbU5GSExfZ1loa0p3In1dLCJrZXlfc3RvcmFnZSI6WyJpc29fMTgwNDVfaGlnaCJdLCJ1c2VyX2F1dGhlbnRpY2F0aW9uIjpbImlzb18xODA0NV9oaWdoIl0sImNlcnRpZmljYXRpb24iOiJodHRwczovL3dhbGxldC1wcm92aWRlci5leGFtcGxlLmV1L2NlcnRpZmljYXRpb24vd3NjZCIsImtleV9zdG9yYWdlX3N0YXR1cyI6eyJzdGF0dXMiOnsic3RhdHVzX2xpc3QiOnsiaWR4IjoxMiwidXJpIjoiaHR0cHM6Ly93YWxsZXQtcHJvdmlkZXIuZXhhbXBsZS5ldS9zdGF0dXMvd3NjZC8xIn19LCJleHAiOjE4MjM2MDE2MDB9fQ.2nR_zEsxnGGgVvYKo2DKlhf-iy6PpFdNHJe1q3uXSUE3G8MFUowrM38WQ7edod-GzSKV1Z4ok2d61jHKmb3w2Q"
+          },
+          "payload": {
+            "aud": "https://eaa.example.eu",
+            "iat": 1792072920,
+            "nonce": "wKI4LT17ac15ES9bw8ac4"
+          }
+        }
+      }
+    },
+    {
+      "type": "CredentialResponse",
+      "flow": "nested-presentation",
+      "step": "32",
+      "http": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "credentials": [
+            {
+              "credential": "eyJ0eXAiOiJkYytzZC1qd3QiLCJhbGciOiJFUzI1NiIsIng1YyI6WyJNSUlDRURDQ0FiZWdBd0lCQWdJSkFLTmxUQWkvWmdNZ01Bb0dDQ3FHU000OUJBTUNNRnN4S0RBbUJnTlZCQU1NSDFSRlUxUWdRV05qWlhOeklFTmxjblJwWm1sallYUmxJRkp2YjNRZ1EwRXhJakFnQmdOVkJBb01HVlJGVTFRZ1QwNU1XU0J6Y0dWamN5MXVZWFpwWjJGMGIzSXhDekFKQmdOVkJBWVRBa1ZWTUI0WERUSTJNVEF4TlRFMk5ERTBNbG9YRFRNMk1UQXhNakUyTkRFME1sb3dYekVzTUNvR0ExVUVBd3dqVkVWVFZDQkZRVUVnVUhKdmRtbGtaWElnUTNKbFpHVnVkR2xoYkNCVGFXZHVaWEl4SWpBZ0JnTlZCQW9NR1ZSRlUxUWdUMDVNV1NCemNHVmpjeTF1WVhacFoyRjBiM0l4Q3pBSkJnTlZCQVlUQWtWVk1Ga3dFd1lIS29aSXpqMENBUVlJS29aSXpqMERBUWNEUWdBRTFqSDhoTGgrbUU2bkFha2xFdDNuUkRKV0EwSjZRUEV3RVNPR1hJRkxIcmdJUXFwSmxlQlpOdWJhb2YxeG81Y1JrRm8rU240NC9IczZyd3dmdlplZHFLTmdNRjR3REFZRFZSMFRBUUgvQkFJd0FEQU9CZ05WSFE4QkFmOEVCQU1DQjRBd0hRWURWUjBPQkJZRUZMZzhkTllvVXdydEFLL292eVQxbEUyRklDS09NQjhHQTFVZEl3UVlNQmFBRk5sWVZXS1FSdnJMRE9EbW01Mk5XNzcwVFVNdE1Bb0dDQ3FHU000OUJBTUNBMGNBTUVRQ0lDOFRUQnhjdVZqN3VyTjIwbHFXVFZSTzV6MU5vK1VvQ0swYXdxRjNZTnlNQWlCQ2tLcTl1cVlQcmVNb0ZzVWl0NTNTWTFLbmkwMGlrTUhZK2ZKS3d0ck9Wdz09Il19.eyJpc3MiOiJodHRwczovL2VhYS5leGFtcGxlLmV1IiwidmN0IjoidXJuOmV1ZGk6ZXhhbXBsZTpneW0tbWVtYmVyc2hpcDoxIiwiaWF0IjoxNzkyMDcyOTgwLCJleHAiOjE4MjM2MDg5ODAsImNuZiI6eyJqd2siOnsia3R5IjoiRUMiLCJjcnYiOiJQLTI1NiIsIngiOiJ6b2ZXRnRtZHl4WjZoUjRVZFpwdWc1WS05cGh3UzNoS3VkcUgwLVpwR01rIiwieSI6ImpHZS05NWFqQW81UlVKeGlINkpMV2VkSjg4YlcyVHJDZnZmM2psTWF1WDgifX0sInN0YXR1cyI6eyJzdGF0dXNfbGlzdCI6eyJpZHgiOjEzMDcsInVyaSI6Imh0dHBzOi8vZWFhLmV4YW1wbGUuZXUvc3RhdHVzL2d5bS8zIn19LCJfc2QiOlsiSVV0dHIzLXRnMmhGbjlJN2t3VWhxeHBxNVRWbEdlbkFNZTdHSE5jSmk3cyIsIk5mSlpOcnhRYThfSkV1bjJWem5DV3h3X2FGRDFxUktKeS1XckZSTTR0ek0iXSwiX3NkX2FsZyI6InNoYS0yNTYifQ.E4PHPITCKEJtYXl1lGHJujuDKLrGXr2jv6XoPiJWQuozTrtT0xhVI_jlUF_uRRVNR_SJop1YVTSevpP14MqtRw~WyIyR0xDNDJzS1F2ZUNmR2ZyeU5STjl3IiwibWVtYmVyX2lkIiwiR1lNLTAwNDIiXQ~WyJlbHVWNU9nM2dTTklJOEVZbnN4QV9BIiwibWVtYmVyc2hpcF9sZXZlbCIsImdvbGQiXQ~"
+            },
+            {
+              "credential": "eyJ0eXAiOiJkYytzZC1qd3QiLCJhbGciOiJFUzI1NiIsIng1YyI6WyJNSUlDRURDQ0FiZWdBd0lCQWdJSkFLTmxUQWkvWmdNZ01Bb0dDQ3FHU000OUJBTUNNRnN4S0RBbUJnTlZCQU1NSDFSRlUxUWdRV05qWlhOeklFTmxjblJwWm1sallYUmxJRkp2YjNRZ1EwRXhJakFnQmdOVkJBb01HVlJGVTFRZ1QwNU1XU0J6Y0dWamN5MXVZWFpwWjJGMGIzSXhDekFKQmdOVkJBWVRBa1ZWTUI0WERUSTJNVEF4TlRFMk5ERTBNbG9YRFRNMk1UQXhNakUyTkRFME1sb3dYekVzTUNvR0ExVUVBd3dqVkVWVFZDQkZRVUVnVUhKdmRtbGtaWElnUTNKbFpHVnVkR2xoYkNCVGFXZHVaWEl4SWpBZ0JnTlZCQW9NR1ZSRlUxUWdUMDVNV1NCemNHVmpjeTF1WVhacFoyRjBiM0l4Q3pBSkJnTlZCQVlUQWtWVk1Ga3dFd1lIS29aSXpqMENBUVlJS29aSXpqMERBUWNEUWdBRTFqSDhoTGgrbUU2bkFha2xFdDNuUkRKV0EwSjZRUEV3RVNPR1hJRkxIcmdJUXFwSmxlQlpOdWJhb2YxeG81Y1JrRm8rU240NC9IczZyd3dmdlplZHFLTmdNRjR3REFZRFZSMFRBUUgvQkFJd0FEQU9CZ05WSFE4QkFmOEVCQU1DQjRBd0hRWURWUjBPQkJZRUZMZzhkTllvVXdydEFLL292eVQxbEUyRklDS09NQjhHQTFVZEl3UVlNQmFBRk5sWVZXS1FSdnJMRE9EbW01Mk5XNzcwVFVNdE1Bb0dDQ3FHU000OUJBTUNBMGNBTUVRQ0lDOFRUQnhjdVZqN3VyTjIwbHFXVFZSTzV6MU5vK1VvQ0swYXdxRjNZTnlNQWlCQ2tLcTl1cVlQcmVNb0ZzVWl0NTNTWTFLbmkwMGlrTUhZK2ZKS3d0ck9Wdz09Il19.eyJpc3MiOiJodHRwczovL2VhYS5leGFtcGxlLmV1IiwidmN0IjoidXJuOmV1ZGk6ZXhhbXBsZTpneW0tbWVtYmVyc2hpcDoxIiwiaWF0IjoxNzkyMDcyOTgwLCJleHAiOjE4MjM2MDg5ODAsImNuZiI6eyJqd2siOnsia3R5IjoiRUMiLCJjcnYiOiJQLTI1NiIsIngiOiIzQzk4cG05MHBXcV9YSXA3RGwzemlDb01tOXRrdVdRcDd5MEtWUWY2eHRjIiwieSI6IjRXU256ZXNkY2Vxb2pPaDhxanZ1U3VTRThxQW9tOFhtTkZITF9nWWhrSncifX0sInN0YXR1cyI6eyJzdGF0dXNfbGlzdCI6eyJpZHgiOjI5MTgsInVyaSI6Imh0dHBzOi8vZWFhLmV4YW1wbGUuZXUvc3RhdHVzL2d5bS8zIn19LCJfc2QiOlsiSzBvQW1vUjgzWmI3Q2U5T2M0UzYyaTNFT0U3QjBKVDBYazJvU28wbUVTQSIsIl9tT3dwZTVTLVg0STk1a3FBZXF2UE9mbmphbE9FOWlwc1E2YkR3UFpxOTQiXSwiX3NkX2FsZyI6InNoYS0yNTYifQ.qU8ba-NNN6g4LtT6n17e74BKlMewRNrUi5UMl4THqvaxTSOf039Soma6XKd4gauyBUxFNqkzj7mreEQiY1_ikQ~WyI2SWo3dE0tYTVpVlBHYm9TNXRtdlZBIiwibWVtYmVyX2lkIiwiR1lNLTAwNDIiXQ~WyJRZ19PNjR6cUF4ZTQxMmExMDhpcm9BIiwibWVtYmVyc2hpcF9sZXZlbCIsImdvbGQiXQ~"
+            }
+          ],
+          "notification_id": "3fwe98js"
+        }
+      },
+      "tokens": {
+        "IssuedCredential": {
+          "header": {
+            "typ": "dc+sd-jwt",
+            "alg": "ES256",
+            "x5c": [
+              "MIICEDCCAbegAwIBAgIJAKNlTAi/ZgMgMAoGCCqGSM49BAMCMFsxKDAmBgNVBAMMH1RFU1QgQWNjZXNzIENlcnRpZmljYXRlIFJvb3QgQ0ExIjAgBgNVBAoMGVRFU1QgT05MWSBzcGVjcy1uYXZpZ2F0b3IxCzAJBgNVBAYTAkVVMB4XDTI2MTAxNTE2NDE0MloXDTM2MTAxMjE2NDE0MlowXzEsMCoGA1UEAwwjVEVTVCBFQUEgUHJvdmlkZXIgQ3JlZGVudGlhbCBTaWduZXIxIjAgBgNVBAoMGVRFU1QgT05MWSBzcGVjcy1uYXZpZ2F0b3IxCzAJBgNVBAYTAkVVMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE1jH8hLh+mE6nAaklEt3nRDJWA0J6QPEwESOGXIFLHrgIQqpJleBZNubaof1xo5cRkFo+Sn44/Hs6rwwfvZedqKNgMF4wDAYDVR0TAQH/BAIwADAOBgNVHQ8BAf8EBAMCB4AwHQYDVR0OBBYEFLg8dNYoUwrtAK/ovyT1lE2FICKOMB8GA1UdIwQYMBaAFNlYVWKQRvrLDODmm52NW770TUMtMAoGCCqGSM49BAMCA0cAMEQCIC8TTBxcuVj7urN20lqWTVRO5z1No+UoCK0awqF3YNyMAiBCkKq9uqYPreMoFsUit53SY1Kni00ikMHY+fJKwtrOVw=="
+            ]
+          },
+          "payload": {
+            "iss": "https://eaa.example.eu",
+            "vct": "urn:eudi:example:gym-membership:1",
+            "iat": 1792072980,
+            "exp": 1823608980,
+            "cnf": {
+              "jwk": {
+                "kty": "EC",
+                "crv": "P-256",
+                "x": "3C98pm90pWq_XIp7Dl3ziCoMm9tkuWQp7y0KVQf6xtc",
+                "y": "4WSnzesdceqojOh8qjvuSuSE8qAom8XmNFHL_gYhkJw"
+              }
+            },
+            "status": {
+              "status_list": {
+                "idx": 2918,
+                "uri": "https://eaa.example.eu/status/gym/3"
+              }
+            },
+            "_sd": [
+              "K0oAmoR83Zb7Ce9Oc4S62i3EOE7B0JT0Xk2oSo0mESA",
+              "_mOwpe5S-X4I95kqAeqvPOfnjalOE9ipsQ6bDwPZq94"
+            ],
+            "_sd_alg": "sha-256"
+          },
+          "disclosures": [
+            [
+              "6Ij7tM-a5iVPGboS5tmvVA",
+              "member_id",
+              "GYM-0042"
+            ],
+            [
+              "Qg_O64zqAxe412a108iroA",
+              "membership_level",
+              "gold"
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "type": "NotificationRequest",
+      "flow": "nested-presentation",
+      "step": "33",
       "http": {
         "method": "POST",
         "url": "https://eaa.example.eu/notification",
@@ -1447,6 +2422,122 @@
             "iat": 1792073000,
             "nonce": "eyJ7S_zG.eyJH0-Z.HX4w-7v",
             "ath": "fUHyO2r2Z3DZ53EsNrWBb0xWXoaNy59IiKCAqksmQEo"
+          }
+        }
+      }
+    },
+    {
+      "type": "CredentialResponse",
+      "flow": "revocation",
+      "step": "2",
+      "http": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "credentials": [
+            {
+              "credential": "eyJ0eXAiOiJkYytzZC1qd3QiLCJhbGciOiJFUzI1NiIsIng1YyI6WyJNSUlDRURDQ0FiZWdBd0lCQWdJSkFLTmxUQWkvWmdNZ01Bb0dDQ3FHU000OUJBTUNNRnN4S0RBbUJnTlZCQU1NSDFSRlUxUWdRV05qWlhOeklFTmxjblJwWm1sallYUmxJRkp2YjNRZ1EwRXhJakFnQmdOVkJBb01HVlJGVTFRZ1QwNU1XU0J6Y0dWamN5MXVZWFpwWjJGMGIzSXhDekFKQmdOVkJBWVRBa1ZWTUI0WERUSTJNVEF4TlRFMk5ERTBNbG9YRFRNMk1UQXhNakUyTkRFME1sb3dYekVzTUNvR0ExVUVBd3dqVkVWVFZDQkZRVUVnVUhKdmRtbGtaWElnUTNKbFpHVnVkR2xoYkNCVGFXZHVaWEl4SWpBZ0JnTlZCQW9NR1ZSRlUxUWdUMDVNV1NCemNHVmpjeTF1WVhacFoyRjBiM0l4Q3pBSkJnTlZCQVlUQWtWVk1Ga3dFd1lIS29aSXpqMENBUVlJS29aSXpqMERBUWNEUWdBRTFqSDhoTGgrbUU2bkFha2xFdDNuUkRKV0EwSjZRUEV3RVNPR1hJRkxIcmdJUXFwSmxlQlpOdWJhb2YxeG81Y1JrRm8rU240NC9IczZyd3dmdlplZHFLTmdNRjR3REFZRFZSMFRBUUgvQkFJd0FEQU9CZ05WSFE4QkFmOEVCQU1DQjRBd0hRWURWUjBPQkJZRUZMZzhkTllvVXdydEFLL292eVQxbEUyRklDS09NQjhHQTFVZEl3UVlNQmFBRk5sWVZXS1FSdnJMRE9EbW01Mk5XNzcwVFVNdE1Bb0dDQ3FHU000OUJBTUNBMGNBTUVRQ0lDOFRUQnhjdVZqN3VyTjIwbHFXVFZSTzV6MU5vK1VvQ0swYXdxRjNZTnlNQWlCQ2tLcTl1cVlQcmVNb0ZzVWl0NTNTWTFLbmkwMGlrTUhZK2ZKS3d0ck9Wdz09Il19.eyJpc3MiOiJodHRwczovL2VhYS5leGFtcGxlLmV1IiwidmN0IjoidXJuOmV1ZGk6ZXhhbXBsZTpneW0tbWVtYmVyc2hpcDoxIiwiaWF0IjoxNzkyMDcyOTgwLCJleHAiOjE4MjM2MDg5ODAsImNuZiI6eyJqd2siOnsia3R5IjoiRUMiLCJjcnYiOiJQLTI1NiIsIngiOiJ6b2ZXRnRtZHl4WjZoUjRVZFpwdWc1WS05cGh3UzNoS3VkcUgwLVpwR01rIiwieSI6ImpHZS05NWFqQW81UlVKeGlINkpMV2VkSjg4YlcyVHJDZnZmM2psTWF1WDgifX0sInN0YXR1cyI6eyJzdGF0dXNfbGlzdCI6eyJpZHgiOjEzMDcsInVyaSI6Imh0dHBzOi8vZWFhLmV4YW1wbGUuZXUvc3RhdHVzL2d5bS8zIn19LCJfc2QiOlsiSVV0dHIzLXRnMmhGbjlJN2t3VWhxeHBxNVRWbEdlbkFNZTdHSE5jSmk3cyIsIk5mSlpOcnhRYThfSkV1bjJWem5DV3h3X2FGRDFxUktKeS1XckZSTTR0ek0iXSwiX3NkX2FsZyI6InNoYS0yNTYifQ.E4PHPITCKEJtYXl1lGHJujuDKLrGXr2jv6XoPiJWQuozTrtT0xhVI_jlUF_uRRVNR_SJop1YVTSevpP14MqtRw~WyIyR0xDNDJzS1F2ZUNmR2ZyeU5STjl3IiwibWVtYmVyX2lkIiwiR1lNLTAwNDIiXQ~WyJlbHVWNU9nM2dTTklJOEVZbnN4QV9BIiwibWVtYmVyc2hpcF9sZXZlbCIsImdvbGQiXQ~"
+            },
+            {
+              "credential": "eyJ0eXAiOiJkYytzZC1qd3QiLCJhbGciOiJFUzI1NiIsIng1YyI6WyJNSUlDRURDQ0FiZWdBd0lCQWdJSkFLTmxUQWkvWmdNZ01Bb0dDQ3FHU000OUJBTUNNRnN4S0RBbUJnTlZCQU1NSDFSRlUxUWdRV05qWlhOeklFTmxjblJwWm1sallYUmxJRkp2YjNRZ1EwRXhJakFnQmdOVkJBb01HVlJGVTFRZ1QwNU1XU0J6Y0dWamN5MXVZWFpwWjJGMGIzSXhDekFKQmdOVkJBWVRBa1ZWTUI0WERUSTJNVEF4TlRFMk5ERTBNbG9YRFRNMk1UQXhNakUyTkRFME1sb3dYekVzTUNvR0ExVUVBd3dqVkVWVFZDQkZRVUVnVUhKdmRtbGtaWElnUTNKbFpHVnVkR2xoYkNCVGFXZHVaWEl4SWpBZ0JnTlZCQW9NR1ZSRlUxUWdUMDVNV1NCemNHVmpjeTF1WVhacFoyRjBiM0l4Q3pBSkJnTlZCQVlUQWtWVk1Ga3dFd1lIS29aSXpqMENBUVlJS29aSXpqMERBUWNEUWdBRTFqSDhoTGgrbUU2bkFha2xFdDNuUkRKV0EwSjZRUEV3RVNPR1hJRkxIcmdJUXFwSmxlQlpOdWJhb2YxeG81Y1JrRm8rU240NC9IczZyd3dmdlplZHFLTmdNRjR3REFZRFZSMFRBUUgvQkFJd0FEQU9CZ05WSFE4QkFmOEVCQU1DQjRBd0hRWURWUjBPQkJZRUZMZzhkTllvVXdydEFLL292eVQxbEUyRklDS09NQjhHQTFVZEl3UVlNQmFBRk5sWVZXS1FSdnJMRE9EbW01Mk5XNzcwVFVNdE1Bb0dDQ3FHU000OUJBTUNBMGNBTUVRQ0lDOFRUQnhjdVZqN3VyTjIwbHFXVFZSTzV6MU5vK1VvQ0swYXdxRjNZTnlNQWlCQ2tLcTl1cVlQcmVNb0ZzVWl0NTNTWTFLbmkwMGlrTUhZK2ZKS3d0ck9Wdz09Il19.eyJpc3MiOiJodHRwczovL2VhYS5leGFtcGxlLmV1IiwidmN0IjoidXJuOmV1ZGk6ZXhhbXBsZTpneW0tbWVtYmVyc2hpcDoxIiwiaWF0IjoxNzkyMDcyOTgwLCJleHAiOjE4MjM2MDg5ODAsImNuZiI6eyJqd2siOnsia3R5IjoiRUMiLCJjcnYiOiJQLTI1NiIsIngiOiIzQzk4cG05MHBXcV9YSXA3RGwzemlDb01tOXRrdVdRcDd5MEtWUWY2eHRjIiwieSI6IjRXU256ZXNkY2Vxb2pPaDhxanZ1U3VTRThxQW9tOFhtTkZITF9nWWhrSncifX0sInN0YXR1cyI6eyJzdGF0dXNfbGlzdCI6eyJpZHgiOjI5MTgsInVyaSI6Imh0dHBzOi8vZWFhLmV4YW1wbGUuZXUvc3RhdHVzL2d5bS8zIn19LCJfc2QiOlsiSzBvQW1vUjgzWmI3Q2U5T2M0UzYyaTNFT0U3QjBKVDBYazJvU28wbUVTQSIsIl9tT3dwZTVTLVg0STk1a3FBZXF2UE9mbmphbE9FOWlwc1E2YkR3UFpxOTQiXSwiX3NkX2FsZyI6InNoYS0yNTYifQ.qU8ba-NNN6g4LtT6n17e74BKlMewRNrUi5UMl4THqvaxTSOf039Soma6XKd4gauyBUxFNqkzj7mreEQiY1_ikQ~WyI2SWo3dE0tYTVpVlBHYm9TNXRtdlZBIiwibWVtYmVyX2lkIiwiR1lNLTAwNDIiXQ~WyJRZ19PNjR6cUF4ZTQxMmExMDhpcm9BIiwibWVtYmVyc2hpcF9sZXZlbCIsImdvbGQiXQ~"
+            }
+          ],
+          "notification_id": "3fwe98js"
+        }
+      },
+      "tokens": {
+        "IssuedCredential": {
+          "header": {
+            "typ": "dc+sd-jwt",
+            "alg": "ES256",
+            "x5c": [
+              "MIICEDCCAbegAwIBAgIJAKNlTAi/ZgMgMAoGCCqGSM49BAMCMFsxKDAmBgNVBAMMH1RFU1QgQWNjZXNzIENlcnRpZmljYXRlIFJvb3QgQ0ExIjAgBgNVBAoMGVRFU1QgT05MWSBzcGVjcy1uYXZpZ2F0b3IxCzAJBgNVBAYTAkVVMB4XDTI2MTAxNTE2NDE0MloXDTM2MTAxMjE2NDE0MlowXzEsMCoGA1UEAwwjVEVTVCBFQUEgUHJvdmlkZXIgQ3JlZGVudGlhbCBTaWduZXIxIjAgBgNVBAoMGVRFU1QgT05MWSBzcGVjcy1uYXZpZ2F0b3IxCzAJBgNVBAYTAkVVMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE1jH8hLh+mE6nAaklEt3nRDJWA0J6QPEwESOGXIFLHrgIQqpJleBZNubaof1xo5cRkFo+Sn44/Hs6rwwfvZedqKNgMF4wDAYDVR0TAQH/BAIwADAOBgNVHQ8BAf8EBAMCB4AwHQYDVR0OBBYEFLg8dNYoUwrtAK/ovyT1lE2FICKOMB8GA1UdIwQYMBaAFNlYVWKQRvrLDODmm52NW770TUMtMAoGCCqGSM49BAMCA0cAMEQCIC8TTBxcuVj7urN20lqWTVRO5z1No+UoCK0awqF3YNyMAiBCkKq9uqYPreMoFsUit53SY1Kni00ikMHY+fJKwtrOVw=="
+            ]
+          },
+          "payload": {
+            "iss": "https://eaa.example.eu",
+            "vct": "urn:eudi:example:gym-membership:1",
+            "iat": 1792072980,
+            "exp": 1823608980,
+            "cnf": {
+              "jwk": {
+                "kty": "EC",
+                "crv": "P-256",
+                "x": "3C98pm90pWq_XIp7Dl3ziCoMm9tkuWQp7y0KVQf6xtc",
+                "y": "4WSnzesdceqojOh8qjvuSuSE8qAom8XmNFHL_gYhkJw"
+              }
+            },
+            "status": {
+              "status_list": {
+                "idx": 2918,
+                "uri": "https://eaa.example.eu/status/gym/3"
+              }
+            },
+            "_sd": [
+              "K0oAmoR83Zb7Ce9Oc4S62i3EOE7B0JT0Xk2oSo0mESA",
+              "_mOwpe5S-X4I95kqAeqvPOfnjalOE9ipsQ6bDwPZq94"
+            ],
+            "_sd_alg": "sha-256"
+          },
+          "disclosures": [
+            [
+              "6Ij7tM-a5iVPGboS5tmvVA",
+              "member_id",
+              "GYM-0042"
+            ],
+            [
+              "Qg_O64zqAxe412a108iroA",
+              "membership_level",
+              "gold"
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "type": "StatusListRequest",
+      "flow": "revocation",
+      "step": "6",
+      "http": {
+        "method": "GET",
+        "url": "https://eaa.example.eu/status/gym/3",
+        "headers": {
+          "Accept": "application/statuslist+jwt"
+        }
+      }
+    },
+    {
+      "type": "StatusListResponse",
+      "flow": "revocation",
+      "step": "7",
+      "http": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/statuslist+jwt",
+          "Cache-Control": "max-age=43200"
+        },
+        "body": "eyJ0eXAiOiJzdGF0dXNsaXN0K2p3dCIsImFsZyI6IkVTMjU2IiwieDVjIjpbIk1JSUNFRENDQWJlZ0F3SUJBZ0lKQUtObFRBaS9aZ01nTUFvR0NDcUdTTTQ5QkFNQ01Gc3hLREFtQmdOVkJBTU1IMVJGVTFRZ1FXTmpaWE56SUVObGNuUnBabWxqWVhSbElGSnZiM1FnUTBFeElqQWdCZ05WQkFvTUdWUkZVMVFnVDA1TVdTQnpjR1ZqY3kxdVlYWnBaMkYwYjNJeEN6QUpCZ05WQkFZVEFrVlZNQjRYRFRJMk1UQXhOVEUyTkRFME1sb1hEVE0yTVRBeE1qRTJOREUwTWxvd1h6RXNNQ29HQTFVRUF3d2pWRVZUVkNCRlFVRWdVSEp2ZG1sa1pYSWdRM0psWkdWdWRHbGhiQ0JUYVdkdVpYSXhJakFnQmdOVkJBb01HVlJGVTFRZ1QwNU1XU0J6Y0dWamN5MXVZWFpwWjJGMGIzSXhDekFKQmdOVkJBWVRBa1ZWTUZrd0V3WUhLb1pJemowQ0FRWUlLb1pJemowREFRY0RRZ0FFMWpIOGhMaCttRTZuQWFrbEV0M25SREpXQTBKNlFQRXdFU09HWElGTEhyZ0lRcXBKbGVCWk51YmFvZjF4bzVjUmtGbytTbjQ0L0hzNnJ3d2Z2WmVkcUtOZ01GNHdEQVlEVlIwVEFRSC9CQUl3QURBT0JnTlZIUThCQWY4RUJBTUNCNEF3SFFZRFZSME9CQllFRkxnOGROWW9Vd3J0QUsvb3Z5VDFsRTJGSUNLT01COEdBMVVkSXdRWU1CYUFGTmxZVldLUVJ2ckxET0RtbTUyTlc3NzBUVU10TUFvR0NDcUdTTTQ5QkFNQ0EwY0FNRVFDSUM4VFRCeGN1Vmo3dXJOMjBscVdUVlJPNXoxTm8rVW9DSzBhd3FGM1lOeU1BaUJDa0txOXVxWVByZU1vRnNVaXQ1M1NZMUtuaTAwaWtNSFkrZkpLd3RyT1Z3PT0iXX0.eyJzdWIiOiJodHRwczovL2VhYS5leGFtcGxlLmV1L3N0YXR1cy9neW0vMyIsImlhdCI6MTc5MzYxMDkwMCwiZXhwIjoxNzkzNjk3MzAwLCJ0dGwiOjQzMjAwLCJzdGF0dXNfbGlzdCI6eyJiaXRzIjoxLCJsc3QiOiJlTnBqWU1BRk9CZ0dDUmcwRHFFVU9EQU1LOEF5TkozTnhERGNRTU93ODlGQXBpMEJobEZBTWxBWURZS2htVHNCS1RjQml3In19.uyl6jkt7071Ap0WY4pZlqkWUfwodsXfA01trfi9UaCtKv7uPVYUvJOiAyG-MT_uRdjJUPCPG_tpY1jSXHU6NyA"
+      },
+      "tokens": {
+        "StatusListToken": {
+          "header": {
+            "typ": "statuslist+jwt",
+            "alg": "ES256",
+            "x5c": [
+              "MIICEDCCAbegAwIBAgIJAKNlTAi/ZgMgMAoGCCqGSM49BAMCMFsxKDAmBgNVBAMMH1RFU1QgQWNjZXNzIENlcnRpZmljYXRlIFJvb3QgQ0ExIjAgBgNVBAoMGVRFU1QgT05MWSBzcGVjcy1uYXZpZ2F0b3IxCzAJBgNVBAYTAkVVMB4XDTI2MTAxNTE2NDE0MloXDTM2MTAxMjE2NDE0MlowXzEsMCoGA1UEAwwjVEVTVCBFQUEgUHJvdmlkZXIgQ3JlZGVudGlhbCBTaWduZXIxIjAgBgNVBAoMGVRFU1QgT05MWSBzcGVjcy1uYXZpZ2F0b3IxCzAJBgNVBAYTAkVVMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE1jH8hLh+mE6nAaklEt3nRDJWA0J6QPEwESOGXIFLHrgIQqpJleBZNubaof1xo5cRkFo+Sn44/Hs6rwwfvZedqKNgMF4wDAYDVR0TAQH/BAIwADAOBgNVHQ8BAf8EBAMCB4AwHQYDVR0OBBYEFLg8dNYoUwrtAK/ovyT1lE2FICKOMB8GA1UdIwQYMBaAFNlYVWKQRvrLDODmm52NW770TUMtMAoGCCqGSM49BAMCA0cAMEQCIC8TTBxcuVj7urN20lqWTVRO5z1No+UoCK0awqF3YNyMAiBCkKq9uqYPreMoFsUit53SY1Kni00ikMHY+fJKwtrOVw=="
+            ]
+          },
+          "payload": {
+            "sub": "https://eaa.example.eu/status/gym/3",
+            "iat": 1793610900,
+            "exp": 1793697300,
+            "ttl": 43200,
+            "status_list": {
+              "bits": 1,
+              "lst": "eNpjYMAFOBgGCRg0DqEUODAMK8AyNJ3NxDDcQMOw89FApi0BhlFAMlAYDYKhmTsBKTcBiw"
+            }
           }
         }
       }

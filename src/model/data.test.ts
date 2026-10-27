@@ -2,6 +2,7 @@ import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { calculateJwkThumbprint, compactDecrypt, compactVerify, decodeProtectedHeader, importPKCS8, importSPKI, type JWK } from 'jose'
 import { X509Certificate, createHash, verify } from 'node:crypto'
+import { inflateSync } from 'node:zlib'
 import { describe, expect, it } from 'vitest'
 import { DATA, loadDataset } from '../../scripts/lib/data.ts'
 import { inputHash, substitute } from '../../scripts/lib/examples.ts'
@@ -171,6 +172,20 @@ describe('examples', () => {
     const k0 = (ka.payload.attested_keys as Record<string, string>[])[0]!
     const { importJWK } = await import('jose')
     await compactVerify(proof.compact, await importJWK({ ...k0, alg: 'ES256' }, 'ES256'))
+  })
+
+  it('the Status List Token of the revocation flow marks both credentials of the batch INVALID (Token Status List §4.1)', () => {
+    const slt = viewOf(ds.encoded['vci-status-list-response']!).jwt.slt!.payload
+    const list = slt.status_list as { bits: number; lst: string }
+    const bytes = inflateSync(Buffer.from(list.lst, 'base64url'))
+    const entry = (idx: number) => (bytes[idx >> 3]! >> (idx & 7)) & 1
+    expect(list.bits).toBe(1)
+    for (const name of ['vc1', 'vc2']) {
+      const ref = (viewOf(ds.encoded['vci-credential-response']!).jwt[name]!.payload.status as { status_list: { idx: number; uri: string } }).status_list
+      expect(slt.sub).toBe(ref.uri)
+      expect(entry(ref.idx), name).toBe(1)
+    }
+    expect(entry(1308)).toBe(0)
   })
 })
 
