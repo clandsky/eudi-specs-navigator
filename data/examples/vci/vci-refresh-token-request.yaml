@@ -1,0 +1,51 @@
+id: vci-refresh-token-request
+title: Token Request with the refresh token, WIA, PoP and DPoP
+subject: vci.token-request
+kind: http-request
+note: >-
+  The refresh token is the one from the Token Response of the original issuance. The fresh WIA names the same instance
+  key, and the DPoP proof is signed with the same DPoP key as at that time.
+http:
+  method: POST
+  url: https://eaa.example.eu/token
+  headers:
+    Content-Type: application/x-www-form-urlencoded
+    OAuth-Client-Attestation: "{{jwt:wia}}"
+    OAuth-Client-Attestation-PoP: "{{jwt:pop}}"
+    DPoP: "{{jwt:dpop}}"
+  body:
+    type: form
+    value:
+      grant_type: refresh_token
+      refresh_token: Q..Zkm29lexi8VnWg2zPW1x-tgGad0Ibc3s3EwM_Ni4-g
+jwts:
+  wia: { use: vci-wia-refresh/wia }
+  pop:
+    key: wallet-instance
+    header: { typ: oauth-client-attestation-pop+jwt, alg: ES256 }
+    payload: { iss: https://wallet-provider.example.eu/wallet-solution/eudi-wallet, aud: https://eaa.example.eu, jti: 6f1c2b7e-refresh-0001, iat: 1794744060 }
+  dpop:
+    key: wallet-dpop
+    header: { typ: dpop+jwt, alg: ES256, jwk: "{{jwk:wallet-dpop}}" }
+    payload: { jti: dpop-refresh-0001, htm: POST, htu: https://eaa.example.eu/token, iat: 1794744060 }
+annotations:
+  /http/headers/OAuth-Client-Attestation: vci.token-request.oauth-client-attestation
+  /http/headers/OAuth-Client-Attestation-PoP: vci.token-request.oauth-client-attestation-pop
+  /http/headers/DPoP: vci.token-request.dpop
+  /http/body/grant_type: vci.token-request.grant_type
+  /http/body/refresh_token: vci.token-request.refresh_token
+  /jwt/pop/header/typ: vci.wia-pop.typ
+  /jwt/pop/payload/aud: vci.wia-pop.aud
+  /jwt/pop/payload/jti: vci.wia-pop.jti
+  /jwt/dpop/header/typ: vci.dpop-proof.typ
+  /jwt/wia/header/typ: vci.wia.typ
+  /jwt/wia/header/x5c: vci.wia.x5c
+  /jwt/wia/payload/iss: vci.wia.iss
+  /jwt/wia/payload/sub: vci.wia.sub
+  /jwt/wia/payload/exp: vci.wia.exp
+  /jwt/wia/payload/cnf: vci.wia.cnf
+  /jwt/wia/payload/wallet_name: vci.wia.wallet_name
+  /jwt/wia/payload/wallet_link: vci.wia.wallet_link
+  /jwt/wia/payload/wallet_version: vci.wia.wallet_version
+  /jwt/wia/payload/wallet_solution_certification_information: vci.wia.wallet_solution_certification_information
+  /jwt/wia/payload/client_status: vci.wia.client_status

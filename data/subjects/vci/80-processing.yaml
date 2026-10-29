@@ -110,6 +110,17 @@
     - { field: grant_type, subject: vci.token-request.grant_type, expect: "urn:ietf:params:oauth:grant-type:pre-authorized_code." }
     - { field: pre-authorized_code, subject: vci.token-request.pre-authorized_code, expect: "A code this issuer put into a Credential Offer, not expired and not redeemed before. Otherwise: invalid_grant." }
     - { field: tx_code, subject: vci.token-request.tx_code, expect: "Present, because the offer carried a tx_code object, and equal to the code sent to the user. Missing: invalid_request; wrong: invalid_grant (OpenID4VCI §6.3)." }
+- id: vci.as.check-refresh-token
+  kind: behaviour
+  parent: vci.as.validate-token-request
+  title: Authorization server redeems the refresh token
+  description: "A refresh token stands for the authorization the user gave at the original issuance. The authorization server bound it to the Wallet instance that received it: to the key in the cnf claim of that WIA and, for a public client, to the DPoP key. A refresh only succeeds when the same Wallet instance presents it again with those keys. A refresh token that is unknown, expired, revoked or bound to another client returns invalid_grant (RFC 6749 §5.2)."
+  checks:
+    - { field: grant_type, subject: vci.token-request.grant_type, expect: "refresh_token." }
+    - { field: refresh_token, subject: vci.token-request.refresh_token, expect: "Issued by this server to the client the WIA authenticates, not expired and not revoked. Otherwise: invalid_grant." }
+    - { field: cnf (WIA), subject: vci.wia.cnf, expect: "The same key as in the WIA that was presented when the refresh token was issued. A WIA for another key: invalid_grant." }
+    - { field: jwk (DPoP header), subject: vci.dpop-proof.jwk, expect: "Where the server bound the refresh token to the DPoP key: the same key as at the token request that obtained the refresh token." }
+    - { field: age of the authorization, subject: vci.refresh-token.lifetime, expect: "Within the period the issuer allows credential refresh after the original issuance. Beyond it, the issuer rejects the refresh and the Wallet starts the issuance flow again." }
 
 # Credential Issuer: credential request ------------------------------------------------------------------------------
 - id: vci.issuer.validate-credential-request
@@ -173,6 +184,11 @@
   parent: vci
   title: Credential Issuer creates and signs the credentials
   description: "After the request passed every check, the issuer creates one credential per attested key and signs each with its own key. Each credential is an SD-JWT VC with its own holder key and status entry, so two presentations cannot be linked by either."
+- id: vci.issuer.previous-credentials
+  kind: behaviour
+  parent: vci.issuer.issue-credentials
+  title: Credential Issuer keeps the previously issued credentials
+  description: "A new Credential Request alone is no reason to revoke the credentials issued before. They stay valid until they expire or the issuer revokes them for a reason of its own, so the Wallet can keep using them while it switches to the new ones."
 - id: vci.credential-response.one-per-key
   kind: behaviour
   parent: vci.credential-response

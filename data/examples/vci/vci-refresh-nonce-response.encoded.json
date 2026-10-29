@@ -1,0 +1,19 @@
+{
+  "id": "vci-refresh-nonce-response",
+  "http": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json",
+      "Cache-Control": "no-store",
+      "DPoP-Nonce": "eyJ9Rf_A.eyJN2-K.QW7c-3x"
+    },
+    "body": {
+      "type": "json",
+      "value": {
+        "c_nonce": "pR4vX0u9hTq2LmZc7Ys1d"
+      }
+    }
+  },
+  "jwts": {},
+  "inputHash": "eefa2e7c87261bb1"
+}

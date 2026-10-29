@@ -1,0 +1,21 @@
+id: vci-refresh-token-response
+title: Token Response with a new DPoP-bound access token and a new refresh token
+subject: vci.token-response
+kind: http-response
+note: The authorization server rotates the refresh token. The Wallet discards the old one and keeps this one for the next refresh.
+http:
+  status: 200
+  headers: { Content-Type: application/json, Cache-Control: no-store, Pragma: no-cache }
+  body:
+    type: json
+    value:
+      access_token: Vt3qN9xLw2-RfH8kZp.Ye4sB0cJ~uA7mDg6Qn
+      token_type: DPoP
+      expires_in: 300
+      refresh_token: R7..pLm2vXq8TcY0wNz4-kHb1sGd5Jf9aEuQ3iO6rW
+annotations:
+  /http/body/token_type: vci.token-response.token_type
+  /http/body/refresh_token: vci.token-response.refresh_token
+  /http/headers/Cache-Control: vci.token-response.cache-control
+  /http/body/access_token: vci.token-response.access_token
+  /http/body/expires_in: vci.token-response.expires_in

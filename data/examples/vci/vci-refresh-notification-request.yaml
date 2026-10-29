@@ -1,0 +1,27 @@
+id: vci-refresh-notification-request
+title: Notification Request for the refreshed credentials
+subject: vci.notification-request
+kind: http-request
+http:
+  method: POST
+  url: https://eaa.example.eu/notification
+  headers:
+    Content-Type: application/json
+    Authorization: DPoP Vt3qN9xLw2-RfH8kZp.Ye4sB0cJ~uA7mDg6Qn
+    DPoP: "{{jwt:dpop}}"
+  body: { type: json, value: { notification_id: 7kqp21zx, event: credential_accepted } }
+jwts:
+  dpop:
+    key: wallet-dpop
+    header: { typ: dpop+jwt, alg: ES256, jwk: "{{jwk:wallet-dpop}}" }
+    payload:
+      jti: dpop-refresh-notification-0001
+      htm: POST
+      htu: https://eaa.example.eu/notification
+      iat: 1794744240
+      nonce: eyJ9Rf_A.eyJN2-K.QW7c-3x
+      ath: "{{s256:Vt3qN9xLw2-RfH8kZp.Ye4sB0cJ~uA7mDg6Qn}}"
+annotations:
+  /http/headers/DPoP: vci.notification-request.dpop
+  /http/body/event: vci.notification-request.event
+  /http/body/notification_id: vci.notification-request.notification_id

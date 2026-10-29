@@ -1,0 +1,68 @@
+# OpenID4VCI 1.0: refreshing issued credentials with a refresh token (§14.3, §14.5).
+- id: oid4vci/14.5/refresh-token
+  subject: vci.credential-refresh
+  spec: openid4vci-1.0
+  locator: { section: "14.5" }
+  relation: defines
+  level: info
+  applies_to: { role: [ wallet ] }
+  quote: >-
+    First, the Wallet may receive an updated version of a Credential from a Credential Endpoint using a valid Access
+    Token. This does not involve interaction with the End-User. If the Credential Issuer issued a Refresh Token to the
+    Wallet, the Wallet would obtain a fresh Access Token by making a request to the Token Endpoint, as defined in
+    Section 6 of [RFC6749].
+  verified: source-checked
+- id: oid4vci/14.5/initiation
+  subject: vci.credential-refresh
+  spec: openid4vci-1.0
+  locator: { section: "14.5" }
+  relation: defines
+  level: info
+  applies_to: { role: [ wallet, issuer ] }
+  quote: >-
+    Credential Refresh can be initiated by the Wallet independently from the Credential Issuer, or the Credential Issuer
+    can send a signal to the Wallet asking it to request Credential refresh. How the Credential Issuer sends such a
+    signal is out of scope of this specification.
+  verified: source-checked
+- id: oid4vci/14.5/what-changes
+  subject: vci.credential-refresh
+  spec: openid4vci-1.0
+  locator: { section: "14.5" }
+  relation: defines
+  level: info
+  applies_to: { role: [ issuer ] }
+  quote: "It is up to the Credential Issuer whether to update both the signature and the claim values, or only the signature."
+  verified: source-checked
+- id: oid4vci/14.3/same-or-updated
+  subject: vci.credential-refresh
+  spec: openid4vci-1.0
+  locator: { section: "14.3" }
+  relation: defines
+  level: info
+  applies_to: { role: [ issuer ] }
+  quote: >-
+    The Credential Issuer determines if the subsequent successful requests will return the same or an updated
+    Credential, such as having a new expiration time or using the most current End-User claims.
+  verified: source-checked
+- id: oid4vci/14.3/token-refresh
+  subject: vci.credential-refresh
+  spec: openid4vci-1.0
+  locator: { section: "14.3" }
+  relation: defines
+  level: may
+  applies_to: { role: [ issuer ] }
+  quote: >-
+    The Credential Issuer MAY also decide to no longer accept the Access Token and a re-authentication or Token Refresh
+    (see [RFC6749], Section 6) MAY be required at the Credential Issuer's discretion.
+  verified: source-checked
+- id: oid4vci/14.3/no-revoke
+  subject: vci.issuer.previous-credentials
+  spec: openid4vci-1.0
+  locator: { section: "14.3" }
+  relation: defines
+  level: should-not
+  applies_to: { role: [ issuer ] }
+  quote: >-
+    The Credential Issuer SHOULD NOT revoke previously issued, valid Credentials solely as a result of a subsequent
+    successful Credential Request.
+  verified: source-checked

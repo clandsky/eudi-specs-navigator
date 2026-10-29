@@ -1,0 +1,111 @@
+# Refreshing an access token: RFC 6749 §6, the DPoP binding of refresh tokens (RFC 9449 §5) and the binding to the
+# client instance under attestation-based client authentication (-07 §10.3).
+- id: rfc6749/6/grant_type
+  subject: vci.token-request.grant_type
+  spec: rfc-6749
+  locator: { section: "6" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ wallet ], grant: [ refresh_token ] }
+  quote: "grant_type REQUIRED. Value MUST be set to \"refresh_token\"."
+  verified: source-checked
+- id: rfc6749/6/refresh_token
+  subject: vci.token-request.refresh_token
+  spec: rfc-6749
+  locator: { section: "6" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ wallet ] }
+  quote: "refresh_token REQUIRED. The refresh token issued to the client."
+  verified: source-checked
+- id: rfc6749/6/validate
+  subject: vci.as.check-refresh-token
+  spec: rfc-6749
+  locator: { section: "6" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ as ] }
+  quote: >-
+    The authorization server MUST: … authenticate the client if client authentication is included and ensure that the
+    refresh token was issued to the authenticated client, and … validate the refresh token.
+  verified: source-checked
+- id: rfc6749/6/new-refresh-token
+  subject: vci.refresh-token.rotation
+  spec: rfc-6749
+  locator: { section: "6" }
+  relation: defines
+  level: may
+  applies_to: { role: [ as ] }
+  quote: >-
+    The authorization server MAY issue a new refresh token … The authorization server MAY revoke the old refresh token
+    after issuing a new refresh token to the client.
+  verified: source-checked
+- id: rfc6749/6/replace
+  subject: vci.refresh-token.rotation
+  spec: rfc-6749
+  locator: { section: "6" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ wallet ] }
+  quote: >-
+    The authorization server MAY issue a new refresh token, in which case the client MUST discard the old refresh token
+    and replace it with the new refresh token.
+  verified: source-checked
+- id: rfc9449/5/refresh-binding
+  subject: vci.as.check-refresh-token
+  spec: rfc-9449
+  locator: { section: "5" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ as ] }
+  condition: if the Wallet is a public client
+  quote: >-
+    When an authorization server supporting DPoP issues a refresh token to a public client that presents a valid DPoP
+    proof at the token endpoint, the refresh token MUST be bound to the respective public key. The binding MUST be
+    validated when the refresh token is later presented to get new access tokens.
+  verified: needs-review
+  review:
+    reason: >-
+      A Wallet that authenticates with a client attestation (WIA) may count as a confidential client. RFC 9449 §5 then
+      leaves its refresh token unbound to the DPoP key, while attestation-based client authentication -07 §10.3 binds it
+      to the key in the WIA. Whether the EUDI Wallet is a public client here is not settled by any binding spec.
+- id: rfc9449/5/refresh-dpop-wallet
+  subject: vci.token-request.dpop
+  spec: rfc-9449
+  locator: { section: "5" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ wallet ], grant: [ refresh_token ] }
+  condition: if the Wallet is a public client
+  quote: >-
+    such a client MUST present a DPoP proof for the same key that was used to obtain the refresh token each time that
+    refresh token is used to obtain a new access token.
+  verified: needs-review
+  review:
+    reason: >-
+      Applies to public clients only. Whether a Wallet that authenticates with a WIA is a public client is open (see
+      rfc9449/5/refresh-binding).
+- id: abca-07/10.3/bind
+  subject: vci.as.check-refresh-token
+  spec: attestation-client-auth-07
+  locator: { section: "10.3" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ as ] }
+  quote: >-
+    Authorization servers issuing a refresh token in response to a token request using the client attestation mechanism
+    as defined by this draft MUST bind the refresh token to the Client Instance and its associated public key, and NOT
+    just the client as specified in section 6 [RFC6749].
+  verified: source-checked
+- id: abca-07/10.3/client
+  subject: vci.token-request.oauth-client-attestation
+  spec: attestation-client-auth-07
+  locator: { section: "10.3" }
+  relation: defines
+  level: shall
+  applies_to: { role: [ wallet ], grant: [ refresh_token ] }
+  quote: >-
+    To prove this binding, the Client Instance MUST use the client attestation mechanism when refreshing an access
+    token. The client MUST also use the same key that was present in the "cnf" claim of the client attestation that was
+    used when the refresh token was issued.
+  verified: source-checked

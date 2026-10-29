@@ -1,10 +1,11 @@
 // Exports the flows for the German EUDI Wallet developer guide (Docusaurus): `pnpm devguide:export <guide-root>`.
 // Writes src/data/flows/<flow>.json and src/data/specs.json in the guide on every run (AS_OF=YYYY-MM-DD pins the date).
 // The context Markdown under docs/context/ and the wiring under docs/context/wiring/ belong to the guide once written:
-// a file that exists is left alone, and wiring entries the guide does not have yet are listed instead of added.
+// a file that exists is left alone, and a wiring file gets only the entries it does not have yet (a new flow, example,
+// subject or learning-path cluster), appended without touching the entries already there.
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, join, resolve } from 'node:path'
-import { parse, stringify } from 'yaml'
+import { parseDocument, stringify } from 'yaml'
 import { loadDataset, withoutAssumptions } from './lib/data.ts'
 import { buildContext, buildFlowBundle, specCatalog } from './lib/devguide.ts'
 
@@ -51,7 +52,10 @@ for (const [name, data] of Object.entries(ctx.wiring) as [keyof typeof ctx.wirin
     console.log(`wrote  wiring/${name}.yaml`)
     continue
   }
-  const have = (parse(readFileSync(file, 'utf8')) ?? {}) as Record<string, unknown>
-  const missing = Object.keys(data).filter((k) => !(k in have))
-  if (missing.length) console.log(`wiring/${name}.yaml has no entry for: ${missing.join(', ')}`)
+  const doc = parseDocument(readFileSync(file, 'utf8'))
+  const missing = Object.keys(data).filter((k) => !doc.has(k))
+  if (!missing.length) continue
+  for (const k of missing) doc.set(k, data[k])
+  writeFileSync(file, doc.toString({ lineWidth: 0 }))
+  console.log(`added  to wiring/${name}.yaml: ${missing.join(', ')}`)
 }

@@ -297,6 +297,18 @@
   note: HAIP §4.4 RECOMMENDS refresh tokens; ETSI, which ranks higher, only permits them. The effective rule is MAY.
   xref: [ { source: c2bo, id: refresh-tokens } ]
   verified: source-checked
+- id: etsi-472-3/TOKEN-REQ-PROC-4.5.2-04/note
+  subject: vci.refresh-token.lifetime
+  spec: etsi-ts-119-472-3
+  locator: { req: TOKEN-REQ-PROC-4.5.2-04, section: "4.5.2" }
+  relation: profiles
+  level: info
+  applies_to: { role: [ as, issuer ] }
+  quote: >-
+    When PID/EAA Providers choose to issue refresh tokens that can be used to generate new credentials, they need to
+    carefully assess the associated security implications.
+  note: NOTE to TOKEN-REQ-PROC-4.5.2-04.
+  verified: source-checked
 - id: etsi-472-3/CRED-REQ-4.6.1.1-01
   subject: vci.credential-request.proofs
   spec: etsi-ts-119-472-3

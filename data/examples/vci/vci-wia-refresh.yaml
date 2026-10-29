@@ -1,0 +1,39 @@
+id: vci-wia-refresh
+title: Fresh Wallet Instance Attestation for the refresh, with the same instance key
+subject: vci.provisioning
+kind: jwt
+note: >-
+  A month after the original issuance the earlier WIA has long expired. The Wallet Provider supplies a fresh one; its
+  cnf claim names the same Wallet instance key as the WIA the refresh token was issued with, otherwise the refresh
+  fails. iat 2026-11-15T12:00Z, valid for 23 h.
+jwts:
+  wia:
+    key: wp-signer
+    header: { typ: oauth-client-attestation+jwt, alg: ES256, x5c: "{{x5c:wp-signer}}" }
+    payload:
+      iss: https://wallet-provider.example.eu
+      sub: https://wallet-provider.example.eu/wallet-solution/eudi-wallet
+      iat: 1794744000
+      exp: 1794826800
+      cnf: { jwk: "{{jwk:wallet-instance}}" }
+      wallet_name: EXAMPLE-WALLET-SOLUTION-01
+      wallet_link: https://wallet-provider.example.eu/wallet
+      wallet_version: 3.4.1
+      wallet_solution_certification_information:
+        conformity_assessment_body: TEST CAB
+        certification_number: TEST-2026-0001
+      client_status:
+        status: { status_list: { idx: 4711, uri: "https://wallet-provider.example.eu/status/wia/1" } }
+        exp: 1823601600
+annotations:
+  /jwt/wia/header/typ: vci.wia.typ
+  /jwt/wia/header/x5c: vci.wia.x5c
+  /jwt/wia/payload/iss: vci.wia.iss
+  /jwt/wia/payload/sub: vci.wia.sub
+  /jwt/wia/payload/exp: vci.wia.exp
+  /jwt/wia/payload/cnf: vci.wia.cnf
+  /jwt/wia/payload/wallet_name: vci.wia.wallet_name
+  /jwt/wia/payload/wallet_link: vci.wia.wallet_link
+  /jwt/wia/payload/wallet_version: vci.wia.wallet_version
+  /jwt/wia/payload/wallet_solution_certification_information: vci.wia.wallet_solution_certification_information
+  /jwt/wia/payload/client_status: vci.wia.client_status
