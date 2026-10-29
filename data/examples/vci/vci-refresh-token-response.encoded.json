@@ -1,0 +1,22 @@
+{
+  "id": "vci-refresh-token-response",
+  "http": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json",
+      "Cache-Control": "no-store",
+      "Pragma": "no-cache"
+    },
+    "body": {
+      "type": "json",
+      "value": {
+        "access_token": "Vt3qN9xLw2-RfH8kZp.Ye4sB0cJ~uA7mDg6Qn",
+        "token_type": "DPoP",
+        "expires_in": 300,
+        "refresh_token": "R7..pLm2vXq8TcY0wNz4-kHb1sGd5Jf9aEuQ3iO6rW"
+      }
+    }
+  },
+  "jwts": {},
+  "inputHash": "e9e7bd8cf7948761"
+}

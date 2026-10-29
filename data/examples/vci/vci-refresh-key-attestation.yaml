@@ -1,0 +1,21 @@
+id: vci-refresh-key-attestation
+title: Key attestation for the refresh, bound to the new c_nonce
+subject: vci.ka-request
+kind: jwt
+note: A key attestation serves one issuance only, so the refresh needs a new one, bound to the new c_nonce. It attests the same two device keys as before.
+jwts:
+  ka:
+    key: wp-signer
+    header: { typ: key-attestation+jwt, alg: ES256, x5c: "{{x5c:wp-signer}}" }
+    payload:
+      iss: https://wallet-provider.example.eu
+      iat: 1794744090
+      exp: 1794747690
+      nonce: pR4vX0u9hTq2LmZc7Ys1d
+      attested_keys: ["{{jwk:wallet-key-1}}", "{{jwk:wallet-key-2}}"]
+      key_storage: [iso_18045_high]
+      user_authentication: [iso_18045_high]
+      certification: https://wallet-provider.example.eu/certification/wscd
+      key_storage_status:
+        status: { status_list: { idx: 12, uri: "https://wallet-provider.example.eu/status/wscd/1" } }
+        exp: 1823601600

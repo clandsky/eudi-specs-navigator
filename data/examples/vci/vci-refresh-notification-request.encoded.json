@@ -1,0 +1,23 @@
+{
+  "id": "vci-refresh-notification-request",
+  "http": {
+    "method": "POST",
+    "url": "https://eaa.example.eu/notification",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "DPoP Vt3qN9xLw2-RfH8kZp.Ye4sB0cJ~uA7mDg6Qn",
+      "DPoP": "eyJ0eXAiOiJkcG9wK2p3dCIsImFsZyI6IkVTMjU2IiwiandrIjp7Imt0eSI6IkVDIiwiY3J2IjoiUC0yNTYiLCJ4IjoiazVMM19qNTNlYmFab0lrOWpSTWNubFNEY2N6Skw5YkstbGZrcUlzencxZyIsInkiOiJfYjE1Sjc4ZXQ5OHh5VDRRNWFHLTdNaUxkakYwZVZnZEpQLUxyaXpPSEZRIn19.eyJqdGkiOiJkcG9wLXJlZnJlc2gtbm90aWZpY2F0aW9uLTAwMDEiLCJodG0iOiJQT1NUIiwiaHR1IjoiaHR0cHM6Ly9lYWEuZXhhbXBsZS5ldS9ub3RpZmljYXRpb24iLCJpYXQiOjE3OTQ3NDQyNDAsIm5vbmNlIjoiZXlKOVJmX0EuZXlKTjItSy5RVzdjLTN4IiwiYXRoIjoiV0JsNjlzdXZBcE5ZVk5GY2dGOVNOc0dseFdvWVAtVGJzUmVzZ3pyd2dEVSJ9.nmicfWQQGqenmbgRYtz9bM1BfgiK0RWVjRU_IsjEsnzK-uCo8YLOjEanLWhWOM4sp73MOlfEs4uuSup-_ollkw"
+    },
+    "body": {
+      "type": "json",
+      "value": {
+        "notification_id": "7kqp21zx",
+        "event": "credential_accepted"
+      }
+    }
+  },
+  "jwts": {
+    "dpop": "eyJ0eXAiOiJkcG9wK2p3dCIsImFsZyI6IkVTMjU2IiwiandrIjp7Imt0eSI6IkVDIiwiY3J2IjoiUC0yNTYiLCJ4IjoiazVMM19qNTNlYmFab0lrOWpSTWNubFNEY2N6Skw5YkstbGZrcUlzencxZyIsInkiOiJfYjE1Sjc4ZXQ5OHh5VDRRNWFHLTdNaUxkakYwZVZnZEpQLUxyaXpPSEZRIn19.eyJqdGkiOiJkcG9wLXJlZnJlc2gtbm90aWZpY2F0aW9uLTAwMDEiLCJodG0iOiJQT1NUIiwiaHR1IjoiaHR0cHM6Ly9lYWEuZXhhbXBsZS5ldS9ub3RpZmljYXRpb24iLCJpYXQiOjE3OTQ3NDQyNDAsIm5vbmNlIjoiZXlKOVJmX0EuZXlKTjItSy5RVzdjLTN4IiwiYXRoIjoiV0JsNjlzdXZBcE5ZVk5GY2dGOVNOc0dseFdvWVAtVGJzUmVzZ3pyd2dEVSJ9.nmicfWQQGqenmbgRYtz9bM1BfgiK0RWVjRU_IsjEsnzK-uCo8YLOjEanLWhWOM4sp73MOlfEs4uuSup-_ollkw"
+  },
+  "inputHash": "1b47ec6ada69fa50"
+}

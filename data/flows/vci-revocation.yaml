@@ -1,7 +1,7 @@
 id: vci-revocation
 title: Revocation — the issuer revokes issued credentials through its Token Status List
 role: issuer
-order: 4
+order: 5
 subject: vci.flow.revocation
 variant: { format: sd-jwt-vc }
 summary: >-

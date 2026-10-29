@@ -1,6 +1,7 @@
 - { id: vci, kind: flow, title: Credential issuance (OpenID4VCI) }
 - { id: vci.flow.auth-code-par, kind: flow, parent: vci, title: "Issuance: authorization code flow with PAR, same device" }
 - { id: vci.flow.nested-presentation, kind: flow, parent: vci, title: "Issuance: authorization code flow with a nested PID presentation, same device" }
+- { id: vci.flow.refresh, kind: flow, parent: vci, title: "Credential refresh: the Wallet obtains fresh credentials with a refresh token" }
 - { id: vci.flow.revocation, kind: flow, parent: vci, title: "Revocation: the Credential Issuer revokes issued credentials through its Token Status List" }
 - { id: vci.provisioning, kind: step, parent: vci, title: Wallet Provider equips the Wallet Unit with WIA and key attestations }
 - { id: vci.client-auth, kind: behaviour, parent: vci, title: "Client authentication of the Wallet at the OAuth endpoints (PAR, token)" }
@@ -10,5 +11,8 @@
 - { id: vci.pkce, kind: behaviour, parent: vci, title: PKCE with S256 }
 - { id: vci.par, kind: behaviour, parent: vci, title: Pushed Authorization Requests }
 - { id: vci.refresh-token, kind: behaviour, parent: vci, title: Refresh tokens for credential refresh }
+- { id: vci.refresh-token.rotation, kind: behaviour, parent: vci.refresh-token, title: Refresh token rotation, description: "The authorization server may answer a refresh with a new refresh token. The Wallet then keeps only the new one; the server may revoke the old one." }
+- { id: vci.refresh-token.lifetime, kind: behaviour, parent: vci.refresh-token, title: How long a refresh token may refresh credentials, description: "The issuer decides how long after the original issuance a refresh token still yields new credentials. After that period the Wallet starts the issuance flow from the beginning, with the user." }
+- { id: vci.credential-refresh, kind: behaviour, parent: vci, title: Credential refresh without user interaction, description: "The Wallet obtains a new access token with its refresh token and requests the credentials again at the Credential Endpoint. The user is not involved. The Wallet starts a refresh on its own, for example before the credentials expire, or after a signal from the issuer; how the issuer sends such a signal is not standardised. The issuer decides whether the new credentials carry updated claim values or only a new signature and validity." }
 - { id: vci.crypto.aes-gcm, kind: behaviour, parent: vci, title: Support of A128GCM and A256GCM }
 - { id: vci.preauth.physical-presence, kind: behaviour, parent: vci, title: "PID providers: user authorisation with physical presence in the pre-authorized code flow" }

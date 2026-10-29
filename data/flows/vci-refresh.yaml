@@ -1,0 +1,55 @@
+id: vci-refresh
+title: Credential refresh — the Wallet obtains fresh credentials with a refresh token
+role: issuer
+order: 4
+subject: vci.flow.refresh
+variant: { grant: refresh_token }
+summary: >-
+  A month after an issuance with the authorization code flow, the Wallet refreshes its credentials without involving
+  the user. It redeems the refresh token from that issuance at the token endpoint, authenticated with a fresh WIA for
+  the same instance key and a DPoP proof with the same DPoP key, and receives a new access token and a new refresh
+  token. With them it requests the credentials again: new nonce, new key attestation, new key proof. The issuer
+  returns credentials with a new validity and keeps the ones it issued before. Once the issuer no longer accepts the
+  refresh token, the Wallet starts the issuance flow from the beginning.
+participants:
+  - { id: wp, label: Wallet Provider, role: wallet-provider }
+  - { id: wallet, label: Wallet Unit, role: wallet }
+  - { id: as, label: Authorization Server, role: as }
+  - { id: issuer, label: Credential Issuer, role: issuer }
+steps:
+  - id: trigger
+    from: wallet
+    to: wallet
+    kind: internal
+    label: decide to refresh credentials
+    subject: vci.credential-refresh
+    note: >-
+      Before this flow the Wallet ran the authorization code flow with PAR and kept the refresh token from its Token
+      Response. It refreshes on its own schedule, for example before the credentials expire, or after a signal from the
+      issuer.
+  - { id: provision, from: wp, to: wallet, kind: internal, label: fresh WIA (same instance key), subject: vci.provisioning, example: vci-wia-refresh, tags: [WIA] }
+  - { id: token, from: wallet, to: as, kind: request, label: POST /token (refresh_token), subject: vci.token-request, example: vci-refresh-token-request, tags: [WIA + PoP, DPoP] }
+  - { id: token-validate, from: as, to: as, kind: internal, label: validate token request, subject: vci.as.validate-token-request }
+  - { id: token-validate-wia, parent: token-validate, from: as, to: as, kind: internal, label: verify WIA, subject: vci.wia.verification }
+  - { id: token-validate-pop, parent: token-validate, from: as, to: as, kind: internal, label: verify WIA PoP, subject: vci.wia-pop.verification }
+  - { id: token-validate-dpop, parent: token-validate, from: as, to: as, kind: internal, label: verify DPoP proof, subject: vci.dpop-proof.verification }
+  - { id: token-validate-refresh, parent: token-validate, from: as, to: as, kind: internal, label: "refresh_token + key binding", subject: vci.as.check-refresh-token }
+  - { id: token-response, from: as, to: wallet, kind: response, label: new access token + refresh token, subject: vci.token-response, example: vci-refresh-token-response, tags: [DPoP, rotated] }
+  - { id: rotate, from: wallet, to: wallet, kind: internal, label: replace the refresh token, subject: vci.refresh-token.rotation }
+  - { id: nonce, from: wallet, to: issuer, kind: request, label: POST /nonce, subject: vci.nonce-request, example: vci-nonce-request }
+  - { id: nonce-response, from: issuer, to: wallet, kind: response, label: c_nonce, subject: vci.nonce-response, example: vci-refresh-nonce-response, tags: [DPoP-Nonce] }
+  - { id: ka-request, from: wallet, to: wp, kind: request, label: request key attestation (c_nonce), subject: vci.ka-request, note: Wallet-to-Wallet-Provider interface; not standardised by OpenID4VCI. }
+  - { id: ka, from: wp, to: wallet, kind: response, label: key attestation, subject: vci.ka-request, example: vci-refresh-key-attestation, tags: [nonce, attested_keys] }
+  - { id: credential, from: wallet, to: issuer, kind: request, label: POST /credential, subject: vci.credential-request, example: vci-refresh-credential-request, tags: [DPoP + nonce, proofs.jwt + KA] }
+  - { id: credential-validate, from: issuer, to: issuer, kind: internal, label: validate credential request, subject: vci.issuer.validate-credential-request }
+  - { id: credential-validate-token, parent: credential-validate, from: issuer, to: issuer, kind: internal, label: "access token + DPoP (ath, jkt)", subject: vci.issuer.check-access-token }
+  - { id: credential-validate-config, parent: credential-validate, from: issuer, to: issuer, kind: internal, label: credential configuration + proofs, subject: vci.issuer.check-credential-configuration }
+  - { id: credential-validate-ka, parent: credential-validate, from: issuer, to: issuer, kind: internal, label: verify key attestation, subject: vci.ka.verification }
+  - { id: credential-validate-proof, parent: credential-validate, from: issuer, to: issuer, kind: internal, label: "verify key proof (nonce, aud)", subject: vci.proof-jwt.verification }
+  - { id: issue, from: issuer, to: issuer, kind: internal, label: create and sign credentials, subject: vci.issuer.issue-credentials }
+  - { id: issue-per-key, parent: issue, from: issuer, to: issuer, kind: internal, label: one credential per attested key, subject: vci.credential-response.one-per-key }
+  - { id: issue-sign, parent: issue, from: issuer, to: issuer, kind: internal, label: sign SD-JWT VC (x5c), subject: vci.issuer.sign-credential }
+  - { id: issue-keep, parent: issue, from: issuer, to: issuer, kind: internal, label: keep the earlier credentials, subject: vci.issuer.previous-credentials }
+  - { id: credential-response, from: issuer, to: wallet, kind: response, label: refreshed credentials, subject: vci.credential-response, example: vci-refresh-credential-response }
+  - { id: notification, from: wallet, to: issuer, kind: request, label: POST /notification, subject: vci.notification-request, example: vci-refresh-notification-request, tags: [DPoP] }
+  - { id: notification-response, from: issuer, to: wallet, kind: response, label: "204", subject: vci.notification-response }

@@ -208,6 +208,19 @@
   quote: "Refresh tokens are RECOMMENDED to be supported for Credential refresh."
   xref: [ { source: c2bo, id: refresh-tokens } ]
   verified: source-checked
+- id: haip/4.4/refresh-lifetime
+  subject: vci.refresh-token.lifetime
+  spec: haip-1.0
+  locator: { section: "4.4" }
+  relation: profiles
+  level: should
+  applies_to: { role: [ as, issuer ] }
+  quote: >-
+    Issuers SHOULD consider how long a refresh token is allowed to be used to refresh a credential, as opposed to
+    starting the issuance flow from the beginning. For example, if the User is trying to refresh a Credential more than
+    a year after its original issuance, the usage of the refresh tokens is NOT RECOMMENDED.
+  note: Stated in a note of HAIP §4.4.
+  verified: source-checked
 - id: haip/4.4.1/client-auth
   subject: vci.client-auth
   spec: haip-1.0

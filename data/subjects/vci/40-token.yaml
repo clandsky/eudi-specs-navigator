@@ -2,7 +2,8 @@
 - { id: vci.token-request.oauth-client-attestation, kind: field, parent: vci.token-request, title: "OAuth-Client-Attestation (WIA)", location: header, description: "The Wallet Instance Attestation, authenticating the Wallet at the token endpoint." }
 - { id: vci.token-request.oauth-client-attestation-pop, kind: field, parent: vci.token-request, title: OAuth-Client-Attestation-PoP, location: header, description: "Proof of possession of the WIA key for this token request." }
 - { id: vci.token-request.dpop, kind: field, parent: vci.token-request, title: DPoP proof, location: header, description: "DPoP proof JWT; binds the access token to be issued to the Wallet's DPoP key." }
-- { id: vci.token-request.grant_type, kind: field, parent: vci.token-request, title: grant_type, location: form, description: "Which grant the Wallet redeems: authorization_code or the pre-authorized code grant." }
+- { id: vci.token-request.grant_type, kind: field, parent: vci.token-request, title: grant_type, location: form, description: "Which grant the Wallet redeems: authorization_code, the pre-authorized code grant, or refresh_token for a credential refresh." }
+- { id: vci.token-request.refresh_token, kind: field, parent: vci.token-request, title: refresh_token, location: form, description: "The refresh token the authorization server issued with an earlier Token Response." }
 - { id: vci.token-request.code, kind: field, parent: vci.token-request, title: code, location: form, description: "The authorization code received in the authorization response." }
 - { id: vci.token-request.code_verifier, kind: field, parent: vci.token-request, title: code_verifier, location: form, description: "PKCE secret whose hash was sent as code_challenge; proves the Wallet started the flow." }
 - { id: vci.token-response, kind: message, parent: vci, title: Token Response }

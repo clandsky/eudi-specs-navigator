@@ -37,8 +37,8 @@ topics:
         flows: [vci-revocation]
         subjects: [vci.issuer.allocate-status-index, vci.issuer.update-status-list, tsl.token]
         specs: [status-list-20, haip-1.0]
-    flows: [vci-revocation]
-    subjects: [vci.refresh-token, vci.notification-request, vci.revocation]
+    flows: [vci-refresh, vci-revocation]
+    subjects: [vci.refresh-token, vci.credential-refresh, vci.notification-request, vci.revocation]
     specs: [status-list-20]
     links:
       - title: "Credential Lifecycle & Operations | EUDI DE Documentation"
