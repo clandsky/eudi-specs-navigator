@@ -18,7 +18,8 @@
     "examples:build": "tsx scripts/examples-build.ts",
     "effective": "tsx scripts/effective.ts",
     "schema:export": "tsx scripts/schema-export.ts",
-    "ci": "pnpm validate && pnpm quote-check --ci && pnpm test && pnpm build"
+    "ci": "pnpm validate && pnpm quote-check --ci && pnpm test && pnpm build",
+    "devguide:export": "tsx scripts/devguide-export.ts"
   },
   "dependencies": {
     "@fontsource-variable/instrument-sans": "^5.3.0",

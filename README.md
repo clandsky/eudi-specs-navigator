@@ -26,6 +26,11 @@ override it, and the effective rule as of a date**.
   are TypeScript declarations with fixed comment markers (levels per role, conditions, flows, exact rule wording, checks),
   compact enough for an agent's context; `*.examples.json` beside them hold the decoded example messages. Deterministic,
   so a git diff of the files is the change log. Not part of the web app; commit and push the files by hand.
+- **Developer guide export** (`pnpm devguide:export <guide checkout>`, local only): writes every flow as a read-only
+  page bundle for the German EUDI Wallet developer guide (Docusaurus): steps, decoded request and response bodies, and
+  for each field the specs and sections it comes from, resolved as of today without lens and without spec quotes. The
+  descriptive texts and the learning path go to Markdown files under the guide's `docs/context/`, which the guide owns
+  after the first export.
 - **Learn**: a learning roadmap of the concepts each role needs, in clusters (general and ecosystem trust, then the
   verifier or issuer path), with questions, reading and links into the flows and specs.
 
